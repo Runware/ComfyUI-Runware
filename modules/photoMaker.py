@@ -51,7 +51,7 @@ class photoMaker:
                         "step": 64,
                     }),
                 "steps": ("INT", {
-                        "tooltip": "Guidance scale represents how closely the images will resemble the prompt or how much freedom the AI model has. Higher values are closer to the prompt. Low values may reduce the quality of the results.",
+                        "tooltip": "The number of steps is the number of iterations the model will perform to generate the image. The higher the number of steps, the more detailed the image will be. However, increasing the number of steps will also increase the time it takes to generate the image and may not always result in a better image.",
                         "default": 25,
                         "min": 1,
                         "max": 100,
@@ -64,7 +64,7 @@ class photoMaker:
                         "default": "Default",
                     }),
                 "cfgScale": ("FLOAT", {
-                        "tooltip": "The scale of the image generation. The higher the scale, the more detailed the image will be.",
+                        "tooltip": "Guidance scale represents how closely the images will resemble the prompt or how much freedom the AI model has. Higher values are closer to the prompt. Low values may reduce the quality of the results.",
                         "default": 6.5,
                         "min": 1.0,
                         "max": 30.0,
