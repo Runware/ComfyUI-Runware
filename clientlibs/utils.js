@@ -54,7 +54,7 @@ function notifyUser(message, type="info", title = "Runware", life = 4.5) {
 }
 
 async function promptEnhanceHandler(e) {
-    if(e.altKey && e.shiftKey && e.key === 'E') {
+    if(e.ctrlKey && e.altKey && e.key.toLowerCase() === 'e') {
         const userPrompt = e.target.value.trim();
         if(userPrompt.length <= 1) {
             notifyUser("Prompt Is Too Short!", "error", "Runware Prompt Enhancer");
