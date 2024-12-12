@@ -38,7 +38,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Image Masking": imageMasking,
     "Runware ControlNet PreProcessor": controlNetPreprocessor,
     "Runware API Manager": apiManager,
-    "Runware Image Caption": imageCaptioning,
+    # "Runware Image Caption": imageCaptioning,
     "Runware ControlNet Combine": controlNetCombine,
 }
 
