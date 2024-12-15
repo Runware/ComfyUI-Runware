@@ -9,9 +9,14 @@ async def setAPIKey(reqPayload):
     reqData = await reqPayload.json()
     apiKey = reqData.get('apiKey', None)
     if(apiKey is None or apiKey == "" or len(apiKey) < 30):
-        return web.json_response({'success': False, 'error': 'API Key Not Provided!'})
+        return web.json_response({'success': False, 'error': 'Invalid API Key!'})
     try:
         apiKey = apiKey.strip()
+        apiCheckResult = rwUtils.checkAPIKey(apiKey)
+        if(apiCheckResult == False):
+            return web.json_response({'success': False, 'error': 'Failed To Set Your API Key, Please Try Again!'})
+        elif(apiCheckResult != True):
+            return web.json_response({'success': False, 'error': apiCheckResult})
         rwUtils.setAPIKey(apiKey)
     except Exception as e:
         return web.json_response({'success': False, 'error': str(e)})

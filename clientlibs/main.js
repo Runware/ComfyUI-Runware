@@ -1,11 +1,12 @@
 import { app } from "../../scripts/app.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler } from "./utils.js";
+import { api } from "../../scripts/api.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, handleCustomErrors } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 app.registerExtension({
 	name: "runware.ai",
     async setup() {
-        // pass
+        api.addEventListener('runwareError', handleCustomErrors);
     },
 
     async nodeCreated(node) {

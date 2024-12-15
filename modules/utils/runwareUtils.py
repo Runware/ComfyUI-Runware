@@ -1,4 +1,6 @@
+from comfy.model_management import InterruptProcessingException
 from requests.adapters import HTTPAdapter
+from server import PromptServer
 from dotenv import load_dotenv
 from pathlib import Path
 from PIL import Image
@@ -58,6 +60,28 @@ def genRandSeed(minSeed = 1000, maxSeed = 9223372036854776000):
 def genRandUUID():
     return str(uuid.uuid4())
 
+def checkAPIKey(apiKey):
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+    }
+
+    genConfig = [{
+            "taskType": "authentication",
+            "apiKey": apiKey,
+    }]
+
+    try:
+        genResult = session.post(RUNWARE_API_BASE_URL, headers=headers, json=genConfig, timeout=SESSION_TIMEOUT, allow_redirects=False, stream=True)
+        genResult = genResult.json()
+        if("errors" in genResult):
+            return str(genResult["errors"][0]["message"])
+        else:
+            return True
+    except Exception as e:
+        return False
+
 def inferenecRequest(genConfig):
     global RUNWARE_API_KEY
     RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY")
@@ -80,7 +104,12 @@ def inferenecRequest(genConfig):
         raise Exception("Error: Runware Request Failed!")
     except Exception as e:
         if "invalid api key" in str(e).lower():
-            raise Exception("Invalid API Key - Please Make Sure you set your correctly API Key Either in the env file or through the API Manager Node!\n\nIf you don't have an API Key, you can get it from: https://my.runware.ai/keys")
+            PromptServer.instance.send_sync("runwareError", {
+                "success": False,
+                "errorMessage": str(e),
+                "errorCode": 401,
+            })
+            raise InterruptProcessingException()
         else:
             raise Exception(f"Error: {e}")
     return False

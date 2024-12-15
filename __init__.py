@@ -14,7 +14,7 @@ from .modules.apiManager import apiManager
 from .modules.imageCaptioning import imageCaptioning
 from .modules.controlNetCombine import controlNetCombine
 
-RUNWARE_COMFYUI_VERSION = "Alpha 0.8"
+RUNWARE_COMFYUI_VERSION = "0.9 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -38,7 +38,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Image Masking": imageMasking,
     "Runware ControlNet PreProcessor": controlNetPreprocessor,
     "Runware API Manager": apiManager,
-    # "Runware Image Caption": imageCaptioning,
+    "Runware Image Caption": imageCaptioning,
     "Runware ControlNet Combine": controlNetCombine,
 }
 

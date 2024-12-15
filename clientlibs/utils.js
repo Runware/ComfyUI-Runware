@@ -1,8 +1,10 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { DEFAULT_DIMENSIONS_LIST, DEFAULT_MODELS_ARCH_LIST, SEARCH_TERMS,
-    DEFAULT_CONTROLNET_CONDITIONING_LIST, RUNWARE_NODE_TYPES, MODEL_TYPES_TERMS, MODEL_LIST_TERMS
+import { DEFAULT_DIMENSIONS_LIST, DEFAULT_MODELS_ARCH_LIST, DEFAULT_CONTROLNET_CONDITIONING_LIST,
+    RUNWARE_NODE_TYPES, MODEL_TYPES_TERMS, MODEL_LIST_TERMS
 } from "./types.js";
+
+let openDialog = false;
 
 async function enhancePrompt(userPrompt) {
     const resp = await api.fetchApi('/promptEnhance', {
@@ -82,6 +84,7 @@ async function APIKeyHandler(apiManagerNode) {
     for(const widget of widgets) {
         if(widget.name === "API Key") {
             appendWidgetCB(widget, async function(...args) {
+                if(openDialog) return;
                 const apiKey = args[0].trim();
                 if(apiKey.length < 30) {
                     notifyUser("Invalid API Key Set, Please Try Again!", "error", "Runware API Manager");
@@ -98,6 +101,77 @@ async function APIKeyHandler(apiManagerNode) {
             });
             break;
         }
+    }
+}
+
+function handleCustomErrors(errObj) {
+    const errData = errObj.detail;
+    const errCode = errData.errorCode;
+    if(errCode === 401 && !openDialog) {
+        const dialog = new comfyAPI.asyncDialog.ComfyAsyncDialog();
+        const htmlContent = `
+                <center>
+                    <div style="padding: auto 200px; text-align: center;">
+                        <h2>Runware Inference Error</h2>
+                        <h4>Your API Key is Invalid Or Undefined. You Need To Update It.</h4>
+                        <form method="POST" id="runwareAPIKey">
+                            <input 
+                                id="apiKey" 
+                                type="text" 
+                                placeholder="Enter Your API Key ..." minlength="30" maxlength="48"
+                                style="padding: 5px; min-width: 300px; text-align: center; margin-top: 10px;" required>
+
+                            <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
+                                <button id="setAPIKeyBTN" style="padding: 8px 15px; background-color: #6c5ce7; color: #ccc;">Set Your API Key</button>
+                                <button  id="getAPIKeyBTN" style="padding: 8px 15px; background-color: #dfe6e9; color: #000;">Create New API Key</button>
+                            </div>
+                        </form>
+                    </div>
+                </center>
+    `;
+        dialog.showModal(htmlContent).then(() => {
+            openDialog = false;
+        });
+        openDialog = true;
+        dialog.element.addEventListener('close', () => {
+            openDialog = false;
+        });
+        const runwareAPIForm = document.getElementById("runwareAPIKey");
+        const apiKeyInput = document.getElementById("apiKey");
+        const getAPIKeyBTN = document.getElementById("getAPIKeyBTN");
+        const setAPIKeyBTN = document.getElementById("setAPIKeyBTN");
+
+        getAPIKeyBTN.onclick = (e) => {
+            e.preventDefault();
+            window.open("https://my.runware.ai/keys?utm_source=comfyui&utm_medium=referral&utm_campaign=comfyui_api_key_creation", "_blank");
+        };
+
+        async function authUser(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const apiKey = apiKeyInput.value.trim();
+            if(apiKey.length < 30) {
+                notifyUser("Invalid API Key Set, Please Try Again!", "error", "Runware API Manager");
+                return;
+            } else {
+                const setAPIKeyResults = await setAPIKey(apiKey);
+                if(setAPIKeyResults.success) {
+                    dialog.close();
+                    openDialog = false;
+                    notifyUser("API Key Set Successfully!", "success", "Runware API Manager");
+                } else {
+                    notifyUser(setAPIKeyResults.error, "error", "Runware API Manager");
+                }
+            }
+        };
+
+        setAPIKeyBTN.onclick = async (e) => {
+            authUser(e);
+        };
+
+        runwareAPIForm.onsubmit = async (e) => {
+            authUser(e);
+        };
     }
 }
 
@@ -245,5 +319,6 @@ export {
     promptEnhanceHandler,
     syncDimensionsNodeHandler,
     searchNodeHandler,
-    APIKeyHandler,
+    handleCustomErrors,
+    APIKeyHandler
 };

@@ -125,7 +125,7 @@ class txt2img:
 
     @classmethod
     def VALIDATE_INPUTS(cls, positivePrompt, negativePrompt):
-        if (positivePrompt is None or len(positivePrompt) < 3 or len(positivePrompt) > 2000):
+        if (positivePrompt is not None and (positivePrompt == "" or len(positivePrompt) < 3 or len(positivePrompt) > 2000)):
             raise Exception("Positive Prompt Must Be Between 3 And 2000 characters!")
         if (negativePrompt is not None and negativePrompt != "" and (len(negativePrompt) < 3 or len(negativePrompt) > 2000)):
             raise Exception("Negative Prompt Must Be Between 3 And 2000 characters!")
