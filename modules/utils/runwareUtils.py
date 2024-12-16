@@ -15,7 +15,6 @@ import io
 
 load_dotenv()
 
-SESSION_TIMEOUT = 60
 RUNWARE_API_BASE_URL = "https://api.runware.ai/v1"
 session = requests.Session()
 adapter = HTTPAdapter(pool_connections=10, pool_maxsize=10)
@@ -28,10 +27,19 @@ def getAPIKey():
         return apiKey
     return False
 
+def getTimeout():
+    timeout = os.getenv("RUNWARE_TIMEOUT")
+    if timeout and timeout.isdigit():
+        return int(timeout)
+    else:
+        timeout = 90
+        os.environ["RUNWARE_TIMEOUT"] = str(timeout)
+        return timeout
+
+SESSION_TIMEOUT = getTimeout()
 RUNWARE_API_KEY = getAPIKey()
 
-def setAPIKey(apiKey: str):
-    global RUNWARE_API_KEY
+def setEnvKey(keyName, keyValue):
     comfyNodeRoot = Path(__file__).parent.parent.parent
     envFilePath = comfyNodeRoot / '.env'
     if not envFilePath.exists():
@@ -41,18 +49,32 @@ def setAPIKey(apiKey: str):
     key_exists = False
     new_lines = []
     for line in lines:
-        if line.startswith('RUNWARE_API_KEY='):
+        if line.startswith(f'{keyName}='):
             key_exists = True
-            new_lines.append(f'RUNWARE_API_KEY={apiKey}\n')
+            new_lines.append(f'{keyName}={keyValue}\n')
         else:
             new_lines.append(line)
     if not key_exists:
-        new_lines.append(f'RUNWARE_API_KEY={apiKey}\n')
+        new_lines.append(f'{keyName}={keyValue}\n')
     with open(envFilePath, 'w') as f:
         f.writelines(new_lines)
-    RUNWARE_API_KEY = apiKey
-    os.environ["RUNWARE_API_KEY"] = apiKey
     return True
+
+def setAPIKey(apiKey: str):
+    global RUNWARE_API_KEY
+    envSetRes = setEnvKey("RUNWARE_API_KEY", apiKey)
+    if envSetRes:
+        RUNWARE_API_KEY = apiKey
+        os.environ["RUNWARE_API_KEY"] = apiKey
+        return True
+
+def setTimeout(timeout: int):
+    envSetRes = setEnvKey("RUNWARE_TIMEOUT", str(timeout))
+    if envSetRes:
+        global SESSION_TIMEOUT
+        SESSION_TIMEOUT = timeout
+        os.environ["RUNWARE_TIMEOUT"] = str(timeout)
+        return True
 
 def genRandSeed(minSeed = 1000, maxSeed = 9223372036854776000):
     return random.randint(minSeed, maxSeed)
@@ -73,7 +95,7 @@ def checkAPIKey(apiKey):
     }]
 
     try:
-        genResult = session.post(RUNWARE_API_BASE_URL, headers=headers, json=genConfig, timeout=SESSION_TIMEOUT, allow_redirects=False, stream=True)
+        genResult = session.post(RUNWARE_API_BASE_URL, headers=headers, json=genConfig, timeout=10, allow_redirects=False, stream=True)
         genResult = genResult.json()
         if("errors" in genResult):
             return str(genResult["errors"][0]["message"])
@@ -82,9 +104,17 @@ def checkAPIKey(apiKey):
     except Exception as e:
         return False
 
+def sendImageCaption(captionText, nodeID):
+    PromptServer.instance.send_sync("runwareImageCaption", {
+        "success": True,
+        "captionText": captionText,
+        "nodeID": nodeID,
+})
+
 def inferenecRequest(genConfig):
-    global RUNWARE_API_KEY
+    global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
     RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY")
+    SESSION_TIMEOUT = int(os.getenv("RUNWARE_TIMEOUT"))
     headers = {
         "Authorization": f"Bearer {RUNWARE_API_KEY}",
         "Content-Type": "application/json",

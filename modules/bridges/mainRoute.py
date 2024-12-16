@@ -22,6 +22,18 @@ async def setAPIKey(reqPayload):
         return web.json_response({'success': False, 'error': str(e)})
     return web.json_response({'success': True})
 
+@routes.post('/setMaxTimeout')
+async def setMaxTimeout(reqPayload):
+    reqData = await reqPayload.json()
+    maxTimeout = reqData.get('maxTimeout', 90)
+    if(maxTimeout < 5 or maxTimeout > 99):
+        return web.json_response({'success': False, 'error': 'Invalid Timeout Value!'})
+    try:
+        rwUtils.setTimeout(maxTimeout)
+    except Exception as e:
+        return web.json_response({'success': False, 'error': str(e)})
+    return web.json_response({'success': True})
+
 @routes.post('/promptEnhance')
 async def promptEnhance(reqPayload):
     reqData = await reqPayload.json()
@@ -55,6 +67,7 @@ async def modelSearch(reqPayload):
         "taskUUID": rwUtils.genRandUUID(),
         "category": modelCategory,
         "limit": 15,
+        "sort": "-downloadCount",
     }]
 
     if(modelCategory != "controlnet" and modelCategory != "lora"):

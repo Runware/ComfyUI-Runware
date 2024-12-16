@@ -14,7 +14,7 @@ from .modules.apiManager import apiManager
 from .modules.imageCaptioning import imageCaptioning
 from .modules.controlNetCombine import controlNetCombine
 
-RUNWARE_COMFYUI_VERSION = "0.9 Beta"
+RUNWARE_COMFYUI_VERSION = "0.9.1 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"

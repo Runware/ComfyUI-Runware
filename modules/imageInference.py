@@ -18,11 +18,9 @@ class txt2img:
                     "placeholder": "Negative Prompt: a text instruction to guide the model on generating the image. It is usually a sentence or a paragraph that provides negative guidance for the task. This parameter helps to avoid certain undesired results.",
                     "tooltip": "Negative Prompt: a text instruction to guide the model on generating the image."
                 }),
-                "Prompt Weighting": ("BOOLEAN", {
-                    "default": False,
-                    "tooltip": "Prompt weighting allows you to adjust how strongly different parts of your prompt influence the generated image.",
-                    "label_on": "Enabled",
-                    "label_off": "Disabled",
+                "Prompt Weighting": (["Disabled", "sdEmbeds", "Compel"], {
+                    "default": "Disabled",
+                    "tooltip": "Prompt weighting allows you to adjust how strongly different parts of your prompt influence the generated image.\n\nChoose between \"compel\" notation with advanced weighting operations or \"sdEmbeds\" for simple emphasis adjustments.\n\nCompel Example: \"small+ dog, pixar style\"\n\nsdEmbeds Example: \"(small:2.5) dog, pixar style\"",
                 }),
                 "dimensions": ([
                     "Square (512x512)", "Square HD (1024x1024)", "Portrait 3:4 (768x1024)",
@@ -140,7 +138,7 @@ class txt2img:
         runwareModel = kwargs.get("Model")
         positivePrompt = kwargs.get("positivePrompt")
         negativePrompt = kwargs.get("negativePrompt", None)
-        promptWeighting = kwargs.get("Prompt Weighting", False)
+        promptWeighting = kwargs.get("Prompt Weighting", "Disabled")
         runwareControlNet = kwargs.get("ControlNet", None)
         runwareLora = kwargs.get("Lora", None)
         runwareRefiner = kwargs.get("Refiner", None)
@@ -185,8 +183,11 @@ class txt2img:
 
         if(negativePrompt is not None and negativePrompt != ""):
             genConfig[0]["negativePrompt"] = negativePrompt
-        if(promptWeighting):
-            genConfig[0]["promptWeighting"] = "sdEmbeds"
+        if(promptWeighting != "Disabled"):
+            if(promptWeighting == "sdEmbeds"):
+                genConfig[0]["promptWeighting"] = "sdEmbeds"
+            else:
+                genConfig[0]["promptWeighting"] = "compel"
         if(runwareLora is not None):
             if(isinstance(runwareLora, list)):
                 genConfig[0]["lora"] = runwareLora
@@ -209,3 +210,4 @@ class txt2img:
         genResult = rwUtils.inferenecRequest(genConfig)
         images = rwUtils.convertImageB64List(genResult)
         return images
+    

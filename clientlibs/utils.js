@@ -5,6 +5,7 @@ import { DEFAULT_DIMENSIONS_LIST, DEFAULT_MODELS_ARCH_LIST, DEFAULT_CONTROLNET_C
 } from "./types.js";
 
 let openDialog = false;
+let lastTimeout = false;
 
 async function enhancePrompt(userPrompt) {
     const resp = await api.fetchApi('/promptEnhance', {
@@ -30,6 +31,18 @@ async function setAPIKey(apiKey) {
     return setAPIKeyResults;
 }
 
+async function setTimeout(maxTimeout) {
+    const resp = await api.fetchApi('/setMaxTimeout', {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            maxTimeout: maxTimeout
+        })
+    });
+    const setTimeoutResults = await resp.json();
+    return setTimeoutResults;
+}
+
 async function modelSearch(modelQuery = "", modelArch = "all", modelType = "base", modelCat = "checkpoint", condtioning = "") {
     const resp = await api.fetchApi('/modelSearch', {
         method: "POST",
@@ -44,6 +57,20 @@ async function modelSearch(modelQuery = "", modelArch = "all", modelType = "base
     });
     const modelSearchResults = await resp.json();
     return modelSearchResults;
+}
+
+function captionNodeHandler(msgEvent) {
+    const captionData = msgEvent.detail;
+    const captionText = captionData.captionText;
+    const captionNodeID = parseInt(captionData.nodeID);
+    if(captionData.success) {
+        const captionNode = app.graph.getNodeById(captionNodeID);
+        if(captionNode !== null || captionNode !== undefined) {
+            const captionInput = captionNode.widgets[1].inputEl;
+            captionInput.value = captionText;
+        }
+    }
+    return false;
 }
 
 function notifyUser(message, type="info", title = "Runware", life = 4.5) {
@@ -99,7 +126,24 @@ async function APIKeyHandler(apiManagerNode) {
                     }
                 }
             });
-            break;
+        } else if(widget.name === "Max Timeout") {
+            if(lastTimeout) widget.value = lastTimeout;
+            appendWidgetCB(widget, async function(...args) {
+                const maxTimeout = args[0];
+                if(maxTimeout < 5 || maxTimeout > 99) {
+                    notifyUser("Invalid Timeout Value, Timeout must be between 5 and 99 seconds!", "error", "Runware API Manager");
+                    return;
+                } else {
+                    const setTimeoutResults = await setTimeout(maxTimeout);
+                    if(setTimeoutResults.success) {
+                        remNode(apiManagerNode);
+                        notifyUser("Timeout Set Successfully!", "success", "Runware API Manager");
+                        lastTimeout = maxTimeout;
+                    } else {
+                        notifyUser(setTimeoutResults.error, "error", "Runware API Manager");
+                    }
+                }
+            });
         }
     }
 }
@@ -319,6 +363,7 @@ export {
     promptEnhanceHandler,
     syncDimensionsNodeHandler,
     searchNodeHandler,
+    captionNodeHandler,
     handleCustomErrors,
     APIKeyHandler
 };

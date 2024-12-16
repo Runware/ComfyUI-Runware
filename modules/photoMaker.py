@@ -21,6 +21,10 @@ class photoMaker:
                     "placeholder": "Negative Prompt: a text instruction to guide the model on generating the image. It is usually a sentence or a paragraph that provides negative guidance for the task. This parameter helps to avoid certain undesired results.",
                     "tooltip": "Negative Prompt: a text instruction to guide the model on generating the image."
                 }),
+                "Prompt Weighting": (["Disabled", "Compel"], {
+                    "default": "Disabled",
+                    "tooltip": "Prompt weighting allows you to adjust how strongly different parts of your prompt influence the generated image.",
+                }),
                 "style": ([
                         "No style", "Cinematic", "Disney Character", "Digital Art", "Photographic", "Fantasy art",
                         "Neonpunk", "Enhance", "Comic book", "Lowpoly", "Line art"
@@ -129,6 +133,7 @@ class photoMaker:
         image4 = kwargs.get("Image 4", None)
         positivePrompt = kwargs.get("positivePrompt")
         negativePrompt = kwargs.get("negativePrompt", None)
+        promptWeighting = kwargs.get("Prompt Weighting", "Disabled")
         style = kwargs.get("style", "No style")
         dimensions = kwargs.get("dimensions", "Square HD (1024x1024)")
         width = kwargs.get("width", 1024)
@@ -173,6 +178,11 @@ class photoMaker:
 
         if(negativePrompt is not None and negativePrompt != ""):
             genConfig[0]["negativePrompt"] = negativePrompt
+        if(promptWeighting != "Disabled"):
+            if(promptWeighting == "sdEmbeds"):
+                genConfig[0]["promptWeighting"] = "sdEmbeds"
+            else:
+                genConfig[0]["promptWeighting"] = "compel"
 
         genResult = rwUtils.inferenecRequest(genConfig)
         images = rwUtils.convertImageB64List(genResult)
