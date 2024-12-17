@@ -118,6 +118,12 @@ class txt2img:
                 "maskImage": ("MASK", {
                     "tooltip": "Specifies the mask image to be used for the inpainting process, when doing Inpainting, this parameter is required.",
                 }),
+                "Embeddings": ("RUNWAREEMBEDDING", {
+                    "tooltip": "Connect a Runware Embedding Node to help the model generate images that align with the desired structure.",
+                }),
+                "VAE": ("RUNWAREVAE", {
+                    "tooltip": "Connect a Runware VAE Node to help the model generate images that align with the desired structure.",
+                }),
             }
         }
 
@@ -142,6 +148,8 @@ class txt2img:
         runwareControlNet = kwargs.get("ControlNet", None)
         runwareLora = kwargs.get("Lora", None)
         runwareRefiner = kwargs.get("Refiner", None)
+        runwareEmbedding = kwargs.get("Embeddings", None)
+        runwareVAE = kwargs.get("VAE", None)
         seedImage = kwargs.get("seedImage", None)
         seedImageStrength = kwargs.get("strength", 0.8)
         maskImage = kwargs.get("maskImage", None)
@@ -193,6 +201,13 @@ class txt2img:
                 genConfig[0]["lora"] = runwareLora
             elif(isinstance(runwareLora, dict)):
                 genConfig[0]["lora"] = [runwareLora]
+        if(runwareEmbedding is not None):
+            if(isinstance(runwareEmbedding, list)):
+                genConfig[0]["embeddings"] = runwareEmbedding
+            elif(isinstance(runwareEmbedding, dict)):
+                genConfig[0]["embeddings"] = [runwareEmbedding]
+        if(runwareVAE is not None):
+            genConfig[0]["vae"] = runwareVAE
         if(runwareControlNet is not None):
             genConfig[0]["controlNet"] = runwareControlNet
         if(runwareRefiner is not None):

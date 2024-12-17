@@ -42,9 +42,9 @@ const DEFAULT_CONTROLNET_CONDITIONING_LIST = {
     "Soft Edge": "softedge",
 };
 
-const SEARCH_TERMS = ["Model Search", "Lora Search", "ControlNet Search"];
+const SEARCH_TERMS = ["Model Search", "Lora Search", "ControlNet Search", "Embedding Search", "VAE Search"];
 const MODEL_TYPES_TERMS = ["ModelType", "LoraType", "ControlNetType"];
-const MODEL_LIST_TERMS = ["ModelList", "LoraList", "ControlNetList"];
+const MODEL_LIST_TERMS = ["ModelList", "LoraList", "ControlNetList", "EmbeddingList", "VAEList"];
 
 const RUNWARE_NODE_TYPES = {
     IMAGEINFERENCE: "Runware Image Inference",
@@ -61,6 +61,9 @@ const RUNWARE_NODE_TYPES = {
     CONTROLNETPREPROCESSING: "Runware ControlNet PreProcessor",
     APIMANAGER: "Runware API Manager",
     IMAGECAPTION: "Runware Image Caption",
+    EMBEDDING: "Runware Embedding Search",
+    EMBEDDINGCOMBINE: "Runware Embedding Combine",
+    VAE: "Runware VAE Search",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -82,9 +85,21 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         liveSearch: true,
     },
+    [RUNWARE_NODE_TYPES.EMBEDDING]: {
+        bgColor: DEFAULT_BGCOLOR,
+        liveSearch: true,
+    },
     [RUNWARE_NODE_TYPES.CONTROLNET]: {
         bgColor: DEFAULT_BGCOLOR,
         liveSearch: true,
+    },
+    [RUNWARE_NODE_TYPES.VAE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        liveSearch: true,
+    },
+    [RUNWARE_NODE_TYPES.EMBEDDINGCOMBINE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.CONTROLNETCONDITIONING]: {
         bgColor: DEFAULT_BGCOLOR,

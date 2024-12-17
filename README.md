@@ -47,7 +47,9 @@ Make sure your system meets these requirements:
 You have two options to install this integration:
 
 #### Option 1: Using ComfyUI Manager (Recommended)
-You can easily install ComfyUI-Runware via the ComfyUI Manager. Just search for "ComfyUI-Runware" and install with a single click! ✨
+First, ensure you have the `ComfyUI-Manager` custom node installed. If you don't have it or are using the beta ComfyUI desktop version, follow the instructions on this [GitHub Repo](https://github.com/ltdrdata/ComfyUI-Manager?tab=readme-ov-file#installation).
+
+After installing ComfyUI-Manager, open it and click on "Custom Nodes Manager". Search for "Runware" or "Runware.ai" and then click on install or update. Finally, restart your ComfyUI. ✨
 
 #### Option 2: Manual Installation
 
@@ -61,7 +63,12 @@ You can easily install ComfyUI-Runware via the ComfyUI Manager. Just search for 
    git clone https://github.com/Runware/ComfyUI-Runware.git
    ```
 
-3. Install dependencies:
+3. Navigate to the repository folder:
+   ```bash
+   cd ComfyUI-Runware
+   ```
+
+4. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
@@ -80,7 +87,7 @@ python main.py --cpu --front-end-version Comfy-Org/ComfyUI_frontend@latest
 ```
 
 ### Step 4: Explore Workflows
-Inside the `comfyui-runware` custom node folder, you’ll find a `workflows` folder with pre-made workflows to get you started! 🚀
+Inside the `ComfyUI-Runware` custom node folder, you’ll find a `workflows` folder with pre-made workflows to get you started! 🚀
 
 ---
 
@@ -88,7 +95,7 @@ Inside the `comfyui-runware` custom node folder, you’ll find a `workflows` fol
 
 Here’s a breakdown of the amazing nodes included in this integration:
 
-- **Runware API Manager**: Set your API keys directly in ComfyUI—no need to edit config files manually! 🔑
+- **Runware API Manager**: Set or change your API keys and adjust the max connection timeout directly in ComfyUI—no need to edit config files manually! 🔑
 - **Runware Image Inference**: Perform advanced tasks like inpainting, outpainting, and more. 🎨
 - **Runware PhotoMakerV2**: Create consistent identities with our photomaker pipeline. 🖼️
 - **Runware Image Upscale**: Upscale your images up to 4x. 🔍
@@ -101,6 +108,9 @@ Here’s a breakdown of the amazing nodes included in this integration:
 - **Runware ControlNet Combine**: Combine multiple ControlNets for complex workflows. 🧩
 - **Runware Image Masking**: Automatically mask elements like faces, hands, and more. 🖌️
 - **Runware ControlNet Preprocessor**: Preprocess images before using them as guide images in ControlNet. 🔄
+- **Runware VAE**: Search and connect a VAE to Image inference. 🖼️
+- **Runware Embedding**: Search and connect Embedding to image inference. 🧩
+- **Runware Embedding Combine**: Combine multiple embeddings together. 🔗
 
 ---
 

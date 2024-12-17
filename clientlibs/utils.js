@@ -148,6 +148,23 @@ async function APIKeyHandler(apiManagerNode) {
     }
 }
 
+function addTriggerWords(prompt, triggerWords) {
+    if (!triggerWords?.trim()) return prompt;
+    const cleanedTriggerWords = triggerWords
+        .trim()
+        .replace(/,\s*$/, '')
+        .split(',')
+        .map(word => word.trim())
+        .filter(word => word.length);
+    if (!prompt?.trim()) return cleanedTriggerWords.join(', ');
+    const wordsToAdd = cleanedTriggerWords.filter(word => 
+        !new RegExp(`\\b${word}\\b`, 'i').test(prompt)
+    );
+    return wordsToAdd.length 
+        ? `${prompt}${prompt.endsWith(',') ? ' ' : ', '}${wordsToAdd.join(', ')}`
+        : prompt;
+}
+
 function handleCustomErrors(errObj) {
     const errData = errObj.detail;
     const errCode = errData.errorCode;
@@ -265,12 +282,25 @@ async function syncDimensionsNodeHandler(node, dimensionsWidget) {
     }
 }
 
+const shortenAirCode = input => !input || !input.startsWith('urn:air:') ? input : input.match(/urn:air:.*?:.*?(civitai:\d+@\d+)$/)?.[1] || input;
+
 async function searchNodeHandler(searchNode, searchInputWidget) {
     const searchNodeWidgets = searchNode.widgets;
-    let modelArchWidget = false, modelTypeWidget = false, modelListWidget = false, defaultWidgetValues = {};
-    let isLora = false, isControlNet = false, modelTypeValue;
+    let modelArchWidget = false, modelTypeWidget = false, modelListWidget = false,
+    defaultWidgetValues = {}, triggerWordsList = {
+        "civitai:58390@62833": "", "civitai:82098@87153": "", "civitai:122359@135867": "",
+        "civitai:14171@16677": "mix4", "civitai:13941@16576": "", "civitai:25995@32988": "full body, chibi"
+    }, embeddingTriggerWordsList = {
+        "civitai:7808@9208": "easynegative", "civitai:4629@5637": "ng_deepnegative_v1_75t",
+        "civitai:56519@60938": "negative_hand", "civitai:72437@77169": "BadDream",
+        "civitai:11772@25820": "verybadimagenegative_v1.3", "civitai:71961@94057": "FastNegativeV2",
+    };
+    let isLora = false, isControlNet = false, isEmbedding = false, isVAE = false, modelTypeValue = false;
     if(searchNode.comfyClass === RUNWARE_NODE_TYPES.LORASEARCH) isLora = true;
     if(searchNode.comfyClass === RUNWARE_NODE_TYPES.CONTROLNET) isControlNet = true;
+    if(searchNode.comfyClass === RUNWARE_NODE_TYPES.EMBEDDING) isEmbedding = true;
+    if(searchNode.comfyClass === RUNWARE_NODE_TYPES.VAE) isVAE = true;
+
     for(const searchWidget of searchNodeWidgets) {
         const widgetName = searchWidget.name;
         const widgetType = searchWidget.type;
@@ -304,18 +334,25 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
     }
 
     async function searchModels() {
-        const searchQuery = searchInputWidget.value.trim();
+        let searchQuery = searchInputWidget.value.trim();
+        searchQuery = shortenAirCode(searchQuery);
         const modelArchValue = DEFAULT_MODELS_ARCH_LIST[modelArchWidget.value];
         if(isControlNet) {
             modelTypeValue = DEFAULT_CONTROLNET_CONDITIONING_LIST[modelTypeWidget.value];
         } else {
-            modelTypeValue = modelTypeWidget.value.toLowerCase().replace("model", "").trim();
+            if(isEmbedding) {
+                modelTypeValue = "embedding";
+            } else if(isVAE) {
+                modelTypeValue = "vae";
+            } else {
+                modelTypeValue = modelTypeWidget.value.toLowerCase().replace("model", "").trim();
+            }
         }
 
         let modelSearchResults = null;
         if(isControlNet) {
             modelSearchResults = await modelSearch(searchQuery, modelArchValue, "", "controlnet", modelTypeValue);
-        } else if(isLora) {
+        } else if(isLora || isEmbedding || isVAE) {
             modelSearchResults = await modelSearch(searchQuery, modelArchValue, "", modelTypeValue);
         } else {
             modelSearchResults = await modelSearch(searchQuery, modelArchValue, modelTypeValue);
@@ -324,6 +361,8 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
         if(modelSearchResults.success) {
             const modelListArray = [];
             modelSearchResults.modelList.forEach(modelObj => {
+                if(isLora) triggerWordsList[modelObj.air] = modelObj.positiveTriggerWords.trim();
+                if(isEmbedding) embeddingTriggerWordsList[modelObj.air] = modelObj.positiveTriggerWords.trim();
                 modelListArray.push(`${modelObj.air} (${modelObj.name} ${modelObj.version})`);
             });
             modelListWidget.options.values = modelListArray;
@@ -333,8 +372,95 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
         }
     }
 
+    function findTargetWidget(currentNode, targetWidgetName, depth = 1) {
+        if(depth < 0) return false;
+        const nodeOutputs = currentNode.outputs;
+        if(nodeOutputs.length === 0) return false;
+        const outputLinks = nodeOutputs[0].links;
+        if(outputLinks.length === 0) return false;
+        for(const linkID of outputLinks) {
+            const linkInfo = app.graph.links[linkID];
+            const linkNodeID = linkInfo.target_id;
+            if(!linkNodeID) continue;
+            const targetNode = app.graph.getNodeById(linkNodeID);
+            let widgetFound = false;
+            if(targetNode.widgets !== undefined && targetNode.widgets.length > 0){
+                widgetFound = targetNode.widgets.find(widget => widget.name === targetWidgetName) || false;
+            }
+            if(widgetFound) {
+                return widgetFound;
+            } else {
+                return findTargetWidget(targetNode, targetWidgetName, depth - 1);
+            }
+        }
+        return false;
+    }
+
+    if(isLora) {
+        const runwareButton = document.createElement("button");
+        runwareButton.textContent = "Add Lora To Prompt";
+        runwareButton.style = "max-height: 50px; background-color: #333; color: #ccc;";
+        searchNode.addDOMWidget("addLora", "custom", runwareButton, {
+            selectOn: ['focus', 'click'],
+        });
+
+        runwareButton.addEventListener("click", async () => {
+            const chosenLora = modelListWidget.value.split(" ")[0];
+            const triggerWords = triggerWordsList[chosenLora];
+            if(triggerWords.length > 0) {
+                const positivePromptWidget = findTargetWidget(searchNode, "positivePrompt");
+                if(!positivePromptWidget) {
+                    notifyUser("Lora Node Is Not Linked To Any Runware Inference Node!", "error", "Runware Lora Connector");
+                    return;
+                }
+                const positivePromptWithTrigger = addTriggerWords(positivePromptWidget.value, triggerWords);
+                if(positivePromptWidget.value === positivePromptWithTrigger) {
+                    notifyUser("Trigger Words Already Exists", "info", "Runware Lora Connector");
+                    return;
+                }
+                positivePromptWidget.value = positivePromptWithTrigger;
+                notifyUser("Trigger Words Added Successfully!", "success", "Runware Lora Connector");
+            } else {
+                notifyUser("No Trigger Words Found For This Lora!", "warn", "Runware Lora Connector");
+            }
+        });
+    } else if(isEmbedding) {
+        const runwareButton = document.createElement("button");
+        runwareButton.textContent = "Add Embedding To Negative Prompt";
+        runwareButton.style = "max-height: 50px; background-color: #333; color: #ccc;";
+        searchNode.addDOMWidget("addEmbedding", "custom", runwareButton, {
+            selectOn: ['focus', 'click'],
+        });
+
+        runwareButton.addEventListener("click", async () => {
+            const chosenEmbedding = modelListWidget.value.split(" ")[0];
+            const triggerWords = embeddingTriggerWordsList[chosenEmbedding];
+            if(triggerWords.length > 0) {
+                const negativePromptWidget = findTargetWidget(searchNode, "negativePrompt");
+                if(!negativePromptWidget) {
+                    notifyUser("Embedding Node Is Not Linked To Any Runware Inference Node!", "error", "Runware Embedding Connector");
+                    return;
+                }
+                const negativePromptWithTrigger = addTriggerWords(negativePromptWidget.value, triggerWords);
+                if(negativePromptWidget.value === negativePromptWithTrigger) {
+                    notifyUser("Trigger Words Already Exists", "info", "Runware Embedding Connector");
+                    return;
+                }
+                negativePromptWidget.value = negativePromptWithTrigger;
+                notifyUser("Trigger Words Added Successfully!", "success", "Runware Embedding Connector");
+            } else {
+                notifyUser("No Trigger Words Found For This Embedding!", "warn", "Runware Embedding Connector");
+            }
+        });
+    }
+
     appendWidgetCB(searchInputWidget, async function(...args) {
-        const searchQuery = args[0].trim();
+        let searchQuery = args[0].trim();
+        const shortenSearchQuery = shortenAirCode(searchQuery);
+        if(searchQuery !== shortenSearchQuery) {
+            searchQuery = shortenSearchQuery;
+            searchInputWidget.value = searchQuery;
+        }
         if(searchQuery.length === 0) {
             resetValues();
         } else if(searchQuery.length < 2 || searchQuery.length > 32) {
@@ -349,8 +475,8 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
         await searchModels();
     });
 
-    if(!isLora){
-        appendWidgetCB(modelTypeWidget, async function(...args) {     
+    if(!isVAE && !isEmbedding) {
+        appendWidgetCB(modelTypeWidget, async function(...args) {
             await searchModels();
         });
     }

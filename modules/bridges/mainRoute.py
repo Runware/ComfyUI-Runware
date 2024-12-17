@@ -70,11 +70,12 @@ async def modelSearch(reqPayload):
         "sort": "-downloadCount",
     }]
 
-    if(modelCategory != "controlnet" and modelCategory != "lora"):
+    aclTypes = ["controlnet", "lora", "lycoris", "embedding", "vae"]
+
+    if(modelCategory not in aclTypes):
         utilityConfig[0]["type"] = modelType
     elif(modelCategory == "controlnet" and controlNetConditioning != "all"):
         utilityConfig[0]["conditioning"] = controlNetConditioning
-
     if(modelArch != "all"):
         utilityConfig[0]["architecture"] = modelArch
     if(modelQuery != ""):

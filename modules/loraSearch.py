@@ -27,8 +27,9 @@ class loraSearch:
                 }),
                 "LoraType": ([
                         "Lora",
+                        "LyCORIS"
                     ], {
-                    "tooltip": "Choose Lora Type To Filter Results.",
+                    "tooltip": "Choose Lora Type To Filter Out The Results.",
                     "default": "Lora",
                 }),
                 "LoraList": ([

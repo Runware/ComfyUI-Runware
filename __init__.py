@@ -13,8 +13,11 @@ from .modules.controlNetPreprocessor import controlNetPreprocessor
 from .modules.apiManager import apiManager
 from .modules.imageCaptioning import imageCaptioning
 from .modules.controlNetCombine import controlNetCombine
+from .modules.embeddingSearch import embeddingSearch
+from .modules.embeddingsCombine import embeddingsCombine
+from .modules.vaeSearch import vaeSearch
 
-RUNWARE_COMFYUI_VERSION = "0.9.1 Beta"
+RUNWARE_COMFYUI_VERSION = "0.9.2 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -32,6 +35,9 @@ NODE_CLASS_MAPPINGS = {
     "Runware Image Upscaler": upscaler,
     "Runware Model Search": modelSearch,
     "Runware Lora Search": loraSearch,
+    "Runware Embedding Search": embeddingSearch,
+    "Runware VAE Search": vaeSearch,
+    "Runware Embeddings Combine": embeddingsCombine,
     "Runware ControlNet": controlNet,
     "Runware Lora Combine": loraCombine,
     "Runware Refiner": refiner,
@@ -45,6 +51,8 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Model Search": "Runware Model",
     "Runware Lora Search": "Runware Lora",
+    "Runware Embedding Search": "Runware Embedding",
+    "Runware VAE Search": "Runware VAE",
 }
 
 WEB_DIRECTORY = "./clientlibs"
