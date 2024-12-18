@@ -212,8 +212,10 @@ function handleCustomErrors(errObj) {
             e.stopPropagation();
             const apiKey = apiKeyInput.value.trim();
             if(apiKey.length < 30) {
-                notifyUser("Invalid API Key Set, Please Try Again!", "error", "Runware API Manager");
+                runwareAPIForm.reportValidity();
                 return;
+                // notifyUser("Invalid API Key Set, Please Try Again!", "error", "Runware API Manager");
+                // return;
             } else {
                 const setAPIKeyResults = await setAPIKey(apiKey);
                 if(setAPIKeyResults.success) {
