@@ -66,7 +66,7 @@ async def modelSearch(reqPayload):
         "taskType": "modelSearch",
         "taskUUID": rwUtils.genRandUUID(),
         "category": modelCategory,
-        "limit": 15,
+        "limit": 20,
         "sort": "-downloadCount",
     }]
 

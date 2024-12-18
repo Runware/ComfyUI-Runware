@@ -78,10 +78,10 @@ class txt2img:
                 }),
                 "strength": ("FLOAT", {
                     "tooltip": "When doing Image-to-Image or Inpainting, this parameter is used to determine the influence of the seedImage image in the generated output. A lower value results in more influence from the original image, while a higher value allows more creative deviation.",
-                    "default": 0.80,
+                    "default": 0.8,
                     "min": 0.0,
                     "max": 1.0,
-                    "step": 0.05,
+                    "step": 0.1,
                 }),
                 "Mask Margin": ("BOOLEAN", {
                     "tooltip": "Enables Or Disables Mask Margin Feature.",

@@ -3,6 +3,7 @@ import { api } from "../../scripts/api.js";
 import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, handleCustomErrors } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
+const nodeInitList = [];
 app.registerExtension({
 	name: "runware.ai",
     async setup() {
@@ -47,9 +48,14 @@ app.registerExtension({
 
             if(crNodeProps.liveSearch === true) {
                 if(widgetType === "text" && SEARCH_TERMS.includes(widgetName)) {
+                    node.callback = function(){};
                     searchNodeHandler(node, nodeWidget);
+                    nodeInitList.push(node);
                 }
             }
         }
+    },
+    loadedGraphNode(node) {
+        if(nodeInitList.includes(node)) node.callback();
     }
 })

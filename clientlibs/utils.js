@@ -333,8 +333,13 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
         }
     }
 
-    async function searchModels() {
-        let searchQuery = searchInputWidget.value.trim();
+    async function searchModels(exactQuery = null, returnOutput = false) {
+        let searchQuery;
+        if(exactQuery) {
+            searchQuery = exactQuery;
+        } else {
+            searchQuery = searchInputWidget.value.trim();
+        }
         searchQuery = shortenAirCode(searchQuery);
         const modelArchValue = DEFAULT_MODELS_ARCH_LIST[modelArchWidget.value];
         if(isControlNet) {
@@ -365,9 +370,25 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
                 if(isEmbedding) embeddingTriggerWordsList[modelObj.air] = modelObj.positiveTriggerWords.trim();
                 modelListArray.push(`${modelObj.air} (${modelObj.name} ${modelObj.version})`);
             });
+
+            if(exactQuery) {
+                const extraSearch = await searchModels(null, true);
+                if(extraSearch) {
+                    const newModelList = [...new Set([...modelListArray, ...extraSearch])];
+                    modelListWidget.options.values = newModelList;
+                    return;
+                }
+            }
+
+            if(returnOutput) return modelListArray;
             modelListWidget.options.values = modelListArray;
             modelListWidget.value = modelListArray[0];
         } else {
+            if(returnOutput) return false;
+            if(exactQuery) {
+                notifyUser("Failed To Load Workflow's Model List Value!", "error", "Runware Search");
+                return;
+            }
             notifyUser(modelSearchResults.error, "error", "Runware Search");
         }
     }
@@ -406,6 +427,7 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
 
         runwareButton.addEventListener("click", async () => {
             const chosenLora = modelListWidget.value.split(" ")[0];
+            if(!triggerWordsList.hasOwnProperty(chosenLora)) return;
             const triggerWords = triggerWordsList[chosenLora];
             if(triggerWords.length > 0) {
                 const positivePromptWidget = findTargetWidget(searchNode, "positivePrompt");
@@ -434,6 +456,7 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
 
         runwareButton.addEventListener("click", async () => {
             const chosenEmbedding = modelListWidget.value.split(" ")[0];
+            if (!embeddingTriggerWordsList.hasOwnProperty(chosenEmbedding)) return;
             const triggerWords = embeddingTriggerWordsList[chosenEmbedding];
             if(triggerWords.length > 0) {
                 const negativePromptWidget = findTargetWidget(searchNode, "negativePrompt");
@@ -480,6 +503,18 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
             await searchModels();
         });
     }
+
+    appendWidgetCB(searchNode, async function(...args) {
+        try {
+            let modelListValues = modelListWidget.options.values;
+            if(modelListValues.length <= 0) return;
+            modelListValues = modelListValues.map(model => model.split(" ")[0]);
+            const modelListCRValue = modelListWidget.value.split(" ")[0];
+            if(!modelListValues.includes(modelListCRValue)) {
+                searchModels(modelListCRValue);
+            }
+        } catch(e) {}
+    });
 }
 
 export {

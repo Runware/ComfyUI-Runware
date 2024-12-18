@@ -17,7 +17,7 @@ from .modules.embeddingSearch import embeddingSearch
 from .modules.embeddingsCombine import embeddingsCombine
 from .modules.vaeSearch import vaeSearch
 
-RUNWARE_COMFYUI_VERSION = "0.9.2 Beta"
+RUNWARE_COMFYUI_VERSION = "0.9.3 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
