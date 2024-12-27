@@ -396,25 +396,29 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
     }
 
     function findTargetWidget(currentNode, targetWidgetName, depth = 1) {
-        if(depth < 0) return false;
-        const nodeOutputs = currentNode.outputs;
-        if(nodeOutputs.length === 0) return false;
-        const outputLinks = nodeOutputs[0].links;
-        if(outputLinks.length === 0) return false;
-        for(const linkID of outputLinks) {
-            const linkInfo = app.graph.links[linkID];
-            const linkNodeID = linkInfo.target_id;
-            if(!linkNodeID) continue;
-            const targetNode = app.graph.getNodeById(linkNodeID);
-            let widgetFound = false;
-            if(targetNode.widgets !== undefined && targetNode.widgets.length > 0){
-                widgetFound = targetNode.widgets.find(widget => widget.name === targetWidgetName) || false;
+        try {
+            if(depth < 0) return false;
+            const nodeOutputs = currentNode.outputs;
+            if(nodeOutputs.length === 0) return false;
+            const outputLinks = nodeOutputs[0].links;
+            if(outputLinks.length === 0) return false;
+            for(const linkID of outputLinks) {
+                const linkInfo = app.graph.links[linkID];
+                const linkNodeID = linkInfo.target_id;
+                if(!linkNodeID) continue;
+                const targetNode = app.graph.getNodeById(linkNodeID);
+                let widgetFound = false;
+                if(targetNode.widgets !== undefined && targetNode.widgets.length > 0){
+                    widgetFound = targetNode.widgets.find(widget => widget.name === targetWidgetName) || false;
+                }
+                if(widgetFound) {
+                    return widgetFound;
+                } else {
+                    return findTargetWidget(targetNode, targetWidgetName, depth - 1);
+                }
             }
-            if(widgetFound) {
-                return widgetFound;
-            } else {
-                return findTargetWidget(targetNode, targetWidgetName, depth - 1);
-            }
+        } catch(e) {
+            return false;
         }
         return false;
     }
