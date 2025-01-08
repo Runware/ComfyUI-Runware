@@ -1,17 +1,19 @@
 from .utils import runwareUtils as rwUtils
 
+
 class imageMasking:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "Image": ("IMAGE", {
-                        "tooltip": "Specifies the input image to be processed for mask generation."
+                    "tooltip": "Specifies the input image to be processed for mask generation."
                 }),
                 "Detection Model": ([
-                    "face_yolov8n", "face_yolov8s", "hand_yolov8n", "person_yolov8n-seg", "person_yolov8s-seg",
-                    "mediapipe_face_full", "mediapipe_face_short", "mediapipe_face_mesh"
-                    ], {
+                    "face_yolov8n", "face_yolov8s", "mediapipe_face_full", "mediapipe_face_short", "mediapipe_face_mesh",
+                    "mediapipe_face_mesh_eyes_only", "eyes_mesh_mediapipe", "nose_mesh_mediapipe", "lips_mesh_mediapipe",
+                    "eyes_lips_mesh", "nose_eyes_mesh", "nose_lips_mesh", "hand_yolov8n", "person_yolov8n-seg", "person_yolov8s-seg"
+                ], {
                     "tooltip": "Specifies the specialized detection model to use for mask generation.",
                     "default": "face_yolov8n",
                 }),
@@ -58,6 +60,25 @@ class imageMasking:
         maskPadding = kwargs.get("Mask Padding")
         maskBlur = kwargs.get("Mask Blur")
 
+        model_mapping = {
+            "face_yolov8n": "runware:35@1",
+            "face_yolov8s": "runware:35@2",
+            "mediapipe_face_full": "runware:35@6",
+            "mediapipe_face_short": "runware:35@7",
+            "mediapipe_face_mesh": "runware:35@8",
+            "mediapipe_face_mesh_eyes_only": "runware:35@9",
+            "eyes_mesh_mediapipe": "runware:35@15",
+            "nose_mesh_mediapipe": "runware:35@13",
+            "lips_mesh_mediapipe": "runware:35@14",
+            "eyes_lips_mesh": "runware:35@10",
+            "nose_eyes_mesh": "runware:35@11",
+            "nose_lips_mesh": "runware:35@12",
+            "hand_yolov8n": "runware:35@3",
+            "person_yolov8n-seg": "runware:35@4",
+            "person_yolov8s-seg": "runware:35@5"
+        }
+        detectionModel = model_mapping.get(detectionModel, detectionModel)
+
         genConfig = [
             {
                 "taskType": "imageMasking",
@@ -70,7 +91,7 @@ class imageMasking:
                 "outputType": "base64Data",
             }
         ]
-        
+
         genConfig[0]["maskPadding"] = maskPadding
         genConfig[0]["maskBlur"] = maskBlur
 
