@@ -368,8 +368,8 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
         if(modelSearchResults.success) {
             const modelListArray = [];
             modelSearchResults.modelList.forEach(modelObj => {
-                if(isLora) triggerWordsList[modelObj.air] = modelObj.positiveTriggerWords.trim();
-                if(isEmbedding) embeddingTriggerWordsList[modelObj.air] = modelObj.positiveTriggerWords.trim();
+                if(isLora) triggerWordsList[modelObj.air] = modelObj.positiveTriggerWords?.trim() || false;
+                if(isEmbedding) embeddingTriggerWordsList[modelObj.air] = modelObj.positiveTriggerWords?.trim() || false;
                 modelListArray.push(`${modelObj.air} (${modelObj.name} ${modelObj.version})`);
             });
 

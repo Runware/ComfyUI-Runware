@@ -88,5 +88,8 @@ async def modelSearch(reqPayload):
     totalResults = utilityResults["data"][0]["totalResults"]
     if(totalResults < 1):
         return web.json_response({'success': False, 'error': 'No Results Found!'})
-    modelList = utilityResults["data"][0]["results"]
+    results = utilityResults["data"][0].get("results", [])
+    if not results:
+        return web.json_response({'success': False, 'error': 'No Results Found!'})
+    modelList = results
     return web.json_response({'success': True, 'modelList': modelList})
