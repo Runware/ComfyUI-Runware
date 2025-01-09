@@ -34,14 +34,14 @@ class txt2img:
                 "width": ("INT", {
                     "tooltip": "The Width of the image in pixels.",
                     "default": 512,
-                    "min": 512,
+                    "min": 128,
                     "max": 2048,
                     "step": 64,
                 }),
                 "height": ("INT", {
                     "tooltip": "The Height of the image in pixels.",
                     "default": 512,
-                    "min": 512,
+                    "min": 128,
                     "max": 2048,
                     "step": 64,
                 }),
