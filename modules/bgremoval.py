@@ -46,6 +46,7 @@ class bgremoval:
                     "min": 1,
                     "max": 255,
                 }),
+                **rwUtils.RUNWARE_REMBG_OUTPUT_FORMATS,
             }
         }
 
@@ -62,6 +63,7 @@ class bgremoval:
         alphaMattingForegroundThreshold = kwargs.get("Alpha Matting Foreground Threshold", 240)
         alphaMattingBackgroundThreshold = kwargs.get("Alpha Matting Background Threshold", 10)
         alphaMattingErodeSize = kwargs.get("Alpha Matting Erode Size", 10)
+        outputFormat = kwargs.get("outputFormat", "WEBP")
 
         genConfig = [
             {
@@ -71,7 +73,7 @@ class bgremoval:
                 "postProcessMask": postProcessMask,
                 "returnOnlyMask": returnOnlyMask,
                 "alphaMatting": alphaMatting,
-                "outputFormat": "WEBP",
+                "outputFormat": outputFormat,
                 "outputType": "base64Data",
             }
         ]

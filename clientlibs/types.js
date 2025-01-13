@@ -1,4 +1,4 @@
-const DEFAULT_BGCOLOR = "#6c5ce7";
+const DEFAULT_BGCOLOR = "#5345bf";
 
 const DEFAULT_DIMENSIONS_LIST = {
     "Square (512x512)": "512x512",

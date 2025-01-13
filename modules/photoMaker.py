@@ -96,6 +96,7 @@ class photoMaker:
                     "min": 1,
                     "max": 10,
                 }),
+                **rwUtils.RUNWARE_OUTPUT_FOMRATS,
             },
             "optional": {
                 "Image 2": ("IMAGE", {
@@ -145,6 +146,7 @@ class photoMaker:
         clipSkip = kwargs.get("clipSkip", 0)
         seed = kwargs.get("seed")
         batchSize = kwargs.get("batchSize", 1)
+        outputFormat = kwargs.get("outputFormat", "WEBP")
 
         imageList = [rwUtils.convertTensor2IMG(image1)]
         if (image2 is not None):
@@ -171,7 +173,7 @@ class photoMaker:
                 "CFGScale": cfgScale,
                 "clipSkip": clipSkip,
                 "numberResults": batchSize,
-                "outputFormat": "WEBP",
+                "outputFormat": outputFormat,
                 "outputType": "base64Data",
             }
         ]

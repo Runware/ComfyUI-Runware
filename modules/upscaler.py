@@ -14,6 +14,7 @@ class upscaler:
                     "min": 2,
                     "max": 4,
                 }),
+                **rwUtils.RUNWARE_OUTPUT_FOMRATS,
             },
         }
 
@@ -25,6 +26,7 @@ class upscaler:
     def upscale(self, **kwargs):
         image = kwargs.get("Image")
         upscaleFactor = kwargs.get("upscaleFactor", 2)
+        outputFormat = kwargs.get("outputFormat", "WEBP")
 
         genConfig = [
             {
@@ -32,7 +34,7 @@ class upscaler:
                 "taskUUID": rwUtils.genRandUUID(),
                 "inputImage": rwUtils.convertTensor2IMG(image),
                 "upscaleFactor": upscaleFactor,
-                "outputFormat": "WEBP",
+                "outputFormat": outputFormat,
                 "outputType": "base64Data",
             }
         ]

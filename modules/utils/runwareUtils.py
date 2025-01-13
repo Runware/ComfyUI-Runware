@@ -15,6 +15,20 @@ import io
 
 load_dotenv()
 
+RUNWARE_OUTPUT_FOMRATS = {
+    "outputFormat": (["WEBP", "PNG", "JPG"], {
+        "default": "WEBP",
+        "tooltip": "Choose the output image format."
+    })
+}
+
+RUNWARE_REMBG_OUTPUT_FORMATS = {
+    "outputFormat": (["WEBP", "PNG"], {
+        "default": "WEBP", 
+        "tooltip": "Choose the output image format."
+    })
+}
+
 RUNWARE_API_BASE_URL = "https://api.runware.ai/v1"
 session = requests.Session()
 adapter = HTTPAdapter(pool_connections=10, pool_maxsize=10)
