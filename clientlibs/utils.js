@@ -348,7 +348,7 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
             modelTypeValue = DEFAULT_CONTROLNET_CONDITIONING_LIST[modelTypeWidget.value];
         } else {
             if(isEmbedding) {
-                modelTypeValue = "embedding";
+                modelTypeValue = "embeddings";
             } else if(isVAE) {
                 modelTypeValue = "vae";
             } else {
