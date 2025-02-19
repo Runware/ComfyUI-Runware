@@ -66,11 +66,11 @@ async def modelSearch(reqPayload):
         "taskType": "modelSearch",
         "taskUUID": rwUtils.genRandUUID(),
         "category": modelCategory,
-        "limit": 20,
+        "limit": 25,
         "sort": "-downloadCount",
     }]
 
-    aclTypes = ["controlnet", "lora", "lycoris", "embedding", "vae"]
+    aclTypes = ["controlnet", "lora", "lycoris", "embeddings", "vae"]
 
     if(modelCategory not in aclTypes):
         utilityConfig[0]["type"] = modelType
