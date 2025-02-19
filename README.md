@@ -1,6 +1,6 @@
 # ComfyUI-Runware Integration 🚀
 
-Welcome to **ComfyUI-Runware**! 🌟 This is the official integration for **Runware**, bringing you the power of **inference-as-a-service** directly into **ComfyUI**! 
+Welcome to **ComfyUI-Runware**! 🌟 This is the official integration for **[Runware](https://runware.ai/?utm_source=github&utm_medium=referral&utm_campaign=comfyui)**, bringing you the power of **inference-as-a-service** directly into **ComfyUI**! 
 
 ## 🌟 What is ComfyUI-Runware?
 
