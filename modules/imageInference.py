@@ -104,6 +104,9 @@ class txt2img:
                 "Lora": ("RUNWARELORA", {
                     "tooltip": "Connect a Runware Lora From Lora Search Node Or Lora Combine For Multiple Lora's Together.",
                 }),
+                "IPAdapters": ("RUNWAREIPAdapter", {
+                    "tooltip": "Connect a Runware IP Adapter node or IP Adapter Combine node to use reference images for guiding the generation.",
+                }),
                 "ControlNet": ("RUNWARECONTROLNET", {
                     "tooltip": "Connect a Runware ControlNet Guidance Node to help the model generate images that align with the desired structure.",
                 }),
@@ -147,6 +150,7 @@ class txt2img:
         promptWeighting = kwargs.get("Prompt Weighting", "Disabled")
         runwareControlNet = kwargs.get("ControlNet", None)
         runwareLora = kwargs.get("Lora", None)
+        runwareIPAdapters = kwargs.get("IPAdapters", None)
         runwareRefiner = kwargs.get("Refiner", None)
         runwareEmbedding = kwargs.get("Embeddings", None)
         runwareVAE = kwargs.get("VAE", None)
@@ -202,6 +206,11 @@ class txt2img:
                 genConfig[0]["lora"] = runwareLora
             elif (isinstance(runwareLora, dict)):
                 genConfig[0]["lora"] = [runwareLora]
+        if (runwareIPAdapters is not None):
+            if (isinstance(runwareIPAdapters, list)):
+                genConfig[0]["ipAdapters"] = runwareIPAdapters
+            elif (isinstance(runwareIPAdapters, dict)):
+                genConfig[0]["ipAdapters"] = [runwareIPAdapters]
         if (runwareEmbedding is not None):
             if (isinstance(runwareEmbedding, list)):
                 genConfig[0]["embeddings"] = runwareEmbedding

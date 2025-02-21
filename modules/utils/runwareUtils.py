@@ -10,6 +10,7 @@ import random
 import base64
 import torch
 import uuid
+import time
 import os
 import io
 
@@ -23,10 +24,25 @@ RUNWARE_REMBG_OUTPUT_FORMATS = {
 }
 
 RUNWARE_API_BASE_URL = "https://api.runware.ai/v1"
+MAX_RETRIES = 2
+RETRY_COOLDOWN = 2
+
 session = requests.Session()
 adapter = HTTPAdapter(pool_connections=10, pool_maxsize=10)
 session.mount("http://", adapter)
 session.mount("https://", adapter)
+
+def generalRequestWrapper(recaller, *args, **kwargs):
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            return recaller(*args, **kwargs)
+        except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
+            if attempt == MAX_RETRIES:
+                raise
+            else:
+                time.sleep(RETRY_COOLDOWN)
+            continue
+    return False
 
 def getAPIKey():
     apiKey = os.getenv("RUNWARE_API_KEY")
@@ -138,7 +154,10 @@ def checkAPIKey(apiKey):
     }]
 
     try:
-        genResult = session.post(RUNWARE_API_BASE_URL, headers=headers, json=genConfig, timeout=10, allow_redirects=False, stream=True)
+        def recaller():
+            return session.post(RUNWARE_API_BASE_URL, headers=headers, json=genConfig, timeout=10, allow_redirects=False, stream=True)
+        
+        genResult = generalRequestWrapper(recaller)
         genResult = genResult.json()
         if("errors" in genResult):
             return str(genResult["errors"][0]["message"])
@@ -165,7 +184,10 @@ def inferenecRequest(genConfig):
     }
 
     try:
-        genResult = session.post(RUNWARE_API_BASE_URL, headers=headers, json=genConfig, timeout=SESSION_TIMEOUT, allow_redirects=False, stream=True)
+        def recaller():
+            return session.post(RUNWARE_API_BASE_URL, headers=headers, json=genConfig, timeout=SESSION_TIMEOUT, allow_redirects=False, stream=True)
+        
+        genResult = generalRequestWrapper(recaller)
         genResult = genResult.json()
         if("errors" in genResult):
             raise Exception(genResult["errors"][0]["message"])
