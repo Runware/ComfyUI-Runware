@@ -34,6 +34,30 @@ async def setMaxTimeout(reqPayload):
         return web.json_response({'success': False, 'error': str(e)})
     return web.json_response({'success': True})
 
+@routes.post('/setOutputFormat')
+async def setOutputFormat(reqPayload):
+    reqData = await reqPayload.json()
+    outputFormat = reqData.get('outputFormat', 'WEBP')
+    if outputFormat not in ['WEBP', 'PNG', 'JPEG']:
+        return web.json_response({'success': False, 'error': 'Invalid Output Format!'})
+    try:
+        rwUtils.setOutputFormat(outputFormat)
+    except Exception as e:
+        return web.json_response({'success': False, 'error': str(e)})
+    return web.json_response({'success': True})
+
+@routes.post('/setOutputQuality')
+async def setOutputQuality(reqPayload):
+    reqData = await reqPayload.json()
+    outputQuality = reqData.get('outputQuality', 95)
+    if not isinstance(outputQuality, int) or outputQuality < 20 or outputQuality > 99:
+        return web.json_response({'success': False, 'error': 'Invalid Output Quality!'})
+    try:
+        rwUtils.setOutputQuality(outputQuality)
+    except Exception as e:
+        return web.json_response({'success': False, 'error': str(e)})
+    return web.json_response({'success': True})
+
 @routes.post('/promptEnhance')
 async def promptEnhance(reqPayload):
     reqData = await reqPayload.json()

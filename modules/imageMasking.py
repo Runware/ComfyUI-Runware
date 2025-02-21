@@ -42,7 +42,6 @@ class imageMasking:
                     "min": 0,
                     "max": 20,
                 }),
-                **rwUtils.RUNWARE_OUTPUT_FOMRATS,
             },
         }
 
@@ -60,7 +59,6 @@ class imageMasking:
         maxDetections = kwargs.get("Max Detections")
         maskPadding = kwargs.get("Mask Padding")
         maskBlur = kwargs.get("Mask Blur")
-        outputFormat = kwargs.get("outputFormat", "WEBP")
 
         model_mapping = {
             "face_yolov8n": "runware:35@1",
@@ -89,8 +87,9 @@ class imageMasking:
                 "model": detectionModel,
                 "confidence": confidence,
                 "maxDetections": maxDetections,
-                "outputFormat": outputFormat,
                 "outputType": "base64Data",
+                "outputFormat": rwUtils.OUTPUT_FORMAT,
+                "outputQuality": rwUtils.OUTPUT_QUALITY,
             }
         ]
 

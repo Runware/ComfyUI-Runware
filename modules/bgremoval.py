@@ -74,6 +74,7 @@ class bgremoval:
                 "returnOnlyMask": returnOnlyMask,
                 "alphaMatting": alphaMatting,
                 "outputFormat": outputFormat,
+                "outputQuality": rwUtils.OUTPUT_QUALITY,
                 "outputType": "base64Data",
             }
         ]
