@@ -6,11 +6,14 @@ import { DEFAULT_DIMENSIONS_LIST, DEFAULT_MODELS_ARCH_LIST, DEFAULT_CONTROLNET_C
 
 const TIMEOUT_RANGE = { min: 5, default: 90,  max: 99 };
 const OUTPUT_QUALITY_RANGE = { min: 20, default: 95, max: 99 };
+const CACHE_SIZE_RANGE = { min: 30, default: 100, max: 4096 };
 
 let openDialog = false;
 let lastTimeout = false;
 let lastOutputFormat = false;
 let lastOutputQuality = false;
+let lastEnableImagesCaching = null;
+let lastMinImageCacheSize = false;
 
 async function queryLocalAPI(endpoint, data) {
     try {
@@ -31,6 +34,8 @@ const runwareLocalAPI = {
     setTimeout: (maxTimeout) => queryLocalAPI('setMaxTimeout', { maxTimeout }),
     setOutputFormat: (outputFormat) => queryLocalAPI('setOutputFormat', { outputFormat }),
     setOutputQuality: (outputQuality) => queryLocalAPI('setOutputQuality', { outputQuality }),
+    setEnableImagesCaching: (enableCaching) => queryLocalAPI('setEnableImagesCaching', { enableCaching }),
+    setMinImageCacheSize: (minCacheSize) => queryLocalAPI('setMinImageCacheSize', { minCacheSize }),
     modelSearch: (modelQuery = "", modelArch = "all", modelType = "base", modelCat = "checkpoint", condtioning = "") => 
         queryLocalAPI('modelSearch', { modelQuery, modelArch, modelType, modelCat, condtioning })
 };
@@ -147,6 +152,37 @@ async function APIKeyHandler(apiManagerNode) {
                 } else {
                     widget.value = lastOutputQuality || OUTPUT_QUALITY_RANGE.default;
                     notifyUser(setQualityResults.error, "error", "Runware API Manager");
+                }
+            });
+        } else if(widget.name === "Enable Images Caching") {
+            if(lastEnableImagesCaching !== null) widget.value = lastEnableImagesCaching;
+            appendWidgetCB(widget, async function(...args) {
+                const enableCaching = args[0];
+                const setCachingResults = await runwareLocalAPI.setEnableImagesCaching(enableCaching);
+                if(setCachingResults.success) {
+                    notifyUser("Image Caching Setting Updated Successfully!", "success", "Runware API Manager");
+                    lastEnableImagesCaching = enableCaching;
+                } else {
+                    widget.value = lastEnableImagesCaching;
+                    notifyUser(setCachingResults.error, "error", "Runware API Manager");
+                }
+            });
+        } else if(widget.name === "Min Image Cache Size") {
+            if(lastMinImageCacheSize !== false) widget.value = lastMinImageCacheSize;
+            appendWidgetCB(widget, async function(...args) {
+                const minCacheSize = parseFloat(args[0]);
+                if(isNaN(minCacheSize) || minCacheSize < CACHE_SIZE_RANGE.min || minCacheSize > CACHE_SIZE_RANGE.max) {
+                    notifyUser(`Invalid cache size! Must be between ${CACHE_SIZE_RANGE.min} KB and ${CACHE_SIZE_RANGE.max} KB.`, "error", "Runware API Manager");
+                    widget.value = lastMinImageCacheSize || CACHE_SIZE_RANGE.default;
+                    return;
+                }
+                const setCacheSizeResults = await runwareLocalAPI.setMinImageCacheSize(minCacheSize);
+                if(setCacheSizeResults.success) {
+                    notifyUser("Minimum Image Cache Size Updated Successfully!", "success", "Runware API Manager");
+                    lastMinImageCacheSize = minCacheSize;
+                } else {
+                    widget.value = lastMinImageCacheSize || CACHE_SIZE_RANGE.default;
+                    notifyUser(setCacheSizeResults.error, "error", "Runware API Manager");
                 }
             });
         }

@@ -58,6 +58,30 @@ async def setOutputQuality(reqPayload):
         return web.json_response({'success': False, 'error': str(e)})
     return web.json_response({'success': True})
 
+@routes.post('/setEnableImagesCaching')
+async def setEnableImagesCaching(reqPayload):
+    reqData = await reqPayload.json()
+    enableCaching = reqData.get('enableCaching', True)
+    if not isinstance(enableCaching, bool):
+        return web.json_response({'success': False, 'error': 'Invalid value for enable caching!'})
+    try:
+        rwUtils.setEnableImagesCaching(enableCaching)
+    except Exception as e:
+        return web.json_response({'success': False, 'error': str(e)})
+    return web.json_response({'success': True})
+
+@routes.post('/setMinImageCacheSize')
+async def setMinImageCacheSize(reqPayload):
+    reqData = await reqPayload.json()
+    minCacheSize = reqData.get('minCacheSize', 100)
+    if not isinstance(minCacheSize, int) or minCacheSize < 30 or minCacheSize > 4096:
+        return web.json_response({'success': False, 'error': 'Invalid minimum cache size!'})
+    try:
+        rwUtils.setMinImageCacheSize(minCacheSize)
+    except Exception as e:
+        return web.json_response({'success': False, 'error': str(e)})
+    return web.json_response({'success': True})
+
 @routes.post('/promptEnhance')
 async def promptEnhance(reqPayload):
     reqData = await reqPayload.json()
