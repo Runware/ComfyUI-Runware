@@ -15,9 +15,11 @@ from .modules.imageCaptioning import imageCaptioning
 from .modules.controlNetCombine import controlNetCombine
 from .modules.embeddingSearch import embeddingSearch
 from .modules.embeddingsCombine import embeddingsCombine
+from .modules.ipAdapter import ipAdapter
+from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
 
-RUNWARE_COMFYUI_VERSION = "1.0.0 Beta"
+RUNWARE_COMFYUI_VERSION = "1.0.2 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -46,6 +48,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware API Manager": apiManager,
     "Runware Image Caption": imageCaptioning,
     "Runware ControlNet Combine": controlNetCombine,
+    "Runware IPAdapter": ipAdapter,
+    "Runware IPAdapters Combine": ipAdapterCombine,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
