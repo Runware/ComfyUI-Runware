@@ -15,13 +15,6 @@ import io
 
 load_dotenv()
 
-RUNWARE_OUTPUT_FOMRATS = {
-    "outputFormat": (["WEBP", "PNG", "JPG"], {
-        "default": "WEBP",
-        "tooltip": "Choose the output image format."
-    })
-}
-
 RUNWARE_REMBG_OUTPUT_FORMATS = {
     "outputFormat": (["WEBP", "PNG"], {
         "default": "WEBP", 
@@ -50,8 +43,28 @@ def getTimeout():
         os.environ["RUNWARE_TIMEOUT"] = str(timeout)
         return timeout
 
+def getOutputQuality():
+    output_quality = os.getenv("RUNWARE_OUTPUT_QUALITY")
+    if output_quality and isinstance(output_quality, str) and output_quality.isdigit():
+        return int(output_quality)
+    else:
+        output_quality = 95
+        os.environ["RUNWARE_OUTPUT_QUALITY"] = str(output_quality)
+        return output_quality
+
+def getOutputFormat():
+    output_format = os.getenv("RUNWARE_OUTPUT_FORMAT")
+    if output_format and isinstance(output_format, str):
+        return output_format
+    else:
+        output_format = "WEBP"
+        os.environ["RUNWARE_OUTPUT_FORMAT"] = output_format
+        return output_format
+
 SESSION_TIMEOUT = getTimeout()
 RUNWARE_API_KEY = getAPIKey()
+OUTPUT_FORMAT = getOutputFormat()
+OUTPUT_QUALITY = getOutputQuality()
 
 def setEnvKey(keyName, keyValue):
     comfyNodeRoot = Path(__file__).parent.parent.parent
@@ -88,6 +101,22 @@ def setTimeout(timeout: int):
         global SESSION_TIMEOUT
         SESSION_TIMEOUT = timeout
         os.environ["RUNWARE_TIMEOUT"] = str(timeout)
+        return True
+
+def setOutputFormat(format: str):
+    envSetRes = setEnvKey("RUNWARE_OUTPUT_FORMAT", format)
+    if envSetRes:
+        global OUTPUT_FORMAT
+        OUTPUT_FORMAT = format
+        os.environ["RUNWARE_OUTPUT_FORMAT"] = format
+        return True
+
+def setOutputQuality(quality: int):
+    envSetRes = setEnvKey("RUNWARE_OUTPUT_QUALITY", str(quality))
+    if envSetRes:
+        global OUTPUT_QUALITY
+        OUTPUT_QUALITY = quality
+        os.environ["RUNWARE_OUTPUT_QUALITY"] = str(quality)
         return True
 
 def genRandSeed(minSeed = 1000, maxSeed = 9223372036854776000):

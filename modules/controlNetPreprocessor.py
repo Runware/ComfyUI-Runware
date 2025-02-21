@@ -96,7 +96,8 @@ class controlNetPreprocessor:
                 "taskUUID": rwUtils.genRandUUID(),
                 "inputImage": rwUtils.convertTensor2IMG(image),
                 "preProcessorType": preProcessorType,
-                "outputFormat": "WEBP",
+                "outputFormat": rwUtils.OUTPUT_FORMAT,
+                "outputQuality": rwUtils.OUTPUT_QUALITY,
                 "outputType": "base64Data",
             }
         ]

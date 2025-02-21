@@ -4,60 +4,36 @@ import { DEFAULT_DIMENSIONS_LIST, DEFAULT_MODELS_ARCH_LIST, DEFAULT_CONTROLNET_C
     RUNWARE_NODE_TYPES, MODEL_TYPES_TERMS, MODEL_LIST_TERMS
 } from "./types.js";
 
+const TIMEOUT_RANGE = { min: 5, default: 90,  max: 99 };
+const OUTPUT_QUALITY_RANGE = { min: 20, default: 95, max: 99 };
+
 let openDialog = false;
 let lastTimeout = false;
+let lastOutputFormat = false;
+let lastOutputQuality = false;
 
-async function enhancePrompt(userPrompt) {
-    const resp = await api.fetchApi('/promptEnhance', {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            userPrompt: userPrompt
-        })
-    });
-    const enhancePromptResults = await resp.json();
-    return enhancePromptResults;
+async function queryLocalAPI(endpoint, data) {
+    try {
+        const resp = await api.fetchApi(`/${endpoint}`, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        return await resp.json();
+    } catch (err) {
+        return false;
+    }
 }
 
-async function setAPIKey(apiKey) {
-    const resp = await api.fetchApi('/setAPIKey', {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            apiKey: apiKey
-        })
-    });
-    const setAPIKeyResults = await resp.json();
-    return setAPIKeyResults;
-}
-
-async function setTimeout(maxTimeout) {
-    const resp = await api.fetchApi('/setMaxTimeout', {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            maxTimeout: maxTimeout
-        })
-    });
-    const setTimeoutResults = await resp.json();
-    return setTimeoutResults;
-}
-
-async function modelSearch(modelQuery = "", modelArch = "all", modelType = "base", modelCat = "checkpoint", condtioning = "") {
-    const resp = await api.fetchApi('/modelSearch', {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            modelQuery: modelQuery,
-            modelArch: modelArch,
-            modelType: modelType,
-            modelCat: modelCat,
-            condtioning: condtioning
-        })
-    });
-    const modelSearchResults = await resp.json();
-    return modelSearchResults;
-}
+const runwareLocalAPI = {
+    enhancePrompt: (userPrompt) => queryLocalAPI('promptEnhance', { userPrompt }),
+    setAPIKey: (apiKey) => queryLocalAPI('setAPIKey', { apiKey }),
+    setTimeout: (maxTimeout) => queryLocalAPI('setMaxTimeout', { maxTimeout }),
+    setOutputFormat: (outputFormat) => queryLocalAPI('setOutputFormat', { outputFormat }),
+    setOutputQuality: (outputQuality) => queryLocalAPI('setOutputQuality', { outputQuality }),
+    modelSearch: (modelQuery = "", modelArch = "all", modelType = "base", modelCat = "checkpoint", condtioning = "") => 
+        queryLocalAPI('modelSearch', { modelQuery, modelArch, modelType, modelCat, condtioning })
+};
 
 function captionNodeHandler(msgEvent) {
     const captionData = msgEvent.detail;
@@ -92,7 +68,7 @@ async function promptEnhanceHandler(e) {
             notifyUser("Prompt Must Not Exceed 300 Characters!", "error", "Runware Prompt Enhancer");
             return;
         }
-        const enhanceResults = await enhancePrompt(userPrompt);
+        const enhanceResults = await runwareLocalAPI.enhancePrompt(userPrompt);
         if(enhanceResults.success) {
             e.target.value = enhanceResults.enhancedPrompt;
         } else {
@@ -116,32 +92,61 @@ async function APIKeyHandler(apiManagerNode) {
                 if(apiKey.length < 30) {
                     notifyUser("Invalid API Key Set, Please Try Again!", "error", "Runware API Manager");
                     return;
+                }
+                const setAPIKeyResults = await runwareLocalAPI.setAPIKey(apiKey);
+                if(setAPIKeyResults.success) {
+                    remNode(apiManagerNode);
+                    notifyUser("API Key Set Successfully!", "success", "Runware API Manager");
                 } else {
-                    const setAPIKeyResults = await setAPIKey(apiKey);
-                    if(setAPIKeyResults.success) {
-                        remNode(apiManagerNode);
-                        notifyUser("API Key Set Successfully!", "success", "Runware API Manager");
-                    } else {
-                        notifyUser(setAPIKeyResults.error, "error", "Runware API Manager");
-                    }
+                    notifyUser(setAPIKeyResults.error, "error", "Runware API Manager");
                 }
             });
         } else if(widget.name === "Max Timeout") {
             if(lastTimeout) widget.value = lastTimeout;
             appendWidgetCB(widget, async function(...args) {
-                const maxTimeout = args[0];
-                if(maxTimeout < 5 || maxTimeout > 99) {
-                    notifyUser("Invalid Timeout Value, Timeout must be between 5 and 99 seconds!", "error", "Runware API Manager");
+                const maxTimeout = parseInt(args[0]);
+                if(isNaN(maxTimeout) || maxTimeout < TIMEOUT_RANGE.min || maxTimeout > TIMEOUT_RANGE.max) {
+                    notifyUser(`Invalid Timeout Value! Must be between ${TIMEOUT_RANGE.min} and ${TIMEOUT_RANGE.max} seconds.`, "error", "Runware API Manager");
+                    widget.value = lastTimeout || TIMEOUT_RANGE.default;
                     return;
+                }
+                const setTimeoutResults = await runwareLocalAPI.setTimeout(maxTimeout);
+                if(setTimeoutResults.success) {
+                    notifyUser("Timeout Set Successfully!", "success", "Runware API Manager");
+                    lastTimeout = maxTimeout;
                 } else {
-                    const setTimeoutResults = await setTimeout(maxTimeout);
-                    if(setTimeoutResults.success) {
-                        remNode(apiManagerNode);
-                        notifyUser("Timeout Set Successfully!", "success", "Runware API Manager");
-                        lastTimeout = maxTimeout;
-                    } else {
-                        notifyUser(setTimeoutResults.error, "error", "Runware API Manager");
-                    }
+                    widget.value = lastTimeout || TIMEOUT_RANGE.default;
+                    notifyUser(setTimeoutResults.error, "error", "Runware API Manager");
+                }
+            });
+        } else if(widget.name === "Image Output Format") {
+            if(lastOutputFormat) widget.value = lastOutputFormat;
+            appendWidgetCB(widget, async function(...args) {
+                const outputFormat = args[0].trim().toUpperCase();
+                const setFormatResults = await runwareLocalAPI.setOutputFormat(outputFormat);
+                if(setFormatResults.success) {
+                    notifyUser("Default Image Output Format Set Successfully!", "success", "Runware API Manager");
+                    lastOutputFormat = outputFormat;
+                } else {
+                    notifyUser(setFormatResults.error, "error", "Runware API Manager");
+                }
+            });
+        } else if(widget.name === "Image Output Quality") {
+            if(lastOutputQuality) widget.value = lastOutputQuality;
+            appendWidgetCB(widget, async function(...args) {
+                const outputQuality = parseInt(args[0]);
+                if(isNaN(outputQuality) || outputQuality < OUTPUT_QUALITY_RANGE.min || outputQuality > OUTPUT_QUALITY_RANGE.max) {
+                    notifyUser(`Invalid Quality Value! Must be between ${OUTPUT_QUALITY_RANGE.min} and ${OUTPUT_QUALITY_RANGE.max}.`, "error", "Runware API Manager");
+                    widget.value = lastOutputQuality || OUTPUT_QUALITY_RANGE.default;
+                    return;
+                }
+                const setQualityResults = await runwareLocalAPI.setOutputQuality(outputQuality);
+                if(setQualityResults.success) {
+                    notifyUser("Default Image Output Quality Set Successfully!", "success", "Runware API Manager");
+                    lastOutputQuality = outputQuality;
+                } else {
+                    widget.value = lastOutputQuality || OUTPUT_QUALITY_RANGE.default;
+                    notifyUser(setQualityResults.error, "error", "Runware API Manager");
                 }
             });
         }
@@ -197,6 +202,7 @@ function handleCustomErrors(errObj) {
         dialog.element.addEventListener('close', () => {
             openDialog = false;
         });
+
         const runwareAPIForm = document.getElementById("runwareAPIKey");
         const apiKeyInput = document.getElementById("apiKey");
         const getAPIKeyBTN = document.getElementById("getAPIKeyBTN");
@@ -217,7 +223,7 @@ function handleCustomErrors(errObj) {
                 // notifyUser("Invalid API Key Set, Please Try Again!", "error", "Runware API Manager");
                 // return;
             } else {
-                const setAPIKeyResults = await setAPIKey(apiKey);
+                const setAPIKeyResults = await runwareLocalAPI.setAPIKey(apiKey);
                 if(setAPIKeyResults.success) {
                     dialog.close();
                     openDialog = false;
@@ -242,8 +248,8 @@ function appendWidgetCB(node, newCB) {
     const oldNodeCB = node.callback;
     if(typeof oldNodeCB === "function") {
         node.callback = function(...args) {
-            newCB?.apply(this, args);
             oldNodeCB?.apply(this, args);
+            newCB?.apply(this, args);
         }
     } else {
         node.callback = newCB;
@@ -358,11 +364,11 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
 
         let modelSearchResults = null;
         if(isControlNet) {
-            modelSearchResults = await modelSearch(searchQuery, modelArchValue, "", "controlnet", modelTypeValue);
+            modelSearchResults = await runwareLocalAPI.modelSearch(searchQuery, modelArchValue, "", "controlnet", modelTypeValue);
         } else if(isLora || isEmbedding || isVAE) {
-            modelSearchResults = await modelSearch(searchQuery, modelArchValue, "", modelTypeValue);
+            modelSearchResults = await runwareLocalAPI.modelSearch(searchQuery, modelArchValue, "", modelTypeValue);
         } else {
-            modelSearchResults = await modelSearch(searchQuery, modelArchValue, modelTypeValue);
+            modelSearchResults = await runwareLocalAPI.modelSearch(searchQuery, modelArchValue, modelTypeValue);
         }
 
         if(modelSearchResults.success) {
@@ -524,13 +530,11 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
 }
 
 export {
-    enhancePrompt,
-    modelSearch,
     notifyUser,
     promptEnhanceHandler,
     syncDimensionsNodeHandler,
     searchNodeHandler,
     captionNodeHandler,
     handleCustomErrors,
-    APIKeyHandler
+    APIKeyHandler,
 };

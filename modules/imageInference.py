@@ -122,7 +122,6 @@ class txt2img:
                 "VAE": ("RUNWAREVAE", {
                     "tooltip": "Connect a Runware VAE Node to help the model generate images that align with the desired structure.",
                 }),
-                **rwUtils.RUNWARE_OUTPUT_FOMRATS,
             }
         }
 
@@ -164,7 +163,6 @@ class txt2img:
         cfgScale = kwargs.get("cfgScale", 6.5)
         seed = kwargs.get("seed")
         batchSize = kwargs.get("batchSize", 1)
-        outputFormat = kwargs.get("outputFormat", "WEBP")
         
         if (maskImage is not None and seedImage is None):
             raise Exception("Mask Image Requires Seed Image To Be Provided!")
@@ -182,8 +180,9 @@ class txt2img:
                 "scheduler": scheduler,
                 "clipSkip": clipSkip,
                 "seed": seed,
-                "outputFormat": outputFormat,
                 "outputType": "base64Data",
+                "outputFormat": rwUtils.OUTPUT_FORMAT,
+                "outputQuality": rwUtils.OUTPUT_QUALITY,
                 "numberResults": batchSize,
             }
         ]
