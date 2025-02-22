@@ -4,7 +4,7 @@ class modelSearch:
         return {
             "required": {
                 "Model Search": ("STRING", {
-                    "tooltip": "Searchg For Specific Model By Name Or Civit AIR Code (eg: Juggernaut).",
+                    "tooltip": "Search For Specific Model By Name Or Civit AIR Code (eg: Juggernaut).",
                 }),
                 "Model Architecture": ([
                         "All",
@@ -44,6 +44,12 @@ class modelSearch:
                     "tooltip": "Model Results Will Show UP Here So You Could Choose From. If You didn't Search For Anything this will show featured Model List.",
                     "default": "runware:100@1 (Flux Schnell)",
                 }),
+                "Use Search Value": ("BOOLEAN", {
+                    "tooltip": "When Enabled, the value you've set in the search input will be used instead.\n\nThis is useful in case the model search API is down or you prefer to set the model manually.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             },
         }
 
@@ -58,6 +64,13 @@ class modelSearch:
         return True
 
     def modelSearch(self, **kwargs):
-        currentModel = kwargs.get("ModelList")
-        modelAIRCode = currentModel.split(" ")[0]
+        enableSearchValue = kwargs.get("Use Search Value", False)
+        searchInput = kwargs.get("Model Search")
+
+        if enableSearchValue:
+            modelAIRCode = searchInput
+        else:
+            crModel = kwargs.get("ModelList")
+            modelAIRCode = crModel.split(" ")[0]
+
         return (modelAIRCode,)

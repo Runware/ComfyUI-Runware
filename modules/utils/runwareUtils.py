@@ -36,7 +36,6 @@ RUNWARE_REMBG_OUTPUT_FORMATS = {
     )
 }
 
-RUNWARE_API_BASE_URL = "https://api.runware.ai/v1"
 MAX_RETRIES = 2
 RETRY_COOLDOWN = 2
 
@@ -104,9 +103,15 @@ def getMinImageCacheSize():
     if min_image_cache_size and min_image_cache_size.isdigit():
         return int(min_image_cache_size)
     else:
-        min_image_cache_size = 100
+        min_image_cache_size = 150
         os.environ["RUNWARE_MIN_IMAGE_CACHE_SIZE"] = str(min_image_cache_size)
         return min_image_cache_size
+
+def getCustomEndpoint():
+    custom_endpoint = os.getenv("RUNWARE_CUSTOM_ENDPOINT")
+    if custom_endpoint and isinstance(custom_endpoint, str):
+        return custom_endpoint
+    return "https://api.runware.ai/v1"
 
 SESSION_TIMEOUT = getTimeout()
 RUNWARE_API_KEY = getAPIKey()
@@ -114,6 +119,7 @@ OUTPUT_FORMAT = getOutputFormat()
 OUTPUT_QUALITY = getOutputQuality()
 ENABLE_IMAGES_CACHING = getEnableImagesCaching()
 MIN_IMAGE_CACHE_SIZE = getMinImageCacheSize()
+RUNWARE_API_BASE_URL = getCustomEndpoint()
 
 def setEnvKey(keyName, keyValue):
     comfyNodeRoot = Path(__file__).parent.parent.parent

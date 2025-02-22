@@ -6,7 +6,7 @@ import { DEFAULT_DIMENSIONS_LIST, DEFAULT_MODELS_ARCH_LIST, DEFAULT_CONTROLNET_C
 
 const TIMEOUT_RANGE = { min: 5, default: 90,  max: 99 };
 const OUTPUT_QUALITY_RANGE = { min: 20, default: 95, max: 99 };
-const CACHE_SIZE_RANGE = { min: 30, default: 100, max: 4096 };
+const CACHE_SIZE_RANGE = { min: 30, default: 150, max: 4096 };
 
 let openDialog = false;
 let lastTimeout = false;

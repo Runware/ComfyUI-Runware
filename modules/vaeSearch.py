@@ -4,7 +4,7 @@ class vaeSearch:
         return {
             "required": {
                 "VAE Search": ("STRING", {
-                    "tooltip": "Searchg For A Specific VAE By Name Or Civit AIR Code (eg: ClearVAE).",
+                    "tooltip": "Search For A Specific VAE By Name Or Civit AIR Code (eg: ClearVAE).",
                 }),
                 "Model Architecture": ([
                         "All",
@@ -35,7 +35,13 @@ class vaeSearch:
                     ], {
                     "tooltip": "VAE Results Will Show UP Here So You Could Choose From.",
                     "default": "civitai:23906@28569 (kl-f8-anime2 VAE)",
-                })
+                }),
+                "Use Search Value": ("BOOLEAN", {
+                    "tooltip": "When Enabled, the value you've set in the search input will be used instead.\n\nThis is useful in case the model search API is down or you prefer to set the model manually.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             },
         }
 
@@ -50,6 +56,13 @@ class vaeSearch:
         return True
 
     def vaeSearch(self, **kwargs):
-        currentModel = kwargs.get("VAEList")
-        vaeAIRCode = currentModel.split(" ")[0]
-        return (vaeAIRCode,)
+        enableSearchValue = kwargs.get("Use Search Value", False)
+        searchInput = kwargs.get("VAE Search")
+
+        if enableSearchValue:
+            modelAIRCode = searchInput
+        else:
+            crModel = kwargs.get("VAEList")
+            modelAIRCode = crModel.split(" ")[0]
+
+        return (modelAIRCode,)

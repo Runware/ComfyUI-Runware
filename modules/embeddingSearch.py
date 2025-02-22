@@ -4,7 +4,7 @@ class embeddingSearch:
         return {
             "required": {
                 "Embedding Search": ("STRING", {
-                    "tooltip": "Searchg For A Specific Embedding By Name Or Civit AIR Code (eg: EasyNegative).",
+                    "tooltip": "Search For A Specific Embedding By Name Or Civit AIR Code (eg: EasyNegative).",
                 }),
                 "Model Architecture": ([
                         "All",
@@ -43,6 +43,12 @@ class embeddingSearch:
                     "max": 1,
                     "step": 0.1,
                 }),
+                "Use Search Value": ("BOOLEAN", {
+                    "tooltip": "When Enabled, the value you've set in the search input will be used instead.\n\nThis is useful in case the model search API is down or you prefer to set the model manually.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             },
         }
 
@@ -57,10 +63,17 @@ class embeddingSearch:
         return True
 
     def embeddingSearch(self, **kwargs):
-        currentModel = kwargs.get("EmbeddingList")
-        embeddingWeight = kwargs.get("weight")
-        embeddingAIRCode = currentModel.split(" ")[0]
+        enableSearchValue = kwargs.get("Use Search Value", False)
+        searchInput = kwargs.get("Embedding Search")
+        embedding_weight = kwargs.get("weight")
+
+        if enableSearchValue:
+            modelAIRCode = searchInput
+        else:
+            crModel = kwargs.get("EmbeddingList")
+            modelAIRCode = crModel.split(" ")[0]
+
         return ({
-            "model": embeddingAIRCode,
-            "weight": round(embeddingWeight, 2),
+            "model": modelAIRCode,
+            "weight": round(embedding_weight, 2),
         },)
