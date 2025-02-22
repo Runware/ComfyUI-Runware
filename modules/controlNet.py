@@ -100,6 +100,12 @@ class controlNet:
                     "max": 1.0,
                     "step": 0.1,
                 }),
+                "Use Search Value": ("BOOLEAN", {
+                    "tooltip": "When Enabled, the value you've set in the search input will be used instead.\n\nThis is useful in case the model search API is down or you prefer to set the model manually.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             },
         }
 
@@ -127,8 +133,15 @@ class controlNet:
 
     def controlNet(self, **kwargs):
         guideImage = kwargs.get("Guide Image")
-        currentModel = kwargs.get("ControlNetList")
-        controlNetAIRCode = currentModel.split(" ")[0]
+        enableSearchValue = kwargs.get("Use Search Value", False)
+        searchInput = kwargs.get("ControlNet Search")
+
+        if enableSearchValue:
+            modelAIRCode = searchInput
+        else:
+            CRModel = kwargs.get("ControlNetList")
+            modelAIRCode = CRModel.split(" ")[0]
+
         startStep = kwargs.get("startStep")
         startStepPercentage = kwargs.get("startStepPercentage")
         endStep = kwargs.get("endStep")
@@ -137,7 +150,7 @@ class controlNet:
         weight = kwargs.get("weight")
 
         controlNetGuideOBJ = [{
-            "model": controlNetAIRCode,
+            "model": modelAIRCode,
             "guideImage": rwUtils.convertTensor2IMG(guideImage),
             "weight": round(weight, 2),
             "controlMode": controlMode,

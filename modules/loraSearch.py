@@ -4,7 +4,7 @@ class loraSearch:
         return {
             "required": {
                 "Lora Search": ("STRING", {
-                    "tooltip": "Searchg For Specific Lora By Name Or Civit AIR Code (eg: Cyberpunk).",
+                    "tooltip": "Search For Specific Lora By Name Or Civit AIR Code (eg: Cyberpunk).",
                 }),
                 "Model Architecture": ([
                         "All",
@@ -50,6 +50,12 @@ class loraSearch:
                     "max": 4.0,
                     "step": 0.1,
                 }),
+                "Use Search Value": ("BOOLEAN", {
+                    "tooltip": "When Enabled, the value you've set in the search input will be used instead.\n\nThis is useful in case the model search API is down or you prefer to set the model manually.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             },
         }
 
@@ -64,10 +70,17 @@ class loraSearch:
         return True
 
     def loraSearch(self, **kwargs):
-        currentModel = kwargs.get("LoraList")
-        loraWeight = kwargs.get("weight")
-        loraAIRCode = currentModel.split(" ")[0]
+        enableSearchValue = kwargs.get("Use Search Value", False)
+        searchInput = kwargs.get("Lora Search")
+        lora_weight = kwargs.get("weight")
+
+        if enableSearchValue:
+            modelAIRCode = searchInput
+        else:
+            crModel = kwargs.get("LoraList")
+            modelAIRCode = crModel.split(" ")[0]
+
         return ({
-            "model": loraAIRCode,
-            "weight": round(loraWeight, 2),
+            "model": modelAIRCode,
+            "weight": round(lora_weight, 2),
         },)
