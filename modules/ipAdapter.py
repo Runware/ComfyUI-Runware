@@ -1,25 +1,27 @@
 from .utils import runwareUtils as rwUtils
 
 class ipAdapter:
+    RUNWARE_IPADAPTER_MODELS = {
+        "IP Adapter SDXL": "runware:55@1",
+        "IP Adapter SDXL Plus": "runware:55@2",
+        "IP Adapter SDXL Plus Face": "runware:55@3",
+        "IP Adapter SDXL Vit-H": "runware:55@4",
+        "IP Adapter SD 1.5": "runware:55@5",
+        "IP Adapter SD 1.5 Plus": "runware:55@6",
+        "IP Adapter SD 1.5 Light": "runware:55@7",
+        "IP Adapter SD 1.5 Plus Face": "runware:55@8",
+        "IP Adapter SD 1.5 Full Face": "runware:55@9",
+        "IP Adapter SD 1.5 Vit-G": "runware:55@10"
+    }
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "Reference Image": ("IMAGE",),
-                "Model": ([
-                    "runware:55@1 (IP Adapter SDXL)",
-                    "runware:55@2 (IP Adapter SDXL Plus)",
-                    "runware:55@3 (IP Adapter SDXL Plus Face)",
-                    "runware:55@4 (IP Adapter SDXL Vit-H)",
-                    "runware:55@5 (IP Adapter SD 1.5)",
-                    "runware:55@6 (IP Adapter SD 1.5 Plus)",
-                    "runware:55@7 (IP Adapter SD 1.5 Light)",
-                    "runware:55@8 (IP Adapter SD 1.5 Plus Face)",
-                    "runware:55@9 (IP Adapter SD 1.5 Full Face)",
-                    "runware:55@10 (IP Adapter SD 1.5 Vit-G)"
-                ], {
+                "Model": (list(cls.RUNWARE_IPADAPTER_MODELS.keys()), {
                     "tooltip": "Choose IP Adapter model to use for reference-based image generation.",
-                    "default": "runware:55@1 (IP Adapter SDXL)",
+                    "default": "IP Adapter SDXL",
                 }),
                 "weight": ("FLOAT", {
                     "default": 1.0,
@@ -39,9 +41,9 @@ class ipAdapter:
 
     def ipAdapter(self, **kwargs):
         refImage = kwargs.get("Reference Image")
-        Model = kwargs.get("Model")
+        modelName = kwargs.get("Model")
         weight = kwargs.get("weight")
-        modelAirCode = Model.split(" ")[0]
+        modelAirCode = self.RUNWARE_IPADAPTER_MODELS.get(modelName)
         guideImage = rwUtils.convertTensor2IMG(refImage)
         return ({
             "model": modelAirCode,

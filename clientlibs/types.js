@@ -57,6 +57,8 @@ const RUNWARE_NODE_TYPES = {
     REFINER: "Runware Refiner",
     LORACOMBINE: "Runware Lora Combine",
     CONTROLNETCOMBINE: "Runware ControlNet Combine",
+    IPADAPTER: "Runware IPAdapter",
+    IPADAPTERSCOMBINE: "Runware IPAdapters Combine",
     IMAGEMASKING: "Runware Image Masking",
     CONTROLNETPREPROCESSING: "Runware ControlNet PreProcessor",
     APIMANAGER: "Runware API Manager",
@@ -118,6 +120,14 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.LORACOMBINE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IPADAPTER]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IPADAPTERSCOMBINE]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

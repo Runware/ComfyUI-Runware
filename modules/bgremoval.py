@@ -1,12 +1,30 @@
 from .utils import runwareUtils as rwUtils
 
 class bgremoval:
+    RUNWARE_RMBG_MODELS = {
+        "RemBG 1.4": "runware:109@1",
+        "Bria RMBG 2.0": "runware:110@1",
+        "BiRefNet v1 Base": "runware:112@1",
+        "BiRefNet v1 Base - COD": "runware:112@2",
+        "BiRefNet Dis": "runware:112@3",
+        "BiRefNet General": "runware:112@5",
+        "BiRefNet General RES 512x512": "runware:112@6",
+        "BiRefNet HRSOD DHU": "runware:112@7",
+        "BiRefNet Massive TR DIS5K TES": "runware:112@8",
+        "BiRefNet Matting": "runware:112@9",
+        "BiRefNet Portrait": "runware:112@10"
+    }
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "Image": ("IMAGE", {
                         "tooltip": "Specifies the input image to be processed."
+                }),
+                "Model": (list(cls.RUNWARE_RMBG_MODELS.keys()), {
+                    "tooltip": "Select the background removal model to use. Different models have varying strengths depending on image content and complexity.",
+                    "default": "RemBG 1.4",
                 }),
             },
             "optional": {
@@ -57,6 +75,7 @@ class bgremoval:
 
     def rembg(self, **kwargs):
         image = kwargs.get("Image")
+        modelName = kwargs.get("Model", "RemBG 1.4")
         postProcessMask = kwargs.get("Post Process Mask", False)
         returnOnlyMask = kwargs.get("Return Only Mask", False)
         alphaMatting = kwargs.get("Alpha Matting", False)
@@ -64,26 +83,37 @@ class bgremoval:
         alphaMattingBackgroundThreshold = kwargs.get("Alpha Matting Background Threshold", 10)
         alphaMattingErodeSize = kwargs.get("Alpha Matting Erode Size", 10)
         outputFormat = kwargs.get("outputFormat", "WEBP")
+        modelAIR = self.RUNWARE_RMBG_MODELS.get(modelName, "runware:109@1")
+        includeExtraSettings = postProcessMask or returnOnlyMask or alphaMatting
 
-        genConfig = [
-            {
-                "taskType": "imageBackgroundRemoval",
-                "taskUUID": rwUtils.genRandUUID(),
-                "inputImage": rwUtils.convertTensor2IMG(image),
+        if modelAIR != "runware:109@1" and includeExtraSettings:
+            raise ValueError(
+                f"Oops! The selected model '{modelName}' does not support additional settings!\n"
+                "Please switch to 'RemBG 1.4' if you wish to use these features."
+            )
+
+        genConfig = {
+            "taskType": "imageBackgroundRemoval",
+            "taskUUID": rwUtils.genRandUUID(),
+            "inputImage": rwUtils.convertTensor2IMG(image),
+            "model": modelAIR,
+            "outputFormat": outputFormat,
+            "outputQuality": rwUtils.OUTPUT_QUALITY,
+            "outputType": "base64Data",
+        }
+
+        if includeExtraSettings:
+            settings = {
                 "postProcessMask": postProcessMask,
                 "returnOnlyMask": returnOnlyMask,
                 "alphaMatting": alphaMatting,
-                "outputFormat": outputFormat,
-                "outputQuality": rwUtils.OUTPUT_QUALITY,
-                "outputType": "base64Data",
             }
-        ]
+            if alphaMatting:
+                settings["alphaMattingForegroundThreshold"] = alphaMattingForegroundThreshold
+                settings["alphaMattingBackgroundThreshold"] = alphaMattingBackgroundThreshold
+                settings["alphaMattingErodeSize"] = alphaMattingErodeSize
+            genConfig["settings"] = settings
 
-        if(alphaMatting):
-            genConfig[0]["alphaMattingForegroundThreshold"] = alphaMattingForegroundThreshold
-            genConfig[0]["alphaMattingBackgroundThreshold"] = alphaMattingBackgroundThreshold
-            genConfig[0]["alphaMattingErodeSize"] = alphaMattingErodeSize
-
-        genResult = rwUtils.inferenecRequest(genConfig)
+        genResult = rwUtils.inferenecRequest([genConfig])
         images = rwUtils.convertImageB64List(genResult)
         return images
