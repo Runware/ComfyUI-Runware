@@ -36,8 +36,8 @@ RUNWARE_REMBG_OUTPUT_FORMATS = {
     )
 }
 
-MAX_RETRIES = 2
-RETRY_COOLDOWN = 2
+MAX_RETRIES = 4
+RETRY_COOLDOWNS = [1, 2, 5, 10]
 
 session = requests.Session()
 adapter = HTTPAdapter(pool_connections=10, pool_maxsize=10)
@@ -52,7 +52,9 @@ def generalRequestWrapper(recaller, *args, **kwargs):
             if attempt == MAX_RETRIES:
                 raise
             else:
-                time.sleep(RETRY_COOLDOWN)
+                cooldown = RETRY_COOLDOWNS[attempt]
+                print(f"[Runware] Error API Request Failed! Retrying in {cooldown} seconds... (Attempt {attempt+1}/{MAX_RETRIES})")
+                time.sleep(cooldown)
             continue
     return False
 

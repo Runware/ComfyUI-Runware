@@ -60,7 +60,7 @@ class txt2img:
                     "default": 6.5,
                     "min": 1.0,
                     "max": 30.0,
-                    "step": 0.5,
+                    "step": 0.1,
                 }),
                 "seed": ("INT", {
                     "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
@@ -79,7 +79,7 @@ class txt2img:
                     "default": 0.8,
                     "min": 0.0,
                     "max": 1.0,
-                    "step": 0.1,
+                    "step": 0.01,
                 }),
                 "Mask Margin": ("BOOLEAN", {
                     "tooltip": "Enables Or Disables Mask Margin Feature.",
