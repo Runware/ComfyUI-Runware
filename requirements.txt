@@ -1,1 +1,3 @@
 python-dotenv
+brotli
+zstd

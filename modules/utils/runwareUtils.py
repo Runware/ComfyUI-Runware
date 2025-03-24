@@ -254,9 +254,8 @@ def inferenecRequest(genConfig):
     }
 
     try:
-
         def recaller():
-            response = session.post(
+            return session.post(
                 RUNWARE_API_BASE_URL,
                 headers=headers,
                 json=genConfig,
@@ -264,15 +263,14 @@ def inferenecRequest(genConfig):
                 allow_redirects=False,
                 stream=True,
             )
-            if response.status_code != 200:
-                print(f"[Debugging] Runware Response Status Code: {response.status_code}")
-            return response
 
         genResult = generalRequestWrapper(recaller)
         try:
             genResult = genResult.json()
         except json.JSONDecodeError as e:
             print(f"[Debugging] Runware JSON Decode Error: {str(e)}")
+            print(f"[Debugging] Runware Response Status Code: {genResult.status_code}")
+            print(f"[Debugging] Runware Response Headers: {genResult.headers}")
             print(f"[Debugging] Runware Raw Response Content: {genResult.content}")
             raise Exception("Error: Invalid JSON response from API!")
         if "errors" in genResult:
