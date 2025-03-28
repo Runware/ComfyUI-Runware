@@ -2,6 +2,7 @@ from .utils import runwareUtils as rwUtils
 
 class ipAdapter:
     RUNWARE_IPADAPTER_MODELS = {
+        "FLUX.1 Dev Redux": "runware:105@1",
         "IP Adapter SDXL": "runware:55@1",
         "IP Adapter SDXL Plus": "runware:55@2",
         "IP Adapter SDXL Plus Face": "runware:55@3",
@@ -28,7 +29,7 @@ class ipAdapter:
                     "min": 0.0,
                     "max": 1.0,
                     "step": 0.1,
-                    "tooltip": "Represents the strength or influence of this IP-Adapter in the generation process.\nA value of 0 means no influence, while 1 means maximum influence.",
+                    "tooltip": "Represents the strength or influence of this IP-Adapter in the generation process.\n\nA value of 0 means no influence, while 1 means maximum influence.\n\nNote: This Value Is Ignored For Flux Redux.",
                 }),
             },
         }
