@@ -19,7 +19,7 @@ from .modules.ipAdapter import ipAdapter
 from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
 
-RUNWARE_COMFYUI_VERSION = "1.0.6 Beta"
+RUNWARE_COMFYUI_VERSION = "1.0.7 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
