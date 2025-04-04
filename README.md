@@ -8,10 +8,11 @@ Imagine creating stunning images, refining details, or even removing backgrounds
 
 This integration adds a suite of custom nodes to ComfyUI, allowing you to:
 - Perform advanced image inference tasks
-- Utilize photomaker pipelines
+- Utilize PhotoMaker V2 pipelines
 - Upscale images
 - Remove backgrounds
 - Leverage specialized models and LoRAs
+- Use your custom uploaded models and LoRAs
 
 ... and so much more! Let’s make your workflows seamless and efficient with **Runware**. 🖌️✨
 
@@ -49,7 +50,7 @@ You have two options to install this integration:
 #### Option 1: Using ComfyUI Manager (Recommended)
 First, ensure you have the `ComfyUI-Manager` custom node installed. If you don't have it or are using the beta ComfyUI desktop version, follow the instructions on this [GitHub Repo](https://github.com/ltdrdata/ComfyUI-Manager?tab=readme-ov-file#installation).
 
-After installing ComfyUI-Manager, open it and click on "Custom Nodes Manager". Search for "Runware" or "Runware.ai" and then click on install or update. Finally, restart your ComfyUI. ✨
+After installing ComfyUI-Manager, open it and click on "Custom Nodes Manager". Search for "Runware" or **"Runware.ai"** and then click on install or update. Finally, restart your ComfyUI. ✨
 
 #### Option 2: Manual Installation
 
@@ -75,15 +76,18 @@ After installing ComfyUI-Manager, open it and click on "Custom Nodes Manager". S
 
 ### Step 3: Run ComfyUI
 
+# Install latest ComfyUI frontend package
+pip install -U comfyui-frontend-package
+
 Start ComfyUI with the following command:
 ```bash
-python main.py --front-end-version Comfy-Org/ComfyUI_frontend@latest
+python main.py
 ```
 
 #### Optional: CPU-Only Mode
 If you want to run ComfyUI without a GPU, add the `--cpu` flag:
 ```bash
-python main.py --cpu --front-end-version Comfy-Org/ComfyUI_frontend@latest
+python main.py --cpu
 ```
 
 ### Step 4: Explore Workflows
@@ -95,7 +99,7 @@ Inside the `ComfyUI-Runware` custom node folder, you’ll find a `workflows` fol
 
 Here’s a breakdown of the amazing nodes included in this integration:
 
-- **Runware API Manager**: Set or change your API keys and adjust the max connection timeout directly in ComfyUI—no need to edit config files manually! 🔑
+- **Runware API Manager**: Set or change your API keys, adjust the max connection timeout, adjust the image output quality and format, and enable or disable image caching directly in ComfyUI—no need to edit config files manually! 🔑
 - **Runware Image Inference**: Perform advanced tasks like inpainting, outpainting, and more. 🎨
 - **Runware PhotoMakerV2**: Create consistent identities with our photomaker pipeline. 🖼️
 - **Runware Image Upscale**: Upscale your images up to 4x. 🔍
@@ -111,6 +115,9 @@ Here’s a breakdown of the amazing nodes included in this integration:
 - **Runware VAE**: Search and connect a VAE to Image inference. 🖼️
 - **Runware Embedding**: Search and connect Embedding to image inference. 🧩
 - **Runware Embedding Combine**: Combine multiple embeddings together. 🔗
+- **Runware Image Caption**: Generate descriptive text from images for further workflow integration. 🖼️
+- **Runware IPAdapter**: Use reference images to guide the style and content of generated images. 🖌️
+- **Runware IPAdapters Combine**: Combine multiple IP-Adapter inputs for sophisticated image conditioning. 🔗
 
 ---
 
