@@ -48,6 +48,7 @@ const MODEL_LIST_TERMS = ["ModelList", "LoraList", "ControlNetList", "EmbeddingL
 
 const RUNWARE_NODE_TYPES = {
     IMAGEINFERENCE: "Runware Image Inference",
+    OUTPAINT: "Runware Outpaint",
     PHOTOMAKER: "Runware PhotoMaker V2",
     MODELSEARCH: "Runware Model Search",
     LORASEARCH: "Runware Lora Search",
@@ -73,6 +74,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         liveDimensions: true,
         promptEnhancer: true,
+    },
+    [RUNWARE_NODE_TYPES.OUTPAINT]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.PHOTOMAKER]: {
         bgColor: DEFAULT_BGCOLOR,

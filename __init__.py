@@ -1,4 +1,5 @@
 from .modules.imageInference import txt2img
+from .modules.outpaintSettings import outpaintSettings
 from .modules.bgremoval import bgremoval
 from .modules.photoMaker import photoMaker
 from .modules.upscaler import upscaler
@@ -19,7 +20,7 @@ from .modules.ipAdapter import ipAdapter
 from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
 
-RUNWARE_COMFYUI_VERSION = "1.0.7 Beta"
+RUNWARE_COMFYUI_VERSION = "1.0.8 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -32,6 +33,7 @@ print(BLUE_COLOR + "############################################################
 
 NODE_CLASS_MAPPINGS = {
     "Runware Image Inference": txt2img,
+    "Runware Outpaint": outpaintSettings,
     "Runware Background Removal": bgremoval,
     "Runware PhotoMaker V2": photoMaker,
     "Runware Image Upscaler": upscaler,
