@@ -104,6 +104,9 @@ class txt2img:
                 "Lora": ("RUNWARELORA", {
                     "tooltip": "Connect a Runware Lora From Lora Search Node Or Lora Combine For Multiple Lora's Together.",
                 }),
+                "Outpainting": ("RUNWAREOUTPAINT", {
+                    "tooltip": "Connect a Runware Outpainting Node to extend the image boundaries in different directions.",
+                }),
                 "IPAdapters": ("RUNWAREIPAdapter", {
                     "tooltip": "Connect a Runware IP Adapter node or IP Adapter Combine node to use reference images for guiding the generation.",
                 }),
@@ -150,6 +153,7 @@ class txt2img:
         promptWeighting = kwargs.get("Prompt Weighting", "Disabled")
         runwareControlNet = kwargs.get("ControlNet", None)
         runwareLora = kwargs.get("Lora", None)
+        runwareOutpainting = kwargs.get("Outpainting", None)
         runwareIPAdapters = kwargs.get("IPAdapters", None)
         runwareRefiner = kwargs.get("Refiner", None)
         runwareEmbedding = kwargs.get("Embeddings", None)
@@ -216,6 +220,8 @@ class txt2img:
                 genConfig[0]["embeddings"] = runwareEmbedding
             elif (isinstance(runwareEmbedding, dict)):
                 genConfig[0]["embeddings"] = [runwareEmbedding]
+        if (runwareOutpainting is not None):
+            genConfig[0]["outpaint"] = runwareOutpainting
         if (runwareVAE is not None):
             genConfig[0]["vae"] = runwareVAE
         if (runwareControlNet is not None):
