@@ -411,4 +411,4 @@ def convertImageB64List(imageDataObject):
         generatedImage = convertIMG2Tensor(generatedImage)
         images += (generatedImage,)
     images = torch.stack(images, dim=0)
-    return (images,)
+    return images

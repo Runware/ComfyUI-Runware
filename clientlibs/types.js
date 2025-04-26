@@ -51,6 +51,9 @@ const RUNWARE_NODE_TYPES = {
     OUTPAINT: "Runware Outpaint",
     PHOTOMAKER: "Runware PhotoMaker V2",
     MODELSEARCH: "Runware Model Search",
+    MULTIINFERENCE: "Runware Multi Inference",
+    TEACACHE: "Runware TeaCache",
+    DEEPCACHE: "Runware DeepCache",
     LORASEARCH: "Runware Lora Search",
     CONTROLNET: "Runware ControlNet",
     BGREMOVAL: "Runware Background Removal",
@@ -87,6 +90,18 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.MODELSEARCH]: {
         bgColor: DEFAULT_BGCOLOR,
         liveSearch: true,
+    },
+    [RUNWARE_NODE_TYPES.MULTIINFERENCE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEACACHE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.DEEPCACHE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.LORASEARCH]: {
         bgColor: DEFAULT_BGCOLOR,

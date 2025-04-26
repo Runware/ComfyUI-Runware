@@ -6,6 +6,9 @@ from .modules.upscaler import upscaler
 from .modules.modelSearch import modelSearch
 from .modules.bridges import mainRoute
 from .modules.controlNet import controlNet
+from .modules.multiInference import multiInference
+from .modules.teaCache import teaCache
+from .modules.deepCache import deepCache
 from .modules.loraSearch import loraSearch
 from .modules.loraCombine import loraCombine
 from .modules.refiner import refiner
@@ -20,7 +23,7 @@ from .modules.ipAdapter import ipAdapter
 from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
 
-RUNWARE_COMFYUI_VERSION = "1.0.8 Beta"
+RUNWARE_COMFYUI_VERSION = "1.0.9 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -38,6 +41,9 @@ NODE_CLASS_MAPPINGS = {
     "Runware PhotoMaker V2": photoMaker,
     "Runware Image Upscaler": upscaler,
     "Runware Model Search": modelSearch,
+    "Runware Multi Inference": multiInference,
+    "Runware TeaCache": teaCache,
+    "Runware DeepCache": deepCache,
     "Runware Lora Search": loraSearch,
     "Runware Embedding Search": embeddingSearch,
     "Runware VAE Search": vaeSearch,
@@ -59,6 +65,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Lora Search": "Runware Lora",
     "Runware Embedding Search": "Runware Embedding",
     "Runware VAE Search": "Runware VAE",
+    "Runware Multi Inference": "Runware Multi Inference [BETA]",
 }
 
 WEB_DIRECTORY = "./clientlibs"

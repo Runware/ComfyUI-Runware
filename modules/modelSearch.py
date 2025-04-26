@@ -33,6 +33,8 @@ class modelSearch:
                     "default": "Base Model",
                 }),
                 "ModelList": ([
+                        "rundiffusion:110@101 (Juggernaut Lightning Flux by RunDiffusion)",
+                        "rundiffusion:130@100 (Juggernaut Pro Flux by RunDiffusion)",
                         "runware:100@1 (Flux Schnell)",
                         "runware:101@1 (Flux Dev)",
                         "runware:5@1 (SD3)",

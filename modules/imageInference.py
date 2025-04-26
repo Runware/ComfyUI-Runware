@@ -19,6 +19,12 @@ class txt2img:
                     "placeholder": "Negative Prompt: a text instruction to guide the model on generating the image. It is usually a sentence or a paragraph that provides negative guidance for the task. This parameter helps to avoid certain undesired results.",
                     "tooltip": "Negative Prompt: a text instruction to guide the model on generating the image."
                 }),
+                "Multi Inference Mode": ("BOOLEAN", {
+                    "tooltip": "If Enabled the node will skip the image generation process and will only return the Runware Task Object to be used in the Multi Inference Node.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
                 "Prompt Weighting": (["Disabled", "sdEmbeds", "Compel"], {
                     "default": "Disabled",
                     "tooltip": "Prompt weighting allows you to adjust how strongly different parts of your prompt influence the generated image.\n\nChoose between \"compel\" notation with advanced weighting operations or \"sdEmbeds\" for simple emphasis adjustments.\n\nCompel Example: \"small+ dog, pixar style\"\n\nsdEmbeds Example: \"(small:2.5) dog, pixar style\"",
@@ -101,6 +107,9 @@ class txt2img:
                 }),
             },
             "optional": {
+                "Accelerator": ("RUNWAREACCELERATOR", {
+                    "tooltip": "Connect a Runware Accelerator Node (TeaCache, DeepCache) to speed up the image generation process.",
+                }),
                 "Lora": ("RUNWARELORA", {
                     "tooltip": "Connect a Runware Lora From Lora Search Node Or Lora Combine For Multiple Lora's Together.",
                 }),
@@ -143,15 +152,18 @@ class txt2img:
 
     DESCRIPTION = "Generates Images Lightning Fast With Runware Image Inference Sonic Engine."
     FUNCTION = "generateImage"
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("IMAGE", "RUNWARETASK")
+    RETURN_NAMES = ("IMAGE", "RW-Task")
     CATEGORY = "Runware"
 
     def generateImage(self, **kwargs):
         runwareModel = kwargs.get("Model")
         positivePrompt = kwargs.get("positivePrompt")
         negativePrompt = kwargs.get("negativePrompt", None)
+        multiInferenceMode = kwargs.get("Multi Inference Mode", False)
         promptWeighting = kwargs.get("Prompt Weighting", "Disabled")
         runwareControlNet = kwargs.get("ControlNet", None)
+        runwareAccelerator = kwargs.get("Accelerator", None)
         runwareLora = kwargs.get("Lora", None)
         runwareOutpainting = kwargs.get("Outpainting", None)
         runwareIPAdapters = kwargs.get("IPAdapters", None)
@@ -205,6 +217,8 @@ class txt2img:
                 genConfig[0]["promptWeighting"] = "sdEmbeds"
             else:
                 genConfig[0]["promptWeighting"] = "compel"
+        if(runwareAccelerator is not None):
+            genConfig[0]["acceleratorOptions"] = runwareAccelerator
         if (runwareLora is not None):
             if (isinstance(runwareLora, list)):
                 genConfig[0]["lora"] = runwareLora
@@ -238,6 +252,9 @@ class txt2img:
                 if (enableMaskMargin):
                     genConfig[0]["maskMargin"] = maskImageMargin
 
-        genResult = rwUtils.inferenecRequest(genConfig)
-        images = rwUtils.convertImageB64List(genResult)
-        return images
+        if (multiInferenceMode):
+            return (None, genConfig)
+        else:
+            genResult = rwUtils.inferenecRequest(genConfig)
+            images = rwUtils.convertImageB64List(genResult)
+            return (images, None)
