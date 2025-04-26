@@ -116,4 +116,4 @@ class bgremoval:
 
         genResult = rwUtils.inferenecRequest([genConfig])
         images = rwUtils.convertImageB64List(genResult)
-        return images
+        return (images, )
