@@ -76,8 +76,10 @@ After installing ComfyUI-Manager, open it and click on "Custom Nodes Manager". S
 
 ### Step 3: Run ComfyUI
 
-# Install latest ComfyUI frontend package
+Install latest ComfyUI frontend package
+```bash
 pip install -U comfyui-frontend-package
+````
 
 Start ComfyUI with the following command:
 ```bash
