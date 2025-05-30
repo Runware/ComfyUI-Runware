@@ -7,7 +7,7 @@ class runwareKontext:
             "required": {
                 "Model": ([
                     "bfl:3@1 (FLUX.1 Kontext Pro)",
-                    "bfl:3@1 (FLUX.1 Kontext Max)",
+                    "bfl:4@1 (FLUX.1 Kontext Max)",
                 ], {
                     "tooltip": "Select The Model You Want For Image Generation or Image Editing.",
                     "default": "bfl:3@1 (FLUX.1 Kontext Pro)",
@@ -78,6 +78,7 @@ class runwareKontext:
 
     def kontextInference(self, **kwargs):
         runwareModel = kwargs.get("Model")
+        runwareModel = runwareModel.split(" ")[0]
         positivePrompt = kwargs.get("positivePrompt")
         promptUpsampling = kwargs.get("Prompt Upsampling")
         aspectRatio = kwargs.get("Aspect Ratio")
