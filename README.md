@@ -7,8 +7,9 @@ Welcome to **ComfyUI-Runware**! 🌟 This is the official integration for **[Run
 Imagine creating stunning images, refining details, or even removing backgrounds—all without needing a powerful GPU. With **Runware**, all the heavy lifting happens on our servers. No GPU? No problem! 🖥️💨 
 
 This integration adds a suite of custom nodes to ComfyUI, allowing you to:
-- Perform advanced image inference tasks
+- Perform advanced image inference tasks, including image generation and editing with powerful models.
 - Utilize PhotoMaker V2 pipelines
+- Leverage cutting-edge models like **Flux .1 Kontext Pro** and **Flux .1 Kontext Max** for superior image generation and editing.
 - Upscale images
 - Remove backgrounds
 - Leverage specialized models and LoRAs
