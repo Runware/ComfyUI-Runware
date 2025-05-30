@@ -7,6 +7,7 @@ from .modules.modelSearch import modelSearch
 from .modules.bridges import mainRoute
 from .modules.controlNet import controlNet
 from .modules.multiInference import multiInference
+from .modules.runwareBFL import runwareKontext
 from .modules.teaCache import teaCache
 from .modules.deepCache import deepCache
 from .modules.loraSearch import loraSearch
@@ -22,8 +23,9 @@ from .modules.embeddingsCombine import embeddingsCombine
 from .modules.ipAdapter import ipAdapter
 from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
+from .modules.referenceImages import referenceImages
 
-RUNWARE_COMFYUI_VERSION = "1.0.9 Beta"
+RUNWARE_COMFYUI_VERSION = "1.1.0 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -41,6 +43,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware PhotoMaker V2": photoMaker,
     "Runware Image Upscaler": upscaler,
     "Runware Model Search": modelSearch,
+    "Runware Kontext Inference": runwareKontext,
     "Runware Multi Inference": multiInference,
     "Runware TeaCache": teaCache,
     "Runware DeepCache": deepCache,
@@ -58,6 +61,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware ControlNet Combine": controlNetCombine,
     "Runware IPAdapter": ipAdapter,
     "Runware IPAdapters Combine": ipAdapterCombine,
+    "Runware Reference Images": referenceImages,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
