@@ -49,6 +49,7 @@ const MODEL_LIST_TERMS = ["ModelList", "LoraList", "ControlNetList", "EmbeddingL
 const RUNWARE_NODE_TYPES = {
     IMAGEINFERENCE: "Runware Image Inference",
     KONTEXTINFERENCE: "Runware Kontext Inference",
+    IMAGENINFERENCE: "Runware Imagen Inference",
     OUTPAINT: "Runware Outpaint",
     PHOTOMAKER: "Runware PhotoMaker V2",
     MODELSEARCH: "Runware Model Search",
@@ -83,6 +84,10 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.KONTEXTINFERENCE]: {
         bgColor: DEFAULT_BGCOLOR,
         promptEnhancer: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGENINFERENCE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.REFERENCEIMAGES]: {
         bgColor: DEFAULT_BGCOLOR,
