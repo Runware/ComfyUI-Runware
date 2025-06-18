@@ -10,6 +10,7 @@ class runwareImagen:
                     "google:1@2 (Imagen 3 Fast)",
                     "google:2@1 (Imagen 4 Preview)",
                     "google:2@2 (Imagen 4 Ultra)",
+                    "google:2@3 (Imagen 4 Fast)",
                 ], {
                     "tooltip": "Select The Google Imagen Model For Image Generation.",
                     "default": "google:1@1 (Imagen 3)",
