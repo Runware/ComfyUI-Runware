@@ -10,6 +10,7 @@ class loraSearch:
                         "All",
                         "FLUX.1-Schnell",
                         "FLUX.1-Dev",
+                        "FLUX.1 Krea",
                         "Pony",
                         "SD 1.5",
                         "SD 1.5 Hyper",
