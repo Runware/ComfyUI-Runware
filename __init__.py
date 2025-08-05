@@ -25,6 +25,8 @@ from .modules.ipAdapter import ipAdapter
 from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
 from .modules.referenceImages import referenceImages
+from .modules.videoInference import txt2vid
+from .modules.videoModelSearch import videoModelSearch
 
 RUNWARE_COMFYUI_VERSION = "1.2.0 Beta"
 
@@ -64,6 +66,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware IPAdapter": ipAdapter,
     "Runware IPAdapters Combine": ipAdapterCombine,
     "Runware Reference Images": referenceImages,
+    "Runware Video Inference": txt2vid,
+    "Runware Video Model Search": videoModelSearch,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -72,6 +76,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Embedding Search": "Runware Embedding",
     "Runware VAE Search": "Runware VAE",
     "Runware Multi Inference": "Runware Multi Inference [BETA]",
+    "Runware Video Model Search": "Runware Video Model",
 }
 
 WEB_DIRECTORY = "./clientlibs"
