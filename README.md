@@ -122,7 +122,7 @@ Here’s a breakdown of the amazing nodes included in this integration:
 - **Runware IPAdapter**: Use reference images to guide the style and content of generated images. 🖌️
 - **Runware IPAdapters Combine**: Combine multiple IP-Adapter inputs for sophisticated image conditioning. 🔗
 
-
+🎬
 - **Runware Text to Video**: Generate videos from text prompts using advanced AI models. 🎥
 - **Runware Image to Video**: Create videos from reference images with optional text guidance. 🖼️➡️🎥
 
