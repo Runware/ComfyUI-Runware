@@ -26,7 +26,7 @@ IMAGE_CACHE_FILE = BASEFOLDER / "imagesCache.json"
 
 if not IMAGE_CACHE_FILE.exists():
     with open(IMAGE_CACHE_FILE, "w") as f:
-        print("[Debugging] Initializing images cache...")
+        print("[Runware] Initializing images cache...")
         json.dump({}, f)
 
 RUNWARE_REMBG_OUTPUT_FORMATS = {
@@ -53,7 +53,7 @@ def generalRequestWrapper(recaller, *args, **kwargs):
                 raise
             else:
                 cooldown = RETRY_COOLDOWNS[attempt]
-                print(f"[Warning] Error API Request Failed! Retrying in {cooldown} seconds... (Attempt {attempt+1}/{MAX_RETRIES})")
+                print(f"[Runware] Error API Request Failed! Retrying in {cooldown} seconds... (Attempt {attempt+1}/{MAX_RETRIES})")
                 time.sleep(cooldown)
             continue
     return False
@@ -484,7 +484,7 @@ class VideoObject:
         while True:
             try:
                 response = requests.get(self.video_url, stream=True, timeout=30)
-                print(f"[Debugging] Response: {response}")
+                print(response)
                
                 if response.status_code == 422:
 

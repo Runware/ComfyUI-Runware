@@ -13,7 +13,7 @@ const DEFAULT_MODELS_ARCH_LIST = {
     "All": "all",
     "FLUX.1-Schnell": "flux1s",
     "FLUX.1-Dev": "flux1d",
-    "FLUX.1 Krea": "flux1k",
+    "FLUX.1-Krea": "flux1d",
     "Pony": "pony",
     "SD 1.5": "sd1x",
     "SD 1.5 Hyper": "sdhyper",
