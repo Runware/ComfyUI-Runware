@@ -13,6 +13,7 @@ const DEFAULT_MODELS_ARCH_LIST = {
     "All": "all",
     "FLUX.1-Schnell": "flux1s",
     "FLUX.1-Dev": "flux1d",
+    "FLUX.1-Krea": "flux1d",
     "Pony": "pony",
     "SD 1.5": "sd1x",
     "SD 1.5 Hyper": "sdhyper",
@@ -73,6 +74,8 @@ const RUNWARE_NODE_TYPES = {
     EMBEDDINGCOMBINE: "Runware Embedding Combine",
     VAE: "Runware VAE Search",
     REFERENCEIMAGES: "Runware Reference Images",
+    VIDEOINFERENCE: "Runware Video Inference",
+    VIDEOMODELSEARCH: "Runware Video Model Search",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -185,6 +188,15 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.IMAGECAPTION]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        liveDimensions: true,
+        promptEnhancer: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOMODELSEARCH]: {
+        bgColor: DEFAULT_BGCOLOR,
+        liveSearch: true,
     },
 };
 

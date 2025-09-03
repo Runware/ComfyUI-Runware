@@ -392,6 +392,60 @@ def convertTensor2IMG(tensorImage):
                 threading.Thread(target=run_coro).start()
         return imgDataUri
 
+
+
+def convertTensor2IMGForVideo(tensorImage):
+    """Convert tensor to image and force upload to get UUID for video frame images"""
+    imageNP = (tensorImage.squeeze().numpy() * 255).astype(np.uint8)
+    imgSig = hashlib.sha256(imageNP.tobytes()).hexdigest()
+
+    # Check if already cached
+    imgUUID = imageStoreGet(imgSig)
+    if imgUUID:
+        return imgUUID
+
+    # Convert to data URI - use PNG for video frame images
+    image = Image.fromarray(imageNP)
+    with io.BytesIO() as buffer:
+        image.save(buffer, format="PNG")
+        imageRawData = buffer.getvalue()
+        imgb64 = base64.b64encode(imageRawData).decode("utf-8")
+        imgDataUri = f"data:image/png;base64,{imgb64}"
+
+    # Force upload to get UUID - use synchronous approach to avoid event loop conflicts
+    try:
+        # Use synchronous upload instead of async
+        uploadTaskConfig = [
+            {"taskType": "imageUpload", "taskUUID": genRandUUID(), "image": imgDataUri}
+        ]
+        
+        uploadResult = inferenecRequest(uploadTaskConfig)
+        if (
+            uploadResult
+            and "data" in uploadResult
+            and "imageUUID" in uploadResult["data"][0]
+        ):
+            uploaded_uuid = uploadResult["data"][0]["imageUUID"]
+            
+            # Cache the UUID synchronously
+            try:
+                with open(IMAGE_CACHE_FILE, "r") as f:
+                    cache = json.load(f)
+                expires = (datetime.now() + timedelta(days=30)).isoformat()
+                cache[imgSig] = {"uuid": uploaded_uuid, "expires": expires}
+                with open(IMAGE_CACHE_FILE, "w") as f:
+                    json.dump(cache, f, indent=2)
+            except Exception as e:
+                print(f"[Warning] Error caching image: {e}")
+            
+            return uploaded_uuid
+        else:
+            print("[Warning] Failed to upload image, returning data URI")
+            return imgDataUri
+    except Exception as e:
+        print(f"[Warning] Error uploading image: {e}")
+        return imgDataUri
+
 def convertIMG2Tensor(b64img):
     imgbytes = base64.b64decode(b64img)
     image = Image.open(io.BytesIO(imgbytes))
@@ -412,3 +466,120 @@ def convertImageB64List(imageDataObject):
         images += (generatedImage,)
     images = torch.stack(images, dim=0)
     return images
+
+class VideoObject:
+    def __init__(self, video_url, width=None, height=None):
+        self.video_url = video_url
+        # Use provided dimensions or default to 864x480 for Seedance Lite
+        self.width = width if width is not None else 864
+        self.height = height if height is not None else 480
+    
+    def get_dimensions(self):
+        return (self.width, self.height)
+    
+    def save_to(self, filename, **kwargs):
+        """Save video to file by downloading from URL with retry logic"""
+        max_retries = 10
+        retry_delays = [2, 5, 10, 15, 20]  # Longer delays for video server issues
+        
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(self.video_url, stream=True, timeout=30)
+                print(f"[Video Download] Attempt {attempt + 1}: {response}")
+               
+                if response.status_code == 422:
+                    print(f"[Video Download] Server still processing, waiting...")
+                    time.sleep(retry_delays[min(attempt, len(retry_delays) - 1)])
+                    continue
+                    
+                if response.status_code == 502:
+                    print(f"[Video Download] Server error (502), retrying in {retry_delays[min(attempt, len(retry_delays) - 1)]} seconds...")
+                    time.sleep(retry_delays[min(attempt, len(retry_delays) - 1)])
+                    continue
+                
+                response.raise_for_status()
+                
+                with open(filename, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                
+                print(f"[Video Download] Successfully downloaded video to {filename}")
+                return True
+                
+            except requests.exceptions.RequestException as e:
+                print(f"[Video Download] Attempt {attempt + 1} failed: {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delays[min(attempt, len(retry_delays) - 1)])
+                    continue
+                else:
+                    print(f"[Video Download] All {max_retries} attempts failed. Video URL: {self.video_url}")
+                    return False
+            except Exception as e:
+                print(f"[Video Download] Unexpected error: {e}")
+                return False
+
+        return False
+    
+    def __str__(self):
+        return f"VideoObject(url={self.video_url}, dimensions={self.width}x{self.height})"
+
+def convertVideoB64List(videoDataObject, width=None, height=None):
+    videos = ()
+    for result in videoDataObject["data"]:
+        generatedVideo = result.get("videoBase64Data", False)
+        if generatedVideo:
+            # For base64 data, create a video object (would need proper decoding in full implementation)
+            video_obj = VideoObject(f"data:video/mp4;base64,{generatedVideo}", width, height)
+            videos += (video_obj,)
+        else:
+            # If no base64 data, try to get video URL
+            videoURL = result.get("videoURL", False)
+            if videoURL:
+                # Create a proper video object that ComfyUI can handle
+                video_obj = VideoObject(videoURL, width, height)
+                videos += (video_obj,)
+    return videos
+
+def pollVideoResult(taskUUID):
+    """Poll for video generation result using task UUID with getResponse"""
+    global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
+    
+    pollConfig = [
+        {
+            "taskType": "getResponse",
+            "taskUUID": taskUUID,
+        }
+    ]
+    
+    headers = {
+        "Authorization": f"Bearer {RUNWARE_API_KEY}",
+        "Content-Type": "application/json",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+    }
+    
+    try:
+        def recaller():
+            return session.post(
+                RUNWARE_API_BASE_URL,
+                headers=headers,
+                json=pollConfig,
+                timeout=30,  # Shorter timeout for polling
+                allow_redirects=False,
+                stream=True,
+            )
+        
+        pollResult = generalRequestWrapper(recaller)
+        try:
+            pollResult = pollResult.json()
+        except json.JSONDecodeError as e:
+            print(f"[Debugging] Runware Poll JSON Decode Error: {str(e)}")
+            return None
+            
+        if "errors" in pollResult:
+            print(f"[Debugging] Poll error: {pollResult}")
+            return pollResult
+        else:
+            return pollResult
+    except Exception as e:
+        print(f"[Debugging] Poll request failed: {str(e)}")
+        return None
