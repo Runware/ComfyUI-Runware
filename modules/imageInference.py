@@ -52,21 +52,29 @@ class txt2img:
                     "step": 64,
                 }),
                 "steps": ("INT", {
-                    "tooltip": "The number of steps is the number of iterations the model will perform to generate the image. The higher the number of steps, the more detailed the image will be. However, increasing the number of steps will also increase the time it takes to generate the image and may not always result in a better image.",
+                    "tooltip": "The number of steps is the number of iterations the model will perform to generate the image. Only used when 'Use Steps' is enabled.",
                     "default": 4,
                     "min": 1,
                     "max": 100,
+                }),
+                "useSteps": (["enable", "disabled"], {
+                    "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps (like nano banana).",
+                    "default": "enable",
                 }),
                 "scheduler": (['Default', 'DDIM', 'DDIMScheduler', 'DDPMScheduler', 'DEISMultistepScheduler', 'DPMSolverSinglestepScheduler', 'DPMSolverMultistepScheduler', 'DPMSolverMultistepInverse', 'DPM++', 'DPM++ Karras', 'DPM++ 2M', 'DPM++ 2M Karras', 'DPM++ 2M SDE Karras', 'DPM++ 2M SDE', 'DPM++ 3M', 'DPM++ 3M Karras', 'DPM++ SDE Karras', 'DPM++ SDE', 'EDMEulerScheduler', 'EDMDPMSolverMultistepScheduler', 'Euler', 'EulerDiscreteScheduler', 'Euler Karras', 'Euler a', 'EulerAncestralDiscreteScheduler', 'FlowMatchEulerDiscreteScheduler', 'Heun', 'HeunDiscreteScheduler', 'Heun Karras', 'IPNDMScheduler', 'KDPM2DiscreteScheduler', 'KDPM2AncestralDiscreteScheduler', 'LCM', 'LCMScheduler', 'LMS', 'LMSDiscreteScheduler', 'LMS Karras', 'PNDMScheduler', 'TCDScheduler', 'UniPC', 'UniPCMultistepScheduler', 'UniPC Karras', 'UniPC 2M', 'UniPC 2M Karras', 'UniPC 3M', 'UniPC 3M Karras'], {
                     "tooltip": "An scheduler is a component that manages the inference process. Different schedulers can be used to achieve different results like more detailed images, faster inference, or more accurate results.",
                     "default": "Default",
                 }),
                 "cfgScale": ("FLOAT", {
-                    "tooltip": "Guidance scale represents how closely the images will resemble the prompt or how much freedom the AI model has. Higher values are closer to the prompt. Low values may reduce the quality of the results.",
+                    "tooltip": "Guidance scale represents how closely the images will resemble the prompt or how much freedom the AI model has. Only used when 'Use CFG Scale' is enabled.",
                     "default": 6.5,
                     "min": 1.0,
-                    "max": 30.0,
-                    "step": 0.1,
+                    "max": 50.0,
+                    "step": 0.5,
+                }),
+                "useCFGScale": (["enable", "disabled"], {
+                    "tooltip": "Enable to include CFG scale parameter in API request. Disable if your model doesn't support CFG scale (like nano banana).",
+                    "default": "enable",
                 }),
                 "seed": ("INT", {
                     "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
@@ -179,8 +187,10 @@ class txt2img:
         height = kwargs.get("height", 512)
         width = kwargs.get("width", 512)
         steps = kwargs.get("steps", 4)
+        useSteps = kwargs.get("useSteps", "enable")
         scheduler = kwargs.get("scheduler", "Default")
         cfgScale = kwargs.get("cfgScale", 6.5)
+        useCFGScale = kwargs.get("useCFGScale", "enable")
         seed = kwargs.get("seed")
         batchSize = kwargs.get("batchSize", 1)
         
@@ -195,8 +205,6 @@ class txt2img:
                 "height": height,
                 "width": width,
                 "model": runwareModel,
-                "steps": steps,
-                "CFGScale": cfgScale,
                 "scheduler": scheduler,
                 "clipSkip": clipSkip,
                 "seed": seed,
@@ -209,6 +217,12 @@ class txt2img:
 
         # For Debugging Purposes Only
         print(f"[Debugging] Task UUID: {genConfig[0]['taskUUID']}")
+
+        # Add steps and CFGScale only if enabled
+        if useSteps == "enable":
+            genConfig[0]["steps"] = steps
+        if useCFGScale == "enable":
+            genConfig[0]["CFGScale"] = cfgScale
 
         if (negativePrompt is not None and negativePrompt != ""):
             genConfig[0]["negativePrompt"] = negativePrompt

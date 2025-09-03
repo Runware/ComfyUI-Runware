@@ -4,7 +4,7 @@ Welcome to **ComfyUI-Runware**! 🌟 This is the official integration for **[Run
 
 ## 🌟 What is ComfyUI-Runware?
 
-Imagine creating stunning images, refining details, or even removing backgrounds—all without needing a powerful GPU. With **Runware**, all the heavy lifting happens on our servers. No GPU? No problem! 🖥️💨 
+Imagine creating stunning images or videos, refining details, or even removing backgrounds—all without needing a powerful GPU. With **Runware**, all the heavy lifting happens on our servers. No GPU? No problem! 🖥️💨 
 
 This integration adds a suite of custom nodes to ComfyUI, allowing you to:
 - Perform advanced image inference tasks, including image generation and editing with powerful models.
@@ -100,10 +100,10 @@ Inside the `ComfyUI-Runware` custom node folder, you’ll find a `workflows` fol
 
 ## 🧩 Node Features
 
-Here’s a breakdown of the amazing nodes included in this integration:
+Here's a breakdown of the amazing nodes included in this integration:
 
 - **Runware API Manager**: Set or change your API keys, adjust the max connection timeout, adjust the image output quality and format, and enable or disable image caching directly in ComfyUI—no need to edit config files manually! 🔑
-- **Runware Image Inference**: Perform advanced tasks like inpainting, outpainting, and more. 🎨
+- **Runware Image Inference**: Perform advanced tasks like inpainting, outpainting, and more 🎨
 - **Runware PhotoMakerV2**: Create consistent identities with our photomaker pipeline. 🖼️
 - **Runware Image Upscale**: Upscale your images up to 4x. 🔍
 - **Runware Background Removal**: Effortlessly remove image backgrounds. 🧹
@@ -121,10 +121,7 @@ Here’s a breakdown of the amazing nodes included in this integration:
 - **Runware Image Caption**: Generate descriptive text from images for further workflow integration. 🖼️
 - **Runware IPAdapter**: Use reference images to guide the style and content of generated images. 🖌️
 - **Runware IPAdapters Combine**: Combine multiple IP-Adapter inputs for sophisticated image conditioning. 🔗
-
-🎬
-- **Runware Text to Video**: Generate videos from text prompts using advanced AI models. 🎥
-- **Runware Image to Video**: Create videos from reference images with optional text guidance. 🖼️➡️🎥
+- **Runware Video Inference**: Generate videos from text prompts using advanced AI models with support for frame images and reference images. 🎬
 
 ---
 

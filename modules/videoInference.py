@@ -2,6 +2,77 @@ from .utils import runwareUtils as rwUtils
 from .videoModelSearch import videoModelSearch
 
 
+class RunwareFrameImages:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {},
+            "optional": {
+                "image1": ("IMAGE", {
+                    "tooltip": "First frame image. When only one image is provided, it becomes the first frame automatically.",
+                }),
+                "frame1_position": (["auto", "first", "last"], {
+                    "default": "auto",
+                    "tooltip": "Position for the first image. 'auto' uses automatic distribution rules.",
+                }),
+                "image2": ("IMAGE", {
+                    "tooltip": "Second frame image. With two images, they become first and last frames automatically.",
+                }),
+                "frame2_position": (["auto", "first", "last"], {
+                    "default": "auto", 
+                    "tooltip": "Position for the second image. 'auto' uses automatic distribution rules.",
+                }),
+                "image3": ("IMAGE", {
+                    "tooltip": "Third frame image. Will be distributed between first and last frames.",
+                }),
+                "frame3_position": (["auto", "first", "last"], {
+                    "default": "auto",
+                    "tooltip": "Position for the third image. 'auto' uses automatic distribution rules.",
+                }),
+                "image4": ("IMAGE", {
+                    "tooltip": "Fourth frame image. Will be distributed between first and last frames.",
+                }),
+                "frame4_position": (["auto", "first", "last"], {
+                    "default": "auto",
+                    "tooltip": "Position for the fourth image. 'auto' uses automatic distribution rules.",
+                }),
+            }
+        }
+    
+    DESCRIPTION = "Configure frame images for video generation with precise positioning control. Supports automatic distribution or manual positioning."
+    FUNCTION = "create_frame_images"
+    RETURN_TYPES = ("RUNWAREFRAMEIMAGES",)
+    RETURN_NAMES = ("Frame Images",)
+    CATEGORY = "Runware"
+    
+    def create_frame_images(self, **kwargs):
+        frame_images = []
+        
+        # Process each image input
+        for i in range(1, 5):  # Support up to 4 images
+            image_key = f"image{i}"
+            position_key = f"frame{i}_position"
+            
+            image = kwargs.get(image_key)
+            position = kwargs.get(position_key, "auto")
+            
+            if image is not None:
+                # Upload image and get UUID
+                image_uuid = rwUtils.convertTensor2IMGForVideo(image)
+                image_url = f"https://im.runware.ai/image/ii/{image_uuid}.webp"
+                
+                frame_data = {
+                    "inputImage": image_url
+                }
+                
+                # Only add frame position if not auto
+                if position != "auto":
+                    frame_data["frame"] = position
+                
+                frame_images.append(frame_data)
+        
+        return (frame_images,)
+
 
 class txt2vid:
     @classmethod
@@ -58,26 +129,18 @@ class txt2vid:
                     "max": 30,
                 }),
                 "fps": ("INT", {
-                    "tooltip": "Frames per second for the generated video.",
+                    "tooltip": "Frames per second for the generated video. Only used when 'Use FPS' is enabled.",
                     "default": 24,
                     "min": 8,
                     "max": 60,
                 }),
+                "useFps": (["enable", "disabled"], {
+                    "tooltip": "Enable to include fps parameter in API request. Disable if your model doesn't support fps.",
+                    "default": "enable",
+                }),
                 "outputFormat": (["mp4", "webm", "mov"], {
                     "default": "mp4",
                     "tooltip": "Choose the output video format.",
-                }),
-                "batchSize": ("INT", {
-                    "tooltip": "The number of videos to generate in a single request.",
-                    "default": 1,
-                    "min": 1,
-                    "max": 4,
-                }),
-                "includeCost": ("BOOLEAN", {
-                    "tooltip": "Include cost information in the response.",
-                    "default": True,
-                    "label_on": "Enabled",
-                    "label_off": "Disabled",
                 }),
                 "seed": ("INT", {
                     "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Note: Only supported by Wan models.",
@@ -85,13 +148,19 @@ class txt2vid:
                     "min": 1,
                     "max": 9223372036854776000,
                 }),
+                "batchSize": ("INT", {
+                    "tooltip": "The number of videos to generate in a single request.",
+                    "default": 1,
+                    "min": 1,
+                    "max": 4,
+                }),
             },
             "optional": {
-                "firstImage": ("IMAGE", {
-                    "tooltip": "Image to use as the first frame of the video.",
+                "frameImages": ("RUNWAREFRAMEIMAGES", {
+                    "tooltip": "Frame images configuration from Runware Frame Images node. Allows precise control over frame positioning.",
                 }),
-                "lastImage": ("IMAGE", {
-                    "tooltip": "Image to use as the last frame of the video.",
+                "referenceImages": ("RUNWAREREFERENCEIMAGES", {
+                    "tooltip": "Connect a Runware Reference Images node to provide reference images for the subject. These reference images help the AI maintain identity consistency during the video generation process.",
                 }),
                 "providerSettings": ("DICT", {
                     "tooltip": "Provider-specific settings for video generation.",
@@ -122,16 +191,16 @@ class txt2vid:
         multiInferenceMode = kwargs.get("Multi Inference Mode", False)
         promptWeighting = kwargs.get("Prompt Weighting", "Disabled")
         providerSettings = kwargs.get("providerSettings", None)
-        firstImage = kwargs.get("firstImage", None)
-        lastImage = kwargs.get("lastImage", None)
+        frameImages = kwargs.get("frameImages", None)
+        referenceImages = kwargs.get("referenceImages", None)
         useCustomDimensions = kwargs.get("useCustomDimensions", False)
         customWidth = kwargs.get("width", 864)
         customHeight = kwargs.get("height", 480)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
+        useFps = kwargs.get("useFps", "enable")
         outputFormat = kwargs.get("outputFormat", "mp4")
         batchSize = kwargs.get("batchSize", 1)
-        includeCost = kwargs.get("includeCost", True)
         seed = kwargs.get("seed", 1)
         
         # Handle model input - could be dict or string
@@ -159,12 +228,15 @@ class txt2vid:
                 "height": height,
                 "width": width,
                 "model": model,
-                "fps": fps,
                 "outputFormat": outputFormat,
                 "numberResults": batchSize,
-                "includeCost": includeCost,
+                "includeCost": True,
             }
         ]
+        
+        # Add fps parameter only if enabled
+        if useFps == "enable":
+            genConfig[0]["fps"] = fps
         
         # Add duration parameter - unified for all models
         genConfig[0]["duration"] = duration
@@ -181,31 +253,14 @@ class txt2vid:
                 genConfig[0]["promptWeighting"] = "sdEmbeds"
             else:
                 genConfig[0]["promptWeighting"] = "compel"
-        # Build frameImages array from firstImage and lastImage parameters
-        frameImages = []
-        if (firstImage is not None):
-            # Force upload to get UUID for video frame images
-            firstImageUUID = rwUtils.convertTensor2IMGForVideo(firstImage)
-            # Construct full URL with PNG extension
-            firstImageURL = f"https://im.runware.ai/image/ii/{firstImageUUID}.webp"
-            print(f"[Debugging] First image URL: {firstImageURL}")
-            frameImages.append({
-                "inputImage": firstImageURL
-            })
-            
-        if (lastImage is not None):
-            # Force upload to get UUID for video frame images
-            lastImageUUID = rwUtils.convertTensor2IMGForVideo(lastImage)
-            # Construct full URL with PNG extension
-            lastImageURL = f"https://im.runware.ai/image/ii/{lastImageUUID}.webp"
-            print(f"[Debugging] Last image URL: {lastImageURL}")
-            frameImages.append({
-                "inputImage": lastImageURL
-            })
-            
-        if frameImages:
+        # Add frameImages if provided from Runware Frame Images node
+        if frameImages is not None and len(frameImages) > 0:
             genConfig[0]["frameImages"] = frameImages
             print(f"[Debugging] Frame images array: {frameImages}")
+        # Add referenceImages if provided from Runware Reference Images node
+        if referenceImages is not None and len(referenceImages) > 0:
+            genConfig[0]["referenceImages"] = referenceImages
+            print(f"[Debugging] Reference images array: {referenceImages}")
         if (providerSettings is not None):
             genConfig[0]["providerSettings"] = providerSettings
 
@@ -243,6 +298,20 @@ class txt2vid:
                 pollResult = rwUtils.pollVideoResult(taskUUID)
                 print(f"[Debugging] Poll result: {pollResult}")
                 
+                # Check for errors first
+                if pollResult and "errors" in pollResult and len(pollResult["errors"]) > 0:
+                    error_info = pollResult["errors"][0]
+                    error_message = error_info.get("message", "Unknown error")
+                    
+                    # Extract more detailed error info if available
+                    if "responseContent" in error_info:
+                        response_content = error_info["responseContent"]
+                        detailed_message = response_content.get("message", "")
+                        if detailed_message:
+                            error_message = f"{error_message}\nProvider Error: {detailed_message}"
+                    
+                    raise Exception(f"Video generation failed: {error_message}")
+                
                 if pollResult and "data" in pollResult and len(pollResult["data"]) > 0:
                     video_data = pollResult["data"][0]
                     
@@ -254,9 +323,20 @@ class txt2vid:
                             if "videoURL" in video_data or "videoBase64Data" in video_data:
                                 videos = rwUtils.convertVideoB64List(pollResult, width, height)
                                 return videos
-                        elif status != "processing":
-                            raise Exception(f"Video generation failed: {video_data.get('error', 'Unknown error')}")
+                        
                         # If status is "processing", continue polling
                 
                 # Wait before next poll
                 rwUtils.time.sleep(1) 
+
+
+# Node class mappings for ComfyUI registration
+NODE_CLASS_MAPPINGS = {
+    "RunwareFrameImages": RunwareFrameImages,
+    "txt2vid": txt2vid,
+}
+
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "RunwareFrameImages": "Runware Frame Images",
+    "txt2vid": "Runware Video Inference",
+}
