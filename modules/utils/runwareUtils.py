@@ -479,16 +479,22 @@ class VideoObject:
     
     def save_to(self, filename, **kwargs):
         """Save video to file by downloading from URL with retry logic"""
+        max_retries = 10
+        retry_delays = [2, 5, 10, 15, 20]  # Longer delays for video server issues
         
-        
-        while True:
+        for attempt in range(max_retries):
             try:
                 response = requests.get(self.video_url, stream=True, timeout=30)
-                print(response)
+                print(f"[Video Download] Attempt {attempt + 1}: {response}")
                
                 if response.status_code == 422:
-
-                    time.sleep(1)
+                    print(f"[Video Download] Server still processing, waiting...")
+                    time.sleep(retry_delays[min(attempt, len(retry_delays) - 1)])
+                    continue
+                    
+                if response.status_code == 502:
+                    print(f"[Video Download] Server error (502), retrying in {retry_delays[min(attempt, len(retry_delays) - 1)]} seconds...")
+                    time.sleep(retry_delays[min(attempt, len(retry_delays) - 1)])
                     continue
                 
                 response.raise_for_status()
@@ -497,10 +503,19 @@ class VideoObject:
                     for chunk in response.iter_content(chunk_size=8192):
                         f.write(chunk)
                 
+                print(f"[Video Download] Successfully downloaded video to {filename}")
                 return True
                 
+            except requests.exceptions.RequestException as e:
+                print(f"[Video Download] Attempt {attempt + 1} failed: {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delays[min(attempt, len(retry_delays) - 1)])
+                    continue
+                else:
+                    print(f"[Video Download] All {max_retries} attempts failed. Video URL: {self.video_url}")
+                    return False
             except Exception as e:
-                
+                print(f"[Video Download] Unexpected error: {e}")
                 return False
 
         return False
@@ -561,8 +576,8 @@ def pollVideoResult(taskUUID):
             return None
             
         if "errors" in pollResult:
-            print(f"[Debugging] Poll error: {pollResult['errors'][0]['message']}")
-            return None
+            print(f"[Debugging] Poll error: {pollResult}")
+            return pollResult
         else:
             return pollResult
     except Exception as e:

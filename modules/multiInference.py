@@ -46,7 +46,8 @@ class multiInference:
     def multiInference(self, **kwargs):
         tasksData = [kwargs.get(f"Task {i}", None) for i in range(1, 5)]
         validTasks = [task for task in tasksData if task is not None]
-
+        
+        
         if not validTasks:
             raise Exception("Error: No valid tasks provided for Multi Inference!")
 
