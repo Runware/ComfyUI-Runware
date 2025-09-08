@@ -128,15 +128,15 @@ class txt2vid:
                     "min": 1,
                     "max": 30,
                 }),
+                "useFps": ("BOOLEAN", {
+                    "tooltip": "Enable to include fps parameter in API request. Disable if your model doesn't support fps.",
+                    "default": True,
+                }),
                 "fps": ("INT", {
                     "tooltip": "Frames per second for the generated video. Only used when 'Use FPS' is enabled.",
                     "default": 24,
                     "min": 8,
                     "max": 60,
-                }),
-                "useFps": (["enable", "disabled"], {
-                    "tooltip": "Enable to include fps parameter in API request. Disable if your model doesn't support fps.",
-                    "default": "enable",
                 }),
                 "outputFormat": (["mp4", "webm", "mov"], {
                     "default": "mp4",
@@ -162,8 +162,8 @@ class txt2vid:
                 "referenceImages": ("RUNWAREREFERENCEIMAGES", {
                     "tooltip": "Connect a Runware Reference Images node to provide reference images for the subject. These reference images help the AI maintain identity consistency during the video generation process.",
                 }),
-                "providerSettings": ("DICT", {
-                    "tooltip": "Provider-specific settings for video generation.",
+                "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
+                    "tooltip": "Connect a Runware Provider Settings node to configure provider-specific parameters.",
                 }),
             }
         }
@@ -198,7 +198,7 @@ class txt2vid:
         customHeight = kwargs.get("height", 480)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
-        useFps = kwargs.get("useFps", "enable")
+        useFps = kwargs.get("useFps", True)
         outputFormat = kwargs.get("outputFormat", "mp4")
         batchSize = kwargs.get("batchSize", 1)
         seed = kwargs.get("seed", 1)
@@ -235,7 +235,7 @@ class txt2vid:
         ]
         
         # Add fps parameter only if enabled
-        if useFps == "enable":
+        if useFps:
             genConfig[0]["fps"] = fps
         
         # Add duration parameter - unified for all models
@@ -261,8 +261,22 @@ class txt2vid:
         if referenceImages is not None and len(referenceImages) > 0:
             genConfig[0]["referenceImages"] = referenceImages
             print(f"[Debugging] Reference images array: {referenceImages}")
-        if (providerSettings is not None):
-            genConfig[0]["providerSettings"] = providerSettings
+        # Handle providerSettings - extract provider name from model and merge with custom settings
+        if providerSettings is not None:
+            # Extract provider name from model (e.g., "pixverse:1@1" -> "pixverse")
+            provider_name = model.split(":")[0] if ":" in model else model
+            
+            # If providerSettings is a dictionary, create the correct API format
+            if isinstance(providerSettings, dict):
+                # Create the providerSettings object with provider name as key
+                final_provider_settings = {
+                    provider_name: providerSettings
+                }
+                genConfig[0]["providerSettings"] = final_provider_settings
+                print(f"[Debugging] Provider settings: {final_provider_settings}")
+            else:
+                # If it's just a string, use it directly
+                genConfig[0]["providerSettings"] = providerSettings
 
         if (multiInferenceMode):
             return (None, genConfig)

@@ -123,6 +123,13 @@ Here's a breakdown of the amazing nodes included in this integration:
 - **Runware IPAdapters Combine**: Combine multiple IP-Adapter inputs for sophisticated image conditioning. 🔗
 - **Runware Video Inference**: Generate videos from text prompts using advanced AI models with support for frame images and reference images. 🎬
 
+- **Runware Frame Images**: Configure keyframe images with precise positioning control for video generation. 🖼️➡️🎥
+- **Runware Reference Images**: Provide reference images for overall visual guidance in video generation. 🖼️
+
+- **Runware Pixverse Provider Settings**: Configure Pixverse-specific settings with effect, style, motion, and sound options. 🎬
+- **Runware OpenAI Provider Settings**: Configure OpenAI-specific settings with quality, background, and style options. 🤖
+
+
 ---
 
 ## 🤝 Support & Community

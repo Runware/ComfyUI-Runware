@@ -51,19 +51,27 @@ class txt2img:
                     "max": 2048,
                     "step": 64,
                 }),
+                "useSteps": ("BOOLEAN", {
+                    "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps (like nano banana).",
+                    "default": True,
+                }),
                 "steps": ("INT", {
                     "tooltip": "The number of steps is the number of iterations the model will perform to generate the image. Only used when 'Use Steps' is enabled.",
                     "default": 4,
                     "min": 1,
                     "max": 100,
                 }),
-                "useSteps": (["enable", "disabled"], {
-                    "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps (like nano banana).",
-                    "default": "enable",
+                "useScheduler": ("BOOLEAN", {
+                    "tooltip": "Enable to include scheduler parameter in API request. Disable if your model doesn't support scheduler.",
+                    "default": True,
                 }),
                 "scheduler": (['Default', 'DDIM', 'DDIMScheduler', 'DDPMScheduler', 'DEISMultistepScheduler', 'DPMSolverSinglestepScheduler', 'DPMSolverMultistepScheduler', 'DPMSolverMultistepInverse', 'DPM++', 'DPM++ Karras', 'DPM++ 2M', 'DPM++ 2M Karras', 'DPM++ 2M SDE Karras', 'DPM++ 2M SDE', 'DPM++ 3M', 'DPM++ 3M Karras', 'DPM++ SDE Karras', 'DPM++ SDE', 'EDMEulerScheduler', 'EDMDPMSolverMultistepScheduler', 'Euler', 'EulerDiscreteScheduler', 'Euler Karras', 'Euler a', 'EulerAncestralDiscreteScheduler', 'FlowMatchEulerDiscreteScheduler', 'Heun', 'HeunDiscreteScheduler', 'Heun Karras', 'IPNDMScheduler', 'KDPM2DiscreteScheduler', 'KDPM2AncestralDiscreteScheduler', 'LCM', 'LCMScheduler', 'LMS', 'LMSDiscreteScheduler', 'LMS Karras', 'PNDMScheduler', 'TCDScheduler', 'UniPC', 'UniPCMultistepScheduler', 'UniPC Karras', 'UniPC 2M', 'UniPC 2M Karras', 'UniPC 3M', 'UniPC 3M Karras'], {
                     "tooltip": "An scheduler is a component that manages the inference process. Different schedulers can be used to achieve different results like more detailed images, faster inference, or more accurate results.",
                     "default": "Default",
+                }),
+                "useCFGScale": ("BOOLEAN", {
+                    "tooltip": "Enable to include CFG scale parameter in API request. Disable if your model doesn't support CFG scale (like nano banana).",
+                    "default": True,
                 }),
                 "cfgScale": ("FLOAT", {
                     "tooltip": "Guidance scale represents how closely the images will resemble the prompt or how much freedom the AI model has. Only used when 'Use CFG Scale' is enabled.",
@@ -72,9 +80,9 @@ class txt2img:
                     "max": 50.0,
                     "step": 0.5,
                 }),
-                "useCFGScale": (["enable", "disabled"], {
-                    "tooltip": "Enable to include CFG scale parameter in API request. Disable if your model doesn't support CFG scale (like nano banana).",
-                    "default": "enable",
+                "useSeed": ("BOOLEAN", {
+                    "tooltip": "Enable to include seed parameter in API request. Disable if your model doesn't support seed.",
+                    "default": True,
                 }),
                 "seed": ("INT", {
                     "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
@@ -187,11 +195,13 @@ class txt2img:
         height = kwargs.get("height", 512)
         width = kwargs.get("width", 512)
         steps = kwargs.get("steps", 4)
-        useSteps = kwargs.get("useSteps", "enable")
+        useSteps = kwargs.get("useSteps", True)
         scheduler = kwargs.get("scheduler", "Default")
+        useScheduler = kwargs.get("useScheduler", True)
         cfgScale = kwargs.get("cfgScale", 6.5)
-        useCFGScale = kwargs.get("useCFGScale", "enable")
+        useCFGScale = kwargs.get("useCFGScale", True)
         seed = kwargs.get("seed")
+        useSeed = kwargs.get("useSeed", True)
         batchSize = kwargs.get("batchSize", 1)
         
         if (maskImage is not None and seedImage is None):
@@ -205,9 +215,7 @@ class txt2img:
                 "height": height,
                 "width": width,
                 "model": runwareModel,
-                "scheduler": scheduler,
                 "clipSkip": clipSkip,
-                "seed": seed,
                 "outputType": "base64Data",
                 "outputFormat": rwUtils.OUTPUT_FORMAT,
                 "outputQuality": rwUtils.OUTPUT_QUALITY,
@@ -218,11 +226,15 @@ class txt2img:
         # For Debugging Purposes Only
         print(f"[Debugging] Task UUID: {genConfig[0]['taskUUID']}")
 
-        # Add steps and CFGScale only if enabled
-        if useSteps == "enable":
+        # Add steps, CFGScale, seed, and scheduler only if enabled
+        if useSteps:
             genConfig[0]["steps"] = steps
-        if useCFGScale == "enable":
+        if useCFGScale:
             genConfig[0]["CFGScale"] = cfgScale
+        if useSeed:
+            genConfig[0]["seed"] = seed
+        if useScheduler:
+            genConfig[0]["scheduler"] = scheduler
 
         if (negativePrompt is not None and negativePrompt != ""):
             genConfig[0]["negativePrompt"] = negativePrompt

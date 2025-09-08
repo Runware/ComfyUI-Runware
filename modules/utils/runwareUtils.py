@@ -480,7 +480,7 @@ class VideoObject:
     def save_to(self, filename, **kwargs):
         """Save video to file by downloading from URL with retry logic"""
         max_retries = 10
-        retry_delays = [2, 5, 10, 15, 20]  # Longer delays for video server issues
+        retry_delays = [2, 5, 10, 15, 20]  # Longer delays for retries with larger videos
         
         for attempt in range(max_retries):
             try:
