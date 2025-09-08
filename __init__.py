@@ -32,7 +32,7 @@ from .modules.providerSettings import RunwareProviderSettings
 from .modules.pixverseProviderSettings import RunwarePixverseProviderSettings
 from .modules.openaiProviderSettings import RunwareOpenAIProviderSettings
 
-RUNWARE_COMFYUI_VERSION = "1.3.0 Beta"
+RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
