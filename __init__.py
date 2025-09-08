@@ -28,6 +28,9 @@ from .modules.referenceImages import referenceImages
 from .modules.videoInference import txt2vid
 from .modules.videoModelSearch import videoModelSearch
 from .modules.frameImages import RunwareFrameImages
+from .modules.providerSettings import RunwareProviderSettings
+from .modules.pixverseProviderSettings import RunwarePixverseProviderSettings
+from .modules.openaiProviderSettings import RunwareOpenAIProviderSettings
 
 RUNWARE_COMFYUI_VERSION = "1.3.0 Beta"
 
@@ -70,6 +73,9 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inference": txt2vid,
     "Runware Video Model Search": videoModelSearch,
     "Runware Frame Images": RunwareFrameImages,
+    "Runware Provider Settings": RunwareProviderSettings,
+    "Runware Pixverse Provider Settings": RunwarePixverseProviderSettings,
+    "Runware OpenAI Provider Settings": RunwareOpenAIProviderSettings,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
