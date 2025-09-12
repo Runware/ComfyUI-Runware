@@ -1,5 +1,6 @@
 from .utils import runwareUtils as rwUtils
 from .videoModelSearch import videoModelSearch
+import json
 
 
 class RunwareFrameImages:
@@ -282,7 +283,16 @@ class txt2vid:
             return (None, genConfig)
         else:
             try:
+                # Debug: Print the request being sent
+                print(f"[DEBUG] Sending Video Inference Request:")
+                print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+                
                 genResult = rwUtils.inferenecRequest(genConfig)
+                
+                # Debug: Print the response received
+                print(f"[DEBUG] Received Video Inference Response:")
+                print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+                
                 print(f"[Debugging] Generation config: {genConfig}")
             except Exception as e:
                 # Check if it's a dimension error and provide helpful information

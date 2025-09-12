@@ -31,8 +31,9 @@ from .modules.frameImages import RunwareFrameImages
 from .modules.providerSettings import RunwareProviderSettings
 from .modules.pixverseProviderSettings import RunwarePixverseProviderSettings
 from .modules.openaiProviderSettings import RunwareOpenAIProviderSettings
+from .modules.bytedanceImageProviderSettings import RunwareBytedanceProviderSettings
 
-RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
+RUNWARE_COMFYUI_VERSION = "1.3.0 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -76,6 +77,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Provider Settings": RunwareProviderSettings,
     "Runware Pixverse Provider Settings": RunwarePixverseProviderSettings,
     "Runware OpenAI Provider Settings": RunwareOpenAIProviderSettings,
+    "Runware Bytedance Provider Settings": RunwareBytedanceProviderSettings,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
