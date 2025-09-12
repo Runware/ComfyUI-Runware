@@ -69,7 +69,7 @@ def getTimeout():
     if timeout and timeout.isdigit():
         return int(timeout)
     else:
-        timeout = 90
+        timeout = 180
         os.environ["RUNWARE_TIMEOUT"] = str(timeout)
         return timeout
 
