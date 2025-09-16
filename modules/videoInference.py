@@ -166,6 +166,9 @@ class txt2vid:
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Connect a Runware Provider Settings node to configure provider-specific parameters.",
                 }),
+                "inputAudios": ("RUNWAREINPUTAUDIOS", {
+                    "tooltip": "Connect input audio files for video generation with audio synchronization.",
+                }),
             }
         }
 
@@ -194,6 +197,7 @@ class txt2vid:
         providerSettings = kwargs.get("providerSettings", None)
         frameImages = kwargs.get("frameImages", None)
         referenceImages = kwargs.get("referenceImages", None)
+        inputAudios = kwargs.get("inputAudios", None)
         useCustomDimensions = kwargs.get("useCustomDimensions", False)
         customWidth = kwargs.get("width", 864)
         customHeight = kwargs.get("height", 480)
@@ -262,6 +266,10 @@ class txt2vid:
         if referenceImages is not None and len(referenceImages) > 0:
             genConfig[0]["referenceImages"] = referenceImages
             print(f"[Debugging] Reference images array: {referenceImages}")
+        # Add inputAudios if provided
+        if inputAudios is not None and len(inputAudios) > 0:
+            genConfig[0]["inputAudios"] = inputAudios
+            print(f"[Debugging] Input audios array: {inputAudios}")
         # Handle providerSettings - extract provider name from model and merge with custom settings
         if providerSettings is not None:
             # Extract provider name from model (e.g., "pixverse:1@1" -> "pixverse")
