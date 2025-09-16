@@ -1,4 +1,5 @@
 from .utils import runwareUtils as rwUtils
+import json
 
 
 class txt2img:
@@ -153,6 +154,12 @@ class txt2img:
                 "VAE": ("RUNWAREVAE", {
                     "tooltip": "Connect a Runware VAE Node to help the model generate images that align with the desired structure.",
                 }),
+                "referenceImages": ("RUNWAREREFERENCEIMAGES", {
+                    "tooltip": "Connect a Runware Reference Images Node to provide visual guidance for image generation.",
+                }),
+                "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
+                    "tooltip": "Connect a Runware Provider Settings Node to configure provider-specific parameters.",
+                }),
             }
         }
 
@@ -186,6 +193,8 @@ class txt2img:
         runwareRefiner = kwargs.get("Refiner", None)
         runwareEmbedding = kwargs.get("Embeddings", None)
         runwareVAE = kwargs.get("VAE", None)
+        referenceImages = kwargs.get("referenceImages", None)
+        providerSettings = kwargs.get("providerSettings", None)
         seedImage = kwargs.get("seedImage", None)
         seedImageStrength = kwargs.get("strength", 0.8)
         maskImage = kwargs.get("maskImage", None)
@@ -278,9 +287,38 @@ class txt2img:
                 if (enableMaskMargin):
                     genConfig[0]["maskMargin"] = maskImageMargin
 
+        # Handle referenceImages
+        if referenceImages is not None:
+            genConfig[0]["referenceImages"] = referenceImages
+
+        # Handle providerSettings - extract provider name from model and merge with custom settings
+        if providerSettings is not None:
+            # Extract provider name from model (e.g., "bytedance:1@1" -> "bytedance")
+            provider_name = runwareModel.split(":")[0] if ":" in runwareModel else runwareModel
+            
+            # If providerSettings is a dictionary, create the correct API format
+            if isinstance(providerSettings, dict):
+                # Create the providerSettings object with provider name as key
+                final_provider_settings = {
+                    provider_name: providerSettings
+                }
+                genConfig[0]["providerSettings"] = final_provider_settings
+            else:
+                # If it's already in the correct format, use it directly
+                genConfig[0]["providerSettings"] = providerSettings
+
         if (multiInferenceMode):
             return (None, genConfig)
         else:
+            # Debug: Print the request being sent
+            print(f"[DEBUG] Sending Image Inference Request:")
+            print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+            
             genResult = rwUtils.inferenecRequest(genConfig)
+            
+            # Debug: Print the response received
+            print(f"[DEBUG] Received Image Inference Response:")
+            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+            
             images = rwUtils.convertImageB64List(genResult)
             return (images, None)
