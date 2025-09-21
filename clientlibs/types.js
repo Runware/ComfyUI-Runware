@@ -76,6 +76,16 @@ const RUNWARE_NODE_TYPES = {
     REFERENCEIMAGES: "Runware Reference Images",
     VIDEOINFERENCE: "Runware Video Inference",
     VIDEOMODELSEARCH: "Runware Video Model Search",
+    FRAMEIMAGES: "Runware Frame Images",
+    AUDIOINFERENCE: "Runware Audio Inference",
+    AUDIOMODELSEARCH: "Runware Audio Model Search",
+    AUDIOSECTIONS: "Runware Audio Sections",
+    PROVIDERSETTINGS: "Runware Provider Settings",
+    PIXVERSEPROVIDERSETTINGS: "Runware Pixverse Provider Settings",
+    OPENAIPROVIDERSETTINGS: "Runware OpenAI Provider Settings",
+    BYTEDANCEPROVIDERSETTINGS: "Runware Bytedance Provider Settings",
+    ELEVENLABSPROVIDERSETTINGS: "Runware ElevenLabs Provider Settings",
+    ELEVENLABSPROVIDERSETTINGSSECTIONS: "Runware ElevenLabs Provider Settings Sections",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -197,6 +207,46 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.VIDEOMODELSEARCH]: {
         bgColor: DEFAULT_BGCOLOR,
         liveSearch: true,
+    },
+    [RUNWARE_NODE_TYPES.FRAMEIMAGES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOINFERENCE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        promptEnhancer: true,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOMODELSEARCH]: {
+        bgColor: DEFAULT_BGCOLOR,
+        liveSearch: true,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOSECTIONS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.PROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.PIXVERSEPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.OPENAIPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.BYTEDANCEPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.ELEVENLABSPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.ELEVENLABSPROVIDERSETTINGSSECTIONS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
 };
 
