@@ -32,8 +32,13 @@ from .modules.providerSettings import RunwareProviderSettings
 from .modules.pixverseProviderSettings import RunwarePixverseProviderSettings
 from .modules.openaiProviderSettings import RunwareOpenAIProviderSettings
 from .modules.bytedanceImageProviderSettings import RunwareBytedanceProviderSettings
+from .modules.audioInference import RunwareAudioInference
+from .modules.audioModelSearch import RunwareAudioModelSearch
+from .modules.audioSections import RunwareAudioSections
+from .modules.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
+from .modules.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
 
-RUNWARE_COMFYUI_VERSION = "1.3.0 Beta"
+RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
 RESET_COLOR = "\033[0m"
 BLUE_COLOR = "\033[94m"
@@ -78,6 +83,11 @@ NODE_CLASS_MAPPINGS = {
     "Runware Pixverse Provider Settings": RunwarePixverseProviderSettings,
     "Runware OpenAI Provider Settings": RunwareOpenAIProviderSettings,
     "Runware Bytedance Provider Settings": RunwareBytedanceProviderSettings,
+    "Runware Audio Inference": RunwareAudioInference,
+    "Runware Audio Model Search": RunwareAudioModelSearch,
+    "Runware Audio Sections": RunwareAudioSections,
+    "Runware ElevenLabs Provider Settings": RunwareElevenLabsProviderSettings,
+    "Runware ElevenLabs Provider Settings Sections": RunwareElevenLabsProviderSettingsSections,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -87,6 +97,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware VAE Search": "Runware VAE",
     "Runware Multi Inference": "Runware Multi Inference [BETA]",
     "Runware Video Model Search": "Runware Video Model",
+    "Runware Audio Model Search": "Runware Audio Model",
 }
 
 WEB_DIRECTORY = "./clientlibs"

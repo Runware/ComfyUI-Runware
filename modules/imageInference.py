@@ -31,12 +31,12 @@ class txt2img:
                     "tooltip": "Prompt weighting allows you to adjust how strongly different parts of your prompt influence the generated image.\n\nChoose between \"compel\" notation with advanced weighting operations or \"sdEmbeds\" for simple emphasis adjustments.\n\nCompel Example: \"small+ dog, pixar style\"\n\nsdEmbeds Example: \"(small:2.5) dog, pixar style\"",
                 }),
                 "dimensions": ([
-                    "None", "Square (512x512)", "Square HD (1024x1024)", "Portrait 3:4 (768x1024)",
+                    "Square (512x512)", "Square HD (1024x1024)", "Portrait 3:4 (768x1024)",
                     "Portrait 9:16 (576x1024)", "Landscape 4:3 (1024x768)",
                     "Landscape 16:9 (1024x576)", "Custom"
                 ], {
                     "default": "Square (512x512)",
-                    "tooltip": "Adjust the dimensions of the generated image by specifying its width and height in pixels, or select from the predefined options. Image dimensions must be multiples of 64 (e.g., 512x512, 1024x768). Select 'None' to let the model determine dimensions automatically.",
+                    "tooltip": "Adjust the dimensions of the generated image by specifying its width and height in pixels, or select from the predefined options. Image dimensions must be multiples of 64 (e.g., 512x512, 1024x768).",
                 }),
                 "width": ("INT", {
                     "tooltip": "The Width of the image in pixels.",
@@ -91,12 +91,8 @@ class txt2img:
                     "min": 1,
                     "max": 9223372036854776000,
                 }),
-                "useClipSkip": ("BOOLEAN", {
-                    "tooltip": "Enable to include clipSkip parameter in API request. Disable if your model doesn't support clipSkip.",
-                    "default": True,
-                }),
                 "clipSkip": ("INT", {
-                    "tooltip": "Enables skipping layers of the CLIP embedding process, leading to quicker and more varied image generation. Only used when 'Use Clip Skip' is enabled.",
+                    "tooltip": "Enables skipping layers of the CLIP embedding process, leading to quicker and more varied image generation.",
                     "default": 0,
                     "min": 0,
                     "max": 2,
@@ -215,8 +211,6 @@ class txt2img:
         useCFGScale = kwargs.get("useCFGScale", True)
         seed = kwargs.get("seed")
         useSeed = kwargs.get("useSeed", True)
-        useClipSkip = kwargs.get("useClipSkip", True)
-        dimensions = kwargs.get("dimensions", "Square (512x512)")
         batchSize = kwargs.get("batchSize", 1)
         
         if (maskImage is not None and seedImage is None):
@@ -227,7 +221,10 @@ class txt2img:
                 "taskType": "imageInference",
                 "taskUUID": rwUtils.genRandUUID(),
                 "positivePrompt": positivePrompt,
+                "height": height,
+                "width": width,
                 "model": runwareModel,
+                "clipSkip": clipSkip,
                 "outputType": "base64Data",
                 "outputFormat": rwUtils.OUTPUT_FORMAT,
                 "outputQuality": rwUtils.OUTPUT_QUALITY,
@@ -238,7 +235,7 @@ class txt2img:
         # For Debugging Purposes Only
         print(f"[Debugging] Task UUID: {genConfig[0]['taskUUID']}")
 
-        # Add steps, CFGScale, seed, scheduler, clipSkip, and dimensions only if enabled
+        # Add steps, CFGScale, seed, and scheduler only if enabled
         if useSteps:
             genConfig[0]["steps"] = steps
         if useCFGScale:
@@ -247,11 +244,6 @@ class txt2img:
             genConfig[0]["seed"] = seed
         if useScheduler:
             genConfig[0]["scheduler"] = scheduler
-        if useClipSkip:
-            genConfig[0]["clipSkip"] = clipSkip
-        if dimensions != "None":
-            genConfig[0]["width"] = width
-            genConfig[0]["height"] = height
 
         if (negativePrompt is not None and negativePrompt != ""):
             genConfig[0]["negativePrompt"] = negativePrompt
