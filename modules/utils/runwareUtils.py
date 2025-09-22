@@ -240,6 +240,7 @@ def sendImageCaption(captionText, nodeID):
             "success": True,
             "captionText": captionText,
             "nodeID": nodeID,
+            "widgetName": "imageCaption",  # Target the new imageCaption widget
         },
     )
 
@@ -274,6 +275,7 @@ def inferenecRequest(genConfig):
             print(f"[Debugging] Runware Raw Response Content: {genResult.content}")
             raise Exception("Error: Invalid JSON response from API!")
         if "errors" in genResult:
+            print(f"[DEBUG] API Error Response: {genResult}")
             raise Exception(genResult["errors"][0]["message"])
         else:
             return genResult
