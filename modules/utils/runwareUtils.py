@@ -240,6 +240,7 @@ def sendImageCaption(captionText, nodeID):
             "success": True,
             "captionText": captionText,
             "nodeID": nodeID,
+            "widgetName": "imageCaption",  # Target the new imageCaption widget
         },
     )
 

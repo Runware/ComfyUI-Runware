@@ -44,11 +44,15 @@ function captionNodeHandler(msgEvent) {
     const captionData = msgEvent.detail;
     const captionText = captionData.captionText;
     const captionNodeID = parseInt(captionData.nodeID);
+    
     if(captionData.success) {
         const captionNode = app.graph.getNodeById(captionNodeID);
-        if(captionNode !== null || captionNode !== undefined) {
-            const captionInput = captionNode.widgets[1].inputEl;
-            captionInput.value = captionText;
+        if(captionNode !== null && captionNode !== undefined) {
+            // Find the imageCaption widget specifically
+            const imageCaptionWidget = captionNode.widgets.find(widget => widget.name === "imageCaption");
+            if(imageCaptionWidget && imageCaptionWidget.inputEl) {
+                imageCaptionWidget.inputEl.value = captionText;
+            }
         }
     }
     return false;
