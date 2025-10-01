@@ -86,6 +86,7 @@ const RUNWARE_NODE_TYPES = {
     BYTEDANCEPROVIDERSETTINGS: "Runware Bytedance Provider Settings",
     ELEVENLABSPROVIDERSETTINGS: "Runware ElevenLabs Provider Settings",
     ELEVENLABSPROVIDERSETTINGSSECTIONS: "Runware ElevenLabs Provider Settings Sections",
+    VIDUPROVIDERSETTINGS: "Runware Vidu Provider Settings",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -245,6 +246,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.ELEVENLABSPROVIDERSETTINGSSECTIONS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDUPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
