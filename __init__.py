@@ -9,8 +9,6 @@ from .modules.controlNet import controlNet
 from .modules.multiInference import multiInference
 from .modules.runwareBFL import runwareKontext
 from .modules.runwareImagen import runwareImagen
-from .modules.teaCache import teaCache
-from .modules.deepCache import deepCache
 from .modules.loraSearch import loraSearch
 from .modules.loraCombine import loraCombine
 from .modules.refiner import refiner
@@ -37,6 +35,7 @@ from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.audioSections import RunwareAudioSections
 from .modules.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
 from .modules.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
+from .modules.acceleratorOptions import acceleratorOptions
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -59,8 +58,6 @@ NODE_CLASS_MAPPINGS = {
     "Runware Kontext Inference": runwareKontext,
     "Runware Imagen Inference": runwareImagen,
     "Runware Multi Inference": multiInference,
-    "Runware TeaCache": teaCache,
-    "Runware DeepCache": deepCache,
     "Runware Lora Search": loraSearch,
     "Runware Embedding Search": embeddingSearch,
     "Runware VAE Search": vaeSearch,
@@ -88,6 +85,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Audio Sections": RunwareAudioSections,
     "Runware ElevenLabs Provider Settings": RunwareElevenLabsProviderSettings,
     "Runware ElevenLabs Provider Settings Sections": RunwareElevenLabsProviderSettingsSections,
+    "Runware Accelerator Options": acceleratorOptions,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
