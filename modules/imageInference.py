@@ -129,7 +129,7 @@ class txt2img:
             },
             "optional": {
                 "Accelerator": ("RUNWAREACCELERATOR", {
-                    "tooltip": "Connect a Runware Accelerator Node (TeaCache, DeepCache) to speed up the image generation process.",
+                    "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
                 }),
                 "Lora": ("RUNWARELORA", {
                     "tooltip": "Connect a Runware Lora From Lora Search Node Or Lora Combine For Multiple Lora's Together.",
@@ -260,7 +260,7 @@ class txt2img:
                 genConfig[0]["promptWeighting"] = "sdEmbeds"
             else:
                 genConfig[0]["promptWeighting"] = "compel"
-        if(runwareAccelerator is not None):
+        if (runwareAccelerator is not None):
             genConfig[0]["acceleratorOptions"] = runwareAccelerator
         if (runwareLora is not None):
             if (isinstance(runwareLora, list)):
