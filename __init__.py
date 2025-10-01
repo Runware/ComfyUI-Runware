@@ -36,6 +36,7 @@ from .modules.audioSections import RunwareAudioSections
 from .modules.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
 from .modules.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
 from .modules.acceleratorOptions import acceleratorOptions
+from .modules.viduProviderSettings import RunwareViduProviderSettings
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -86,6 +87,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware ElevenLabs Provider Settings": RunwareElevenLabsProviderSettings,
     "Runware ElevenLabs Provider Settings Sections": RunwareElevenLabsProviderSettingsSections,
     "Runware Accelerator Options": acceleratorOptions,
+    "Runware Vidu Provider Settings": RunwareViduProviderSettings,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
