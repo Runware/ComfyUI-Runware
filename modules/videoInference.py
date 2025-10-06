@@ -144,9 +144,9 @@ class txt2vid:
                     "tooltip": "Choose the output video format.",
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Note: Only supported by Wan models.",
-                    "default": rwUtils.genRandSeed(),
-                    "min": 1,
+                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Leave empty or 0 to auto-generate. Note: Only supported by Wan models.",
+                    "default": 0,
+                    "min": 0,
                     "max": 9223372036854776000,
                 }),
                 "batchSize": ("INT", {
