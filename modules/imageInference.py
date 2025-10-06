@@ -87,7 +87,7 @@ class txt2img:
                 }),
                 "seed": ("INT", {
                     "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
-                    "default": rwUtils.genRandSeed(),
+                    "default": 0,
                     "min": 1,
                     "max": 9223372036854776000,
                 }),
