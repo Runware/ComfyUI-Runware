@@ -1,6 +1,7 @@
 from .utils import runwareUtils as rwUtils
 from .videoModelSearch import videoModelSearch
 import json
+import comfy.model_management
 
 
 class RunwareFrameImages:
@@ -325,6 +326,8 @@ class txt2vid:
             
             # Poll for video completion
             while True:
+                # Check for interrupt before each poll
+                comfy.model_management.throw_exception_if_processing_interrupted()
                 
                 # Poll for video result
                 pollResult = rwUtils.pollVideoResult(taskUUID)
@@ -358,8 +361,13 @@ class txt2vid:
                         
                         # If status is "processing", continue polling
                 
-                # Wait before next poll
-                rwUtils.time.sleep(1) 
+                # Check for interrupt before waiting
+                comfy.model_management.throw_exception_if_processing_interrupted()
+                
+                # Wait before next poll (split into smaller chunks to allow more frequent interrupt checks)
+                for _ in range(10):  # 10 x 0.1 second = 1 second total
+                    comfy.model_management.throw_exception_if_processing_interrupted()
+                    rwUtils.time.sleep(0.1) 
 
 
 # Node class mappings for ComfyUI registration
