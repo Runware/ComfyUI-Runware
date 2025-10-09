@@ -33,7 +33,14 @@ class txt2img:
                 "dimensions": ([
                     "None", "Square (512x512)", "Square HD (1024x1024)", "Portrait 3:4 (768x1024)",
                     "Portrait 9:16 (576x1024)", "Landscape 4:3 (1024x768)",
-                    "Landscape 16:9 (1024x576)", "Custom"
+                    "Landscape 16:9 (1024x576)",
+                    "2K Square 1:1 (2048x2048)", "2K 4:3 (2304x1728)", "2K 3:4 (1728x2304)",
+                    "2K 16:9 (2560x1440)", "2K 9:16 (1440x2560)", "2K 3:2 (2496x1664)",
+                    "2K 2:3 (1664x2496)", "2K 21:9 (3024x1296)",
+                    "4K Square 1:1 (4096x4096)", "4K 4:3 (4608x3456)", "4K 3:4 (3456x4608)",
+                    "4K 16:9 (5120x2880)", "4K 9:16 (2880x5120)", "4K 3:2 (4992x3328)",
+                    "4K 2:3 (3328x4992)", "4K 21:9 (6048x2592)",
+                    "Custom"
                 ], {
                     "default": "Square (512x512)",
                     "tooltip": "Adjust the dimensions of the generated image by specifying its width and height in pixels, or select from the predefined options. Image dimensions must be multiples of 64 (e.g., 512x512, 1024x768). Select 'None' to let the model determine dimensions automatically.",
@@ -42,14 +49,14 @@ class txt2img:
                     "tooltip": "The Width of the image in pixels.",
                     "default": 512,
                     "min": 128,
-                    "max": 2048,
+                    "max": 6048,
                     "step": 64,
                 }),
                 "height": ("INT", {
                     "tooltip": "The Height of the image in pixels.",
                     "default": 512,
                     "min": 128,
-                    "max": 2048,
+                    "max": 5120,
                     "step": 64,
                 }),
                 "useSteps": ("BOOLEAN", {
