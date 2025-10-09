@@ -50,14 +50,14 @@ class txt2img:
                     "default": 512,
                     "min": 128,
                     "max": 6048,
-                    "step": 64,
+                    "step": 1,
                 }),
                 "height": ("INT", {
                     "tooltip": "The Height of the image in pixels.",
                     "default": 512,
                     "min": 128,
-                    "max": 5120,
-                    "step": 64,
+                    "max": 6048,
+                    "step": 1,
                 }),
                 "useSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps (like nano banana).",
@@ -93,8 +93,8 @@ class txt2img:
                     "default": True,
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
-                    "default": 0,
+                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value. Random seeds are generated as 32-bit values for platform compatibility.",
+                    "default": 1,
                     "min": 1,
                     "max": 9223372036854776000,
                 }),
