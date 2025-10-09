@@ -33,7 +33,8 @@ class txt2img:
                 "dimensions": ([
                     "None", "Square (512x512)", "Square HD (1024x1024)", "Portrait 3:4 (768x1024)",
                     "Portrait 9:16 (576x1024)", "Landscape 4:3 (1024x768)",
-                    "Landscape 16:9 (1024x576)", "Custom"
+                    "Landscape 16:9 (1024x576)",
+                    "Custom"
                 ], {
                     "default": "Square (512x512)",
                     "tooltip": "Adjust the dimensions of the generated image by specifying its width and height in pixels, or select from the predefined options. Image dimensions must be multiples of 64 (e.g., 512x512, 1024x768). Select 'None' to let the model determine dimensions automatically.",
@@ -42,15 +43,15 @@ class txt2img:
                     "tooltip": "The Width of the image in pixels.",
                     "default": 512,
                     "min": 128,
-                    "max": 2048,
-                    "step": 64,
+                    "max": 6048,
+                    "step": 1,
                 }),
                 "height": ("INT", {
                     "tooltip": "The Height of the image in pixels.",
                     "default": 512,
                     "min": 128,
-                    "max": 2048,
-                    "step": 64,
+                    "max": 6048,
+                    "step": 1,
                 }),
                 "useSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps (like nano banana).",
@@ -86,8 +87,8 @@ class txt2img:
                     "default": True,
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
-                    "default": 0,
+                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value. Random seeds are generated as 32-bit values for platform compatibility.",
+                    "default": 1,
                     "min": 1,
                     "max": 9223372036854776000,
                 }),
