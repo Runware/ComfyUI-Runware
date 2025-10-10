@@ -121,6 +121,10 @@ class txt2img:
                     "min": 32,
                     "max": 128,
                 }),
+                "outputFormat": (["WEBP", "PNG", "JPEG", "SVG"], {
+                    "tooltip": "Choose the output image format.",
+                    "default": "WEBP",
+                }),
                 "batchSize": ("INT", {
                     "tooltip": "The number of images to generate in a single request.",
                     "default": 1,
@@ -218,6 +222,7 @@ class txt2img:
         useSeed = kwargs.get("useSeed", True)
         useClipSkip = kwargs.get("useClipSkip", True)
         dimensions = kwargs.get("dimensions", "Square (512x512)")
+        outputFormat = kwargs.get("outputFormat", "WEBP")
         batchSize = kwargs.get("batchSize", 1)
         
         if (maskImage is not None and seedImage is None):
@@ -230,7 +235,7 @@ class txt2img:
                 "positivePrompt": positivePrompt,
                 "model": runwareModel,
                 "outputType": "base64Data",
-                "outputFormat": rwUtils.OUTPUT_FORMAT,
+                "outputFormat": outputFormat,
                 "outputQuality": rwUtils.OUTPUT_QUALITY,
                 "numberResults": batchSize,
             }

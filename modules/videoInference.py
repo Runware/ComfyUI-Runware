@@ -144,10 +144,14 @@ class txt2vid:
                     "default": "mp4",
                     "tooltip": "Choose the output video format.",
                 }),
+                "useSeed": ("BOOLEAN", {
+                    "tooltip": "Enable to include seed parameter in API request. Disable if your model doesn't support seed.",
+                    "default": True,
+                }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Leave empty or 0 to auto-generate. Note: Only supported by Wan models.",
-                    "default": 0,
-                    "min": 0,
+                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Leave empty or 0 to auto-generate.",
+                    "default": 1,
+                    "min": 1,
                     "max": 9223372036854776000,
                 }),
                 "batchSize": ("INT", {
@@ -208,6 +212,7 @@ class txt2vid:
         outputFormat = kwargs.get("outputFormat", "mp4")
         batchSize = kwargs.get("batchSize", 1)
         seed = kwargs.get("seed", 1)
+        useSeed = kwargs.get("useSeed", True)
         
         # Handle model input - could be dict or string
         if isinstance(runwareVideoModel, dict):
@@ -247,9 +252,9 @@ class txt2vid:
         # Add duration parameter - unified for all models
         genConfig[0]["duration"] = duration
         
-        # Add seed parameter only for supported models
+        # Add seed parameter only if enabled
         
-        if model in videoModelSearch.SEED_SUPPORTED_MODELS:
+        if useSeed:
             genConfig[0]["seed"] = seed
 
         if (negativePrompt is not None and negativePrompt != ""):
@@ -341,11 +346,20 @@ class txt2vid:
                     # Extract more detailed error info if available
                     if "responseContent" in error_info:
                         response_content = error_info["responseContent"]
-                        detailed_message = response_content.get("message", "")
+                        # Handle both string and dict response content
+                        if isinstance(response_content, str):
+                            detailed_message = response_content
+                        elif isinstance(response_content, dict):
+                            detailed_message = response_content.get("message", str(response_content))
+                        else:
+                            detailed_message = str(response_content)
+                        
                         if detailed_message:
                             error_message = f"{error_message}\nProvider Error: {detailed_message}"
                     
-                    raise Exception(f"Video generation failed: {error_message}")
+                    # Include taskUUID for debugging
+                    task_uuid = error_info.get("taskUUID", "unknown")
+                    raise Exception(f"Video generation failed (Task: {task_uuid}): {error_message}")
                 
                 if pollResult and "data" in pollResult and len(pollResult["data"]) > 0:
                     video_data = pollResult["data"][0]
