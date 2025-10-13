@@ -303,7 +303,11 @@ class txt2img:
 
         # Handle referenceImages
         if referenceImages is not None:
-            genConfig[0]["referenceImages"] = referenceImages
+            # Check if model is sourceful - use different structure
+            if runwareModel.startswith("sourceful"):
+                genConfig[0]["inputs"] = {"references": referenceImages}
+            else:
+                genConfig[0]["referenceImages"] = referenceImages
 
         # Handle providerSettings - extract provider name from model and merge with custom settings
         if providerSettings is not None:
