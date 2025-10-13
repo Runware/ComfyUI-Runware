@@ -43,6 +43,10 @@ class videoModelSearch:
             "runware:200@1 (Wan 2.1 1.3B)",
             "runware:200@2 (Wan 2.1 14B)",
         ],
+        "OpenAI": [
+            "openai:3@1 (OpenAI Sora 3.1)",
+            "openai:3@0 (OpenAI Sora 3.0)",
+        ],
     }
     
     # Model dimensions mapping
@@ -88,13 +92,12 @@ class videoModelSearch:
         # Wan Models
         "runware:200@1": {"width": 853, "height": 480}, # Wan 2.1 1.3B
         "runware:200@2": {"width": 853, "height": 480}, # Wan 2.1 14B
+        
+        # OpenAI Models
+        "openai:3@1": {"width": 1280, "height": 720}, # OpenAI Sora 3.1
+        "openai:3@0": {"width": 1280, "height": 720}, # OpenAI Sora 3.0
     }
     
-    # Models that support seed parameter
-    SEED_SUPPORTED_MODELS = [
-        "runware:200@1",  # Wan 2.1 1.3B
-        "runware:200@2",  # Wan 2.1 14B
-    ]
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -116,7 +119,8 @@ class videoModelSearch:
                         "MiniMax",
                         "PixVerse",
                         "Vidu",
-                        "Wan"
+                        "Wan",
+                        "OpenAI"
                     ], {
                     "tooltip": "Choose Video Model Architecture To Filter Results.",
                     "default": "KlingAI",
