@@ -74,6 +74,7 @@ const RUNWARE_NODE_TYPES = {
     EMBEDDINGCOMBINE: "Runware Embedding Combine",
     VAE: "Runware VAE Search",
     REFERENCEIMAGES: "Runware Reference Images",
+    IMAGEINFERENCEINPUTS: "Runware Image Inference Inputs",
     VIDEOINFERENCE: "Runware Video Inference",
     VIDEOMODELSEARCH: "Runware Video Model Search",
     FRAMEIMAGES: "Runware Frame Images",
