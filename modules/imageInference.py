@@ -166,6 +166,9 @@ class txt2img:
                 "referenceImages": ("RUNWAREREFERENCEIMAGES", {
                     "tooltip": "Connect a Runware Reference Images Node to provide visual guidance for image generation.",
                 }),
+                "inputs": ("RUNWAREIMAGEINFERENCEINPUTS", {
+                    "tooltip": "Connect a Runware Image Inference Inputs Node to provide custom inputs like references for the inference process.",
+                }),
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Connect a Runware Provider Settings Node to configure provider-specific parameters.",
                 }),
@@ -203,6 +206,7 @@ class txt2img:
         runwareEmbedding = kwargs.get("Embeddings", None)
         runwareVAE = kwargs.get("VAE", None)
         referenceImages = kwargs.get("referenceImages", None)
+        inputs = kwargs.get("inputs", None)
         providerSettings = kwargs.get("providerSettings", None)
         seedImage = kwargs.get("seedImage", None)
         seedImageStrength = kwargs.get("strength", 0.8)
@@ -303,11 +307,11 @@ class txt2img:
 
         # Handle referenceImages
         if referenceImages is not None:
-            # Check if model is sourceful - use different structure
-            if runwareModel.startswith("sourceful"):
-                genConfig[0]["inputs"] = {"references": referenceImages}
-            else:
-                genConfig[0]["referenceImages"] = referenceImages
+            genConfig[0]["referenceImages"] = referenceImages
+
+        # Handle inputs (custom inference inputs)
+        if inputs is not None:
+            genConfig[0]["inputs"] = inputs
 
         # Handle providerSettings - extract provider name from model and merge with custom settings
         if providerSettings is not None:
