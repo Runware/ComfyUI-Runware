@@ -12,7 +12,8 @@ class ipAdapter:
         "IP Adapter SD 1.5 Light": "runware:55@7",
         "IP Adapter SD 1.5 Plus Face": "runware:55@8",
         "IP Adapter SD 1.5 Full Face": "runware:55@9",
-        "IP Adapter SD 1.5 Vit-G": "runware:55@10"
+        "IP Adapter SD 1.5 Vit-G": "runware:55@10",
+        "Bria IP Adapter": "bria:10@21"
     }
     
     @classmethod
@@ -28,7 +29,7 @@ class ipAdapter:
                     "default": 1.0,
                     "min": 0.0,
                     "max": 1.0,
-                    "step": 0.1,
+                    "step": 0.01,
                     "tooltip": "Represents the strength or influence of this IP-Adapter in the generation process.\n\nA value of 0 means no influence, while 1 means maximum influence.\n\nNote: This Value Is Ignored For Flux Redux.",
                 }),
             },
