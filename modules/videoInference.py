@@ -279,24 +279,9 @@ class txt2vid:
             if "inputs" not in genConfig[0]:
                 genConfig[0]["inputs"] = {}
             
-            # Merge each input from inputs
+            # Merge each input from inputs (only actual input data, not provider settings)
             for key, value in inputs.items():
-                if key == "providerSettings":
-                    # Handle provider settings separately
-                    if providerSettings is None:
-                        providerSettings = value
-                    else:
-                        # Merge provider settings if both exist
-                        if isinstance(providerSettings, dict) and isinstance(value, dict):
-                            # Merge the provider settings
-                            for provider, settings in value.items():
-                                if provider in providerSettings:
-                                    providerSettings[provider].update(settings)
-                                else:
-                                    providerSettings[provider] = settings
-                else:
-                    # Add other inputs directly
-                    genConfig[0]["inputs"][key] = value
+                genConfig[0]["inputs"][key] = value
             
             print(f"[Debugging] Video inference inputs merged: {inputs}")
         
