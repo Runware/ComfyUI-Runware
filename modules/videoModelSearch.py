@@ -21,6 +21,7 @@ class videoModelSearch:
         "Seedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)",
             "bytedance:1@1 (Seedance 1.0 Lite)",
+            "bytedance:5@1 (OmniHuman 1)",
             "bytedance:5@2 (OmniHuman 1.5)",
         ],
         "MiniMax": [
@@ -33,6 +34,7 @@ class videoModelSearch:
             "pixverse:1@1 (PixVerse v3.5)",
             "pixverse:1@2 (PixVerse v4)",
             "pixverse:1@3 (PixVerse v4.5)",
+            "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)",
@@ -72,7 +74,8 @@ class videoModelSearch:
         # Seedance Models
         "bytedance:2@1": {"width": 864, "height": 480},  # Seedance 1.0 Pro
         "bytedance:1@1": {"width": 864, "height": 480},  # Seedance 1.0 Lite
-        "bytedance:5@2": {"width": 1024, "height": 1024}, # OmniHuman 1.5
+        "bytedance:5@1": {"width": 1024, "height": 1024}, # OmniHuman-1
+        "bytedance:5@2": {"width": 1024, "height": 1024}, # OmniHuman-1.5
         
         # MiniMax Models
         "minimax:1@1": {"width": 1366, "height": 768},  # MiniMax 01 Base
@@ -84,6 +87,7 @@ class videoModelSearch:
         "pixverse:1@1": {"width": 640, "height": 360},  # PixVerse v3.5
         "pixverse:1@2": {"width": 640, "height": 360},  # PixVerse v4
         "pixverse:1@3": {"width": 640, "height": 360},  # PixVerse v4.5
+        "pixverse:lipsync@1": {"width": 0, "height": 0},  # PixVerse LipSync
         
         # Vidu Models
         "vidu:1@0": {"width": 1920, "height": 1080},    # Vidu Q1 Classic

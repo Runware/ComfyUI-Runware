@@ -25,6 +25,8 @@ from .modules.vaeSearch import vaeSearch
 from .modules.referenceImages import referenceImages
 from .modules.imageInferenceInputs import imageInferenceInputs
 from .modules.videoInferenceInputs import videoInferenceInputs
+from .modules.inputAudios import inputAudios
+from .modules.referenceVideos import referenceVideos
 from .modules.videoInference import txt2vid
 from .modules.videoModelSearch import videoModelSearch
 from .modules.frameImages import RunwareFrameImages
@@ -80,6 +82,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware Reference Images": referenceImages,
     "Runware Image Inference Inputs": imageInferenceInputs,
     "Runware Video Inference Inputs": videoInferenceInputs,
+    "Runware Input Audios": inputAudios,
+    "Runware Reference Videos": referenceVideos,
     "Runware Video Inference": txt2vid,
     "Runware Video Model Search": videoModelSearch,
     "Runware Frame Images": RunwareFrameImages,
