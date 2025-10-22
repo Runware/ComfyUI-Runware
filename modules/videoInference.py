@@ -171,8 +171,8 @@ class txt2vid:
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Connect a Runware Provider Settings node to configure provider-specific parameters.",
                 }),
-                "inputAudios": ("RUNWAREINPUTAUDIOS", {
-                    "tooltip": "Connect input audio files for video generation with audio synchronization.",
+                "inputs": ("RUNWAREVIDEOINFERENCEINPUTS", {
+                    "tooltip": "Connect a Runware Video Inference Inputs node to provide custom inputs like image, audio, mask, and parameters for OmniHuman 1.5 and other video models.",
                 }),
             }
         }
@@ -202,7 +202,7 @@ class txt2vid:
         providerSettings = kwargs.get("providerSettings", None)
         frameImages = kwargs.get("frameImages", None)
         referenceImages = kwargs.get("referenceImages", None)
-        inputAudios = kwargs.get("inputAudios", None)
+        inputs = kwargs.get("inputs", None)
         useCustomDimensions = kwargs.get("useCustomDimensions", False)
         customWidth = kwargs.get("width", 864)
         customHeight = kwargs.get("height", 480)
@@ -272,10 +272,34 @@ class txt2vid:
         if referenceImages is not None and len(referenceImages) > 0:
             genConfig[0]["referenceImages"] = referenceImages
             print(f"[Debugging] Reference images array: {referenceImages}")
-        # Add inputAudios if provided
-        if inputAudios is not None and len(inputAudios) > 0:
-            genConfig[0]["inputAudios"] = inputAudios
-            print(f"[Debugging] Input audios array: {inputAudios}")
+        
+        # Handle inputs - merge custom inputs from Video Inference Inputs node
+        if inputs is not None:
+            # Merge inputs from video inference inputs node
+            if "inputs" not in genConfig[0]:
+                genConfig[0]["inputs"] = {}
+            
+            # Merge each input from inputs
+            for key, value in inputs.items():
+                if key == "providerSettings":
+                    # Handle provider settings separately
+                    if providerSettings is None:
+                        providerSettings = value
+                    else:
+                        # Merge provider settings if both exist
+                        if isinstance(providerSettings, dict) and isinstance(value, dict):
+                            # Merge the provider settings
+                            for provider, settings in value.items():
+                                if provider in providerSettings:
+                                    providerSettings[provider].update(settings)
+                                else:
+                                    providerSettings[provider] = settings
+                else:
+                    # Add other inputs directly
+                    genConfig[0]["inputs"][key] = value
+            
+            print(f"[Debugging] Video inference inputs merged: {inputs}")
+        
         # Handle providerSettings - extract provider name from model and merge with custom settings
         if providerSettings is not None:
             # Extract provider name from model (e.g., "pixverse:1@1" -> "pixverse")

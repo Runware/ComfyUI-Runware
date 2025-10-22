@@ -24,6 +24,7 @@ from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
 from .modules.referenceImages import referenceImages
 from .modules.imageInferenceInputs import imageInferenceInputs
+from .modules.videoInferenceInputs import videoInferenceInputs
 from .modules.videoInference import txt2vid
 from .modules.videoModelSearch import videoModelSearch
 from .modules.frameImages import RunwareFrameImages
@@ -78,6 +79,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware IPAdapters Combine": ipAdapterCombine,
     "Runware Reference Images": referenceImages,
     "Runware Image Inference Inputs": imageInferenceInputs,
+    "Runware Video Inference Inputs": videoInferenceInputs,
     "Runware Video Inference": txt2vid,
     "Runware Video Model Search": videoModelSearch,
     "Runware Frame Images": RunwareFrameImages,

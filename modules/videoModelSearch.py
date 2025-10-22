@@ -21,6 +21,7 @@ class videoModelSearch:
         "Seedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)",
             "bytedance:1@1 (Seedance 1.0 Lite)",
+            "bytedance:5@2 (OmniHuman 1.5)",
         ],
         "MiniMax": [
             "minimax:1@1 (MiniMax 01 Base)",
@@ -71,6 +72,7 @@ class videoModelSearch:
         # Seedance Models
         "bytedance:2@1": {"width": 864, "height": 480},  # Seedance 1.0 Pro
         "bytedance:1@1": {"width": 864, "height": 480},  # Seedance 1.0 Lite
+        "bytedance:5@2": {"width": 1024, "height": 1024}, # OmniHuman 1.5
         
         # MiniMax Models
         "minimax:1@1": {"width": 1366, "height": 768},  # MiniMax 01 Base
