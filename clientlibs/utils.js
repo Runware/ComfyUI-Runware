@@ -40,6 +40,24 @@ const runwareLocalAPI = {
         queryLocalAPI('modelSearch', { modelQuery, modelArch, modelType, modelCat, condtioning })
 };
 
+function mediaUUIDHandler(msgEvent) {
+    const mediaData = msgEvent.detail;
+    const mediaUUID = mediaData.mediaUUID;
+    const mediaNodeID = parseInt(mediaData.nodeID);
+    
+    if(mediaData.success) {
+        const mediaNode = app.graph.getNodeById(mediaNodeID);
+        if(mediaNode !== null && mediaNode !== undefined) {
+            // Find the mediaUUID widget specifically
+            const mediaUUIDWidget = mediaNode.widgets.find(widget => widget.name === "mediaUUID");
+            if(mediaUUIDWidget && mediaUUIDWidget.inputEl) {
+                mediaUUIDWidget.inputEl.value = mediaUUID;
+            }
+        }
+    }
+    return false;
+}
+
 function captionNodeHandler(msgEvent) {
     const captionData = msgEvent.detail;
     const captionText = captionData.captionText;
@@ -574,6 +592,7 @@ export {
     promptEnhanceHandler,
     syncDimensionsNodeHandler,
     searchNodeHandler,
+    mediaUUIDHandler,
     captionNodeHandler,
     handleCustomErrors,
     APIKeyHandler,

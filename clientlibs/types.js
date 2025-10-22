@@ -88,6 +88,7 @@ const RUNWARE_NODE_TYPES = {
     ELEVENLABSPROVIDERSETTINGS: "Runware ElevenLabs Provider Settings",
     ELEVENLABSPROVIDERSETTINGSSECTIONS: "Runware ElevenLabs Provider Settings Sections",
     VIDUPROVIDERSETTINGS: "Runware Vidu Provider Settings",
+    MEDIAUPLOAD: "Runware Media Upload",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -251,6 +252,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.VIDUPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.MEDIAUPLOAD]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
