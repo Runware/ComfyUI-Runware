@@ -327,6 +327,7 @@ class txt2vid:
                 genConfig[0]["inputs"][key] = value
             
             print(f"[Debugging] Video inference inputs merged: {inputs}")
+            print(f"[Debugging] Final genConfig inputs: {genConfig[0].get('inputs', {})}")
         
         # Handle providerSettings - extract provider name from model and merge with custom settings
         if providerSettings is not None:

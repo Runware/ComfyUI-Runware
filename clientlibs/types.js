@@ -96,6 +96,7 @@ const RUNWARE_NODE_TYPES = {
     VECTORIZE: "Runware Vectorize",
     VIDEOBGREMOVAL: "Runware Video Background Removal",
     VIDEOUPSCALER: "Runware Video Upscaler",
+    VIDEOINPUTSREFERENCES: "Runware Video Inputs References",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -290,6 +291,10 @@ const RUNWARE_NODE_PROPS = {
     },
     [RUNWARE_NODE_TYPES.VIDEOUPSCALER]: {
         bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINPUTSREFERENCES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
 };
 

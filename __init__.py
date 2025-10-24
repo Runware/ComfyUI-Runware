@@ -47,6 +47,7 @@ from .modules.lightricksProviderSettings import RunwareLightricksProviderSetting
 from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
+from .modules.videoInputsReferences import videoInputsReferences
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -108,6 +109,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Vectorize": vectorize,
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,
+    "Runware Video Inputs References": videoInputsReferences,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
