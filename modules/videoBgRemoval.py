@@ -8,17 +8,16 @@ class videoBgRemoval:
     }
     
     BACKGROUND_COLORS = {
-        "Transparent": [0, 0, 0, 0],
-        "Black": [0, 0, 0, 1],
-        "White": [255, 255, 255, 0],
-        "Gray": [128, 128, 128, 0],
-        "Red": [255, 0, 0, 0],
-        "Green": [0, 255, 0, 0],
-        "Blue": [0, 0, 255, 0],
-        "Yellow": [255, 255, 0, 0],
-        "Cyan": [0, 255, 255, 0],
-        "Magenta": [255, 0, 255, 0],
-        "Orange": [255, 165, 0, 0],
+        "Black [0, 0, 0, 1]": [0, 0, 0, 1],
+        "White [255, 255, 255, 0]": [255, 255, 255, 0],
+        "Gray [128, 128, 128, 0]": [128, 128, 128, 0],
+        "Red [255, 0, 0, 0]": [255, 0, 0, 0],
+        "Green [0, 255, 0, 0]": [0, 255, 0, 0],
+        "Blue [0, 0, 255, 0]": [0, 0, 255, 0],
+        "Yellow [255, 255, 0, 0]": [255, 255, 0, 0],
+        "Cyan [0, 255, 255, 0]": [0, 255, 255, 0],
+        "Magenta [255, 0, 255, 0]": [255, 0, 255, 0],
+        "Orange [255, 165, 0, 0]": [255, 165, 0, 0],
     }
     
     
@@ -36,7 +35,7 @@ class videoBgRemoval:
             },
             "optional": {
                 "Background Color": (list(cls.BACKGROUND_COLORS.keys()), {
-                    "default": "Transparent",
+                    "default": "White",
                     "tooltip": "Background color preset to use. Hex values are not supported.",
                 }),
                 "Output Format": (["mp4", "webm", "mov"], {
@@ -66,7 +65,7 @@ class videoBgRemoval:
         modelAIR = self.RUNWARE_VRMBG_MODELS.get(modelName, "bria:51@1")
         
         # Get background color RGBA
-        rgba_color = self.BACKGROUND_COLORS.get(backgroundColor, [0, 0, 0, 0])
+        rgba_color = self.BACKGROUND_COLORS.get(backgroundColor, [255, 255, 255, 0])
         
         # Build the API request
         genConfig = [
