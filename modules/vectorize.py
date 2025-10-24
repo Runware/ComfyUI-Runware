@@ -1,5 +1,14 @@
 from .utils import runwareUtils as rwUtils
 import json
+import base64
+import io
+
+class SVGData:
+    """Wrapper class to match RecraftIO.SVG format for SaveSVGNode"""
+    def __init__(self, svg_content):
+        # Convert SVG string to BytesIO
+        svg_bytes = io.BytesIO(svg_content.encode('utf-8'))
+        self.data = [svg_bytes]
 
 class vectorize:
     RUNWARE_VECTORIZE_MODELS = {
@@ -23,8 +32,8 @@ class vectorize:
 
     DESCRIPTION = "Convert images to vector format using Runware's vectorization service."
     FUNCTION = "vectorizeImage"
-    RETURN_TYPES = ("IMAGE", "STRING")
-    RETURN_NAMES = ("IMAGE", "Vector Data")
+    RETURN_TYPES = ("SVG",)
+    RETURN_NAMES = ("SVG",)
     CATEGORY = "Runware"
 
     def vectorizeImage(self, **kwargs):
@@ -46,6 +55,8 @@ class vectorize:
                 "inputs": {
                     "image": image_uuid
                 },
+                "outputType": "base64Data",
+                "outputFormat": "svg",
             }
         ]
         
@@ -69,12 +80,20 @@ class vectorize:
             if "data" in genResult and len(genResult["data"]) > 0:
                 result_data = genResult["data"][0]
                 
-                # Return the vectorized image URL
-                if "imageURL" in result_data:
-                    vector_url = result_data["imageURL"]
-                    return (image, vector_url)
+                # Check for base64 SVG data
+                if "imageBase64Data" in result_data:
+                    base64_svg = result_data["imageBase64Data"]
+                    
+                    # Decode base64 SVG to get the actual SVG content for SaveSVGNode
+                    svg_content = base64.b64decode(base64_svg).decode('utf-8')
+                    
+                    # Wrap SVG content in SVGData for SaveSVGNode compatibility
+                    svg_data = SVGData(svg_content)
+                    
+                    # Return only SVG data
+                    return (svg_data,)
                 else:
-                    raise Exception("imageURL not found in response")
+                    raise Exception("imageBase64Data not found in response")
             else:
                 raise Exception("No data returned from vectorization API")
                 
