@@ -29,6 +29,15 @@ app.registerExtension({
             captionInput.style.outline = "none";
             captionInput.readOnly = true;
             return;
+        } else if(nodeClass === RUNWARE_NODE_TYPES.MEDIAUPLOAD) {
+            // Style the mediaUUID widget to show full UUID
+            const mediaUUIDWidget = node.widgets.find(widget => widget.name === "mediaUUID");
+            if(mediaUUIDWidget && mediaUUIDWidget.inputEl) {
+                mediaUUIDWidget.inputEl.style.width = "100%";
+                mediaUUIDWidget.inputEl.style.minWidth = "300px";
+                mediaUUIDWidget.inputEl.style.fontSize = "11px";
+                mediaUUIDWidget.inputEl.style.fontFamily = "monospace";
+            }
         }
 
         if(crNodeProps.colorModeOnly === true) return;

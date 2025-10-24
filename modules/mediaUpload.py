@@ -29,7 +29,6 @@ class RunwareMediaUpload:
                     "tooltip": "Media tensor from ComfyUI load video or audio node",
                 }),
                 "mediaUUID": ("STRING", {
-                    "multiline": True,
                     "placeholder": "Generated media UUID will appear here automatically.",
                     "tooltip": "This field will be automatically populated with the generated media UUID after upload.",
                 }),

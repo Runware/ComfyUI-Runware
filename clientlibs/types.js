@@ -89,6 +89,13 @@ const RUNWARE_NODE_TYPES = {
     ELEVENLABSPROVIDERSETTINGSSECTIONS: "Runware ElevenLabs Provider Settings Sections",
     VIDUPROVIDERSETTINGS: "Runware Vidu Provider Settings",
     MEDIAUPLOAD: "Runware Media Upload",
+    INPUTAUDIOS: "Runware Input Audios",
+    REFERENCEVIDEOS: "Runware Reference Videos",
+    VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
+    LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
+    VECTORIZE: "Runware Vectorize",
+    VIDEOBGREMOVAL: "Runware Video Background Removal",
+    VIDEOUPSCALER: "Runware Video Upscaler",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -258,6 +265,31 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.MEDIAUPLOAD]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.INPUTAUDIOS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.REFERENCEVIDEOS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.LIGHTRICKSPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VECTORIZE]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOBGREMOVAL]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOUPSCALER]: {
+        bgColor: DEFAULT_BGCOLOR,
     },
 };
 

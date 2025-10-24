@@ -40,6 +40,13 @@ from .modules.elevenlabsProviderSettingsSections import RunwareElevenLabsProvide
 from .modules.acceleratorOptions import acceleratorOptions
 from .modules.viduProviderSettings import RunwareViduProviderSettings
 from .modules.mediaUpload import runwareMediaUpload
+from .modules.inputAudios import inputAudios
+from .modules.referenceVideos import referenceVideos
+from .modules.videoInferenceInputs import videoInferenceInputs
+from .modules.lightricksProviderSettings import RunwareLightricksProviderSettings
+from .modules.vectorize import vectorize
+from .modules.videoBgRemoval import videoBgRemoval
+from .modules.videoUpscaler import videoUpscaler
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -94,6 +101,13 @@ NODE_CLASS_MAPPINGS = {
     "Runware Accelerator Options": acceleratorOptions,
     "Runware Vidu Provider Settings": RunwareViduProviderSettings,
     "Runware Media Upload": runwareMediaUpload,
+    "Runware Input Audios": inputAudios,
+    "Runware Reference Videos": referenceVideos,
+    "Runware Video Inference Inputs": videoInferenceInputs,
+    "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
+    "Runware Vectorize": vectorize,
+    "Runware Video Background Removal": videoBgRemoval,
+    "Runware Video Upscaler": videoUpscaler,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

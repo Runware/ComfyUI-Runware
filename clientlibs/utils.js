@@ -47,11 +47,23 @@ function mediaUUIDHandler(msgEvent) {
     
     if(mediaData.success) {
         const mediaNode = app.graph.getNodeById(mediaNodeID);
+        
         if(mediaNode !== null && mediaNode !== undefined) {
             // Find the mediaUUID widget specifically
             const mediaUUIDWidget = mediaNode.widgets.find(widget => widget.name === "mediaUUID");
-            if(mediaUUIDWidget && mediaUUIDWidget.inputEl) {
-                mediaUUIDWidget.inputEl.value = mediaUUID;
+            
+            if(mediaUUIDWidget) {
+                // Update both widget.value and inputEl.value for STRING widgets
+                if(mediaUUIDWidget.value !== undefined) {
+                    mediaUUIDWidget.value = mediaUUID;
+                }
+                
+                if(mediaUUIDWidget.inputEl) {
+                    mediaUUIDWidget.inputEl.value = mediaUUID;
+                    // Trigger change events to update the UI
+                    mediaUUIDWidget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    mediaUUIDWidget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
             }
         }
     }
