@@ -17,6 +17,8 @@ class videoModelSearch:
             "google:2@0 (Veo 2.0)",
             "google:3@0 (Veo 3.0)",
             "google:3@1 (Veo 3.0 Fast)",
+            "google:3@2 (Veo 3.1)",
+            "google:3@3 (Veo 3.1 Pro)",
         ],
         "Seedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)",
@@ -51,7 +53,8 @@ class videoModelSearch:
             "openai:3@0 (OpenAI Sora 3.0)",
         ],
         "Lightricks": [
-            "lightricks:2@1 (LTX)",
+            "lightricks:2@0 (LTX Fast)",
+            "lightricks:2@1 (LTX Pro)",
         ],
     }
     
@@ -73,6 +76,8 @@ class videoModelSearch:
         "google:2@0": {"width": 1280, "height": 720},   # Veo 2.0
         "google:3@0": {"width": 1280, "height": 720},   # Veo 3.0
         "google:3@1": {"width": 1280, "height": 720},   # Veo 3.0 Fast
+        "google:3@2": {"width": 1280, "height": 720},   # Veo 3.1
+        "google:3@3": {"width": 1280, "height": 720},   # Veo 3.1 Pro
         
         # Seedance Models
         "bytedance:2@1": {"width": 864, "height": 480},  # Seedance 1.0 Pro
@@ -107,7 +112,8 @@ class videoModelSearch:
         "openai:3@0": {"width": 1280, "height": 720}, # OpenAI Sora 3.0
         
         # Lightricks Models
-        "lightricks:2@1": {"width": 1920, "height": 1080}, # Lightricks v2.1
+        "lightricks:2@0": {"width": 1920, "height": 1080}, # Lightricks v2.0 Fast
+        "lightricks:2@1": {"width": 1920, "height": 1080}, # Lightricks v2.1 Pro
     }
     
     

@@ -14,7 +14,7 @@ class RunwareLightricksProviderSettings:
             "required": {},
             "optional": {
                 "generateAudio": ("BOOLEAN", {
-                    "tooltip": "Enable to generate audio for the video. Default: false.",
+                    "tooltip": "Enable to generate audio for the video. Disable to generate video without audio. Default: false.",
                     "default": False,
                 }),
             }
@@ -32,11 +32,10 @@ class RunwareLightricksProviderSettings:
         generateAudio = kwargs.get("generateAudio", False)
         
         # Build settings dictionary
-        settings = {}
-        
-        # Add generateAudio if it's True
-        if generateAudio:
-            settings["generateAudio"] = generateAudio
+        # Always include generateAudio to ensure it's explicitly set
+        settings = {
+            "generateAudio": generateAudio
+        }
         
         return (settings,)
 
