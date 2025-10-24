@@ -84,16 +84,6 @@ class txt2vid:
                 "Model": ("RUNWAREVIDEOMODEL", {
                     "tooltip": "Connect a Runware Video Model From Runware Video Model Search Node.",
                 }),
-                "positivePrompt": ("STRING", {
-                    "multiline": True,
-                    "placeholder": "Positive Prompt: a text instruction to guide the model on generating the video. It is usually a sentence or a paragraph that provides positive guidance for the task. This parameter is essential to shape the desired results.\n\nYou Can Press (Ctrl + Alt + E) To Enhance The Prompt!",
-                    "tooltip": "Positive Prompt: a text instruction to guide the model on generating the video. You Can Also Press (Ctrl + Alt + E) To Enhance The Prompt!"
-                }),
-                "negativePrompt": ("STRING", {
-                    "multiline": True,
-                    "placeholder": "Negative Prompt: a text instruction to guide the model on generating the video. It is usually a sentence or a paragraph that provides negative guidance for the task. This parameter helps to avoid certain undesired results.",
-                    "tooltip": "Negative Prompt: a text instruction to guide the model on generating the video."
-                }),
                 "Multi Inference Mode": ("BOOLEAN", {
                     "tooltip": "If Enabled the node will skip the video generation process and will only return the Runware Task Object to be used in the Multi Inference Node.",
                     "default": False,
@@ -172,14 +162,38 @@ class txt2vid:
                     "tooltip": "Connect a Runware Provider Settings node to configure provider-specific parameters.",
                 }),
                 "inputAudios": ("RUNWAREINPUTAUDIOS", {
-                    "tooltip": "Connect input audio files for video generation with audio synchronization.",
+                    "tooltip": "Connect a Runware Input Audios node to provide audio files for video generation with audio synchronization.",
+                }),
+                "referenceVideos": ("RUNWAREREFERENCEVIDEOS", {
+                    "tooltip": "Connect a Runware Reference Videos node to provide reference video files for video generation.",
+                }),
+                "speechVoice": ("STRING", {
+                    "tooltip": "Voice for speech synthesis. Specify the voice to use for text-to-speech generation.",
+                }),
+                "speechText": ("STRING", {
+                    "multiline": True,
+                    "tooltip": "Text for speech synthesis. The text that will be converted to speech using the specified voice.",
+                }),
+                "inputs": ("RUNWAREVIDEOINFERENCEINPUTS", {
+                    "tooltip": "Connect a Runware Video Inference Inputs node to provide custom inputs like image, audio, mask, and parameters for OmniHuman 1.5 and other video models.",
+                }),
+                "positivePrompt": ("STRING", {
+                    "multiline": True,
+                    "placeholder": "Positive Prompt: a text instruction to guide the model on generating the video. It is usually a sentence or a paragraph that provides positive guidance for the task. This parameter is essential to shape the desired results.\n\nYou Can Press (Ctrl + Alt + E) To Enhance The Prompt!",
+                    "tooltip": "Positive Prompt: a text instruction to guide the model on generating the video. You Can Also Press (Ctrl + Alt + E) To Enhance The Prompt!"
+                }),
+                "negativePrompt": ("STRING", {
+                    "multiline": True,
+                    "placeholder": "Negative Prompt: a text instruction to guide the model on generating the video. It is usually a sentence or a paragraph that provides negative guidance for the task. This parameter helps to avoid certain undesired results.",
+                    "tooltip": "Negative Prompt: a text instruction to guide the model on generating the video."
                 }),
             }
         }
 
     @classmethod
     def VALIDATE_INPUTS(cls, positivePrompt, negativePrompt):
-        if (positivePrompt is not None and (positivePrompt == "" or len(positivePrompt) < 3 or len(positivePrompt) > 2000)):
+        # Allow empty prompts - only validate if prompt is provided and not empty
+        if (positivePrompt is not None and positivePrompt != "" and (len(positivePrompt) < 3 or len(positivePrompt) > 2000)):
             raise Exception(
                 "Positive Prompt Must Be Between 3 And 2000 characters!")
         if (negativePrompt is not None and negativePrompt != "" and (len(negativePrompt) < 3 or len(negativePrompt) > 2000)):
@@ -203,6 +217,10 @@ class txt2vid:
         frameImages = kwargs.get("frameImages", None)
         referenceImages = kwargs.get("referenceImages", None)
         inputAudios = kwargs.get("inputAudios", None)
+        referenceVideos = kwargs.get("referenceVideos", None)
+        speechVoice = kwargs.get("speechVoice", None)
+        speechText = kwargs.get("speechText", None)
+        inputs = kwargs.get("inputs", None)
         useCustomDimensions = kwargs.get("useCustomDimensions", False)
         customWidth = kwargs.get("width", 864)
         customHeight = kwargs.get("height", 480)
@@ -235,7 +253,6 @@ class txt2vid:
             {
                 "taskType": "videoInference",
                 "taskUUID": rwUtils.genRandUUID(),
-                "positivePrompt": positivePrompt,
                 "height": height,
                 "width": width,
                 "model": model,
@@ -244,6 +261,10 @@ class txt2vid:
                 "includeCost": True,
             }
         ]
+        
+        # Only add positivePrompt if it's not empty
+        if positivePrompt and positivePrompt.strip() != "":
+            genConfig[0]["positivePrompt"] = positivePrompt
         
         # Add fps parameter only if enabled
         if useFps:
@@ -272,10 +293,45 @@ class txt2vid:
         if referenceImages is not None and len(referenceImages) > 0:
             genConfig[0]["referenceImages"] = referenceImages
             print(f"[Debugging] Reference images array: {referenceImages}")
-        # Add inputAudios if provided
-        if inputAudios is not None and len(inputAudios) > 0:
-            genConfig[0]["inputAudios"] = inputAudios
-            print(f"[Debugging] Input audios array: {inputAudios}")
+        
+        # Add inputAudios if provided (list of mediaUUIDs from media upload nodes)
+        if inputAudios is not None:
+            # Handle both single mediaUUID (string) and multiple mediaUUIDs (list)
+            if isinstance(inputAudios, str) and inputAudios.strip() != "":
+                genConfig[0]["inputAudios"] = [inputAudios.strip()]
+            elif isinstance(inputAudios, list) and len(inputAudios) > 0:
+                genConfig[0]["inputAudios"] = inputAudios
+            print(f"[Debugging] Input audios: {genConfig[0].get('inputAudios', [])}")
+        
+        # Add referenceVideos if provided (list of mediaUUIDs from media upload nodes)
+        if referenceVideos is not None:
+            # Handle both single mediaUUID (string) and multiple mediaUUIDs (list)
+            if isinstance(referenceVideos, str) and referenceVideos.strip() != "":
+                genConfig[0]["referenceVideos"] = [referenceVideos.strip()]
+            elif isinstance(referenceVideos, list) and len(referenceVideos) > 0:
+                genConfig[0]["referenceVideos"] = referenceVideos
+            print(f"[Debugging] Reference videos: {genConfig[0].get('referenceVideos', [])}")
+        
+        # Add speech parameters if both voice and text are provided
+        if speechVoice and speechVoice.strip() != "" and speechText and speechText.strip() != "":
+            genConfig[0]["speech"] = {
+                "voice": speechVoice.strip(),
+                "text": speechText.strip()
+            }
+            print(f"[Debugging] Speech parameters: voice='{speechVoice.strip()}', text='{speechText.strip()[:50]}...'")
+        
+        # Handle inputs - merge custom inputs from Video Inference Inputs node
+        if inputs is not None:
+            # Merge inputs from video inference inputs node
+            if "inputs" not in genConfig[0]:
+                genConfig[0]["inputs"] = {}
+            
+            # Merge each input from inputs (only actual input data, not provider settings)
+            for key, value in inputs.items():
+                genConfig[0]["inputs"][key] = value
+            
+            print(f"[Debugging] Video inference inputs merged: {inputs}")
+        
         # Handle providerSettings - extract provider name from model and merge with custom settings
         if providerSettings is not None:
             # Extract provider name from model (e.g., "pixverse:1@1" -> "pixverse")

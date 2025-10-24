@@ -76,6 +76,9 @@ const RUNWARE_NODE_TYPES = {
     REFERENCEIMAGES: "Runware Reference Images",
     IMAGEINFERENCEINPUTS: "Runware Image Inference Inputs",
     VIDEOINFERENCE: "Runware Video Inference",
+    VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
+    INPUTAUDIOS: "Runware Input Audios",
+    REFERENCEVIDEOS: "Runware Reference Videos",
     VIDEOMODELSEARCH: "Runware Video Model Search",
     FRAMEIMAGES: "Runware Frame Images",
     AUDIOINFERENCE: "Runware Audio Inference",
@@ -206,6 +209,18 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         liveDimensions: true,
         promptEnhancer: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.INPUTAUDIOS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.REFERENCEVIDEOS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.VIDEOMODELSEARCH]: {
         bgColor: DEFAULT_BGCOLOR,
