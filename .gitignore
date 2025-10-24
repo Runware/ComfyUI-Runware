@@ -13,3 +13,4 @@ venv.bak/
 
 cython_debug/
 .pyre/
+.DS_Store

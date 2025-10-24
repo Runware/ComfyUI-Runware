@@ -233,6 +233,17 @@ def checkAPIKey(apiKey):
     except Exception as e:
         return False
 
+def sendMediaUUID(mediaUUID, nodeID):
+    PromptServer.instance.send_sync(
+        "runwareMediaUUID",
+        {
+            "success": True,
+            "mediaUUID": mediaUUID,
+            "nodeID": nodeID,
+            "widgetName": "mediaUUID",  # Target the mediaUUID widget
+        },
+    )
+
 def sendImageCaption(captionText, nodeID):
     PromptServer.instance.send_sync(
         "runwareImageCaption",

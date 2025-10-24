@@ -39,6 +39,7 @@ from .modules.elevenlabsProviderSettings import RunwareElevenLabsProviderSetting
 from .modules.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
 from .modules.acceleratorOptions import acceleratorOptions
 from .modules.viduProviderSettings import RunwareViduProviderSettings
+from .modules.mediaUpload import runwareMediaUpload
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -92,6 +93,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware ElevenLabs Provider Settings Sections": RunwareElevenLabsProviderSettingsSections,
     "Runware Accelerator Options": acceleratorOptions,
     "Runware Vidu Provider Settings": RunwareViduProviderSettings,
+    "Runware Media Upload": runwareMediaUpload,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
