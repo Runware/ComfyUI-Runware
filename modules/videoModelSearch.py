@@ -21,6 +21,8 @@ class videoModelSearch:
         "Seedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)",
             "bytedance:1@1 (Seedance 1.0 Lite)",
+            "bytedance:5@1 (OmniHuman 1)",
+            "bytedance:5@2 (OmniHuman 1.5)",
         ],
         "MiniMax": [
             "minimax:1@1 (MiniMax 01 Base)",
@@ -32,6 +34,7 @@ class videoModelSearch:
             "pixverse:1@1 (PixVerse v3.5)",
             "pixverse:1@2 (PixVerse v4)",
             "pixverse:1@3 (PixVerse v4.5)",
+            "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)",
@@ -46,6 +49,9 @@ class videoModelSearch:
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)",
             "openai:3@0 (OpenAI Sora 3.0)",
+        ],
+        "Lightricks": [
+            "lightricks:2@1 (LTX)",
         ],
     }
     
@@ -71,6 +77,8 @@ class videoModelSearch:
         # Seedance Models
         "bytedance:2@1": {"width": 864, "height": 480},  # Seedance 1.0 Pro
         "bytedance:1@1": {"width": 864, "height": 480},  # Seedance 1.0 Lite
+        "bytedance:5@1": {"width": 1024, "height": 1024},  # OmniHuman 1
+        "bytedance:5@2": {"width": 1024, "height": 1024},  # OmniHuman 1.5
         
         # MiniMax Models
         "minimax:1@1": {"width": 1366, "height": 768},  # MiniMax 01 Base
@@ -82,6 +90,7 @@ class videoModelSearch:
         "pixverse:1@1": {"width": 640, "height": 360},  # PixVerse v3.5
         "pixverse:1@2": {"width": 640, "height": 360},  # PixVerse v4
         "pixverse:1@3": {"width": 640, "height": 360},  # PixVerse v4.5
+        "pixverse:lipsync@1": {"width": 640, "height": 360},  # PixVerse LipSync
         
         # Vidu Models
         "vidu:1@0": {"width": 1920, "height": 1080},    # Vidu Q1 Classic
@@ -96,6 +105,9 @@ class videoModelSearch:
         # OpenAI Models
         "openai:3@1": {"width": 1280, "height": 720}, # OpenAI Sora 3.1
         "openai:3@0": {"width": 1280, "height": 720}, # OpenAI Sora 3.0
+        
+        # Lightricks Models
+        "lightricks:2@1": {"width": 1920, "height": 1080}, # Lightricks v2.1
     }
     
     
@@ -120,7 +132,8 @@ class videoModelSearch:
                         "PixVerse",
                         "Vidu",
                         "Wan",
-                        "OpenAI"
+                        "OpenAI",
+                        "Lightricks"
                     ], {
                     "tooltip": "Choose Video Model Architecture To Filter Results.",
                     "default": "KlingAI",
