@@ -56,17 +56,13 @@ class RunwareFrameImages:
             position = kwargs.get(position_key, "auto")
             
             if image is not None:
-                # Upload image and get UUID
-                image_uuid = rwUtils.convertTensor2IMGForVideo(image)
-                image_url = f"https://im.runware.ai/image/ii/{image_uuid}.webp"
+                # Convert image to data URI or UUID
+                image_data = rwUtils.convertTensor2IMG(image)
                 
-                frame_data = {
-                    "inputImage": image_url
-                }
+                frame_data = {"inputImage": image_data}
                 
                 # Only add frame position if not auto
                 if position != "auto":
-                    # Convert string numbers to integers for API
                     if position.isdigit():
                         frame_data["frame"] = int(position)
                     else:

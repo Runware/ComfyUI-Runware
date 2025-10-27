@@ -255,6 +255,17 @@ def sendImageCaption(captionText, nodeID):
         },
     )
 
+def sendVideoTranscription(transcriptionText, nodeID):
+    PromptServer.instance.send_sync(
+        "runwareVideoTranscription",
+        {
+            "success": True,
+            "transcriptionText": transcriptionText,
+            "nodeID": nodeID,
+            "widgetName": "prompt",  # Target the prompt widget (matching imageCaptioning pattern)
+        },
+    )
+
 def inferenecRequest(genConfig):
     global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
     RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY")

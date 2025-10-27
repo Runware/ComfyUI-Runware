@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, handleCustomErrors } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -10,6 +10,7 @@ app.registerExtension({
         api.addEventListener('runwareError', handleCustomErrors);
         api.addEventListener('runwareImageCaption', captionNodeHandler);
         api.addEventListener('runwareMediaUUID', mediaUUIDHandler);
+        api.addEventListener('runwareVideoTranscription', videoTranscriptionHandler);
     },
 
     async nodeCreated(node) {
