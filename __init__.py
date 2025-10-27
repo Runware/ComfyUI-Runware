@@ -16,6 +16,7 @@ from .modules.imageMasking import imageMasking
 from .modules.controlNetPreprocessor import controlNetPreprocessor
 from .modules.apiManager import apiManager
 from .modules.imageCaptioning import imageCaptioning
+from .modules.videoTranscription import videoTranscription
 from .modules.controlNetCombine import controlNetCombine
 from .modules.embeddingSearch import embeddingSearch
 from .modules.embeddingsCombine import embeddingsCombine
@@ -81,6 +82,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware ControlNet PreProcessor": controlNetPreprocessor,
     "Runware API Manager": apiManager,
     "Runware Image Caption": imageCaptioning,
+    "Runware Video Transcription": videoTranscription,
     "Runware ControlNet Combine": controlNetCombine,
     "Runware IPAdapter": ipAdapter,
     "Runware IPAdapters Combine": ipAdapterCombine,

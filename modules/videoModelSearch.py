@@ -18,7 +18,7 @@ class videoModelSearch:
             "google:3@0 (Veo 3.0)",
             "google:3@1 (Veo 3.0 Fast)",
             "google:3@2 (Veo 3.1)",
-            "google:3@3 (Veo 3.1 Pro)",
+            "google:3@3 (Veo 3.1 Fast)",
         ],
         "Seedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)",
@@ -77,7 +77,7 @@ class videoModelSearch:
         "google:3@0": {"width": 1280, "height": 720},   # Veo 3.0
         "google:3@1": {"width": 1280, "height": 720},   # Veo 3.0 Fast
         "google:3@2": {"width": 1280, "height": 720},   # Veo 3.1
-        "google:3@3": {"width": 1280, "height": 720},   # Veo 3.1 Pro
+        "google:3@3": {"width": 1280, "height": 720},   # Veo 3.1 Fast
         
         # Seedance Models
         "bytedance:2@1": {"width": 864, "height": 480},  # Seedance 1.0 Pro

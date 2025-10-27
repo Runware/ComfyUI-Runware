@@ -88,6 +88,24 @@ function captionNodeHandler(msgEvent) {
     return false;
 }
 
+function videoTranscriptionHandler(msgEvent) {
+    const transcriptionData = msgEvent.detail;
+    const transcriptionText = transcriptionData.transcriptionText;
+    const transcriptionNodeID = parseInt(transcriptionData.nodeID);
+    
+    if(transcriptionData.success) {
+        const transcriptionNode = app.graph.getNodeById(transcriptionNodeID);
+        if(transcriptionNode !== null && transcriptionNode !== undefined) {
+            // Find the prompt widget (where transcription is displayed)
+            const promptWidget = transcriptionNode.widgets.find(widget => widget.name === "prompt");
+            if(promptWidget && promptWidget.inputEl) {
+                promptWidget.inputEl.value = transcriptionText;
+            }
+        }
+    }
+    return false;
+}
+
 function notifyUser(message, type="info", title = "Runware", life = 4.5) {
     app.extensionManager.toast.add({
         severity: type, // 'info', 'success', 'warn', 'error' \\
@@ -606,6 +624,7 @@ export {
     searchNodeHandler,
     mediaUUIDHandler,
     captionNodeHandler,
+    videoTranscriptionHandler,
     handleCustomErrors,
     APIKeyHandler,
 };

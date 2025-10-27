@@ -1,79 +1,8 @@
 from .utils import runwareUtils as rwUtils
 from .videoModelSearch import videoModelSearch
+from .frameImages import RunwareFrameImages
 import json
 import comfy.model_management
-
-
-class RunwareFrameImages:
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {},
-            "optional": {
-                "image1": ("IMAGE", {
-                    "tooltip": "First frame image. When only one image is provided, it becomes the first frame automatically.",
-                }),
-                "frame1_position": (["auto", "first", "last"], {
-                    "default": "auto",
-                    "tooltip": "Position for the first image. 'auto' uses automatic distribution rules.",
-                }),
-                "image2": ("IMAGE", {
-                    "tooltip": "Second frame image. With two images, they become first and last frames automatically.",
-                }),
-                "frame2_position": (["auto", "first", "last"], {
-                    "default": "auto", 
-                    "tooltip": "Position for the second image. 'auto' uses automatic distribution rules.",
-                }),
-                "image3": ("IMAGE", {
-                    "tooltip": "Third frame image. Will be distributed between first and last frames.",
-                }),
-                "frame3_position": (["auto", "first", "last"], {
-                    "default": "auto",
-                    "tooltip": "Position for the third image. 'auto' uses automatic distribution rules.",
-                }),
-                "image4": ("IMAGE", {
-                    "tooltip": "Fourth frame image. Will be distributed between first and last frames.",
-                }),
-                "frame4_position": (["auto", "first", "last"], {
-                    "default": "auto",
-                    "tooltip": "Position for the fourth image. 'auto' uses automatic distribution rules.",
-                }),
-            }
-        }
-    
-    DESCRIPTION = "Configure frame images for video generation with precise positioning control. Supports automatic distribution or manual positioning."
-    FUNCTION = "create_frame_images"
-    RETURN_TYPES = ("RUNWAREFRAMEIMAGES",)
-    RETURN_NAMES = ("Frame Images",)
-    CATEGORY = "Runware"
-    
-    def create_frame_images(self, **kwargs):
-        frame_images = []
-        
-        # Process each image input
-        for i in range(1, 5):  # Support up to 4 images
-            image_key = f"image{i}"
-            position_key = f"frame{i}_position"
-            
-            image = kwargs.get(image_key)
-            position = kwargs.get(position_key, "auto")
-            
-            if image is not None:
-                # Upload image and get UUID
-                image_uuid = rwUtils.convertTensor2IMGForVideo(image)
-                image_url = f"https://im.runware.ai/image/ii/{image_uuid}.webp"
-                
-                frame_data = {
-                    "inputImage": image_url
-                }
-                
-                # Only add frame position if not auto
-                if position != "auto":
-                    frame_data["frame"] = position
-                
-                frame_images.append(frame_data)
-        
-        return (frame_images,)
 
 
 class txt2vid:
@@ -439,11 +368,9 @@ class txt2vid:
 
 # Node class mappings for ComfyUI registration
 NODE_CLASS_MAPPINGS = {
-    "RunwareFrameImages": RunwareFrameImages,
     "txt2vid": txt2vid,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "RunwareFrameImages": "Runware Frame Images",
     "txt2vid": "Runware Video Inference",
 }
