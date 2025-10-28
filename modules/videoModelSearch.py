@@ -31,6 +31,8 @@ class videoModelSearch:
             "minimax:2@1 (MiniMax 01 Director)",
             "minimax:2@3 (MiniMax I2V 01 Live)",
             "minimax:3@1 (MiniMax 02 Hailuo)",
+            "minimax:4@1 (MiniMax Hailuo 2.3)",
+            "minimax:4@2 (MiniMax Hailuo 2.3 Fast)",
         ],
         "PixVerse": [
             "pixverse:1@1 (PixVerse v3.5)",
@@ -90,6 +92,8 @@ class videoModelSearch:
         "minimax:2@1": {"width": 1366, "height": 768},  # MiniMax 01 Director
         "minimax:2@3": {"width": 1366, "height": 768},  # MiniMax I2V 01 Live
         "minimax:3@1": {"width": 1366, "height": 768},  # MiniMax 02 Hailuo
+        "minimax:4@1": {"width": 1366, "height": 768},  # MiniMax Hailuo 2.3
+        "minimax:4@2": {"width": 1366, "height": 768},  # MiniMax Hailuo 2.3 Fast
         
         # PixVerse Models
         "pixverse:1@1": {"width": 640, "height": 360},  # PixVerse v3.5
