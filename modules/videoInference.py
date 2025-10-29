@@ -309,8 +309,14 @@ class txt2vid:
                 genConfig[0]["providerSettings"] = providerSettings
         
         # Add safety inputs if provided
+        # Note: Video inference API only supports 'mode' key for safety
         if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
-            genConfig[0]["safetyInputs"] = safetyInputs
+            # Filter to only include 'mode' (only allowed key for video inference)
+            filtered_safety = {}
+            if "mode" in safetyInputs:
+                filtered_safety["mode"] = safetyInputs["mode"]
+            if filtered_safety:
+                genConfig[0]["safety"] = filtered_safety
         
         # Add video advanced feature inputs if provided
         if videoAdvancedFeatureInputs is not None and isinstance(videoAdvancedFeatureInputs, dict) and len(videoAdvancedFeatureInputs) > 0:
