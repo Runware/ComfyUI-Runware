@@ -58,6 +58,9 @@ class videoModelSearch:
             "lightricks:2@0 (LTX Fast)",
             "lightricks:2@1 (LTX Pro)",
         ],
+        "Ovi": [
+            "runware:190@1 (Ovi)",
+        ],
     }
     
     # Model dimensions mapping
@@ -118,6 +121,9 @@ class videoModelSearch:
         # Lightricks Models
         "lightricks:2@0": {"width": 1920, "height": 1080}, # Lightricks v2.0 Fast
         "lightricks:2@1": {"width": 1920, "height": 1080}, # Lightricks v2.1 Pro
+        
+        # Ovi Models
+        "runware:190@1": {"width": 0, "height": 0}, # Ovi
     }
     
     
@@ -143,7 +149,8 @@ class videoModelSearch:
                         "Vidu",
                         "Wan",
                         "OpenAI",
-                        "Lightricks"
+                        "Lightricks",
+                        "Ovi"
                     ], {
                     "tooltip": "Choose Video Model Architecture To Filter Results.",
                     "default": "KlingAI",

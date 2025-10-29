@@ -1,4 +1,5 @@
 from .utils import runwareUtils as rwUtils
+import json
 
 class upscaler:
     @classmethod
@@ -18,7 +19,7 @@ class upscaler:
             },
             "optional": {
                 "model": ("STRING", {
-                    "tooltip": "Model AIR ID (runware:500@1, runware:501@1, runware:502@1, runware:503@1)",
+                    "tooltip": "Model AIR ID (runware:500@1, runware:501@1, runware:502@1, runware:503@1, bria:52@1)",
                     "default": "",
                 }),
                 # Common parameters toggles
@@ -113,6 +114,15 @@ class upscaler:
                     "min": 0,
                     "max": 2,
                 }),
+                "safetyInputs": ("RUNWARESAFETYINPUTS", {
+                    "tooltip": "Connect Runware Safety Inputs node to configure safety and content moderation settings.",
+                }),
+                "Accelerator": ("RUNWAREACCELERATOR", {
+                    "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
+                }),
+                "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
+                    "tooltip": "Connect a Runware Provider Settings node to configure provider-specific parameters.",
+                }),
             },
         }
 
@@ -147,6 +157,9 @@ class upscaler:
         colorFix = kwargs.get("colorFix", False)
         tileDiffusion = kwargs.get("tileDiffusion", False)
         clipSkip = kwargs.get("clipSkip", 0)
+        safetyInputs = kwargs.get("safetyInputs", None)
+        runwareAccelerator = kwargs.get("Accelerator", None)
+        providerSettings = kwargs.get("providerSettings", None)
 
         # Build the base configuration
         genConfig = {
@@ -197,7 +210,45 @@ class upscaler:
         # Add settings to config if any settings were specified
         if settings:
             genConfig["settings"] = settings
+        
+        # Add safety inputs if provided
+        if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
+            genConfig["safety"] = safetyInputs
+        
+        # Add accelerator options if provided
+        if runwareAccelerator is not None and isinstance(runwareAccelerator, dict) and len(runwareAccelerator) > 0:
+            genConfig["acceleratorOptions"] = runwareAccelerator
+        
+        # Handle providerSettings - extract provider name from model and merge with custom settings
+        if providerSettings is not None:
+            # Extract provider name from model (e.g., "runware:500@1" -> "runware")
+            provider_name = model.split(":")[0] if ":" in model and model else "runware"
+            
+            # If providerSettings is a dictionary, create the correct API format
+            if isinstance(providerSettings, dict):
+                # Create the providerSettings object with provider name as key
+                final_provider_settings = {
+                    provider_name: providerSettings
+                }
+                genConfig["providerSettings"] = final_provider_settings
+                print(f"[Debugging] Provider settings: {final_provider_settings}")
+            else:
+                # If it's just a string, use it directly
+                genConfig["providerSettings"] = providerSettings
 
-        genResult = rwUtils.inferenecRequest([genConfig])
+        # Debug: Print the request being sent
+        print(f"[DEBUG] Sending Image Upscale Request:", flush=True)
+        print(f"[DEBUG] Request Payload: {json.dumps([genConfig], indent=2)}", flush=True)
+        
+        try:
+            genResult = rwUtils.inferenecRequest([genConfig])
+            
+            # Debug: Print the response received
+            print(f"[DEBUG] Received Image Upscale Response:", flush=True)
+            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}", flush=True)
+        except Exception as e:
+            print(f"[DEBUG] Error in Image Upscale Request: {str(e)}", flush=True)
+            raise
+        
         images = rwUtils.convertImageB64List(genResult)
         return (images, )

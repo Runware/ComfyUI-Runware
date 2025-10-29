@@ -42,6 +42,10 @@ class txt2vid:
                     "max": 1920,
                     "step": 1,
                 }),
+                "useDuration": ("BOOLEAN", {
+                    "tooltip": "Enable to include duration parameter in API request. Disable if your model doesn't support duration.",
+                    "default": True,
+                }),
                 "duration": ("INT", {
                     "tooltip": "The duration of the video in seconds.",
                     "default": 5,
@@ -71,6 +75,16 @@ class txt2vid:
                     "default": 1,
                     "min": 1,
                     "max": 9223372036854776000,
+                }),
+                "useSteps": ("BOOLEAN", {
+                    "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps.",
+                    "default": False,
+                }),
+                "steps": ("INT", {
+                    "tooltip": "Number of inference steps for video generation. More steps generally result in higher quality but longer generation time.",
+                    "default": 20,
+                    "min": 1,
+                    "max": 100,
                 }),
                 "batchSize": ("INT", {
                     "tooltip": "The number of videos to generate in a single request.",
@@ -115,6 +129,15 @@ class txt2vid:
                 "inputs": ("RUNWAREVIDEOINFERENCEINPUTS", {
                     "tooltip": "Connect a Runware Video Inference Inputs node to provide custom inputs like image, audio, mask, and parameters for OmniHuman 1.5 and other video models.",
                 }),
+                "safetyInputs": ("RUNWARESAFETYINPUTS", {
+                    "tooltip": "Connect Runware Safety Inputs node to configure safety and content moderation settings.",
+                }),
+                "videoAdvancedFeatureInputs": ("RUNWAREVIDEOADVANCEDFEATUREINPUTS", {
+                    "tooltip": "Connect Runware Video Advanced Feature Inputs node to configure advanced video features like CFG scales, FPS, negative prompts, and SLG layer settings.",
+                }),
+                "Accelerator": ("RUNWAREACCELERATOR", {
+                    "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
+                }),
             }
         }
 
@@ -149,9 +172,13 @@ class txt2vid:
         speechVoice = kwargs.get("speechVoice", None)
         speechText = kwargs.get("speechText", None)
         inputs = kwargs.get("inputs", None)
+        safetyInputs = kwargs.get("safetyInputs", None)
+        videoAdvancedFeatureInputs = kwargs.get("videoAdvancedFeatureInputs", None)
+        runwareAccelerator = kwargs.get("Accelerator", None)
         useCustomDimensions = kwargs.get("useCustomDimensions", False)
         customWidth = kwargs.get("width", 864)
         customHeight = kwargs.get("height", 480)
+        useDuration = kwargs.get("useDuration", True)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
         useFps = kwargs.get("useFps", True)
@@ -159,6 +186,8 @@ class txt2vid:
         batchSize = kwargs.get("batchSize", 1)
         seed = kwargs.get("seed", 1)
         useSeed = kwargs.get("useSeed", True)
+        steps = kwargs.get("steps", 20)
+        useSteps = kwargs.get("useSteps", False)
         
         # Handle model input - could be dict or string
         if isinstance(runwareVideoModel, dict):
@@ -181,14 +210,15 @@ class txt2vid:
             {
                 "taskType": "videoInference",
                 "taskUUID": rwUtils.genRandUUID(),
-                "height": height,
-                "width": width,
                 "model": model,
                 "outputFormat": outputFormat,
                 "numberResults": batchSize,
                 "includeCost": True,
             }
         ]
+        if height!=0 and width!=0:
+            genConfig[0]['height'] = height
+            genConfig[0]['width'] = width
         
         # Only add positivePrompt if it's not empty
         if positivePrompt and positivePrompt.strip() != "":
@@ -199,12 +229,16 @@ class txt2vid:
             genConfig[0]["fps"] = fps
         
         # Add duration parameter - unified for all models
-        genConfig[0]["duration"] = duration
+        if useDuration:
+            genConfig[0]["duration"] = duration
         
         # Add seed parameter only if enabled
-        
         if useSeed:
             genConfig[0]["seed"] = seed
+        
+        # Add steps parameter only if enabled
+        if useSteps:
+            genConfig[0]["steps"] = steps
 
         if (negativePrompt is not None and negativePrompt != ""):
             genConfig[0]["negativePrompt"] = negativePrompt
@@ -273,6 +307,18 @@ class txt2vid:
             else:
                 # If it's just a string, use it directly
                 genConfig[0]["providerSettings"] = providerSettings
+        
+        # Add safety inputs if provided
+        if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
+            genConfig[0]["safetyInputs"] = safetyInputs
+        
+        # Add video advanced feature inputs if provided
+        if videoAdvancedFeatureInputs is not None and isinstance(videoAdvancedFeatureInputs, dict) and len(videoAdvancedFeatureInputs) > 0:
+            genConfig[0]["advancedFeatures"] = videoAdvancedFeatureInputs
+        
+        # Add accelerator options if provided
+        if runwareAccelerator is not None and isinstance(runwareAccelerator, dict) and len(runwareAccelerator) > 0:
+            genConfig[0]["acceleratorOptions"] = runwareAccelerator
 
         if (multiInferenceMode):
             return (None, genConfig)
