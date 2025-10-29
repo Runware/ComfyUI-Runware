@@ -113,7 +113,7 @@ def getCustomEndpoint():
     custom_endpoint = os.getenv("RUNWARE_CUSTOM_ENDPOINT")
     if custom_endpoint and isinstance(custom_endpoint, str):
         return custom_endpoint
-    return "https://api.runware.ai/v1"
+    return "https://api.runware.dev/v1"
 
 SESSION_TIMEOUT = getTimeout()
 RUNWARE_API_KEY = getAPIKey()
