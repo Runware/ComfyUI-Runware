@@ -6,6 +6,9 @@ class imageInferenceInputs:
         return {
             "required": {},
             "optional": {
+                "image": ("IMAGE", {
+                    "tooltip": "Specifies an image input for the inference process."
+                }),
                 "Reference Image 1": ("IMAGE", {
                     "tooltip": "Specifies Reference Image 1 for the inputs. These reference images help guide the image generation process."
                 }),
@@ -28,6 +31,7 @@ class imageInferenceInputs:
     CATEGORY = "Runware"
 
     def createInputs(self, **kwargs):
+        image = kwargs.get("image", None)
         refImage1 = kwargs.get("Reference Image 1", None)
         refImage2 = kwargs.get("Reference Image 2", None)
         refImage3 = kwargs.get("Reference Image 3", None)
@@ -35,6 +39,10 @@ class imageInferenceInputs:
 
         # Build the inputs structure
         inputs = {}
+        
+        # Handle image if provided
+        if image is not None:
+            inputs["image"] = rwUtils.convertTensor2IMG(image)
         
         # Handle references if any are provided
         references = []

@@ -252,7 +252,13 @@ class txt2img:
         if useSteps:
             genConfig[0]["steps"] = steps
         if useCFGScale:
-            genConfig[0]["CFGScale"] = cfgScale
+            # Extract provider name from model (e.g., "bria:20@1" -> "bria")
+            provider_name = runwareModel.split(":")[0] if ":" in runwareModel else runwareModel
+            # Cast to int for Bria models
+            if provider_name.lower() == "bria":
+                genConfig[0]["CFGScale"] = int(cfgScale)
+            else:
+                genConfig[0]["CFGScale"] = cfgScale
         if useSeed:
             genConfig[0]["seed"] = seed
         if useScheduler:
@@ -335,6 +341,8 @@ class txt2img:
             # Debug: Print the request being sent
             print(f"[DEBUG] Sending Image Inference Request:")
             print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+            
+            print(f"[DEBUG] CFGScale value from kwargs: {cfgScale}")
             
             genResult = rwUtils.inferenecRequest(genConfig)
             
