@@ -14,7 +14,7 @@ class RunwareBriaProviderSettings:
         return {
             "required": {},
             "optional": {
-                "medium": (["photography", "art"], {
+                "medium": (["None", "photography", "art"], {
                     "tooltip": "Select the medium type for image generation",
                     "default": "photography",
                 }),
@@ -48,6 +48,12 @@ class RunwareBriaProviderSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "preserveAlpha": ("BOOLEAN", {
+                    "tooltip": "Preserve alpha channel in the image.",
+                    "default": None,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             }
         }
     
@@ -67,12 +73,13 @@ class RunwareBriaProviderSettings:
         promptContentModeration = kwargs.get("promptContentModeration", True)
         contentModeration = kwargs.get("contentModeration", True)
         ipSignal = kwargs.get("ipSignal", False)
+        preserveAlpha = kwargs.get("preserveAlpha", None)
         
         # Build settings dictionary
         settings = {}
         
         # Add medium
-        if medium is not None:
+        if medium is not None and medium != "None":
             settings["medium"] = medium
         
         # Add promptEnhancement
@@ -94,6 +101,10 @@ class RunwareBriaProviderSettings:
         # Add ipSignal
         if ipSignal is not None:
             settings["ipSignal"] = ipSignal
+        
+        # Add preserveAlpha
+        if preserveAlpha is not None:
+            settings["preserveAlpha"] = preserveAlpha
         
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}

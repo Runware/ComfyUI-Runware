@@ -85,6 +85,7 @@ const RUNWARE_NODE_TYPES = {
     PIXVERSEPROVIDERSETTINGS: "Runware Pixverse Provider Settings",
     OPENAIPROVIDERSETTINGS: "Runware OpenAI Provider Settings",
     BYTEDANCEPROVIDERSETTINGS: "Runware Bytedance Provider Settings",
+    BRIAPROVIDERSETTINGS: "Runware Bria Provider Settings",
     ELEVENLABSPROVIDERSETTINGS: "Runware ElevenLabs Provider Settings",
     ELEVENLABSPROVIDERSETTINGSSECTIONS: "Runware ElevenLabs Provider Settings Sections",
     VIDUPROVIDERSETTINGS: "Runware Vidu Provider Settings",
@@ -97,6 +98,11 @@ const RUNWARE_NODE_TYPES = {
     VIDEOBGREMOVAL: "Runware Video Background Removal",
     VIDEOUPSCALER: "Runware Video Upscaler",
     VIDEOINPUTSREFERENCES: "Runware Video Inputs References",
+    ACCELERATOROPTIONS: "Runware Accelerator Options",
+    VIDEOTRANSCRIPTION: "Runware Video Transcription",
+    MINIMAXPROVIDERSETTINGS: "Runware MiniMax Provider Settings",
+    SAFETYINPUTS: "Runware Safety Inputs",
+    VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -251,6 +257,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.BRIAPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.ELEVENLABSPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
@@ -293,6 +303,26 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.VIDEOINPUTSREFERENCES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.ACCELERATOROPTIONS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOTRANSCRIPTION]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.MINIMAXPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SAFETYINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOADVANCEDFEATUREINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

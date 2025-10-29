@@ -1,9 +1,11 @@
 from .utils import runwareUtils as rwUtils
+import json
 
 class bgremoval:
     RUNWARE_RMBG_MODELS = {
         "RemBG 1.4": "runware:109@1",
         "Bria RMBG 2.0": "runware:110@1",
+        "Bria RMBG v2.0": "bria:2@1",
         "BiRefNet v1 Base": "runware:112@1",
         "BiRefNet v1 Base - COD": "runware:112@2",
         "BiRefNet Dis": "runware:112@3",
@@ -64,6 +66,15 @@ class bgremoval:
                     "min": 1,
                     "max": 255,
                 }),
+                "safetyInputs": ("RUNWARESAFETYINPUTS", {
+                    "tooltip": "Connect Runware Safety Inputs node to configure safety and content moderation settings.",
+                }),
+                "Accelerator": ("RUNWAREACCELERATOR", {
+                    "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
+                }),
+                "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
+                    "tooltip": "Connect a Runware Provider Settings node to configure provider-specific parameters.",
+                }),
                 **rwUtils.RUNWARE_REMBG_OUTPUT_FORMATS,
             }
         }
@@ -83,6 +94,9 @@ class bgremoval:
         alphaMattingBackgroundThreshold = kwargs.get("Alpha Matting Background Threshold", 10)
         alphaMattingErodeSize = kwargs.get("Alpha Matting Erode Size", 10)
         outputFormat = kwargs.get("outputFormat", "WEBP")
+        safetyInputs = kwargs.get("safetyInputs", None)
+        runwareAccelerator = kwargs.get("Accelerator", None)
+        providerSettings = kwargs.get("providerSettings", None)
         modelAIR = self.RUNWARE_RMBG_MODELS.get(modelName, "runware:109@1")
         includeExtraSettings = postProcessMask or returnOnlyMask or alphaMatting
 
@@ -113,7 +127,45 @@ class bgremoval:
                 settings["alphaMattingBackgroundThreshold"] = alphaMattingBackgroundThreshold
                 settings["alphaMattingErodeSize"] = alphaMattingErodeSize
             genConfig["settings"] = settings
+        
+        # Add safety inputs if provided
+        if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
+            genConfig["safety"] = safetyInputs
+        
+        # Add accelerator options if provided
+        if runwareAccelerator is not None and isinstance(runwareAccelerator, dict) and len(runwareAccelerator) > 0:
+            genConfig["acceleratorOptions"] = runwareAccelerator
+        
+        # Handle providerSettings - extract provider name from model and merge with custom settings
+        if providerSettings is not None:
+            # Extract provider name from model (e.g., "bria:2@1" -> "bria", "runware:109@1" -> "runware")
+            provider_name = modelAIR.split(":")[0] if ":" in modelAIR else "runware"
+            
+            # If providerSettings is a dictionary, create the correct API format
+            if isinstance(providerSettings, dict):
+                # Create the providerSettings object with provider name as key
+                final_provider_settings = {
+                    provider_name: providerSettings
+                }
+                genConfig["providerSettings"] = final_provider_settings
+                print(f"[Debugging] Provider settings: {final_provider_settings}")
+            else:
+                # If it's just a string, use it directly
+                genConfig["providerSettings"] = providerSettings
 
-        genResult = rwUtils.inferenecRequest([genConfig])
+        # Debug: Print the request being sent
+        print(f"[DEBUG] Sending Background Removal Request:", flush=True)
+        print(f"[DEBUG] Request Payload: {json.dumps([genConfig], indent=2)}", flush=True)
+        
+        try:
+            genResult = rwUtils.inferenecRequest([genConfig])
+            
+            # Debug: Print the response received
+            print(f"[DEBUG] Received Background Removal Response:", flush=True)
+            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}", flush=True)
+        except Exception as e:
+            print(f"[DEBUG] Error in Background Removal Request: {str(e)}", flush=True)
+            raise
+        
         images = rwUtils.convertImageB64List(genResult)
         return (images, )

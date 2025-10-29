@@ -50,6 +50,8 @@ from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
 from .modules.videoInputsReferences import videoInputsReferences
+from .modules.safetyInputs import safetyInputs
+from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -114,6 +116,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,
     "Runware Video Inputs References": videoInputsReferences,
+    "Runware Safety Inputs": safetyInputs,
+    "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

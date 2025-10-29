@@ -15,6 +15,9 @@ class videoInferenceInputs:
                 "Mask": ("IMAGE", {
                     "tooltip": "Mask image to specify a specific subject in the image to speak. Use white/black mask format."
                 }),
+                "Frame": ("IMAGE", {
+                    "tooltip": "Frame image for video generation. Connect a Load Image node to provide the frame image."
+                }),
                 "References": ("RUNWAREVIDEOINPUTSREFERENCES", {
                     "tooltip": "Connect the Video Inputs References node to provide reference images."
                 }),
@@ -31,6 +34,7 @@ class videoInferenceInputs:
         image = kwargs.get("Image", None)
         audio = kwargs.get("Audio", None)
         mask = kwargs.get("Mask", None)
+        frame = kwargs.get("Frame", None)
         references = kwargs.get("References", None)
 
         inputs = {}
@@ -45,6 +49,10 @@ class videoInferenceInputs:
         if mask is not None:
             mask_uuid = rwUtils.convertTensor2IMG(mask)
             inputs["mask"] = mask_uuid
+
+        if frame is not None:
+            frame_uuid = rwUtils.convertTensor2IMG(frame)
+            inputs["frame"] = frame_uuid
 
         if references is not None and len(references) > 0:
             inputs["references"] = references
