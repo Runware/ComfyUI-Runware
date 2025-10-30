@@ -131,6 +131,10 @@ class txt2img:
                     "min": 1,
                     "max": 10,
                 }),
+                "acceleration": (["none", "low", "medium", "high"], {
+                    "tooltip": "Applies optimized acceleration presets that automatically configure multiple generation parameters for the best speed and quality balance. This parameter serves as an abstraction layer that intelligently adjusts acceleratorOptions, steps, scheduler, and other underlying settings.\n\nAvailable values:\n- none: No acceleration applied, uses default parameter values.\n- low: Minimal acceleration with optimized settings for lowest quality loss.\n- medium: Balanced acceleration preset with moderate speed improvements.\n- high: Maximum acceleration with caching and aggressive optimizations for fastest generation.",
+                    "default": "none",
+                }),
             },
             "optional": {
                 "Accelerator": ("RUNWAREACCELERATOR", {
@@ -228,6 +232,7 @@ class txt2img:
         dimensions = kwargs.get("dimensions", "Square (512x512)")
         outputFormat = kwargs.get("outputFormat", "WEBP")
         batchSize = kwargs.get("batchSize", 1)
+        acceleration = kwargs.get("acceleration", "none")
         
         if (maskImage is not None and seedImage is None):
             raise Exception("Mask Image Requires Seed Image To Be Provided!")
@@ -278,6 +283,11 @@ class txt2img:
                 genConfig[0]["promptWeighting"] = "compel"
         if (runwareAccelerator is not None):
             genConfig[0]["acceleratorOptions"] = runwareAccelerator
+        
+        # Add acceleration if not "none"
+        if acceleration and acceleration != "none":
+            genConfig[0]["acceleration"] = acceleration
+        
         if (runwareLora is not None):
             if (isinstance(runwareLora, list)):
                 genConfig[0]["lora"] = runwareLora

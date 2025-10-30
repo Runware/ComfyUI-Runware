@@ -46,6 +46,7 @@ from .modules.referenceVideos import referenceVideos
 from .modules.videoInferenceInputs import videoInferenceInputs
 from .modules.lightricksProviderSettings import RunwareLightricksProviderSettings
 from .modules.minimaxProviderSettings import RunwareMiniMaxProviderSettings
+from .modules.klingProviderSettings import RunwareKlingProviderSettings
 from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
@@ -112,6 +113,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inference Inputs": videoInferenceInputs,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,
+    "Runware KlingAI Provider Settings": RunwareKlingProviderSettings,
     "Runware Vectorize": vectorize,
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,

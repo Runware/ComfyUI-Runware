@@ -92,6 +92,10 @@ class txt2vid:
                     "min": 1,
                     "max": 4,
                 }),
+                "acceleration": (["none", "low", "medium", "high"], {
+                    "tooltip": "Applies optimized acceleration presets that automatically configure multiple generation parameters for the best speed and quality balance. This parameter serves as an abstraction layer that intelligently adjusts acceleratorOptions, steps, scheduler, and other underlying settings.\n\nAvailable values:\n- none: No acceleration applied, uses default parameter values.\n- low: Minimal acceleration with optimized settings for lowest quality loss.\n- medium: Balanced acceleration preset with moderate speed improvements.\n- high: Maximum acceleration with caching and aggressive optimizations for fastest generation.",
+                    "default": "none",
+                }),
             },
             "optional": {
                 "positivePrompt": ("STRING", {
@@ -188,6 +192,7 @@ class txt2vid:
         useSeed = kwargs.get("useSeed", True)
         steps = kwargs.get("steps", 20)
         useSteps = kwargs.get("useSteps", False)
+        acceleration = kwargs.get("acceleration", "none")
         
         # Handle model input - could be dict or string
         if isinstance(runwareVideoModel, dict):
@@ -325,6 +330,10 @@ class txt2vid:
         # Add accelerator options if provided
         if runwareAccelerator is not None and isinstance(runwareAccelerator, dict) and len(runwareAccelerator) > 0:
             genConfig[0]["acceleratorOptions"] = runwareAccelerator
+        
+        # Add acceleration if not "none"
+        if acceleration and acceleration != "none":
+            genConfig[0]["acceleration"] = acceleration
 
         if (multiInferenceMode):
             return (None, genConfig)

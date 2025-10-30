@@ -12,6 +12,7 @@ class videoModelSearch:
             "klingai:5@1 (KlingAI V2.1 Standard (I2V))",
             "klingai:5@2 (KlingAI V2.1 Pro (I2V))",
             "klingai:5@3 (KlingAI V2.0 Master)",
+            "klingai:7@1 (KlingAI Lip-Sync)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)",
@@ -49,6 +50,7 @@ class videoModelSearch:
         "Wan": [
             "runware:200@1 (Wan 2.1 1.3B)",
             "runware:200@2 (Wan 2.1 14B)",
+            "runware:200@6 (Wan 2.2)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)",
@@ -76,6 +78,7 @@ class videoModelSearch:
         "klingai:5@1": {"width": 1280, "height": 720},  # KlingAI V2.1 Standard (I2V)
         "klingai:5@2": {"width": 1920, "height": 1080}, # KlingAI V2.1 Pro (I2V)
         "klingai:5@3": {"width": 1920, "height": 1080}, # KlingAI V2.0 Master
+        "klingai:7@1": {"width": 0, "height": 0}, # KlingAI V3.0 Standard
         
         # Veo Models
         "google:2@0": {"width": 1280, "height": 720},   # Veo 2.0
@@ -113,6 +116,7 @@ class videoModelSearch:
         # Wan Models
         "runware:200@1": {"width": 853, "height": 480}, # Wan 2.1 1.3B
         "runware:200@2": {"width": 853, "height": 480}, # Wan 2.1 14B
+        "runware:200@6": {"width": 1280, "height": 720}, # Wan 2.2
         
         # OpenAI Models
         "openai:3@1": {"width": 1280, "height": 720}, # OpenAI Sora 3.1

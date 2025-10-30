@@ -34,7 +34,7 @@ class RunwareKlingProviderSettings:
     RETURN_TYPES = ("RUNWAREPROVIDERSETTINGS",)
     RETURN_NAMES = ("Provider Settings",)
     FUNCTION = "create_provider_settings"
-    CATEGORY = "Runware/Provider Settings"
+    CATEGORY = "Runware"
     DESCRIPTION = "Configure KlingAI-specific provider settings for video generation including sound and original audio volume controls."
 
     def create_provider_settings(self, **kwargs) -> tuple[Dict[str, Any]]:
