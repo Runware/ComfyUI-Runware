@@ -243,7 +243,24 @@ class RunwareMediaUpload:
                 )
             
             upload_result = generalRequestWrapper(recaller)
-            upload_result = upload_result.json()
+            
+            # Check response status before trying to parse JSON
+            if upload_result.status_code != 200:
+                print(f"[Debug] Upload failed with status {upload_result.status_code}")
+                print(f"[Debug] Response text: {upload_result.text[:500]}")
+                raise Exception(f"Upload failed with status {upload_result.status_code}: {upload_result.text[:200]}")
+            
+            # Check if response is empty
+            if not upload_result.text or not upload_result.text.strip():
+                raise Exception("Upload failed: Empty response from server")
+            
+            try:
+                upload_result = upload_result.json()
+            except ValueError as e:
+                print(f"[Debug] Failed to parse JSON response: {str(e)}")
+                print(f"[Debug] Response text: {upload_result.text[:500]}")
+                raise Exception(f"Upload failed: Invalid JSON response from server: {str(e)}")
+            
             print(f"[Debug] Upload response: {upload_result}")
             
             if "errors" in upload_result:
@@ -298,7 +315,23 @@ class RunwareMediaUpload:
                     )
                 
                 poll_result = generalRequestWrapper(recaller)
-                poll_result = poll_result.json()
+                
+                # Check response status
+                if poll_result.status_code != 200:
+                    print(f"[Debug] Poll failed with status {poll_result.status_code}")
+                    continue
+                
+                # Check if response is empty
+                if not poll_result.text or not poll_result.text.strip():
+                    print(f"[Debug] Poll returned empty response")
+                    continue
+                
+                try:
+                    poll_result = poll_result.json()
+                except ValueError as e:
+                    print(f"[Debug] Failed to parse JSON in poll: {str(e)}")
+                    continue
+                
                 print(f"[Debug] Poll response: {poll_result}")
                 
                 if "errors" in poll_result:

@@ -12,6 +12,9 @@ class videoInferenceInputs:
                 "Audio": ("STRING", {
                     "tooltip": "Connect the mediaUUID output from Runware Media Upload node with audio file. This audio will be synchronized with the generated video."
                 }),
+                "Video": ("STRING", {
+                    "tooltip": "Connect the mediaUUID output from Runware Media Upload node with a reference/input video."
+                }),
                 "Mask": ("IMAGE", {
                     "tooltip": "Mask image to specify a specific subject in the image to speak. Use white/black mask format."
                 }),
@@ -24,7 +27,7 @@ class videoInferenceInputs:
             }
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Video Inference with OmniHuman 1.5 support, including image, audio, and mask inputs."
+    DESCRIPTION = "Configure custom inputs for Runware Video Inference with OmniHuman 1.5 support, including image, audio, video, and mask inputs."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREVIDEOINFERENCEINPUTS",)
     RETURN_NAMES = ("Video Inference Inputs",)
@@ -33,6 +36,7 @@ class videoInferenceInputs:
     def createInputs(self, **kwargs):
         image = kwargs.get("Image", None)
         audio = kwargs.get("Audio", None)
+        video = kwargs.get("Video", None)
         mask = kwargs.get("Mask", None)
         frame = kwargs.get("Frame", None)
         references = kwargs.get("References", None)
@@ -45,6 +49,9 @@ class videoInferenceInputs:
 
         if audio is not None and audio.strip() != "":
             inputs["audio"] = audio.strip()
+
+        if video is not None and video.strip() != "":
+            inputs["video"] = video.strip()
 
         if mask is not None:
             mask_uuid = rwUtils.convertTensor2IMG(mask)
