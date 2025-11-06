@@ -1,6 +1,9 @@
 from .utils import runwareUtils as rwUtils
 
+
 class apiManager:
+    """API Manager node for configuring Runware API settings"""
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -61,3 +64,21 @@ class apiManager:
     DESCRIPTION = "API Managers is a Runware Utility That helps you define or change your API Key, Session Timeout, Image Output Format & Quality, and Image Caching settings From The ComfyUI Interface Without having to adjust the env file locally."
     CATEGORY = "Runware"
     RETURN_TYPES = ()
+
+    def manageApiSettings(self, **kwargs):
+        """Manage API settings"""
+        apiKey = kwargs.get("API Key")
+        maxTimeout = kwargs.get("Max Timeout")
+        imageOutputQuality = kwargs.get("Image Output Quality")
+        imageOutputFormat = kwargs.get("Image Output Format")
+        enableImagesCaching = kwargs.get("Enable Images Caching")
+        minImageCacheSize = kwargs.get("Min Image Cache Size")
+        
+        rwUtils.setApiKey(apiKey)
+        rwUtils.setTimeout(maxTimeout)
+        rwUtils.setOutputQuality(imageOutputQuality)
+        rwUtils.setOutputFormat(imageOutputFormat)
+        rwUtils.setEnableImagesCaching(enableImagesCaching)
+        rwUtils.setMinImageCacheSize(minImageCacheSize)
+        
+        return ()

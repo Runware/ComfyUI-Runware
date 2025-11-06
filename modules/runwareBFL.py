@@ -38,10 +38,10 @@ class runwareKontext:
                     "tooltip": "Adjust the dimensions of the generated image. This setting allows you to choose from various aspect ratios, such as 16:9 for wide images or 1:1 for square images. The width and height will be automatically adjusted based on the selected aspect ratio.",
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
+                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value. Set to 0 to auto-generate a random seed.",
                     "default": 0,
-                    "min": 1,
-                    "max": 9223372036854776000,
+                    "min": 0,
+                    "max": 4294967295,
                 }),
                 "Multi Inference Mode": ("BOOLEAN", {
                     "tooltip": "If Enabled the node will skip the image generation process and will only return the Runware Task Object to be used in the Multi Inference Node.",

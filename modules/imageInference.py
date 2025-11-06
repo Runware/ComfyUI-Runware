@@ -87,10 +87,10 @@ class txt2img:
                     "default": True,
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value. Random seeds are generated as 32-bit values for platform compatibility.",
+                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value. Set to 0 to auto-generate a random seed.",
                     "default": 1,
-                    "min": 1,
-                    "max": 9223372036854776000,
+                    "min": 0,
+                    "max": 4294967295,
                 }),
                 "useClipSkip": ("BOOLEAN", {
                     "tooltip": "Enable to include clipSkip parameter in API request. Disable if your model doesn't support clipSkip.",

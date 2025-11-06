@@ -1,7 +1,9 @@
-from .utils import runwareUtils as rwUtils
-from typing import List, Dict, Any
+from typing import List
+
 
 class inputAudios:
+    """Input Audios node for configuring multiple audio inputs"""
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -29,11 +31,14 @@ class inputAudios:
     CATEGORY = "Runware"
 
     def createInputAudios(self, **kwargs) -> tuple[List[str]]:
-        audio_list = []
+        """Create list of audio UUIDs from provided parameters"""
+        audioList = []
+        
         for i in range(1, 5):
-            audio_key = f"Audio{i}"
-            audio_uuid = kwargs.get(audio_key)
-            if audio_uuid and audio_uuid.strip() != "":
-                audio_list.append(audio_uuid.strip())
-        return (audio_list,)
-
+            audioKey = f"Audio{i}"
+            audioUuid = kwargs.get(audioKey)
+            
+            if audioUuid and audioUuid.strip() != "":
+                audioList.append(audioUuid.strip())
+        
+        return (audioList,)

@@ -1,6 +1,9 @@
 from .utils import runwareUtils as rwUtils
 
+
 class imageInferenceInputs:
+    """Image Inference Inputs node for configuring image generation inputs"""
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -31,32 +34,31 @@ class imageInferenceInputs:
     CATEGORY = "Runware"
 
     def createInputs(self, **kwargs):
+        """Create image inference inputs from provided parameters"""
         image = kwargs.get("image", None)
         refImage1 = kwargs.get("Reference Image 1", None)
         refImage2 = kwargs.get("Reference Image 2", None)
         refImage3 = kwargs.get("Reference Image 3", None)
         refImage4 = kwargs.get("Reference Image 4", None)
 
-        # Build the inputs structure
         inputs = {}
         
-        # Handle image if provided
         if image is not None:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
         
-        # Handle references if any are provided
-        references = []
-        if refImage1 is not None:
-            references.append(rwUtils.convertTensor2IMG(refImage1))
-        if refImage2 is not None:
-            references.append(rwUtils.convertTensor2IMG(refImage2))
-        if refImage3 is not None:
-            references.append(rwUtils.convertTensor2IMG(refImage3))
-        if refImage4 is not None:
-            references.append(rwUtils.convertTensor2IMG(refImage4))
-        
+        references = self._collectReferences(refImage1, refImage2, refImage3, refImage4)
         if len(references) > 0:
             inputs["references"] = references
 
-        return (inputs, )
+        return (inputs,)
 
+    def _collectReferences(self, refImage1, refImage2, refImage3, refImage4):
+        """Collect and convert reference images to list"""
+        references = []
+        refImages = [refImage1, refImage2, refImage3, refImage4]
+        
+        for refImage in refImages:
+            if refImage is not None:
+                references.append(rwUtils.convertTensor2IMG(refImage))
+        
+        return references

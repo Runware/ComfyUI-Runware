@@ -1,41 +1,29 @@
 from .utils import runwareUtils as rwUtils
 from typing import List, Dict, Any
 
+
 class videoInputsReferences:
+    """Video Inputs References node for configuring reference images with types"""
+    
+    MAX_REFERENCES = 4
+    
     @classmethod
     def INPUT_TYPES(cls):
+        optionalInputs = {}
+        
+        for i in range(1, cls.MAX_REFERENCES + 1):
+            ordinal = rwUtils.getOrdinal(i)
+            optionalInputs[f"Image{i}"] = ("IMAGE", {
+                "tooltip": f"{ordinal.capitalize()} reference image.",
+            })
+            optionalInputs[f"Type{i}"] = ("STRING", {
+                "tooltip": f"Type for the {ordinal} reference (e.g., 'asset'). Leave empty to omit.",
+                "default": "",
+            })
+        
         return {
             "required": {},
-            "optional": {
-                "Image1": ("IMAGE", {
-                    "tooltip": "First reference image.",
-                }),
-                "Type1": ("STRING", {
-                    "tooltip": "Type for the first reference (e.g., 'asset'). Leave empty to omit.",
-                    "default": "",
-                }),
-                "Image2": ("IMAGE", {
-                    "tooltip": "Second reference image.",
-                }),
-                "Type2": ("STRING", {
-                    "tooltip": "Type for the second reference (e.g., 'asset'). Leave empty to omit.",
-                    "default": "",
-                }),
-                "Image3": ("IMAGE", {
-                    "tooltip": "Third reference image.",
-                }),
-                "Type3": ("STRING", {
-                    "tooltip": "Type for the third reference (e.g., 'asset'). Leave empty to omit.",
-                    "default": "",
-                }),
-                "Image4": ("IMAGE", {
-                    "tooltip": "Fourth reference image.",
-                }),
-                "Type4": ("STRING", {
-                    "tooltip": "Type for the fourth reference (e.g., 'asset'). Leave empty to omit.",
-                    "default": "",
-                }),
-            }
+            "optional": optionalInputs
         }
 
     DESCRIPTION = "Configure multiple reference images with optional types for video inference inputs."
@@ -45,28 +33,32 @@ class videoInputsReferences:
     CATEGORY = "Runware"
 
     def createReferences(self, **kwargs) -> tuple[List[Dict[str, Any]]]:
+        """Create list of reference objects from provided parameters"""
         references = []
         
-        for i in range(1, 5):
-            image_key = f"Image{i}"
-            type_key = f"Type{i}"
+        for i in range(1, self.MAX_REFERENCES + 1):
+            imageKey = f"Image{i}"
+            typeKey = f"Type{i}"
             
-            image = kwargs.get(image_key)
-            ref_type = kwargs.get(type_key, "")
+            image = kwargs.get(imageKey)
+            refType = kwargs.get(typeKey, "")
             
             if image is not None:
-                # Convert image tensor to URL
-                image_url = rwUtils.convertTensor2IMG(image)
-                
-                reference = {"image": image_url}
-                
-                # Only add type if it's not empty
-                if ref_type and ref_type.strip() != "":
-                    reference["type"] = ref_type.strip()
-                
+                reference = self._createReference(image, refType)
                 references.append(reference)
         
         return (references,)
+
+    def _createReference(self, image, refType):
+        """Create reference object from image and type"""
+        imageUrl = rwUtils.convertTensor2IMG(image)
+        reference = {"image": imageUrl}
+        
+        if refType and refType.strip() != "":
+            reference["type"] = refType.strip()
+        
+        return reference
+
 
 # Node class mappings
 NODE_CLASS_MAPPINGS = {
@@ -76,4 +68,3 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "RunwareVideoInputsReferences": "Runware Video Inputs References",
 }
-

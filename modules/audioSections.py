@@ -1,4 +1,6 @@
 class RunwareAudioSections:
+    """Audio Sections node for creating audio composition sections"""
+    
     def __init__(self):
         pass
 
@@ -34,23 +36,31 @@ class RunwareAudioSections:
 
     RETURN_TYPES = ("RUNWAREAUDIOSECTIONS",)
     RETURN_NAMES = ("sections",)
-    FUNCTION = "create_sections"
+    FUNCTION = "createSections"
     CATEGORY = "Runware/Audio"
 
-    def create_sections(self, **kwargs):
+    def createSections(self, **kwargs):
+        """Create audio section object from provided parameters"""
         sectionName = kwargs.get("sectionName", "")
         positiveLocalStyles = kwargs.get("positiveLocalStyles", "")
         negativeLocalStyles = kwargs.get("negativeLocalStyles", "")
         duration = kwargs.get("duration", 0)
         lines = kwargs.get("lines", "")
         
-        # Create section object
         section = {
             "sectionName": sectionName,
-            "positiveLocalStyles": [style.strip() for style in positiveLocalStyles.split(",") if style.strip()],
-            "negativeLocalStyles": [style.strip() for style in negativeLocalStyles.split(",") if style.strip()],
+            "positiveLocalStyles": self._parseCommaSeparated(positiveLocalStyles),
+            "negativeLocalStyles": self._parseCommaSeparated(negativeLocalStyles),
             "duration": duration,
-            "lines": [line.strip() for line in lines.split("\n") if line.strip()]
+            "lines": self._parseLines(lines)
         }
         
         return (section,)
+
+    def _parseCommaSeparated(self, text):
+        """Parse comma-separated string into list"""
+        return [item.strip() for item in text.split(",") if item.strip()]
+
+    def _parseLines(self, text):
+        """Parse multiline text into list"""
+        return [line.strip() for line in text.split("\n") if line.strip()]

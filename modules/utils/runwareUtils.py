@@ -192,11 +192,17 @@ def setMinImageCacheSize(size: int):
         os.environ["RUNWARE_MIN_IMAGE_CACHE_SIZE"] = str(size)
         return True
 
-def genRandSeed(minSeed=1000, maxSeed=9223372036854776000):
+def genRandSeed(minSeed=1, maxSeed=4294967295):
+    """Generate a random seed value (32-bit unsigned integer range for compatibility)"""
     return random.randint(minSeed, maxSeed)
 
 def genRandUUID():
     return str(uuid.uuid4())
+
+def getOrdinal(num):
+    """Get ordinal string for number (e.g., 1 -> 'first', 2 -> 'second')"""
+    ordinals = {1: "first", 2: "second", 3: "third", 4: "fourth"}
+    return ordinals.get(num, f"{num}th")
 
 def checkAPIKey(apiKey):
     headers = {

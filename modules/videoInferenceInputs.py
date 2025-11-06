@@ -1,6 +1,10 @@
 from .utils import runwareUtils as rwUtils
+from typing import List
+
 
 class videoInferenceInputs:
+    """Video Inference Inputs node for configuring video generation inputs"""
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -34,6 +38,7 @@ class videoInferenceInputs:
     CATEGORY = "Runware"
 
     def createInputs(self, **kwargs):
+        """Create video inference inputs from provided parameters"""
         image = kwargs.get("Image", None)
         audio = kwargs.get("Audio", None)
         video = kwargs.get("Video", None)
@@ -44,8 +49,7 @@ class videoInferenceInputs:
         inputs = {}
 
         if image is not None:
-            image_uuid = rwUtils.convertTensor2IMG(image)
-            inputs["image"] = image_uuid
+            inputs["image"] = rwUtils.convertTensor2IMG(image)
 
         if audio is not None and audio.strip() != "":
             inputs["audio"] = audio.strip()
@@ -54,15 +58,12 @@ class videoInferenceInputs:
             inputs["video"] = video.strip()
 
         if mask is not None:
-            mask_uuid = rwUtils.convertTensor2IMG(mask)
-            inputs["mask"] = mask_uuid
+            inputs["mask"] = rwUtils.convertTensor2IMG(mask)
 
         if frame is not None:
-            frame_uuid = rwUtils.convertTensor2IMG(frame)
-            inputs["frame"] = frame_uuid
+            inputs["frame"] = rwUtils.convertTensor2IMG(frame)
 
         if references is not None and len(references) > 0:
             inputs["references"] = references
 
         return (inputs,)
-

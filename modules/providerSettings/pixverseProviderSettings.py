@@ -1,4 +1,4 @@
-from .utils import runwareUtils as rwUtils
+from ..utils import runwareUtils as rwUtils
 
 
 class RunwarePixverseProviderSettings:

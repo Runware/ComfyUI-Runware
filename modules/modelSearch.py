@@ -1,4 +1,42 @@
 class modelSearch:
+    """Model Search node for searching and selecting image models"""
+    
+    MODEL_ARCHITECTURES = [
+        "All",
+        "FLUX.1-Schnell",
+        "FLUX.1-Dev",
+        "FLUX.1-Krea",
+        "Pony",
+        "SD 1.5",
+        "SD 1.5 Hyper",
+        "SD 1.5 LCM",
+        "SD 3",
+        "SDXL 1.0",
+        "SDXL 1.0 LCM",
+        "SDXL Distilled",
+        "SDXL Hyper",
+        "SDXL Lightning",
+        "SDXL Turbo",
+    ]
+    
+    MODEL_TYPES = [
+        "Base Model",
+        "Inpainting Model",
+    ]
+    
+    FEATURED_MODELS = [
+        "rundiffusion:110@101 (Juggernaut Lightning Flux by RunDiffusion)",
+        "rundiffusion:130@100 (Juggernaut Pro Flux by RunDiffusion)",
+        "runware:100@1 (Flux Schnell)",
+        "runware:101@1 (Flux Dev)",
+        "runware:107@1 (FLUX.1 Krea)",
+        "runware:5@1 (SD3)",
+        "civitai:4384@128713 (SDXL 1.5 DreamShaper)",
+        "civitai:43331@176425 (SD 1.5 majicMIX realistic 麦橘写实)",
+        "civitai:101055@128078 (SDXL v1.0 VAE fix)",
+        "civitai:133005@288982 (SDXL Juggernaut XL V8)",
+    ]
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -6,45 +44,15 @@ class modelSearch:
                 "Model Search": ("STRING", {
                     "tooltip": "Search For Specific Model By Name Or Civit AIR Code (eg: Juggernaut).",
                 }),
-                "Model Architecture": ([
-                        "All",
-                        "FLUX.1-Schnell",
-                        "FLUX.1-Dev",
-                        "FLUX.1-Krea",
-                        "Pony",
-                        "SD 1.5",
-                        "SD 1.5 Hyper",
-                        "SD 1.5 LCM",
-                        "SD 3",
-                        "SDXL 1.0",
-                        "SDXL 1.0 LCM",
-                        "SDXL Distilled",
-                        "SDXL Hyper",
-                        "SDXL Lightning",
-                        "SDXL Turbo",
-                    ], {
+                "Model Architecture": (cls.MODEL_ARCHITECTURES, {
                     "tooltip": "Choose Model Architecture To Filter Results.",
                     "default": "All",
                 }),
-                "ModelType": ([
-                        "Base Model",
-                        "Inpainting Model",
-                    ], {
+                "ModelType": (cls.MODEL_TYPES, {
                     "tooltip": "Choose Model Type To Filter Results.",
                     "default": "Base Model",
                 }),
-                "ModelList": ([
-                        "rundiffusion:110@101 (Juggernaut Lightning Flux by RunDiffusion)",
-                        "rundiffusion:130@100 (Juggernaut Pro Flux by RunDiffusion)",
-                        "runware:100@1 (Flux Schnell)",
-                        "runware:101@1 (Flux Dev)",
-                        "runware:107@1 (FLUX.1 Krea)",
-                        "runware:5@1 (SD3)",
-                        "civitai:4384@128713 (SDXL 1.5 DreamShaper)",
-                        "civitai:43331@176425 (SD 1.5 majicMIX realistic 麦橘写实)",
-                        "civitai:101055@128078 (SDXL v1.0 VAE fix)",
-                        "civitai:133005@288982 (SDXL Juggernaut XL V8)",
-                    ], {
+                "ModelList": (cls.FEATURED_MODELS, {
                     "tooltip": "Model Results Will Show UP Here So You Could Choose From. If You didn't Search For Anything this will show featured Model List.",
                     "default": "runware:100@1 (Flux Schnell)",
                 }),
@@ -68,13 +76,14 @@ class modelSearch:
         return True
 
     def modelSearch(self, **kwargs):
+        """Search and return model AIR code"""
         enableSearchValue = kwargs.get("Use Search Value", False)
         searchInput = kwargs.get("Model Search")
 
         if enableSearchValue:
-            modelAIRCode = searchInput
+            modelAirCode = searchInput
         else:
-            crModel = kwargs.get("ModelList")
-            modelAIRCode = crModel.split(" ")[0]
+            currentModel = kwargs.get("ModelList")
+            modelAirCode = currentModel.split(" ")[0]
 
-        return (modelAIRCode,)
+        return (modelAirCode,)

@@ -1,4 +1,6 @@
 class RunwareAudioModelSearch:
+    """Audio Model Search node for searching audio models"""
+    
     def __init__(self):
         pass
 
@@ -19,13 +21,12 @@ class RunwareAudioModelSearch:
 
     RETURN_TYPES = ("RUNWAREAUDIOMODEL",)
     RETURN_NAMES = ("model",)
-    FUNCTION = "search_models"
+    FUNCTION = "searchModels"
     CATEGORY = "Runware/Audio"
 
-    def search_models(self, **kwargs):
+    def searchModels(self, **kwargs):
+        """Search for audio models"""
         searchQuery = kwargs.get("searchQuery", "")
         provider = kwargs.get("provider", "elevenlabs")
         
         return (searchQuery,)
-        
-       

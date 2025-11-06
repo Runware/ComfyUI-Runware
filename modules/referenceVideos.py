@@ -1,25 +1,25 @@
+from typing import List
 from .utils import runwareUtils as rwUtils
-from typing import List, Dict, Any
+
 
 class referenceVideos:
+    """Reference Videos node for configuring reference video inputs"""
+    
+    MAX_VIDEOS = 4
+    
     @classmethod
     def INPUT_TYPES(cls):
+        optionalInputs = {}
+        
+        for i in range(1, cls.MAX_VIDEOS + 1):
+            ordinal = rwUtils.getOrdinal(i)
+            optionalInputs[f"Video{i}"] = ("STRING", {
+                "tooltip": f"MediaUUID for the {ordinal} reference video from Runware Media Upload node.",
+            })
+        
         return {
             "required": {},
-            "optional": {
-                "Video1": ("STRING", {
-                    "tooltip": "MediaUUID for the first reference video from Runware Media Upload node.",
-                }),
-                "Video2": ("STRING", {
-                    "tooltip": "MediaUUID for the second reference video from Runware Media Upload node.",
-                }),
-                "Video3": ("STRING", {
-                    "tooltip": "MediaUUID for the third reference video from Runware Media Upload node.",
-                }),
-                "Video4": ("STRING", {
-                    "tooltip": "MediaUUID for the fourth reference video from Runware Media Upload node.",
-                }),
-            }
+            "optional": optionalInputs
         }
 
     DESCRIPTION = "Configure multiple reference video inputs (mediaUUIDs) for video generation."
@@ -29,11 +29,14 @@ class referenceVideos:
     CATEGORY = "Runware"
 
     def createReferenceVideos(self, **kwargs) -> tuple[List[str]]:
-        video_list = []
-        for i in range(1, 5):
-            video_key = f"Video{i}"
-            video_uuid = kwargs.get(video_key)
-            if video_uuid and video_uuid.strip() != "":
-                video_list.append(video_uuid.strip())
-        return (video_list,)
-
+        """Create list of reference video UUIDs"""
+        videoList = []
+        
+        for i in range(1, self.MAX_VIDEOS + 1):
+            videoKey = f"Video{i}"
+            videoUuid = kwargs.get(videoKey)
+            
+            if videoUuid and videoUuid.strip() != "":
+                videoList.append(videoUuid.strip())
+        
+        return (videoList,)
