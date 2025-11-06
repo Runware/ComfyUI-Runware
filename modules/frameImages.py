@@ -2,75 +2,64 @@ from .utils import runwareUtils as rwUtils
 
 
 class RunwareFrameImages:
+    """Frame Images node for defining keyframes that constrain video timeline"""
+    
+    FRAME_POSITIONS = ["auto", "first", "last", "0", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120"]
+    MAX_FRAMES = 4
+    
     @classmethod
     def INPUT_TYPES(cls):
+        optionalInputs = {}
+        
+        for i in range(1, cls.MAX_FRAMES + 1):
+            optionalInputs[f"image{i}"] = ("IMAGE", {
+                "tooltip": "Frame image that will constrain video content at a specific timeline position. Used for keyframe control.",
+            })
+            optionalInputs[f"frame{i}_position"] = (cls.FRAME_POSITIONS, {
+                "default": "auto",
+                "tooltip": "Frame position: 'auto' (automatic distribution), 'first' (beginning), 'last' (end), or specific frame number (0-120).",
+            })
+        
         return {
             "required": {},
-            "optional": {
-                "image1": ("IMAGE", {
-                    "tooltip": "Frame image that will constrain video content at a specific timeline position. Used for keyframe control.",
-                }),
-                "frame1_position": (["auto", "first", "last", "0", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120"], {
-                    "default": "auto",
-                    "tooltip": "Frame position: 'auto' (automatic distribution), 'first' (beginning), 'last' (end), or specific frame number (0-120).",
-                }),
-                "image2": ("IMAGE", {
-                    "tooltip": "Frame image that will constrain video content at a specific timeline position. Used for keyframe control.",
-                }),
-                "frame2_position": (["auto", "first", "last", "0", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120"], {
-                    "default": "auto", 
-                    "tooltip": "Frame position: 'auto' (automatic distribution), 'first' (beginning), 'last' (end), or specific frame number (0-120).",
-                }),
-                "image3": ("IMAGE", {
-                    "tooltip": "Frame image that will constrain video content at a specific timeline position. Used for keyframe control.",
-                }),
-                "frame3_position": (["auto", "first", "last", "0", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120"], {
-                    "default": "auto",
-                    "tooltip": "Frame position: 'auto' (automatic distribution), 'first' (beginning), 'last' (end), or specific frame number (0-120).",
-                }),
-                "image4": ("IMAGE", {
-                    "tooltip": "Frame image that will constrain video content at a specific timeline position. Used for keyframe control.",
-                }),
-                "frame4_position": (["auto", "first", "last", "0", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120"], {
-                    "default": "auto",
-                    "tooltip": "Frame position: 'auto' (automatic distribution), 'first' (beginning), 'last' (end), or specific frame number (0-120).",
-                }),
-            }
+            "optional": optionalInputs
         }
     
     DESCRIPTION = "Define keyframes that constrain specific frames within the video timeline. Different from reference images - these control WHEN specific visual content appears, not overall style consistency."
-    FUNCTION = "create_frame_images"
+    FUNCTION = "createFrameImages"
     RETURN_TYPES = ("RUNWAREFRAMEIMAGES",)
     RETURN_NAMES = ("Frame Images",)
     CATEGORY = "Runware"
     
-    def create_frame_images(self, **kwargs):
-        frame_images = []
+    def createFrameImages(self, **kwargs):
+        """Create frame images list from provided parameters"""
+        frameImages = []
         
-        # Process each image input
-        for i in range(1, 5):  # Support up to 4 images
-            image_key = f"image{i}"
-            position_key = f"frame{i}_position"
+        for i in range(1, self.MAX_FRAMES + 1):
+            imageKey = f"image{i}"
+            positionKey = f"frame{i}_position"
             
-            image = kwargs.get(image_key)
-            position = kwargs.get(position_key, "auto")
+            image = kwargs.get(imageKey)
+            position = kwargs.get(positionKey, "auto")
             
             if image is not None:
-                # Convert image to data URI or UUID
-                image_data = rwUtils.convertTensor2IMG(image)
-                
-                frame_data = {"inputImage": image_data}
-                
-                # Only add frame position if not auto
-                if position != "auto":
-                    if position.isdigit():
-                        frame_data["frame"] = int(position)
-                    else:
-                        frame_data["frame"] = position  # "first" or "last"
-                
-                frame_images.append(frame_data)
+                frameData = self._createFrameData(image, position)
+                frameImages.append(frameData)
         
-        return (frame_images,)
+        return (frameImages,)
+
+    def _createFrameData(self, image, position):
+        """Create frame data object from image and position"""
+        imageData = rwUtils.convertTensor2IMG(image)
+        frameData = {"inputImage": imageData}
+        
+        if position != "auto":
+            if position.isdigit():
+                frameData["frame"] = int(position)
+            else:
+                frameData["frame"] = position  # "first" or "last"
+        
+        return frameData
 
 
 # Node class mappings for ComfyUI registration

@@ -95,6 +95,7 @@ const RUNWARE_NODE_TYPES = {
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
+    RUNWAYPROVIDERSETTINGS: "Runware Runway Provider Settings",
     VECTORIZE: "Runware Vectorize",
     VIDEOBGREMOVAL: "Runware Video Background Removal",
     VIDEOUPSCALER: "Runware Video Upscaler",
@@ -295,6 +296,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.KLINGPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.RUNWAYPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

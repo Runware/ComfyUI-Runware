@@ -1,12 +1,11 @@
-from .utils import runwareUtils as rwUtils
-
 class acceleratorOptions:
+    """Accelerator Options node for configuring caching options for faster generation"""
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {},
             "optional": {
-                # FBCache parameters
                 "fbcache": ("BOOLEAN", {
                     "tooltip": "Enable Frame Buffer Cache for faster generation",
                     "default": None,
@@ -22,8 +21,6 @@ class acceleratorOptions:
                     "max": 1.0,
                     "step": 0.01,
                 }),
-                
-                # TeaCache parameters
                 "teaCache": ("BOOLEAN", {
                     "tooltip": "Enable TeaCache for transformer-based models (Flux, SD3). Does not work with UNet models like SDXL or SD1.5. Particularly effective for iterative editing workflows.",
                     "default": None,
@@ -39,8 +36,6 @@ class acceleratorOptions:
                     "max": 1.0,
                     "step": 0.01,
                 }),
-                
-                # DeepCache parameters
                 "deepCache": ("BOOLEAN", {
                     "tooltip": "Enable DeepCache for UNet-based models (SDXL, SD1.5). Not applicable to transformer models. Provides performance improvements for high-throughput scenarios.",
                     "default": None,
@@ -61,8 +56,6 @@ class acceleratorOptions:
                     "min": 0,
                     "max": 10,
                 }),
-                
-                # Cache step control parameters (step numbers)
                 "useCacheSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include cache step control parameters (step numbers) in API request.",
                     "default": False,
@@ -79,8 +72,6 @@ class acceleratorOptions:
                     "min": 1,
                     "max": 200,
                 }),
-                
-                # Cache step control parameters (percentages)
                 "useCachePercentageSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include cache step control parameters (percentages) in API request.",
                     "default": False,
@@ -117,63 +108,65 @@ class acceleratorOptions:
     CATEGORY = "Runware"
 
     def acceleratorOptions(self, **kwargs):
-        # Get all optional parameters
-        fbcache = kwargs.get("fbcache")
-        useCacheDistance = kwargs.get("useCacheDistance", False)
-        cacheDistance = kwargs.get("cacheDistance", 0.0)
-        teaCache = kwargs.get("teaCache")
-        useTeaCacheDistance = kwargs.get("useTeaCacheDistance", False)
-        teaCacheDistance = kwargs.get("teaCacheDistance", 0.0)
-        deepCache = kwargs.get("deepCache")
-        
-        # Get toggle and value parameters
-        useDeepCacheOptions = kwargs.get("useDeepCacheOptions", False)
-        deepCacheInterval = kwargs.get("deepCacheInterval", 1)
-        deepCacheBranchId = kwargs.get("deepCacheBranchId", 0)
-        useCacheSteps = kwargs.get("useCacheSteps", False)
-        cacheStartStep = kwargs.get("cacheStartStep", 0)
-        cacheEndStep = kwargs.get("cacheEndStep", 1)
-        useCachePercentageSteps = kwargs.get("useCachePercentageSteps", False)
-        cacheStartStepPercentage = kwargs.get("cacheStartStepPercentage", 0)
-        cacheEndStepPercentage = kwargs.get("cacheEndStepPercentage", 1)
-        useCacheMaxConsecutiveSteps = kwargs.get("useCacheMaxConsecutiveSteps", False)
-        cacheMaxConsecutiveSteps = kwargs.get("cacheMaxConsecutiveSteps", 1)
+        """Build accelerator options dictionary"""
+        params = self._extractParameters(kwargs)
+        acceleratorOptions = self._buildAcceleratorOptions(params)
+        return (acceleratorOptions,)
 
-        # Build accelerator options dictionary
+    def _extractParameters(self, kwargs):
+        """Extract all parameters from kwargs"""
+        return {
+            "fbcache": kwargs.get("fbcache"),
+            "useCacheDistance": kwargs.get("useCacheDistance", False),
+            "cacheDistance": kwargs.get("cacheDistance", 0.0),
+            "teaCache": kwargs.get("teaCache"),
+            "useTeaCacheDistance": kwargs.get("useTeaCacheDistance", False),
+            "teaCacheDistance": kwargs.get("teaCacheDistance", 0.0),
+            "deepCache": kwargs.get("deepCache"),
+            "useDeepCacheOptions": kwargs.get("useDeepCacheOptions", False),
+            "deepCacheInterval": kwargs.get("deepCacheInterval", 1),
+            "deepCacheBranchId": kwargs.get("deepCacheBranchId", 0),
+            "useCacheSteps": kwargs.get("useCacheSteps", False),
+            "cacheStartStep": kwargs.get("cacheStartStep", 0),
+            "cacheEndStep": kwargs.get("cacheEndStep", 1),
+            "useCachePercentageSteps": kwargs.get("useCachePercentageSteps", False),
+            "cacheStartStepPercentage": kwargs.get("cacheStartStepPercentage", 0),
+            "cacheEndStepPercentage": kwargs.get("cacheEndStepPercentage", 1),
+            "useCacheMaxConsecutiveSteps": kwargs.get("useCacheMaxConsecutiveSteps", False),
+            "cacheMaxConsecutiveSteps": kwargs.get("cacheMaxConsecutiveSteps", 1),
+        }
+
+    def _buildAcceleratorOptions(self, params):
+        """Build accelerator options dictionary from parameters"""
         acceleratorOptions = {}
         
-        # FBCache options
-        if fbcache is True:
-            acceleratorOptions["fbcache"] = fbcache
-        if useCacheDistance:
-            acceleratorOptions["cacheDistance"] = cacheDistance
+        if params["fbcache"] is True:
+            acceleratorOptions["fbcache"] = params["fbcache"]
+        if params["useCacheDistance"]:
+            acceleratorOptions["cacheDistance"] = params["cacheDistance"]
         
-        # TeaCache options
-        if teaCache is True:
-            acceleratorOptions["teaCache"] = teaCache
-        if useTeaCacheDistance:
-            acceleratorOptions["teaCacheDistance"] = teaCacheDistance
+        if params["teaCache"] is True:
+            acceleratorOptions["teaCache"] = params["teaCache"]
+        if params["useTeaCacheDistance"]:
+            acceleratorOptions["teaCacheDistance"] = params["teaCacheDistance"]
             
-        # DeepCache options
-        if deepCache is True:
-            acceleratorOptions["deepCache"] = deepCache
-        if useDeepCacheOptions:
-            acceleratorOptions["deepCacheInterval"] = deepCacheInterval
-            acceleratorOptions["deepCacheBranchId"] = deepCacheBranchId
+        if params["deepCache"] is True:
+            acceleratorOptions["deepCache"] = params["deepCache"]
+        if params["useDeepCacheOptions"]:
+            acceleratorOptions["deepCacheInterval"] = params["deepCacheInterval"]
+            acceleratorOptions["deepCacheBranchId"] = params["deepCacheBranchId"]
             
-        # Cache step control options (step numbers)
-        if useCacheSteps:
-            if cacheStartStep > 0:
-                acceleratorOptions["cacheStartStep"] = cacheStartStep
-            acceleratorOptions["cacheEndStep"] = cacheEndStep
+        if params["useCacheSteps"]:
+            if params["cacheStartStep"] > 0:
+                acceleratorOptions["cacheStartStep"] = params["cacheStartStep"]
+            acceleratorOptions["cacheEndStep"] = params["cacheEndStep"]
         
-        # Cache step control options (percentages)
-        if useCachePercentageSteps:
-            if cacheStartStepPercentage > 0:
-                acceleratorOptions["cacheStartStepPercentage"] = cacheStartStepPercentage
-            acceleratorOptions["cacheEndStepPercentage"] = cacheEndStepPercentage
+        if params["useCachePercentageSteps"]:
+            if params["cacheStartStepPercentage"] > 0:
+                acceleratorOptions["cacheStartStepPercentage"] = params["cacheStartStepPercentage"]
+            acceleratorOptions["cacheEndStepPercentage"] = params["cacheEndStepPercentage"]
         
-        if useCacheMaxConsecutiveSteps:
-            acceleratorOptions["cacheMaxConsecutiveSteps"] = cacheMaxConsecutiveSteps
+        if params["useCacheMaxConsecutiveSteps"]:
+            acceleratorOptions["cacheMaxConsecutiveSteps"] = params["cacheMaxConsecutiveSteps"]
 
-        return (acceleratorOptions,)
+        return acceleratorOptions

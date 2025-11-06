@@ -85,10 +85,10 @@ class photoMaker:
                     "max": 2,
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
+                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value. Set to 0 to auto-generate a random seed.",
                     "default": 0,
-                    "min": 1,
-                    "max": 9223372036854776000,
+                    "min": 0,
+                    "max": 4294967295,
                 }),
                 "batchSize": ("INT", {
                     "tooltip": "The number of images to generate in a single request.",

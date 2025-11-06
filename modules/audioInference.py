@@ -2,14 +2,16 @@ import json
 import uuid
 import requests
 import torch
-import torchaudio
 import numpy as np
-from io import BytesIO
+import librosa
 import tempfile
 import os
 from .utils import runwareUtils as rwUtils
 
+
 class RunwareAudioInference:
+    """Runware Audio Inference node for generating audio using Runware API"""
+    
     def __init__(self):
         pass
 
@@ -17,22 +19,26 @@ class RunwareAudioInference:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "positivePrompt": ("STRING", {
-                    "multiline": True,
-                    "default": "classical piano piece, gentle and melodic",
-                    "tooltip": "Text description that guides the audio generation process"
+                "model": ("RUNWAREAUDIOMODEL", {
+                    "tooltip": "AI model to use for audio generation"
                 }),
                 "usePositivePrompt": ("BOOLEAN", {
                     "default": True,
                     "tooltip": "Enable/disable positivePrompt parameter in API request"
+                }),
+                "positivePrompt": ("STRING", {
+                    "multiline": True,
+                    "default": "classical piano piece, gentle and melodic",
+                    "tooltip": "Text description that guides the audio generation process"
                 }),
                 "negativePrompt": ("STRING", {
                     "multiline": True,
                     "default": "",
                     "tooltip": "Text description of what you don't want in the audio"
                 }),
-                "model": ("RUNWAREAUDIOMODEL", {
-                    "tooltip": "AI model to use for audio generation"
+                "useDuration": ("BOOLEAN", {
+                    "default": True,
+                    "tooltip": "Enable/disable duration parameter in API request"
                 }),
                 "duration": ("INT", {
                     "default": 10,
@@ -40,10 +46,6 @@ class RunwareAudioInference:
                     "max": 300,
                     "step": 1,
                     "tooltip": "Length of generated audio in seconds (10-300)"
-                }),
-                "useDuration": ("BOOLEAN", {
-                    "default": True,
-                    "tooltip": "Enable/disable duration parameter in API request"
                 }),
                 "sampleRate": ("INT", {
                     "default": 22050,
@@ -87,146 +89,186 @@ class RunwareAudioInference:
     CATEGORY = "Runware/Audio"
 
     def generateAudio(self, **kwargs):
-        # Get required parameters
-        positivePrompt = kwargs.get("positivePrompt", "")
-        usePositivePrompt = kwargs.get("usePositivePrompt", True)
-        model = kwargs.get("model", "")
-        duration = kwargs.get("duration", 30)
-        useDuration = kwargs.get("useDuration", True)
-        sampleRate = kwargs.get("sampleRate", 44100)
-        bitrate = kwargs.get("bitrate", 128)
-        outputType = kwargs.get("outputType", "URL")
-        outputFormat = kwargs.get("outputFormat", "MP3")
-        negativePrompt = kwargs.get("negativePrompt", "")
-        numberResults = kwargs.get("numberResults", 1)
-        providerSettings = kwargs.get("providerSettings", None)
+        """Main function to generate audio using Runware API"""
+        params = self._extractParameters(kwargs)
+        genConfig = self._buildGenConfig(params)
+        genResult = rwUtils.inferenecRequest(genConfig)
         
-        # Create task UUID
-        taskUUID = str(uuid.uuid4())
+        self._logResponse(genResult)
+        self._validateResponse(genResult)
         
-        # Build the generation config
+        audioUrl = self._extractAudioUrl(genResult)
+        audioObj = self._downloadAndProcessAudio(audioUrl, params["sampleRate"])
+        
+        return (audioObj,)
+
+    def _extractParameters(self, kwargs):
+        """Extract and validate parameters from kwargs"""
+        return {
+            "positivePrompt": kwargs.get("positivePrompt", ""),
+            "usePositivePrompt": kwargs.get("usePositivePrompt", True),
+            "model": kwargs.get("model", ""),
+            "duration": kwargs.get("duration", 30),
+            "useDuration": kwargs.get("useDuration", True),
+            "sampleRate": kwargs.get("sampleRate", 44100),
+            "bitrate": kwargs.get("bitrate", 128),
+            "outputType": kwargs.get("outputType", "URL"),
+            "outputFormat": kwargs.get("outputFormat", "MP3"),
+            "negativePrompt": kwargs.get("negativePrompt", ""),
+            "numberResults": kwargs.get("numberResults", 1),
+            "providerSettings": kwargs.get("providerSettings", None),
+        }
+
+    def _hasSections(self, providerSettings):
+        """Check if provider settings contain sections"""
+        if not providerSettings or not isinstance(providerSettings, dict):
+            return False
+        
+        elevenlabsSettings = providerSettings.get("elevenlabs", {})
+        musicSettings = elevenlabsSettings.get("music", {})
+        compositionPlan = musicSettings.get("compositionPlan", {})
+        sections = compositionPlan.get("sections", [])
+        
+        return len(sections) > 0
+
+    def _buildGenConfig(self, params):
+        """Build the generation configuration for API request"""
+        taskUuid = str(uuid.uuid4())
+        
         genConfig = [{
             "taskType": "audioInference",
-            "taskUUID": taskUUID,
-            "model": model,
-            "outputType": outputType,
-            "outputFormat": outputFormat,
+            "taskUUID": taskUuid,
+            "model": params["model"],
+            "outputType": params["outputType"],
+            "outputFormat": params["outputFormat"],
             "deliveryMethod": "sync",
             "includeCost": True,
-            "numberResults": numberResults,
+            "numberResults": params["numberResults"],
             "audioSettings": {
-                "sampleRate": sampleRate,
-                "bitrate": bitrate
+                "sampleRate": params["sampleRate"],
+                "bitrate": params["bitrate"]
             }
         }]
         
-        # Add positivePrompt only if usePositivePrompt is True AND no sections are provided
-        has_sections = False
-        if providerSettings is not None:
-            # Check if there are sections in the provider settings
-            if isinstance(providerSettings, dict):
-                elevenlabs_settings = providerSettings.get("elevenlabs", {})
-                music_settings = elevenlabs_settings.get("music", {})
-                composition_plan = music_settings.get("compositionPlan", {})
-                sections = composition_plan.get("sections", [])
-                has_sections = len(sections) > 0
+        # Handle sections - disable duration if sections are provided
+        hasSections = self._hasSections(params["providerSettings"])
+        if hasSections:
+            params["useDuration"] = False
+            print(f"[DEBUG] Disabled duration because sections are provided")
         
-        # When sections are provided, disable duration but add minimal positivePrompt (ElevenLabs requires it)
-        if has_sections:
-            useDuration = False
-            # ElevenLabs requires positivePrompt even with composition plans
-            #genConfig[0]["positivePrompt"] = "Music composition"
-            print(f"[DEBUG] Disabled duration and added minimal positivePrompt because sections are provided")
-        
-        if usePositivePrompt:
-            genConfig[0]["positivePrompt"] = positivePrompt
-            print(f"[DEBUG] Added positivePrompt: '{positivePrompt}' (usePositivePrompt={usePositivePrompt})")
+        # Add prompts conditionally
+        if params["usePositivePrompt"]:
+            genConfig[0]["positivePrompt"] = params["positivePrompt"]
+            print(f"[DEBUG] Added positivePrompt: '{params['positivePrompt']}'")
         else:
-            print(f"[DEBUG] Skipped positivePrompt (usePositivePrompt={usePositivePrompt})")
+            print(f"[DEBUG] Skipped positivePrompt")
         
-        # Add duration only if useDuration is True
-        if useDuration:
-            genConfig[0]["duration"] = duration
-            print(f"[DEBUG] Added duration: {duration} (useDuration={useDuration})")
+        if params["useDuration"]:
+            genConfig[0]["duration"] = params["duration"]
+            print(f"[DEBUG] Added duration: {params['duration']}")
         else:
-            print(f"[DEBUG] Skipped duration (useDuration={useDuration})")
+            print(f"[DEBUG] Skipped duration")
         
-        # Add optional parameters if provided
-        if negativePrompt:
-            genConfig[0]["negativePrompt"] = negativePrompt
-            
-        if providerSettings is not None:
-            genConfig[0]["providerSettings"] = providerSettings
+        # Add optional parameters
+        if params["negativePrompt"]:
+            genConfig[0]["negativePrompt"] = params["negativePrompt"]
         
-        # Debug: Print the request being sent
+        if params["providerSettings"] is not None:
+            genConfig[0]["providerSettings"] = params["providerSettings"]
+        
         print(f"[DEBUG] Sending Audio Inference Request:")
         print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
         
-        # Make the API request
-        genResult = rwUtils.inferenecRequest(genConfig)
-        
-        # Debug: Print the response received
+        return genConfig
+
+    def _logResponse(self, genResult):
+        """Log the API response for debugging"""
         print(f"[DEBUG] Received Audio Inference Response:")
         print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
-        
-        # Check for errors
+
+    def _validateResponse(self, genResult):
+        """Validate API response and raise errors if needed"""
         if "errors" in genResult:
-            error_message = genResult["errors"][0]["message"]
-            raise Exception(f"Audio generation failed: {error_message}")
+            errorMessage = genResult["errors"][0]["message"]
+            raise Exception(f"Audio generation failed: {errorMessage}")
         
-        # Extract audio data from response
-        if "data" in genResult and len(genResult["data"]) > 0:
-            audioData = genResult["data"][0]
-            
-            # Get the audio URL
-            audioURL = audioData.get("audioURL", "")
-            if not audioURL:
-                # Fallback to other audio data formats
-                audioURL = audioData.get("audioDataURI", "")
-                if not audioURL:
-                    audioURL = audioData.get("audioBase64Data", "")
-            
-            if audioURL:
-                # Download the audio and create proper audio data for ComfyUI
-                try:
-                    # Download the audio file
-                    response = requests.get(audioURL, timeout=30)
-                    response.raise_for_status()
-                    
-                    # Save to temporary file and load with torchaudio
-                    with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
-                        temp_file.write(response.content)
-                        temp_file_path = temp_file.name
-                    
-                    try:
-                        # Load audio with torchaudio
-                        waveform, original_sample_rate = torchaudio.load(temp_file_path)
-                        
-                        # Resample if necessary
-                        if original_sample_rate != sampleRate:
-                            resampler = torchaudio.transforms.Resample(original_sample_rate, sampleRate)
-                            waveform = resampler(waveform)
-                        
-                        # Ensure correct format: [batch, channels, samples]
-                        if waveform.dim() == 2:
-                            waveform = waveform.unsqueeze(0)  # Add batch dimension
-                        
-                        # Create the audio object
-                        audio_obj = {
-                            "waveform": waveform,
-                            "sample_rate": sampleRate
-                        }
-                        
-                    finally:
-                        # Clean up temporary file
-                        if os.path.exists(temp_file_path):
-                            os.unlink(temp_file_path)
-                    
-                    return (audio_obj,)
-                    
-                except Exception as e:
-                    raise Exception(f"Failed to download audio: {e}")
-            else:
-                raise Exception("No audio URL received from API")
-        else:
+        if "data" not in genResult or len(genResult["data"]) == 0:
             raise Exception("No audio data received from API")
+
+    def _extractAudioUrl(self, genResult):
+        """Extract audio URL from API response"""
+        audioData = genResult["data"][0]
+        
+        audioUrl = audioData.get("audioURL", "")
+        if not audioUrl:
+            audioUrl = audioData.get("audioDataURI", "")
+        if not audioUrl:
+            audioUrl = audioData.get("audioBase64Data", "")
+        
+        if not audioUrl:
+            raise Exception("No audio URL received from API")
+        
+        return audioUrl
+
+    def _downloadAndProcessAudio(self, audioUrl, targetSampleRate):
+        """Download audio file and process it for ComfyUI"""
+        try:
+            response = requests.get(audioUrl, timeout=30)
+            response.raise_for_status()
+            
+            with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as tempFile:
+                tempFile.write(response.content)
+                tempFilePath = tempFile.name
+            
+            try:
+                waveformNp, originalSampleRate = self._loadAudioFile(tempFilePath)
+                waveformNp = self._resampleAudio(waveformNp, originalSampleRate, targetSampleRate)
+                waveformTensor = self._convertToTensor(waveformNp)
+                
+                return {
+                    "waveform": waveformTensor,
+                    "sample_rate": targetSampleRate
+                }
+            finally:
+                if os.path.exists(tempFilePath):
+                    os.unlink(tempFilePath)
+        except Exception as e:
+            raise Exception(f"Failed to download audio: {e}")
+
+    def _loadAudioFile(self, filePath):
+        """Load audio file using librosa"""
+        waveformNp, originalSampleRate = librosa.load(filePath, sr=None, mono=False)
+        
+        # Convert to [samples, channels] format
+        if waveformNp.ndim == 1:
+            waveformNp = waveformNp.reshape(-1, 1)
+        else:
+            waveformNp = waveformNp.T  # [channels, samples] -> [samples, channels]
+        
+        return waveformNp, originalSampleRate
+
+    def _resampleAudio(self, waveformNp, originalSampleRate, targetSampleRate):
+        """Resample audio to target sample rate"""
+        if originalSampleRate == targetSampleRate:
+            return waveformNp
+        
+        if waveformNp.ndim == 1:
+            return librosa.resample(waveformNp, orig_sr=originalSampleRate, target_sr=targetSampleRate)
+        else:
+            # Multi-channel: resample each channel
+            return librosa.resample(waveformNp.T, orig_sr=originalSampleRate, target_sr=targetSampleRate).T
+
+    def _convertToTensor(self, waveformNp):
+        """Convert numpy array to PyTorch tensor with correct format"""
+        # Ensure 2D shape [samples, channels]
+        if waveformNp.ndim == 1:
+            waveformNp = waveformNp.reshape(-1, 1)
+        
+        # Convert to [channels, samples] for ComfyUI
+        waveformTensor = torch.from_numpy(waveformNp.T).float()
+        
+        # Add batch dimension if needed: [batch, channels, samples]
+        if waveformTensor.dim() == 2:
+            waveformTensor = waveformTensor.unsqueeze(0)
+        
+        return waveformTensor

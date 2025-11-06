@@ -2,7 +2,10 @@ from .utils import runwareUtils as rwUtils
 import json
 import comfy.model_management
 
+
 class videoBgRemoval:
+    """Video Background Removal node for removing video backgrounds"""
+    
     RUNWARE_VRMBG_MODELS = {
         "bria:51@1": "bria:51@1",
     }
@@ -19,7 +22,6 @@ class videoBgRemoval:
         "Magenta [255, 0, 255, 0]": [255, 0, 255, 0],
         "Orange [255, 165, 0, 0]": [255, 165, 0, 0],
     }
-    
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -52,96 +54,86 @@ class videoBgRemoval:
     CATEGORY = "Runware"
 
     def removeBackground(self, **kwargs):
-        video_uuid = kwargs.get("Video")
+        """Remove background from video"""
+        videoUuid = kwargs.get("Video")
         modelName = kwargs.get("Model", "Bria Video Background Removal")
         backgroundColor = kwargs.get("Background Color", "Transparent")
         outputFormat = kwargs.get("Output Format", "mp4")
         
-        # Validate mediaUUID
-        if not video_uuid or video_uuid.strip() == "":
+        if not videoUuid or videoUuid.strip() == "":
             raise ValueError("Video mediaUUID is required")
         
-        # Get the model AIR code
-        modelAIR = self.RUNWARE_VRMBG_MODELS.get(modelName, "bria:51@1")
+        modelAir = self.RUNWARE_VRMBG_MODELS.get(modelName, "bria:51@1")
+        rgbaColor = self.BACKGROUND_COLORS.get(backgroundColor, [255, 255, 255, 0])
         
-        # Get background color RGBA
-        rgba_color = self.BACKGROUND_COLORS.get(backgroundColor, [255, 255, 255, 0])
+        genConfig = self._buildGenConfig(videoUuid, modelAir, outputFormat, rgbaColor)
         
-        # Build the API request
-        genConfig = [
-            {
-                "taskType": "removeBackground",
-                "taskUUID": rwUtils.genRandUUID(),
-                "inputs": {
-                    "video": video_uuid
-                },
-                "model": modelAIR,
-                "outputFormat": outputFormat,
-                "settings": {
-                    "rgba": rgba_color
-                }
+        print(f"[DEBUG] Sending Video Background Removal Request:")
+        print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+        
+        genResult = rwUtils.inferenecRequest(genConfig)
+        
+        print(f"[DEBUG] Received Video Background Removal Response:")
+        print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+        
+        self._validateResponse(genResult)
+        
+        taskUuid = genConfig[0]["taskUUID"]
+        videos = self._pollForVideoResult(taskUuid)
+        
+        return videos
+
+    def _buildGenConfig(self, videoUuid, modelAir, outputFormat, rgbaColor):
+        """Build generation configuration for API request"""
+        return [{
+            "taskType": "removeBackground",
+            "taskUUID": rwUtils.genRandUUID(),
+            "inputs": {
+                "video": videoUuid
+            },
+            "model": modelAir,
+            "outputFormat": outputFormat,
+            "settings": {
+                "rgba": rgbaColor
             }
-        ]
-        
-        try:
-            # Debug: Print the request being sent
-            print(f"[DEBUG] Sending Video Background Removal Request:")
-            print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+        }]
+
+    def _validateResponse(self, genResult):
+        """Validate API response"""
+        if "errors" in genResult:
+            errorMessage = genResult["errors"][0]["message"]
+            raise Exception(f"Video background removal failed: {errorMessage}")
+
+    def _pollForVideoResult(self, taskUuid):
+        """Poll for video result"""
+        while True:
+            comfy.model_management.throw_exception_if_processing_interrupted()
             
-            genResult = rwUtils.inferenecRequest(genConfig)
+            pollResult = rwUtils.pollVideoResult(taskUuid)
+            print(f"[Debugging] Poll result: {pollResult}")
             
-            # Debug: Print the response received
-            print(f"[DEBUG] Received Video Background Removal Response:")
-            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+            if pollResult and "errors" in pollResult and len(pollResult["errors"]) > 0:
+                errorInfo = pollResult["errors"][0]
+                errorMessage = errorInfo.get("message", "Unknown error")
+                raise Exception(f"Video background removal failed: {errorMessage}")
             
-            # Check for errors
-            if "errors" in genResult:
-                error_message = genResult["errors"][0]["message"]
-                raise Exception(f"Video background removal failed: {error_message}")
-            
-            # Extract task UUID for polling
-            taskUUID = genConfig[0]["taskUUID"]
-            
-            # Poll for video completion
-            while True:
-                # Check for interrupt before each poll
-                comfy.model_management.throw_exception_if_processing_interrupted()
+            if pollResult and "data" in pollResult and len(pollResult["data"]) > 0:
+                videoData = pollResult["data"][0]
                 
-                # Poll for video result
-                pollResult = rwUtils.pollVideoResult(taskUUID)
-                print(f"[Debugging] Poll result: {pollResult}")
-                
-                # Check for errors first
-                if pollResult and "errors" in pollResult and len(pollResult["errors"]) > 0:
-                    error_info = pollResult["errors"][0]
-                    error_message = error_info.get("message", "Unknown error")
-                    raise Exception(f"Video background removal failed: {error_message}")
-                
-                if pollResult and "data" in pollResult and len(pollResult["data"]) > 0:
-                    video_data = pollResult["data"][0]
+                if "status" in videoData:
+                    status = videoData["status"]
                     
-                    # Check status directly
-                    if "status" in video_data:
-                        status = video_data["status"]
-                        
-                        if status == "success":
-                            if "videoURL" in video_data or "videoBase64Data" in video_data:
-                                videos = rwUtils.convertVideoB64List(pollResult, 1920, 1080)
-                                return videos
-                        
-                        # If status is "processing", continue polling
-                
-                # Check for interrupt before waiting
+                    if status == "success":
+                        if "videoURL" in videoData or "videoBase64Data" in videoData:
+                            videos = rwUtils.convertVideoB64List(pollResult, 1920, 1080)
+                            return videos
+            
+            comfy.model_management.throw_exception_if_processing_interrupted()
+            
+            for _ in range(10):
                 comfy.model_management.throw_exception_if_processing_interrupted()
-                
-                # Wait before next poll
-                for _ in range(10):  # 10 x 0.1 second = 1 second total
-                    comfy.model_management.throw_exception_if_processing_interrupted()
-                    rwUtils.time.sleep(0.1)
-                        
-        except Exception as e:
-            print(f"[Error] Video background removal failed: {str(e)}")
-            raise e
+                rwUtils.time.sleep(0.1)
+
 
 # Node class mappings
 NODE_CLASS_MAPPINGS = {
@@ -151,4 +143,3 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "RunwareVideoBgRemoval": "Runware Video Background Removal",
 }
-

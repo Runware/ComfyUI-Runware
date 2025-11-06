@@ -1,10 +1,9 @@
 import base64
 import os
-import uuid
 import time
 import requests
 import torch
-import torchaudio
+import soundfile as sf
 import numpy as np
 from io import BytesIO
 from .utils.runwareUtils import (
@@ -12,11 +11,27 @@ from .utils.runwareUtils import (
     RUNWARE_API_BASE_URL,
     generalRequestWrapper,
     genRandUUID,
-    genRandSeed,
     sendMediaUUID,
 )
 
+
 class RunwareMediaUpload:
+    """Runware Media Upload node for uploading audio/video to Runware storage"""
+    
+    # MIME type mapping for video files
+    VIDEO_MIME_TYPES = {
+        '.mp4': 'video/mp4',
+        '.avi': 'video/avi',
+        '.mov': 'video/quicktime',
+        '.webm': 'video/webm',
+    }
+    
+    DEFAULT_SAMPLE_RATE = 22050
+    DEFAULT_VIDEO_MIME = 'video/mp4'
+    MAX_POLL_ATTEMPTS = 100
+    POLL_INTERVAL = 2
+    REQUEST_TIMEOUT = 30
+
     def __init__(self):
         pass
 
@@ -33,7 +48,7 @@ class RunwareMediaUpload:
                     "tooltip": "This field will be automatically populated with the generated media UUID after upload.",
                 }),
             },
-            "hidden": { "node_id": "UNIQUE_ID" }
+            "hidden": {"node_id": "UNIQUE_ID"}
         }
 
     RETURN_TYPES = ("STRING",)
@@ -44,324 +59,302 @@ class RunwareMediaUpload:
     OUTPUT_NODE = True
 
     @classmethod
-    def IS_CHANGED(s, **kwargs):
+    def IS_CHANGED(cls, **kwargs):
         return float("NAN")
 
-    def uploadMedia(self, media=None, mediaUUID=None, **kwargs):
-        print(f"[Debug] uploadMedia called with media: {type(media)}, mediaUUID: {mediaUUID}")
+    def uploadMedia(self, media=None, mediaUuid=None, **kwargs):
+        """Main function to upload media and return mediaUUID"""
         if media is None:
             raise ValueError("Media input is required")
         
+        print(f"[Debug] uploadMedia called with media: {type(media)}, mediaUuid: {mediaUuid}")
+        
         try:
-            # Convert media tensor to base64
-            print(f"[Debug] Converting media to base64...")
-            media_base64 = self._convert_media_to_base64(media)
-            print(f"[Debug] Media converted to base64, length: {len(media_base64)}")
+            mediaBase64 = self._convertMediaToBase64(media)
+            print(f"[Debug] Media converted to base64, length: {len(mediaBase64)}")
             
-            # Upload to Runware
-            print(f"[Debug] Starting upload to Runware...")
-            media_uuid = self._upload_to_runware(media_base64)
-            print(f"[Debug] Upload completed! MediaUUID: {media_uuid}")
-            print(f"[Debug] ===== RESULT: {media_uuid} =====")
+            mediaUuid = self._uploadToRunware(mediaBase64)
+            print(f"[Debug] Upload completed! MediaUUID: {mediaUuid}")
+            print(f"[Debug] ===== RESULT: {mediaUuid} =====")
             
-            # Send the mediaUUID back to the UI
-            sendMediaUUID(media_uuid, kwargs.get("node_id"))
-            
-            return (media_uuid,)
-            
+            sendMediaUUID(mediaUuid, kwargs.get("node_id"))
+            return (mediaUuid,)
         except Exception as e:
             print(f"[Debug] Media upload failed: {str(e)}")
             raise e
 
-    def _convert_media_to_base64(self, media_tensor):
+    def _convertMediaToBase64(self, mediaTensor):
         """Convert media tensor to base64 data URI"""
-        try:
-            # Handle ComfyUI VIDEO objects (VideoFromFile)
-            print(f"[Debug] Media type: {type(media_tensor)}")
-            print(f"[Debug] Media attributes: {dir(media_tensor)}")
-            
-            # Check if this is a ComfyUI VideoFromFile object
-            if hasattr(media_tensor, 'video_path') or str(type(media_tensor)).find('VideoFromFile') != -1:
-                # This is a ComfyUI VideoFromFile object
-                print(f"[Debug] VideoFromFile object detected")
-                
-                # Try to get the file path from the private attribute
-                video_file = getattr(media_tensor, '_VideoFromFile__file', None)
-                if video_file is None:
-                    # Try other possible attributes
-                    for attr in ['video_path', 'path', 'file_path', 'filename', '_file']:
-                        if hasattr(media_tensor, attr):
-                            video_file = getattr(media_tensor, attr)
-                            print(f"[Debug] Found video file via {attr}: {video_file}")
-                            break
-                
-                if video_file is None:
-                    raise ValueError("Could not find video file in VideoFromFile object")
-                
-                # If it's a file object, get the path
-                if hasattr(video_file, 'name'):
-                    video_path = video_file.name
-                elif isinstance(video_file, str):
-                    video_path = video_file
-                else:
-                    raise ValueError(f"Unexpected video file type: {type(video_file)}")
-                
-                print(f"[Debug] Processing video file: {video_path}")
-                
-                # Read the video file and convert to base64
-                with open(video_path, 'rb') as f:
-                    video_bytes = f.read()
-                
-                # Detect MIME type based on file extension
-                if video_path.lower().endswith('.mp4'):
-                    mime_type = 'video/mp4'
-                elif video_path.lower().endswith('.avi'):
-                    mime_type = 'video/avi'
-                elif video_path.lower().endswith('.mov'):
-                    mime_type = 'video/quicktime'
-                elif video_path.lower().endswith('.webm'):
-                    mime_type = 'video/webm'
-                else:
-                    mime_type = 'video/mp4'  # Default
-                
-                # Encode to base64
-                video_base64 = base64.b64encode(video_bytes).decode('utf-8')
-                
-                # Return as data URI
-                return f"data:{mime_type};base64,{video_base64}"
-            
-            # ComfyUI AUDIO objects are dictionaries with 'waveform' and 'sample_rate'
-            elif isinstance(media_tensor, dict):
-                if 'waveform' in media_tensor:
-                    waveform = media_tensor['waveform']
-                    sample_rate = media_tensor.get('sample_rate', 22050)
-                    
-                    # Convert tensor to proper format for torchaudio
-                    if isinstance(waveform, torch.Tensor):
-                        # Ensure waveform is in the correct format [channels, samples]
-                        if waveform.dim() == 3:
-                            waveform = waveform.squeeze(0)  # Remove batch dimension
-                        elif waveform.dim() == 1:
-                            waveform = waveform.unsqueeze(0)  # Add channel dimension
-                    else:
-                        waveform = torch.tensor(waveform)
-                        if waveform.dim() == 1:
-                            waveform = waveform.unsqueeze(0)
-                    
-                    # Create WAV file in memory
-                    buffer = BytesIO()
-                    torchaudio.save(buffer, waveform, sample_rate, format="wav")
-                    buffer.seek(0)
-                    
-                    # Get the WAV file bytes
-                    wav_bytes = buffer.getvalue()
-                    
-                    # Encode to base64
-                    wav_base64 = base64.b64encode(wav_bytes).decode('utf-8')
-                    
-                    # Return as data URI
-                    return f"data:audio/wav;base64,{wav_base64}"
-                else:
-                    raise ValueError("Invalid audio object: missing 'waveform' key")
-            else:
-                # Fallback for direct tensor input
-                if isinstance(media_tensor, torch.Tensor):
-                    waveform = media_tensor
-                    sample_rate = 22050  # Default sample rate
-                    
-                    # Ensure waveform is in the correct format [channels, samples]
-                    if waveform.dim() == 3:
-                        waveform = waveform.squeeze(0)  # Remove batch dimension
-                    elif waveform.dim() == 1:
-                        waveform = waveform.unsqueeze(0)  # Add channel dimension
-                else:
-                    waveform = torch.tensor(media_tensor)
-                    sample_rate = 22050
-                    if waveform.dim() == 1:
-                        waveform = waveform.unsqueeze(0)
-                
-                # Create WAV file in memory
-                buffer = BytesIO()
-                torchaudio.save(buffer, waveform, sample_rate, format="wav")
-                buffer.seek(0)
-                
-                # Get the WAV file bytes
-                wav_bytes = buffer.getvalue()
-                
-                # Encode to base64
-                wav_base64 = base64.b64encode(wav_bytes).decode('utf-8')
-                
-                # Return as data URI
-                return f"data:audio/wav;base64,{wav_base64}"
-            
-        except Exception as e:
-            print(f"[Debug] Error converting media to base64: {str(e)}")
-            raise e
-
-    def _upload_to_runware(self, media_data_uri):
-        """Upload media to Runware and return mediaUUID"""
-        global RUNWARE_API_KEY, RUNWARE_API_BASE_URL
+        print(f"[Debug] Media type: {type(mediaTensor)}")
         
-        task_uuid = genRandUUID()
-        print(f"[Debug] Generated task UUID: {task_uuid}")
-        
-        # Strip data URI prefix for media storage API
-        if media_data_uri.startswith("data:"):
-            media_data = media_data_uri.split(",", 1)[1]
-            print(f"[Debug] Stripped data URI prefix, media data length: {len(media_data)}")
+        if self._isVideoFile(mediaTensor):
+            return self._convertVideoToBase64(mediaTensor)
+        elif isinstance(mediaTensor, dict) and 'waveform' in mediaTensor:
+            return self._convertAudioDictToBase64(mediaTensor)
+        elif isinstance(mediaTensor, torch.Tensor):
+            return self._convertTensorToBase64(mediaTensor)
         else:
-            media_data = media_data_uri
+            raise ValueError(f"Unsupported media type: {type(mediaTensor)}")
+
+    def _isVideoFile(self, mediaTensor):
+        """Check if media tensor is a VideoFromFile object"""
+        return (hasattr(mediaTensor, 'video_path') or 
+                str(type(mediaTensor)).find('VideoFromFile') != -1)
+
+    def _convertVideoToBase64(self, videoTensor):
+        """Convert video file to base64 data URI"""
+        print(f"[Debug] VideoFromFile object detected")
         
-        upload_config = [
-            {
-                "taskType": "mediaStorage",
-                "taskUUID": task_uuid,
-                "operation": "upload",
-                "media": media_data,
-            }
-        ]
+        videoFile = self._getVideoFilePath(videoTensor)
+        videoPath = self._extractVideoPath(videoFile)
         
-        print(f"[Debug] Upload config: {upload_config[0]}")
+        print(f"[Debug] Processing video file: {videoPath}")
+        
+        with open(videoPath, 'rb') as f:
+            videoBytes = f.read()
+        
+        mimeType = self._getMimeType(videoPath)
+        videoBase64 = base64.b64encode(videoBytes).decode('utf-8')
+        
+        return f"data:{mimeType};base64,{videoBase64}"
+
+    def _getVideoFilePath(self, videoTensor):
+        """Extract video file path from VideoFromFile object"""
+        videoFile = getattr(videoTensor, '_VideoFromFile__file', None)
+        
+        if videoFile is None:
+            for attr in ['video_path', 'path', 'file_path', 'filename', '_file']:
+                if hasattr(videoTensor, attr):
+                    videoFile = getattr(videoTensor, attr)
+                    print(f"[Debug] Found video file via {attr}: {videoFile}")
+                    break
+        
+        if videoFile is None:
+            raise ValueError("Could not find video file in VideoFromFile object")
+        
+        return videoFile
+
+    def _extractVideoPath(self, videoFile):
+        """Extract file path from file object or string"""
+        if hasattr(videoFile, 'name'):
+            return videoFile.name
+        elif isinstance(videoFile, str):
+            return videoFile
+        else:
+            raise ValueError(f"Unexpected video file type: {type(videoFile)}")
+
+    def _getMimeType(self, filePath):
+        """Get MIME type based on file extension"""
+        ext = os.path.splitext(filePath.lower())[1]
+        return self.VIDEO_MIME_TYPES.get(ext, self.DEFAULT_VIDEO_MIME)
+
+    def _convertAudioDictToBase64(self, audioDict):
+        """Convert audio dictionary to base64 WAV data URI"""
+        waveform = audioDict['waveform']
+        sampleRate = audioDict.get('sample_rate', self.DEFAULT_SAMPLE_RATE)
+        
+        waveformNp = self._prepareWaveformNumpy(waveform)
+        wavBytes = self._convertWaveformToWav(waveformNp, sampleRate)
+        wavBase64 = base64.b64encode(wavBytes).decode('utf-8')
+        
+        return f"data:audio/wav;base64,{wavBase64}"
+
+    def _convertTensorToBase64(self, mediaTensor):
+        """Convert direct tensor input to base64 WAV data URI"""
+        waveformNp = self._prepareWaveformNumpy(mediaTensor)
+        wavBytes = self._convertWaveformToWav(waveformNp, self.DEFAULT_SAMPLE_RATE)
+        wavBase64 = base64.b64encode(wavBytes).decode('utf-8')
+        
+        return f"data:audio/wav;base64,{wavBase64}"
+
+    def _prepareWaveformNumpy(self, waveform):
+        """Prepare waveform tensor/array for soundfile (returns [channels, samples])"""
+        if isinstance(waveform, torch.Tensor):
+            # Normalize dimensions: [batch, channels, samples] -> [channels, samples]
+            if waveform.dim() == 3:
+                waveform = waveform.squeeze(0)
+            elif waveform.dim() == 1:
+                waveform = waveform.unsqueeze(0)
+            waveformNp = waveform.cpu().numpy()
+        else:
+            waveformNp = np.array(waveform)
+            if waveformNp.ndim == 1:
+                waveformNp = waveformNp.reshape(1, -1)
+        
+        return waveformNp
+
+    def _convertWaveformToWav(self, waveformNp, sampleRate):
+        """Convert numpy waveform to WAV bytes using soundfile"""
+        # soundfile expects [samples, channels]
+        waveformNp = waveformNp.T
+        
+        buffer = BytesIO()
+        sf.write(buffer, waveformNp, sampleRate, format='WAV')
+        buffer.seek(0)
+        
+        return buffer.getvalue()
+
+    def _uploadToRunware(self, mediaDataUri):
+        """Upload media to Runware and return mediaUUID"""
+        taskUuid = genRandUUID()
+        print(f"[Debug] Generated task UUID: {taskUuid}")
+        
+        mediaData = self._stripDataUriPrefix(mediaDataUri)
+        uploadConfig = self._buildUploadConfig(taskUuid, mediaData)
+        
+        print(f"[Debug] Upload config: {uploadConfig[0]}")
         print(f"[Debug] API URL: {RUNWARE_API_BASE_URL}")
         
-        headers = {
+        uploadResult = self._makeUploadRequest(uploadConfig)
+        self._validateUploadResponse(uploadResult)
+        
+        uploadData = uploadResult.get("data", [])
+        if uploadData and len(uploadData) > 0:
+            mediaUuid = uploadData[0].get("mediaUUID", "")
+            if mediaUuid and mediaUuid != "1":
+                print(f"[Debug] Got immediate mediaUUID: {mediaUuid}")
+                return mediaUuid
+        
+        print(f"[Debug] Starting polling for result...")
+        return self._pollForResult(taskUuid)
+
+    def _stripDataUriPrefix(self, mediaDataUri):
+        """Strip data URI prefix if present"""
+        if mediaDataUri.startswith("data:"):
+            mediaData = mediaDataUri.split(",", 1)[1]
+            print(f"[Debug] Stripped data URI prefix, media data length: {len(mediaData)}")
+            return mediaData
+        return mediaDataUri
+
+    def _buildUploadConfig(self, taskUuid, mediaData):
+        """Build upload configuration for API request"""
+        return [{
+            "taskType": "mediaStorage",
+            "taskUUID": taskUuid,
+            "operation": "upload",
+            "media": mediaData,
+        }]
+
+    def _getApiHeaders(self):
+        """Get API request headers"""
+        return {
             "Authorization": f"Bearer {RUNWARE_API_KEY}",
             "Content-Type": "application/json",
             "Accept-Encoding": "gzip, deflate, br, zstd",
         }
+
+    def _makeUploadRequest(self, uploadConfig):
+        """Make upload request to Runware API"""
+        def recaller():
+            print(f"[Debug] Making POST request to Runware API...")
+            return requests.post(
+                RUNWARE_API_BASE_URL,
+                headers=self._getApiHeaders(),
+                json=uploadConfig,
+                timeout=self.REQUEST_TIMEOUT,
+                allow_redirects=False,
+                stream=True,
+            )
+        
+        response = generalRequestWrapper(recaller)
+        return self._parseJsonResponse(response)
+
+    def _parseJsonResponse(self, response):
+        """Parse JSON response from API"""
+        if response.status_code != 200:
+            errorText = response.text[:500]
+            print(f"[Debug] Request failed with status {response.status_code}")
+            print(f"[Debug] Response text: {errorText}")
+            raise Exception(f"Request failed with status {response.status_code}: {response.text[:200]}")
+        
+        if not response.text or not response.text.strip():
+            raise Exception("Request failed: Empty response from server")
         
         try:
-            def recaller():
-                print(f"[Debug] Making POST request to Runware API...")
-                return requests.post(
-                    RUNWARE_API_BASE_URL,
-                    headers=headers,
-                    json=upload_config,
-                    timeout=30,
-                    allow_redirects=False,
-                    stream=True,
-                )
-            
-            upload_result = generalRequestWrapper(recaller)
-            
-            # Check response status before trying to parse JSON
-            if upload_result.status_code != 200:
-                print(f"[Debug] Upload failed with status {upload_result.status_code}")
-                print(f"[Debug] Response text: {upload_result.text[:500]}")
-                raise Exception(f"Upload failed with status {upload_result.status_code}: {upload_result.text[:200]}")
-            
-            # Check if response is empty
-            if not upload_result.text or not upload_result.text.strip():
-                raise Exception("Upload failed: Empty response from server")
-            
-            try:
-                upload_result = upload_result.json()
-            except ValueError as e:
-                print(f"[Debug] Failed to parse JSON response: {str(e)}")
-                print(f"[Debug] Response text: {upload_result.text[:500]}")
-                raise Exception(f"Upload failed: Invalid JSON response from server: {str(e)}")
-            
-            print(f"[Debug] Upload response: {upload_result}")
-            
-            if "errors" in upload_result:
-                print(f"[Debug] Upload error: {upload_result}")
-                raise Exception(f"Upload failed: {upload_result}")
-            
-            # Check if we got immediate result or need to poll
-            if upload_result.get("data") and len(upload_result["data"]) > 0:
-                data = upload_result["data"][0]
-                print(f"[Debug] Upload data: {data}")
-                if "mediaUUID" in data and data["mediaUUID"] != "1":
-                    print(f"[Debug] Got immediate mediaUUID: {data['mediaUUID']}")
-                    return data["mediaUUID"]
-            
-            # Poll for result
-            print(f"[Debug] Starting polling for result...")
-            return self._poll_for_result(task_uuid)
-            
-        except Exception as e:
-            print(f"[Debug] Upload request failed: {str(e)}")
-            raise e
+            return response.json()
+        except ValueError as e:
+            print(f"[Debug] Failed to parse JSON response: {str(e)}")
+            print(f"[Debug] Response text: {response.text[:500]}")
+            raise Exception(f"Request failed: Invalid JSON response from server: {str(e)}")
 
-    def _poll_for_result(self, task_uuid):
+    def _validateUploadResponse(self, uploadResult):
+        """Validate upload response"""
+        print(f"[Debug] Upload response: {uploadResult}")
+        
+        if "errors" in uploadResult:
+            print(f"[Debug] Upload error: {uploadResult}")
+            raise Exception(f"Upload failed: {uploadResult}")
+
+    def _pollForResult(self, taskUuid):
         """Poll for media upload result"""
-        global RUNWARE_API_KEY, RUNWARE_API_BASE_URL
+        pollConfig = [{
+            "taskType": "getResponse",
+            "taskUUID": taskUuid,
+        }]
         
-        poll_config = [
-            {
-                "taskType": "getResponse",
-                "taskUUID": task_uuid,
-            }
-        ]
-        
-        headers = {
-            "Authorization": f"Bearer {RUNWARE_API_KEY}",
-            "Content-Type": "application/json",
-            "Accept-Encoding": "gzip, deflate, br, zstd",
-        }
-        
-        max_attempts = 100
-        for attempt in range(max_attempts):
+        for attempt in range(self.MAX_POLL_ATTEMPTS):
             try:
-                print(f"[Debug] Poll attempt {attempt + 1}/{max_attempts}")
+                print(f"[Debug] Poll attempt {attempt + 1}/{self.MAX_POLL_ATTEMPTS}")
+                
                 def recaller():
                     return requests.post(
                         RUNWARE_API_BASE_URL,
-                        headers=headers,
-                        json=poll_config,
-                        timeout=30,
+                        headers=self._getApiHeaders(),
+                        json=pollConfig,
+                        timeout=self.REQUEST_TIMEOUT,
                         allow_redirects=False,
                         stream=True,
                     )
                 
-                poll_result = generalRequestWrapper(recaller)
+                pollResult = generalRequestWrapper(recaller)
+                pollData = self._parsePollResponse(pollResult)
                 
-                # Check response status
-                if poll_result.status_code != 200:
-                    print(f"[Debug] Poll failed with status {poll_result.status_code}")
-                    continue
-                
-                # Check if response is empty
-                if not poll_result.text or not poll_result.text.strip():
-                    print(f"[Debug] Poll returned empty response")
-                    continue
-                
-                try:
-                    poll_result = poll_result.json()
-                except ValueError as e:
-                    print(f"[Debug] Failed to parse JSON in poll: {str(e)}")
-                    continue
-                
-                print(f"[Debug] Poll response: {poll_result}")
-                
-                if "errors" in poll_result:
-                    print(f"[Debug] Poll error: {poll_result}")
-                    continue
-                
-                if "data" in poll_result and len(poll_result["data"]) > 0:
-                    data = poll_result["data"][0]
-                    print(f"[Debug] Poll data: {data}")
-                    
-                    # Check if mediaUUID is still "1" (still processing)
-                    if "mediaUUID" in data and data["mediaUUID"] == "1":
+                if pollData:
+                    mediaUuid = pollData.get("mediaUUID", "")
+                    if mediaUuid == "1":
                         print(f"[Debug] Still processing... attempt {attempt + 1}")
-                        time.sleep(2)
+                        time.sleep(self.POLL_INTERVAL)
                         continue
-                    
-                    # Check for completion - look for mediaUUID
-                    if "mediaUUID" in data and data["mediaUUID"] != "1":
-                        print(f"[Debug] Upload completed! MediaUUID: {data['mediaUUID']}")
-                        return data["mediaUUID"]
+                    elif mediaUuid and mediaUuid != "1":
+                        print(f"[Debug] Upload completed! MediaUUID: {mediaUuid}")
+                        return mediaUuid
                 
                 print(f"[Debug] Attempt {attempt + 1}: No data in response, continuing...")
-                time.sleep(2)
-                
+                time.sleep(self.POLL_INTERVAL)
             except Exception as e:
                 print(f"[Debug] Poll attempt {attempt + 1} failed: {str(e)}")
-                time.sleep(2)
+                time.sleep(self.POLL_INTERVAL)
                 continue
         
         raise Exception("Polling timeout - upload did not complete")
+
+    def _parsePollResponse(self, pollResult):
+        """Parse polling response"""
+        if pollResult.status_code != 200:
+            print(f"[Debug] Poll failed with status {pollResult.status_code}")
+            return None
+        
+        if not pollResult.text or not pollResult.text.strip():
+            print(f"[Debug] Poll returned empty response")
+            return None
+        
+        try:
+            pollResultJson = pollResult.json()
+        except ValueError as e:
+            print(f"[Debug] Failed to parse JSON in poll: {str(e)}")
+            return None
+        
+        print(f"[Debug] Poll response: {pollResultJson}")
+        
+        if "errors" in pollResultJson:
+            print(f"[Debug] Poll error: {pollResultJson}")
+            return None
+        
+        if "data" in pollResultJson and len(pollResultJson["data"]) > 0:
+            print(f"[Debug] Poll data: {pollResultJson['data'][0]}")
+            return pollResultJson["data"][0]
+        
+        return None
 
 
 # Export the class directly

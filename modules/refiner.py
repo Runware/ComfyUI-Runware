@@ -1,4 +1,6 @@
 class refiner:
+    """Refiner node for enhancing image quality using refiner models"""
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -28,22 +30,27 @@ class refiner:
 
     @classmethod
     def VALIDATE_INPUTS(cls, startStep, startStepPercentage):
-        if(startStep != 0 and startStepPercentage != 0):
+        """Validate that exactly one of startStep or startStepPercentage is provided"""
+        if startStep != 0 and startStepPercentage != 0:
             raise Exception("Please provide either startStep or startStepPercentage, not both.")
-        elif(startStep == 0 and startStepPercentage == 0):
+        elif startStep == 0 and startStepPercentage == 0:
             raise Exception("Please provide either startStep or startStepPercentage.")
         else:
             return True
 
     def refiner(self, **kwargs):
+        """Create refiner configuration"""
         runwareModel = kwargs.get("Model")
         startStep = kwargs.get("startStep")
         startStepPercentage = kwargs.get("startStepPercentage")
+        
         refinerResult = {
             "model": runwareModel,
         }
-        if(startStep != 0):
+        
+        if startStep != 0:
             refinerResult["startStep"] = startStep
         else:
             refinerResult["startStepPercentage"] = startStepPercentage
+        
         return (refinerResult,)

@@ -71,10 +71,10 @@ class txt2vid:
                     "default": True,
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Leave empty or 0 to auto-generate.",
+                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Set to 0 to auto-generate a random seed.",
                     "default": 1,
-                    "min": 1,
-                    "max": 9223372036854776000,
+                    "min": 0,
+                    "max": 4294967295,
                 }),
                 "useSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps.",
@@ -205,11 +205,9 @@ class txt2vid:
             width = customWidth
             height = customHeight
         else:
-            
-
-            model_dimensions = videoModelSearch.MODEL_DIMENSIONS.get(model, {"width": 1024, "height": 576})
-            width = model_dimensions["width"]
-            height = model_dimensions["height"]
+            modelDimensions = videoModelSearch.MODEL_DIMENSIONS.get(model, {"width": 1024, "height": 576})
+            width = modelDimensions["width"]
+            height = modelDimensions["height"]
         
         genConfig = [
             {
@@ -221,7 +219,7 @@ class txt2vid:
                 "includeCost": True,
             }
         ]
-        if height!=0 and width!=0:
+        if height != 0 and width != 0:
             genConfig[0]['height'] = height
             genConfig[0]['width'] = width
         
@@ -359,11 +357,11 @@ class txt2vid:
                     "invalid height" in error_msg.lower() or
                     "dimension not supported" in error_msg.lower()):
                     # Get model default dimensions for comparison
-                    model_dimensions = videoModelSearch.MODEL_DIMENSIONS.get(model, {"width": 1024, "height": 576})
-                    expected_width = model_dimensions["width"]
-                    expected_height = model_dimensions["height"]
+                    modelDimensions = videoModelSearch.MODEL_DIMENSIONS.get(model, {"width": 1024, "height": 576})
+                    expectedWidth = modelDimensions["width"]
+                    expectedHeight = modelDimensions["height"]
                     
-                    raise Exception(f"Error: Unsupported width/height combination for this model architecture. You used {width}x{height}, but {model} expects {expected_width}x{expected_height}. Please use 'Model Default' or set custom dimensions to {expected_width}x{expected_height}.")
+                    raise Exception(f"Error: Unsupported width/height combination for this model architecture. You used {width}x{height}, but {model} expects {expectedWidth}x{expectedHeight}. Please use 'Model Default' or set custom dimensions to {expectedWidth}x{expectedHeight}.")
                 else:
                     # Re-raise the original error
                     raise e

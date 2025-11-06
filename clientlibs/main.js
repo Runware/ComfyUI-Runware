@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -44,6 +44,27 @@ app.registerExtension({
         if(crNodeProps.colorModeOnly === true) return;
         const nodeWidgets = node.widgets;
         if(nodeWidgets.length <= 0) return;
+
+        // Handle node-specific handlers first - each node has its own dedicated handler
+        if(nodeClass === RUNWARE_NODE_TYPES.IMAGEINFERENCE) {
+            imageInferenceToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.VIDEOINFERENCE) {
+            videoInferenceDimensionsHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.UPSCALER) {
+            upscalerToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOINFERENCE) {
+            audioInferenceToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.ACCELERATOROPTIONS) {
+            acceleratorOptionsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.BYTEDANCEPROVIDERSETTINGS) {
+            bytedanceProviderSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.OPENAIPROVIDERSETTINGS) {
+            openaiProviderSettingsToggleHandler(node);
+        }
+
+        if(nodeClass === RUNWARE_NODE_TYPES.VIDEOMODELSEARCH) {
+            videoModelSearchFilterHandler(node);
+        }
 
         for(const nodeWidget of nodeWidgets) {
             const widgetName = nodeWidget.name;

@@ -1,3 +1,4 @@
 python-dotenv
 brotli
 zstd
+librosa

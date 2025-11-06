@@ -28,25 +28,26 @@ from .modules.imageInferenceInputs import imageInferenceInputs
 from .modules.videoInference import txt2vid
 from .modules.videoModelSearch import videoModelSearch
 from .modules.frameImages import RunwareFrameImages
-from .modules.providerSettings import RunwareProviderSettings
-from .modules.pixverseProviderSettings import RunwarePixverseProviderSettings
-from .modules.openaiProviderSettings import RunwareOpenAIProviderSettings
-from .modules.bytedanceImageProviderSettings import RunwareBytedanceProviderSettings
-from .modules.briaImageProviderSettings import RunwareBriaProviderSettings
+from .modules.providerSettings.providerSettings import RunwareProviderSettings
+from .modules.providerSettings.pixverseProviderSettings import RunwarePixverseProviderSettings
+from .modules.providerSettings.openaiProviderSettings import RunwareOpenAIProviderSettings
+from .modules.providerSettings.bytedanceImageProviderSettings import RunwareBytedanceProviderSettings
+from .modules.providerSettings.briaImageProviderSettings import RunwareBriaProviderSettings
 from .modules.audioInference import RunwareAudioInference
 from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.audioSections import RunwareAudioSections
-from .modules.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
-from .modules.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
+from .modules.providerSettings.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
+from .modules.providerSettings.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
 from .modules.acceleratorOptions import acceleratorOptions
-from .modules.viduProviderSettings import RunwareViduProviderSettings
+from .modules.providerSettings.viduProviderSettings import RunwareViduProviderSettings
 from .modules.mediaUpload import runwareMediaUpload
 from .modules.inputAudios import inputAudios
 from .modules.referenceVideos import referenceVideos
 from .modules.videoInferenceInputs import videoInferenceInputs
-from .modules.lightricksProviderSettings import RunwareLightricksProviderSettings
-from .modules.minimaxProviderSettings import RunwareMiniMaxProviderSettings
-from .modules.klingProviderSettings import RunwareKlingProviderSettings
+from .modules.providerSettings.lightricksProviderSettings import RunwareLightricksProviderSettings
+from .modules.providerSettings.minimaxProviderSettings import RunwareMiniMaxProviderSettings
+from .modules.providerSettings.klingProviderSettings import RunwareKlingProviderSettings
+from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProviderSettings
 from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
@@ -114,6 +115,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,
     "Runware KlingAI Provider Settings": RunwareKlingProviderSettings,
+    "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
     "Runware Vectorize": vectorize,
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,

@@ -3,14 +3,18 @@ import json
 import base64
 import io
 
+
 class SVGData:
     """Wrapper class to match RecraftIO.SVG format for SaveSVGNode"""
-    def __init__(self, svg_content):
-        # Convert SVG string to BytesIO
-        svg_bytes = io.BytesIO(svg_content.encode('utf-8'))
-        self.data = [svg_bytes]
+    
+    def __init__(self, svgContent):
+        svgBytes = io.BytesIO(svgContent.encode('utf-8'))
+        self.data = [svgBytes]
+
 
 class vectorize:
+    """Vectorize node for converting images to vector format"""
+    
     RUNWARE_VECTORIZE_MODELS = {
         "recraft:1@1": "recraft:1@1",
         "picsart:1@1": "picsart:1@1",
@@ -37,69 +41,64 @@ class vectorize:
     CATEGORY = "Runware"
 
     def vectorizeImage(self, **kwargs):
+        """Vectorize image and return SVG data"""
         image = kwargs.get("Image")
         modelName = kwargs.get("Model", "recraft:1@1")
         
-        # Get the model AIR code
         model = self.RUNWARE_VECTORIZE_MODELS.get(modelName, "recraft:1@1")
+        imageUuid = rwUtils.convertTensor2IMG(image)
         
-        # Convert image to UUID
-        image_uuid = rwUtils.convertTensor2IMG(image)
+        genConfig = self._buildGenConfig(model, imageUuid)
         
-        # Build the API request
-        genConfig = [
-            {
-                "taskType": "vectorize",
-                "taskUUID": rwUtils.genRandUUID(),
-                "model": model,
-                "inputs": {
-                    "image": image_uuid
-                },
-                "outputType": "base64Data",
-                "outputFormat": "svg",
-            }
-        ]
+        print(f"[DEBUG] Sending Vectorize Request:")
+        print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
         
-        try:
-            # Debug: Print the request being sent
-            print(f"[DEBUG] Sending Vectorize Request:")
-            print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
-            
-            genResult = rwUtils.inferenecRequest(genConfig)
-            
-            # Debug: Print the response received
-            print(f"[DEBUG] Received Vectorize Response:")
-            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
-            
-            # Check for errors
-            if "errors" in genResult:
-                error_message = genResult["errors"][0]["message"]
-                raise Exception(f"Vectorization failed: {error_message}")
-            
-            # Extract the result
-            if "data" in genResult and len(genResult["data"]) > 0:
-                result_data = genResult["data"][0]
-                
-                # Check for base64 SVG data
-                if "imageBase64Data" in result_data:
-                    base64_svg = result_data["imageBase64Data"]
-                    
-                    # Decode base64 SVG to get the actual SVG content for SaveSVGNode
-                    svg_content = base64.b64decode(base64_svg).decode('utf-8')
-                    
-                    # Wrap SVG content in SVGData for SaveSVGNode compatibility
-                    svg_data = SVGData(svg_content)
-                    
-                    # Return only SVG data
-                    return (svg_data,)
-                else:
-                    raise Exception("imageBase64Data not found in response")
-            else:
-                raise Exception("No data returned from vectorization API")
-                
-        except Exception as e:
-            print(f"[Error] Vectorization failed: {str(e)}")
-            raise e
+        genResult = rwUtils.inferenecRequest(genConfig)
+        
+        print(f"[DEBUG] Received Vectorize Response:")
+        print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+        
+        self._validateResponse(genResult)
+        
+        svgData = self._extractSvgData(genResult)
+        
+        return (svgData,)
+
+    def _buildGenConfig(self, model, imageUuid):
+        """Build generation configuration for API request"""
+        return [{
+            "taskType": "vectorize",
+            "taskUUID": rwUtils.genRandUUID(),
+            "model": model,
+            "inputs": {
+                "image": imageUuid
+            },
+            "outputType": "base64Data",
+            "outputFormat": "svg",
+        }]
+
+    def _validateResponse(self, genResult):
+        """Validate API response"""
+        if "errors" in genResult:
+            errorMessage = genResult["errors"][0]["message"]
+            raise Exception(f"Vectorization failed: {errorMessage}")
+        
+        if "data" not in genResult or len(genResult["data"]) == 0:
+            raise Exception("No data returned from vectorization API")
+
+    def _extractSvgData(self, genResult):
+        """Extract SVG data from API response"""
+        resultData = genResult["data"][0]
+        
+        if "imageBase64Data" not in resultData:
+            raise Exception("imageBase64Data not found in response")
+        
+        base64Svg = resultData["imageBase64Data"]
+        svgContent = base64.b64decode(base64Svg).decode('utf-8')
+        svgData = SVGData(svgContent)
+        
+        return svgData
+
 
 # Node class mappings
 NODE_CLASS_MAPPINGS = {
@@ -109,4 +108,3 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "RunwareVectorize": "Runware Vectorize",
 }
-

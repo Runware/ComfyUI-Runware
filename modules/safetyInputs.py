@@ -1,7 +1,8 @@
 from typing import Optional, Dict, Any
 
+
 class safetyInputs:
-    """Runware Safety Inputs Node"""
+    """Runware Safety Inputs Node for configuring safety and content moderation settings"""
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -35,32 +36,30 @@ class safetyInputs:
     
     RETURN_TYPES = ("RUNWARESAFETYINPUTS",)
     RETURN_NAMES = ("Safety Inputs",)
-    FUNCTION = "create_safety_inputs"
+    FUNCTION = "createSafetyInputs"
     CATEGORY = "Runware"
     DESCRIPTION = "Configure safety and content moderation settings for Runware tasks."
     
-    def create_safety_inputs(self, **kwargs) -> tuple[Dict[str, Any]]:
+    def createSafetyInputs(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create safety inputs dictionary"""
-        
-        # Get parameters
         mode = kwargs.get("mode", None)
         tolerance = kwargs.get("tolerance", None)
         checkInputs = kwargs.get("checkInputs", None)
         checkContent = kwargs.get("checkContent", None)
         
-        # Build safety inputs dictionary - only include non-None values
-        safety_inputs = {}
+        safetyInputs = {}
         
         if mode is not None:
-            safety_inputs["mode"] = mode
+            safetyInputs["mode"] = mode
         if tolerance is not None:
-            safety_inputs["tolerance"] = tolerance
+            safetyInputs["tolerance"] = tolerance
         if checkInputs is not None:
-            safety_inputs["checkInputs"] = checkInputs
+            safetyInputs["checkInputs"] = checkInputs
         if checkContent is not None:
-            safety_inputs["checkContent"] = checkContent
+            safetyInputs["checkContent"] = checkContent
         
-        return (safety_inputs,)
+        return (safetyInputs,)
+
 
 # Node class mappings
 NODE_CLASS_MAPPINGS = {
@@ -70,4 +69,3 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "RunwareSafetyInputs": "Runware Safety Inputs",
 }
-
