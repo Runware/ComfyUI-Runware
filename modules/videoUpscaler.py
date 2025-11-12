@@ -14,16 +14,22 @@ class videoUpscaler:
                 "Video": ("STRING", {
                     "tooltip": "MediaUUID from Runware Media Upload node for the video to upscale."
                 }),
-                "upscaleFactor": ([2, 4], {
-                    "tooltip": "Integer scale factor for upscaling (2x or 4x).",
-                    "default": 2,
-                }),
                 "Model": (list(cls.RUNWARE_VUPSCALER_MODELS.keys()), {
                     "tooltip": "Select the video upscaler model to use.",
                     "default": "Bria Video Upscaler",
                 }),
+                "useUpscaleFactor": ("BOOLEAN", {
+                    "label_on": "Yes",
+                    "label_off": "No",
+                    "tooltip": "Enable to explicitly set the upscale factor for the request.",
+                    "default": False,
+                }),
             },
             "optional": {
+                "upscaleFactor": ([2, 4], {
+                    "tooltip": "Integer scale factor for upscaling (2x or 4x).",
+                    "default": 2,
+                }),
                 "Output Format": (["mp4", "webm"], {
                     "default": "mp4",
                     "tooltip": "Choose the output video format.",
@@ -39,7 +45,8 @@ class videoUpscaler:
 
     def upscale(self, **kwargs):
         video_uuid = kwargs.get("Video")
-        upscaleFactor = kwargs.get("upscaleFactor", 2)
+        useUpscaleFactor = kwargs.get("useUpscaleFactor", False)
+        upscaleFactor = kwargs.get("upscaleFactor")
         modelName = kwargs.get("Model", "Bria Video Upscaler")
         outputFormat = kwargs.get("Output Format", "mp4")
         
@@ -51,20 +58,25 @@ class videoUpscaler:
         modelAIR = self.RUNWARE_VUPSCALER_MODELS.get(modelName, "bria:50@1")
         
         # Build the API request
-        genConfig = [
-            {
-                "taskType": "upscale",
-                "taskUUID": rwUtils.genRandUUID(),
-                "upscaleFactor": upscaleFactor,
-                "inputs": {
-                    "video": video_uuid
-                },
-                "outputType": "URL",
-                "outputFormat": outputFormat.upper(),
-                "model": modelAIR,
-                "includeCost": True
-            }
-        ]
+        task_payload = {
+            "taskType": "upscale",
+            "taskUUID": rwUtils.genRandUUID(),
+            "inputs": {
+                "video": video_uuid
+            },
+            "outputType": "URL",
+            "outputFormat": outputFormat.upper(),
+            "model": modelAIR,
+            "includeCost": True
+        }
+
+        if useUpscaleFactor:
+            if upscaleFactor in (2, 4):
+                task_payload["upscaleFactor"] = upscaleFactor
+            else:
+                raise ValueError("upscaleFactor must be 2 or 4 when useUpscaleFactor is enabled.")
+
+        genConfig = [task_payload]
         
         try:
             # Debug: Print the request being sent

@@ -98,6 +98,7 @@ const RUNWARE_NODE_TYPES = {
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
     RUNWAYPROVIDERSETTINGS: "Runware Runway Provider Settings",
     LUMAPROVIDERSETTINGS: "Runware Luma Provider Settings",
+    MIDJOURNEYPROVIDERSETTINGS: "Runware Midjourney Provider Settings",
     VECTORIZE: "Runware Vectorize",
     VIDEOBGREMOVAL: "Runware Video Background Removal",
     VIDEOUPSCALER: "Runware Video Upscaler",
@@ -311,6 +312,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.LUMAPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.MIDJOURNEYPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

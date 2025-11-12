@@ -657,6 +657,28 @@ function toggleWidgetEnabled(widget, enabled, node) {
     }
 }
 
+function videoUpscalerToggleHandler(videoUpscalerNode) {
+    if (!videoUpscalerNode?.widgets) return;
+
+    const useUpscaleFactorWidget = videoUpscalerNode.widgets.find(w => w && w.name === "useUpscaleFactor");
+    const upscaleFactorWidget = videoUpscalerNode.widgets.find(w => w && w.name === "upscaleFactor");
+
+    if (!useUpscaleFactorWidget || !upscaleFactorWidget) return;
+
+    function applyToggleState() {
+        const enabled = useUpscaleFactorWidget.value === true;
+        toggleWidgetEnabled(upscaleFactorWidget, enabled, videoUpscalerNode);
+        videoUpscalerNode.setDirtyCanvas(true);
+    }
+
+    // Initialize state once widgets are rendered
+    setTimeout(applyToggleState, 100);
+
+    appendWidgetCB(useUpscaleFactorWidget, () => {
+        setTimeout(applyToggleState, 50);
+    });
+}
+
 function useParameterToggleHandler(node) {
     // Prevent double registration
     if (node._useParameterToggleHandlerRegistered) return;
@@ -1947,6 +1969,7 @@ export {
     useParameterToggleHandler,
     imageInferenceToggleHandler,
     upscalerToggleHandler,
+    videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,

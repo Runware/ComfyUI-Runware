@@ -49,6 +49,7 @@ from .modules.providerSettings.minimaxProviderSettings import RunwareMiniMaxProv
 from .modules.providerSettings.klingProviderSettings import RunwareKlingProviderSettings
 from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProviderSettings
 from .modules.providerSettings.lumaProviderSettings import RunwareLumaProviderSettings
+from .modules.providerSettings.midjourneyProviderSettings import RunwareMidjourneyProviderSettings
 from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
@@ -119,6 +120,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Luma Provider Settings": RunwareLumaProviderSettings,
     "Runware KlingAI Provider Settings": RunwareKlingProviderSettings,
     "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
+    "Runware Midjourney Provider Settings": RunwareMidjourneyProviderSettings,
     "Runware Vectorize": vectorize,
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,
