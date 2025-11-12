@@ -1,5 +1,4 @@
 from .utils import runwareUtils as rwUtils
-import json
 
 
 class txt2img:
@@ -350,15 +349,13 @@ class txt2img:
         else:
             # Debug: Print the request being sent
             print(f"[DEBUG] Sending Image Inference Request:")
-            print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
-            
-            print(f"[DEBUG] CFGScale value from kwargs: {cfgScale}")
+            print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
             
             genResult = rwUtils.inferenecRequest(genConfig)
             
             # Debug: Print the response received
             print(f"[DEBUG] Received Image Inference Response:")
-            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+            print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
             
             images = rwUtils.convertImageB64List(genResult)
             return (images, None)

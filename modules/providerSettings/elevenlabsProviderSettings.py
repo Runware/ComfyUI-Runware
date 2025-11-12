@@ -57,11 +57,9 @@ class RunwareElevenLabsProviderSettings:
             }
         }
         
-        # Create provider settings
+        # Return flat dictionary - will be wrapped by inference node with provider name (same pattern as video provider settings)
         providerSettings = {
-            "elevenlabs": {
-                "music": music
-            }
+            "music": music
         }
         
         return (providerSettings,)

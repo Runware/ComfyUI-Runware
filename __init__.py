@@ -28,7 +28,6 @@ from .modules.imageInferenceInputs import imageInferenceInputs
 from .modules.videoInference import txt2vid
 from .modules.videoModelSearch import videoModelSearch
 from .modules.frameImages import RunwareFrameImages
-from .modules.providerSettings.providerSettings import RunwareProviderSettings
 from .modules.providerSettings.pixverseProviderSettings import RunwarePixverseProviderSettings
 from .modules.providerSettings.openaiProviderSettings import RunwareOpenAIProviderSettings
 from .modules.providerSettings.bytedanceImageProviderSettings import RunwareBytedanceProviderSettings
@@ -36,6 +35,7 @@ from .modules.providerSettings.briaImageProviderSettings import RunwareBriaProvi
 from .modules.audioInference import RunwareAudioInference
 from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.audioSections import RunwareAudioSections
+from .modules.audioInferenceInputs import audioInferenceInputs
 from .modules.providerSettings.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
 from .modules.providerSettings.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
 from .modules.acceleratorOptions import acceleratorOptions
@@ -48,10 +48,12 @@ from .modules.providerSettings.lightricksProviderSettings import RunwareLightric
 from .modules.providerSettings.minimaxProviderSettings import RunwareMiniMaxProviderSettings
 from .modules.providerSettings.klingProviderSettings import RunwareKlingProviderSettings
 from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProviderSettings
+from .modules.providerSettings.lumaProviderSettings import RunwareLumaProviderSettings
 from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
 from .modules.videoInputsReferences import videoInputsReferences
+from .modules.videoInputsFrame import RunwareVideoInputsFrameImages
 from .modules.safetyInputs import safetyInputs
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 
@@ -96,7 +98,6 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inference": txt2vid,
     "Runware Video Model Search": videoModelSearch,
     "Runware Frame Images": RunwareFrameImages,
-    "Runware Provider Settings": RunwareProviderSettings,
     "Runware Pixverse Provider Settings": RunwarePixverseProviderSettings,
     "Runware OpenAI Provider Settings": RunwareOpenAIProviderSettings,
     "Runware Bytedance Provider Settings": RunwareBytedanceProviderSettings,
@@ -104,6 +105,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Audio Inference": RunwareAudioInference,
     "Runware Audio Model Search": RunwareAudioModelSearch,
     "Runware Audio Sections": RunwareAudioSections,
+    "Runware Audio Inference Inputs": audioInferenceInputs,
     "Runware ElevenLabs Provider Settings": RunwareElevenLabsProviderSettings,
     "Runware ElevenLabs Provider Settings Sections": RunwareElevenLabsProviderSettingsSections,
     "Runware Accelerator Options": acceleratorOptions,
@@ -114,12 +116,14 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inference Inputs": videoInferenceInputs,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,
+    "Runware Luma Provider Settings": RunwareLumaProviderSettings,
     "Runware KlingAI Provider Settings": RunwareKlingProviderSettings,
     "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
     "Runware Vectorize": vectorize,
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,
     "Runware Video Inputs References": videoInputsReferences,
+    "Runware Video Inputs Frame Images": RunwareVideoInputsFrameImages,
     "Runware Safety Inputs": safetyInputs,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
 }
@@ -132,6 +136,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Multi Inference": "Runware Multi Inference [BETA]",
     "Runware Video Model Search": "Runware Video Model",
     "Runware Audio Model Search": "Runware Audio Model",
+    "Runware Video Transcription": "Runware Video Caption",
 }
 
 WEB_DIRECTORY = "./clientlibs"

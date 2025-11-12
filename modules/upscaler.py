@@ -1,5 +1,4 @@
 from .utils import runwareUtils as rwUtils
-import json
 
 class upscaler:
     @classmethod
@@ -238,14 +237,14 @@ class upscaler:
 
         # Debug: Print the request being sent
         print(f"[DEBUG] Sending Image Upscale Request:", flush=True)
-        print(f"[DEBUG] Request Payload: {json.dumps([genConfig], indent=2)}", flush=True)
+        print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps([genConfig], indent=2)}", flush=True)
         
         try:
             genResult = rwUtils.inferenecRequest([genConfig])
             
             # Debug: Print the response received
             print(f"[DEBUG] Received Image Upscale Response:", flush=True)
-            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}", flush=True)
+            print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}", flush=True)
         except Exception as e:
             print(f"[DEBUG] Error in Image Upscale Request: {str(e)}", flush=True)
             raise

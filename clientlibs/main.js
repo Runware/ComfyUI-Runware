@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -41,11 +41,10 @@ app.registerExtension({
             }
         }
 
-        if(crNodeProps.colorModeOnly === true) return;
         const nodeWidgets = node.widgets;
-        if(nodeWidgets.length <= 0) return;
-
+        
         // Handle node-specific handlers first - each node has its own dedicated handler
+        // These must be called BEFORE the colorModeOnly check
         if(nodeClass === RUNWARE_NODE_TYPES.IMAGEINFERENCE) {
             imageInferenceToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.VIDEOINFERENCE) {
@@ -60,10 +59,19 @@ app.registerExtension({
             bytedanceProviderSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.OPENAIPROVIDERSETTINGS) {
             openaiProviderSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.KLINGPROVIDERSETTINGS) {
+            klingProviderSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.LUMAPROVIDERSETTINGS) {
+            lumaProviderSettingsToggleHandler(node);
         }
+
+        if(crNodeProps.colorModeOnly === true) return;
+        if(nodeWidgets.length <= 0) return;
 
         if(nodeClass === RUNWARE_NODE_TYPES.VIDEOMODELSEARCH) {
             videoModelSearchFilterHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOMODELSEARCH) {
+            audioModelSearchFilterHandler(node);
         }
 
         for(const nodeWidget of nodeWidgets) {

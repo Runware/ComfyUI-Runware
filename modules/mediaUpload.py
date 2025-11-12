@@ -11,6 +11,8 @@ from .utils.runwareUtils import (
     RUNWARE_API_BASE_URL,
     generalRequestWrapper,
     genRandUUID,
+    sanitize_for_logging,
+    safe_json_dumps,
     sendMediaUUID,
 )
 
@@ -202,7 +204,7 @@ class RunwareMediaUpload:
         mediaData = self._stripDataUriPrefix(mediaDataUri)
         uploadConfig = self._buildUploadConfig(taskUuid, mediaData)
         
-        print(f"[Debug] Upload config: {uploadConfig[0]}")
+        print(f"[Debug] Upload config: {sanitize_for_logging(uploadConfig[0])}")
         print(f"[Debug] API URL: {RUNWARE_API_BASE_URL}")
         
         uploadResult = self._makeUploadRequest(uploadConfig)
@@ -279,10 +281,10 @@ class RunwareMediaUpload:
 
     def _validateUploadResponse(self, uploadResult):
         """Validate upload response"""
-        print(f"[Debug] Upload response: {uploadResult}")
+        print(f"[Debug] Upload response: {safe_json_dumps(uploadResult, indent=2) if isinstance(uploadResult, (dict, list)) else uploadResult}")
         
         if "errors" in uploadResult:
-            print(f"[Debug] Upload error: {uploadResult}")
+            print(f"[Debug] Upload error: {safe_json_dumps(uploadResult, indent=2) if isinstance(uploadResult, (dict, list)) else uploadResult}")
             raise Exception(f"Upload failed: {uploadResult}")
 
     def _pollForResult(self, taskUuid):
@@ -344,14 +346,14 @@ class RunwareMediaUpload:
             print(f"[Debug] Failed to parse JSON in poll: {str(e)}")
             return None
         
-        print(f"[Debug] Poll response: {pollResultJson}")
+        print(f"[Debug] Poll response: {safe_json_dumps(pollResultJson, indent=2) if isinstance(pollResultJson, (dict, list)) else pollResultJson}")
         
         if "errors" in pollResultJson:
-            print(f"[Debug] Poll error: {pollResultJson}")
+            print(f"[Debug] Poll error: {safe_json_dumps(pollResultJson, indent=2) if isinstance(pollResultJson, (dict, list)) else pollResultJson}")
             return None
         
         if "data" in pollResultJson and len(pollResultJson["data"]) > 0:
-            print(f"[Debug] Poll data: {pollResultJson['data'][0]}")
+            print(f"[Debug] Poll data: {sanitize_for_logging(pollResultJson['data'][0])}")
             return pollResultJson["data"][0]
         
         return None

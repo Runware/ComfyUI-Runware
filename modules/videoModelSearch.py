@@ -65,6 +65,15 @@ class videoModelSearch:
         "Ovi": [
             "runware:190@1 (Ovi)",
         ],
+        "Runway": [
+            "runway:2@1 (Runway Aleph)",
+            "runway:1@1 (Runway Gen-4 Turbo)",
+        ],
+        "Luma": [
+            "lumaai:1@1 (Luma Ray 1.6)",
+            "lumaai:2@1 (Luma Ray 2)",
+            "lumaai:2@2 (Luma Ray 2 Flash)",
+        ],
     }
     
     # Model dimensions mapping
@@ -130,6 +139,15 @@ class videoModelSearch:
         
         # Ovi Models
         "runware:190@1": {"width": 0, "height": 0},
+        
+        # Runway Models
+        "runway:2@1": {"width": 1280, "height": 720},
+        "runway:1@1": {"width": 1280, "height": 720},
+        
+        # Luma Models
+        "lumaai:1@1": {"width": 1080, "height": 720},
+        "lumaai:2@1": {"width": 1080, "height": 720},
+        "lumaai:2@2": {"width": 1080, "height": 720},
     }
     
     MODEL_ARCHITECTURES = [
@@ -143,7 +161,9 @@ class videoModelSearch:
         "Wan",
         "OpenAI",
         "Lightricks",
-        "Ovi"
+        "Ovi",
+        "Runway",
+        "Luma"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}
@@ -171,6 +191,12 @@ class videoModelSearch:
                 "Use Search Value": ("BOOLEAN", {
                     "tooltip": "When Enabled, the value you've set in the search input will be used instead.\n\nThis is useful in case the model search API is down or you prefer to set the model manually.",
                     "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useResolution": ("BOOLEAN", {
+                    "tooltip": "Enable to automatically use the model's recommended resolution. Disable to output 0x0 and set custom resolution downstream.",
+                    "default": True,
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
@@ -215,6 +241,7 @@ class videoModelSearch:
         searchInput = kwargs.get("Model Search")
         customWidth = kwargs.get("Width", 0)
         customHeight = kwargs.get("Height", 0)
+        useResolution = kwargs.get("useResolution", True)
 
         if enableSearchValue:
             modelAirCode = searchInput
@@ -224,13 +251,19 @@ class videoModelSearch:
 
         dimensions = self.MODEL_DIMENSIONS.get(modelAirCode, self.DEFAULT_DIMENSIONS)
         
-        width = customWidth if customWidth > 0 else dimensions["width"]
-        height = customHeight if customHeight > 0 else dimensions["height"]
-        
-        if width == 0 and height == 0:
-            width = None
-            height = None
+        if useResolution:
+            width = customWidth if customWidth > 0 else dimensions["width"]
+            height = customHeight if customHeight > 0 else dimensions["height"]
+
+            if width == 0 and height == 0:
+                width = None
+                height = None
+        else:
+            width = 0
+            height = 0
         
         return ({
             "model": modelAirCode,
+            "useResolution": useResolution,
+            "useResolution": useResolution,
         }, width, height)

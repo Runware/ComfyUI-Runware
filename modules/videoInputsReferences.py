@@ -28,8 +28,8 @@ class videoInputsReferences:
 
     DESCRIPTION = "Configure multiple reference images with optional types for video inference inputs."
     FUNCTION = "createReferences"
-    RETURN_TYPES = ("RUNWAREVIDEOINPUTSREFERENCES",)
-    RETURN_NAMES = ("Video Inputs References",)
+    RETURN_TYPES = ("RUNWAREVIDEOINPUTSREFERENCEIMAGES",)
+    RETURN_NAMES = ("Video Inputs Reference Images",)
     CATEGORY = "Runware"
 
     def createReferences(self, **kwargs) -> tuple[List[Dict[str, Any]]]:
@@ -50,14 +50,11 @@ class videoInputsReferences:
         return (references,)
 
     def _createReference(self, image, refType):
-        """Create reference object from image and type"""
+        """Create reference entry (API expects direct strings)"""
         imageUrl = rwUtils.convertTensor2IMG(image)
-        reference = {"image": imageUrl}
-        
-        if refType and refType.strip() != "":
-            reference["type"] = refType.strip()
-        
-        return reference
+        # API expects referenceImages to be a list of strings (UUID/URL/data URI)
+        # so we return the converted string directly.
+        return imageUrl
 
 
 # Node class mappings
@@ -66,5 +63,5 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "RunwareVideoInputsReferences": "Runware Video Inputs References",
+    "RunwareVideoInputsReferences": "Runware Video Inputs Reference Images",
 }

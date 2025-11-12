@@ -1,5 +1,4 @@
 from .utils import runwareUtils as rwUtils
-import json
 
 class bgremoval:
     RUNWARE_RMBG_MODELS = {
@@ -155,14 +154,14 @@ class bgremoval:
 
         # Debug: Print the request being sent
         print(f"[DEBUG] Sending Background Removal Request:", flush=True)
-        print(f"[DEBUG] Request Payload: {json.dumps([genConfig], indent=2)}", flush=True)
+        print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps([genConfig], indent=2)}", flush=True)
         
         try:
             genResult = rwUtils.inferenecRequest([genConfig])
             
             # Debug: Print the response received
             print(f"[DEBUG] Received Background Removal Response:", flush=True)
-            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}", flush=True)
+            print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}", flush=True)
         except Exception as e:
             print(f"[DEBUG] Error in Background Removal Request: {str(e)}", flush=True)
             raise

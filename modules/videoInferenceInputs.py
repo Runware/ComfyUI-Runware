@@ -13,6 +13,9 @@ class videoInferenceInputs:
                 "Image": ("IMAGE", {
                     "tooltip": "Portrait image for video generation. This will be the main subject that will speak and move in the generated video."
                 }),
+                "Frame Images": ("RUNWAREVIDEOINPUTSFRAMEIMAGES", {
+                    "tooltip": "Connect the Runware Video Inputs Frame node to provide timeline-constrained frame images."
+                }),
                 "Audio": ("STRING", {
                     "tooltip": "Connect the mediaUUID output from Runware Media Upload node with audio file. This audio will be synchronized with the generated video."
                 }),
@@ -25,7 +28,7 @@ class videoInferenceInputs:
                 "Frame": ("IMAGE", {
                     "tooltip": "Frame image for video generation. Connect a Load Image node to provide the frame image."
                 }),
-                "References": ("RUNWAREVIDEOINPUTSREFERENCES", {
+                "References": ("RUNWAREVIDEOINPUTSREFERENCEIMAGES", {
                     "tooltip": "Connect the Video Inputs References node to provide reference images."
                 }),
             }
@@ -44,6 +47,7 @@ class videoInferenceInputs:
         video = kwargs.get("Video", None)
         mask = kwargs.get("Mask", None)
         frame = kwargs.get("Frame", None)
+        frameImages = kwargs.get("Frame Images", None)
         references = kwargs.get("References", None)
 
         inputs = {}
@@ -63,7 +67,10 @@ class videoInferenceInputs:
         if frame is not None:
             inputs["frame"] = rwUtils.convertTensor2IMG(frame)
 
+        if frameImages is not None and len(frameImages) > 0:
+            inputs["frameImages"] = frameImages
+
         if references is not None and len(references) > 0:
-            inputs["references"] = references
+            inputs["referenceImages"] = references
 
         return (inputs,)

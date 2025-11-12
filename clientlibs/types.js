@@ -81,7 +81,7 @@ const RUNWARE_NODE_TYPES = {
     AUDIOINFERENCE: "Runware Audio Inference",
     AUDIOMODELSEARCH: "Runware Audio Model Search",
     AUDIOSECTIONS: "Runware Audio Sections",
-    PROVIDERSETTINGS: "Runware Provider Settings",
+    AUDIOINFERENCEINPUTS: "Runware Audio Inference Inputs",
     PIXVERSEPROVIDERSETTINGS: "Runware Pixverse Provider Settings",
     OPENAIPROVIDERSETTINGS: "Runware OpenAI Provider Settings",
     BYTEDANCEPROVIDERSETTINGS: "Runware Bytedance Provider Settings",
@@ -89,6 +89,7 @@ const RUNWARE_NODE_TYPES = {
     ELEVENLABSPROVIDERSETTINGS: "Runware ElevenLabs Provider Settings",
     ELEVENLABSPROVIDERSETTINGSSECTIONS: "Runware ElevenLabs Provider Settings Sections",
     VIDUPROVIDERSETTINGS: "Runware Vidu Provider Settings",
+    LORAMIX: "Runware Lora Mix",
     MEDIAUPLOAD: "Runware Media Upload",
     INPUTAUDIOS: "Runware Input Audios",
     REFERENCEVIDEOS: "Runware Reference Videos",
@@ -96,10 +97,12 @@ const RUNWARE_NODE_TYPES = {
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
     RUNWAYPROVIDERSETTINGS: "Runware Runway Provider Settings",
+    LUMAPROVIDERSETTINGS: "Runware Luma Provider Settings",
     VECTORIZE: "Runware Vectorize",
     VIDEOBGREMOVAL: "Runware Video Background Removal",
     VIDEOUPSCALER: "Runware Video Upscaler",
     VIDEOINPUTSREFERENCES: "Runware Video Inputs References",
+    VIDEOINPUTSFRAMEIMAGES: "Runware Video Inputs Frame Images",
     ACCELERATOROPTIONS: "Runware Accelerator Options",
     VIDEOTRANSCRIPTION: "Runware Video Transcription",
     MINIMAXPROVIDERSETTINGS: "Runware MiniMax Provider Settings",
@@ -243,7 +246,7 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
-    [RUNWARE_NODE_TYPES.PROVIDERSETTINGS]: {
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCEINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
@@ -275,6 +278,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.LORAMIX]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.MEDIAUPLOAD]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
@@ -303,6 +310,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.LUMAPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.VECTORIZE]: {
         bgColor: DEFAULT_BGCOLOR,
     },
@@ -313,6 +324,14 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.VIDEOINPUTSREFERENCES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINPUTSFRAMEIMAGES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOINFERENCEINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

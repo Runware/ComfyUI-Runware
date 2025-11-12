@@ -1,10 +1,10 @@
 from .utils import runwareUtils as rwUtils
-import json
 import comfy.model_management
 
 class videoUpscaler:
     RUNWARE_VUPSCALER_MODELS = {
         "Bria Video Upscaler": "bria:50@1",
+        "Bytedance Video Upscaler": "bytedance:50@1",
     }
     
     @classmethod
@@ -69,13 +69,13 @@ class videoUpscaler:
         try:
             # Debug: Print the request being sent
             print(f"[DEBUG] Sending Video Upscale Request:")
-            print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+            print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
             
             genResult = rwUtils.inferenecRequest(genConfig)
             
             # Debug: Print the response received
             print(f"[DEBUG] Received Video Upscale Response:")
-            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+            print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
             
             # Check for errors
             if "errors" in genResult:

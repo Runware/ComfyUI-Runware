@@ -1,4 +1,3 @@
-import json
 import uuid
 import requests
 import torch
@@ -47,12 +46,20 @@ class RunwareAudioInference:
                     "step": 1,
                     "tooltip": "Length of generated audio in seconds (10-300)"
                 }),
+                "useSampleRate": ("BOOLEAN", {
+                    "default": True,
+                    "tooltip": "Enable/disable sampleRate parameter in API request"
+                }),
                 "sampleRate": ("INT", {
                     "default": 22050,
                     "min": 8000,
                     "max": 48000,
                     "step": 1,
                     "tooltip": "Sample rate of the generated audio in Hz (8000-48000)"
+                }),
+                "useBitrate": ("BOOLEAN", {
+                    "default": True,
+                    "tooltip": "Enable/disable bitrate parameter in API request"
                 }),
                 "bitrate": ("INT", {
                     "default": 32,
@@ -77,6 +84,9 @@ class RunwareAudioInference:
                 }),
             },
             "optional": {
+                "inputs": ("RUNWAREAUDIOINFERENCEINPUTS", {
+                    "tooltip": "Custom inputs for audio generation (e.g., video URL for audio extraction)"
+                }),
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Provider-specific configuration settings"
                 }),
@@ -110,12 +120,15 @@ class RunwareAudioInference:
             "model": kwargs.get("model", ""),
             "duration": kwargs.get("duration", 30),
             "useDuration": kwargs.get("useDuration", True),
-            "sampleRate": kwargs.get("sampleRate", 44100),
-            "bitrate": kwargs.get("bitrate", 128),
+            "sampleRate": kwargs.get("sampleRate", 22050),
+            "useSampleRate": kwargs.get("useSampleRate", True),
+            "bitrate": kwargs.get("bitrate", 32),
+            "useBitrate": kwargs.get("useBitrate", True),
             "outputType": kwargs.get("outputType", "URL"),
             "outputFormat": kwargs.get("outputFormat", "MP3"),
             "negativePrompt": kwargs.get("negativePrompt", ""),
             "numberResults": kwargs.get("numberResults", 1),
+            "inputs": kwargs.get("inputs", None),
             "providerSettings": kwargs.get("providerSettings", None),
         }
 
@@ -124,8 +137,9 @@ class RunwareAudioInference:
         if not providerSettings or not isinstance(providerSettings, dict):
             return False
         
-        elevenlabsSettings = providerSettings.get("elevenlabs", {})
-        musicSettings = elevenlabsSettings.get("music", {})
+        # Provider settings is now flat (e.g., {"music": {...}})
+        # Check if it has music.compositionPlan.sections
+        musicSettings = providerSettings.get("music", {})
         compositionPlan = musicSettings.get("compositionPlan", {})
         sections = compositionPlan.get("sections", [])
         
@@ -144,11 +158,18 @@ class RunwareAudioInference:
             "deliveryMethod": "sync",
             "includeCost": True,
             "numberResults": params["numberResults"],
-            "audioSettings": {
-                "sampleRate": params["sampleRate"],
-                "bitrate": params["bitrate"]
-            }
         }]
+        
+        # Build audioSettings conditionally based on use flags
+        audioSettings = {}
+        if params["useSampleRate"]:
+            audioSettings["sampleRate"] = params["sampleRate"]
+        if params["useBitrate"]:
+            audioSettings["bitrate"] = params["bitrate"]
+        
+        # Only add audioSettings if at least one setting is enabled
+        if audioSettings:
+            genConfig[0]["audioSettings"] = audioSettings
         
         # Handle sections - disable duration if sections are provided
         hasSections = self._hasSections(params["providerSettings"])
@@ -173,18 +194,45 @@ class RunwareAudioInference:
         if params["negativePrompt"]:
             genConfig[0]["negativePrompt"] = params["negativePrompt"]
         
+        # Handle inputs - merge custom inputs from Audio Inference Inputs node
+        if params["inputs"] is not None:
+            # Merge inputs from audio inference inputs node
+            if "inputs" not in genConfig[0]:
+                genConfig[0]["inputs"] = {}
+            
+            # Merge each input from inputs
+            for key, value in params["inputs"].items():
+                genConfig[0]["inputs"][key] = value
+            
+            print(f"[DEBUG] Audio inference inputs merged: {rwUtils.sanitize_for_logging(params['inputs'])}")
+            print(f"[DEBUG] Final genConfig inputs: {rwUtils.sanitize_for_logging(genConfig[0].get('inputs', {}))}")
+        
+        # Handle providerSettings - extract provider name from model and wrap with provider name (same pattern as video inference)
         if params["providerSettings"] is not None:
-            genConfig[0]["providerSettings"] = params["providerSettings"]
+            # Extract provider name from model (e.g., "klingai:8@1" -> "klingai", "elevenlabs:1@1" -> "elevenlabs")
+            provider_name = params["model"].split(":")[0] if ":" in params["model"] else params["model"]
+            
+            # If providerSettings is a dictionary, create the correct API format
+            if isinstance(params["providerSettings"], dict):
+                # Create the providerSettings object with provider name as key
+                final_provider_settings = {
+                    provider_name: params["providerSettings"]
+                }
+                genConfig[0]["providerSettings"] = final_provider_settings
+                print(f"[DEBUG] Provider settings wrapped with provider name: {rwUtils.sanitize_for_logging(final_provider_settings)}")
+            else:
+                # If it's just a string, use it directly
+                genConfig[0]["providerSettings"] = params["providerSettings"]
         
         print(f"[DEBUG] Sending Audio Inference Request:")
-        print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+        print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
         
         return genConfig
 
     def _logResponse(self, genResult):
         """Log the API response for debugging"""
         print(f"[DEBUG] Received Audio Inference Response:")
-        print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+        print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
 
     def _validateResponse(self, genResult):
         """Validate API response and raise errors if needed"""

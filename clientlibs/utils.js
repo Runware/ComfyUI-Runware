@@ -940,6 +940,10 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     const positivePromptWidget = audioInferenceNode.widgets.find(w => w.name === "positivePrompt");
     const useDurationWidget = audioInferenceNode.widgets.find(w => w.name === "useDuration");
     const durationWidget = audioInferenceNode.widgets.find(w => w.name === "duration");
+    const useSampleRateWidget = audioInferenceNode.widgets.find(w => w.name === "useSampleRate");
+    const sampleRateWidget = audioInferenceNode.widgets.find(w => w.name === "sampleRate");
+    const useBitrateWidget = audioInferenceNode.widgets.find(w => w.name === "useBitrate");
+    const bitrateWidget = audioInferenceNode.widgets.find(w => w.name === "bitrate");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -989,6 +993,14 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     
     if (useDurationWidget && durationWidget) {
         toggleWidgetState(useDurationWidget, durationWidget, "duration");
+    }
+    
+    if (useSampleRateWidget && sampleRateWidget) {
+        toggleWidgetState(useSampleRateWidget, sampleRateWidget, "sampleRate");
+    }
+    
+    if (useBitrateWidget && bitrateWidget) {
+        toggleWidgetState(useBitrateWidget, bitrateWidget, "bitrate");
     }
 }
 
@@ -1523,6 +1535,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
     const videoListWidget = videoModelSearchNode.widgets.find(w => w.name === "VideoList");
     const widthWidget = videoModelSearchNode.widgets.find(w => w.name === "Width");
     const heightWidget = videoModelSearchNode.widgets.find(w => w.name === "Height");
+    const useResolutionWidget = videoModelSearchNode.widgets.find(w => w.name === "useResolution");
     
     if (!modelArchWidget || !videoListWidget) return;
 
@@ -1569,6 +1582,15 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Ovi": [
             "runware:190@1 (Ovi)",
         ],
+        "Runway": [
+            "runway:2@1 (Runway Aleph)",
+            "runway:1@1 (Runway Gen-4 Turbo)",
+        ],
+        "Luma": [
+            "lumaai:1@1 (Luma Ray 1.6)",
+            "lumaai:2@1 (Luma Ray 2)",
+            "lumaai:2@2 (Luma Ray 2 Flash)",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -1614,15 +1636,45 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lightricks:2@0": {"width": 1920, "height": 1080},
         "lightricks:2@1": {"width": 1920, "height": 1080},
         "runware:190@1": {"width": 0, "height": 0},
+        "runway:2@1": {"width": 1280, "height": 720},
+        "runway:1@1": {"width": 1280, "height": 720},
+        "lumaai:1@1": {"width": 1080, "height": 720},
+        "lumaai:2@1": {"width": 1080, "height": 720},
+        "lumaai:2@2": {"width": 1080, "height": 720},
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
+
+    function setWidthHeightEnabled(enabled) {
+        if (!widthWidget || !heightWidget) return;
+        [widthWidget, heightWidget].forEach(widget => {
+            widget.disabled = !enabled;
+            if (widget.inputEl) {
+                widget.inputEl.disabled = !enabled;
+                widget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                widget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                widget.inputEl.readOnly = !enabled;
+            }
+        });
+    }
 
     function updateDimensions() {
         if (!widthWidget || !heightWidget || !videoListWidget) return;
 
         const selectedModel = videoListWidget.value;
         if (!selectedModel) return;
+
+        if (useResolutionWidget && !useResolutionWidget.value) {
+            setWidthHeightEnabled(false);
+            if (widthWidget.callback) widthWidget.callback(0, "customSetOperation");
+            widthWidget.value = 0;
+            if (heightWidget.callback) heightWidget.callback(0, "customSetOperation");
+            heightWidget.value = 0;
+            videoModelSearchNode.setDirtyCanvas(true);
+            return;
+        }
+
+        setWidthHeightEnabled(true);
 
         const modelCode = selectedModel.split(" (")[0];
         const dims = MODEL_DIMENSIONS[modelCode] || DEFAULT_DIMENSIONS;
@@ -1666,8 +1718,217 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
     if (videoListWidget) {
         appendWidgetCB(videoListWidget, updateDimensions);
     }
+    if (useResolutionWidget) {
+        appendWidgetCB(useResolutionWidget, () => {
+            updateDimensions();
+        });
+    }
     filterModelList();
     updateDimensions();
+}
+
+function audioModelSearchFilterHandler(audioModelSearchNode) {
+    const modelProviderWidget = audioModelSearchNode.widgets.find(w => w.name === "Model Provider");
+    const audioListWidget = audioModelSearchNode.widgets.find(w => w.name === "AudioList");
+    
+    if (!modelProviderWidget || !audioListWidget) return;
+
+    const AUDIO_MODELS = {
+        "ElevenLabs": [
+            "elevenlabs:1@1 (ElevenLabs Multilingual v2)",
+            "elevenlabs:2@1 (ElevenLabs Multilingual v2 Turbo)",
+            "elevenlabs:3@1 (ElevenLabs Monolingual v1)",
+        ],
+        "KlingAI": [
+            "klingai:8@1 (KlingAI Audio)",
+        ],
+    };
+
+    function filterModelList() {
+        const selectedProvider = modelProviderWidget.value;
+        let filteredModels = [];
+
+        if (selectedProvider === "All") {
+            Object.values(AUDIO_MODELS).forEach(models => filteredModels.push(...models));
+        } else if (AUDIO_MODELS[selectedProvider]) {
+            filteredModels = AUDIO_MODELS[selectedProvider];
+        }
+
+        if (filteredModels.length > 0) {
+            const currentValue = audioListWidget.value;
+            audioListWidget.options.values = filteredModels;
+            
+            if (!filteredModels.includes(currentValue)) {
+                audioListWidget.value = filteredModels[0];
+            }
+            
+            audioModelSearchNode.setDirtyCanvas(true);
+        }
+    }
+
+    appendWidgetCB(modelProviderWidget, filterModelList);
+    filterModelList();
+}
+
+function klingProviderSettingsToggleHandler(klingNode) {
+    // Find all "use" parameter widgets for KlingAI Provider Settings (EXACT same pattern as imageInferenceToggleHandler)
+    const useCameraControlWidget = klingNode.widgets.find(w => w.name === "useCameraControl");
+    const cameraControlWidget = klingNode.widgets.find(w => w.name === "cameraControl");
+    const useSoundVolumeWidget = klingNode.widgets.find(w => w.name === "useSoundVolume");
+    const soundVolumeWidget = klingNode.widgets.find(w => w.name === "soundVolume");
+    const useOriginalAudioVolumeWidget = klingNode.widgets.find(w => w.name === "useOriginalAudioVolume");
+    const originalAudioVolumeWidget = klingNode.widgets.find(w => w.name === "originalAudioVolume");
+    const useSoundEffectPromptWidget = klingNode.widgets.find(w => w.name === "useSoundEffectPrompt");
+    const soundEffectPromptWidget = klingNode.widgets.find(w => w.name === "soundEffectPrompt");
+    const useBgmPromptWidget = klingNode.widgets.find(w => w.name === "useBgmPrompt");
+    const bgmPromptWidget = klingNode.widgets.find(w => w.name === "bgmPrompt");
+    const useAsmrModeWidget = klingNode.widgets.find(w => w.name === "useAsmrMode");
+    const asmrModeWidget = klingNode.widgets.find(w => w.name === "asmrMode");
+    
+    // Helper function to toggle widget enabled state (EXACT same pattern as imageInferenceToggleHandler)
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            // Disable/enable widgets using inputEl if available (exact same pattern)
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            // Also set widget property
+            paramWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!paramWidget.inputEl) {
+                const nodeElement = klingNode.htmlElements?.widgetsContainer || klingNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            klingNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback (exact same pattern as imageInferenceToggleHandler)
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state (exact same pattern)
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up all toggle handlers (exact same pattern as imageInferenceToggleHandler)
+    if (useCameraControlWidget && cameraControlWidget) {
+        toggleWidgetState(useCameraControlWidget, cameraControlWidget, "cameraControl");
+    }
+    
+    if (useSoundVolumeWidget && soundVolumeWidget) {
+        toggleWidgetState(useSoundVolumeWidget, soundVolumeWidget, "soundVolume");
+    }
+    
+    if (useOriginalAudioVolumeWidget && originalAudioVolumeWidget) {
+        toggleWidgetState(useOriginalAudioVolumeWidget, originalAudioVolumeWidget, "originalAudioVolume");
+    }
+    
+    if (useSoundEffectPromptWidget && soundEffectPromptWidget) {
+        toggleWidgetState(useSoundEffectPromptWidget, soundEffectPromptWidget, "soundEffectPrompt");
+    }
+    
+    if (useBgmPromptWidget && bgmPromptWidget) {
+        toggleWidgetState(useBgmPromptWidget, bgmPromptWidget, "bgmPrompt");
+    }
+    
+    if (useAsmrModeWidget && asmrModeWidget) {
+        toggleWidgetState(useAsmrModeWidget, asmrModeWidget, "asmrMode");
+    }
+}
+
+function lumaProviderSettingsToggleHandler(lumaNode) {
+    // Find all "use" parameter widgets for Luma Provider Settings
+    const useLoopWidget = lumaNode.widgets.find(w => w.name === "useLoop");
+    const loopWidget = lumaNode.widgets.find(w => w.name === "loop");
+    const useConcept1Widget = lumaNode.widgets.find(w => w.name === "useConcept1");
+    const concept1Widget = lumaNode.widgets.find(w => w.name === "concept1");
+    const useConcept2Widget = lumaNode.widgets.find(w => w.name === "useConcept2");
+    const concept2Widget = lumaNode.widgets.find(w => w.name === "concept2");
+    const useConcept3Widget = lumaNode.widgets.find(w => w.name === "useConcept3");
+    const concept3Widget = lumaNode.widgets.find(w => w.name === "concept3");
+    const useConcept4Widget = lumaNode.widgets.find(w => w.name === "useConcept4");
+    const concept4Widget = lumaNode.widgets.find(w => w.name === "concept4");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = lumaNode.htmlElements?.widgetsContainer || lumaNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
+            lumaNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useLoopWidget && loopWidget) {
+        toggleWidgetState(useLoopWidget, loopWidget, "loop");
+    }
+
+    if (useConcept1Widget && concept1Widget) {
+        toggleWidgetState(useConcept1Widget, concept1Widget, "concept1");
+    }
+
+    if (useConcept2Widget && concept2Widget) {
+        toggleWidgetState(useConcept2Widget, concept2Widget, "concept2");
+    }
+
+    if (useConcept3Widget && concept3Widget) {
+        toggleWidgetState(useConcept3Widget, concept3Widget, "concept3");
+    }
+
+    if (useConcept4Widget && concept4Widget) {
+        toggleWidgetState(useConcept4Widget, concept4Widget, "concept4");
+    }
 }
 
 export {
@@ -1682,6 +1943,7 @@ export {
     APIKeyHandler,
     videoInferenceDimensionsHandler,
     videoModelSearchFilterHandler,
+    audioModelSearchFilterHandler,
     useParameterToggleHandler,
     imageInferenceToggleHandler,
     upscalerToggleHandler,
@@ -1689,4 +1951,6 @@ export {
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
+    klingProviderSettingsToggleHandler,
+    lumaProviderSettingsToggleHandler,
 };
