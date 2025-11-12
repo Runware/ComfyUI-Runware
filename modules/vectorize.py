@@ -1,5 +1,4 @@
 from .utils import runwareUtils as rwUtils
-import json
 import base64
 import io
 
@@ -51,12 +50,12 @@ class vectorize:
         genConfig = self._buildGenConfig(model, imageUuid)
         
         print(f"[DEBUG] Sending Vectorize Request:")
-        print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+        print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
         
         genResult = rwUtils.inferenecRequest(genConfig)
         
         print(f"[DEBUG] Received Vectorize Response:")
-        print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+        print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
         
         self._validateResponse(genResult)
         

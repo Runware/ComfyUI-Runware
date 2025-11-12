@@ -1,5 +1,4 @@
 from .utils import runwareUtils as rwUtils
-import json
 import comfy.model_management
 
 
@@ -69,12 +68,12 @@ class videoBgRemoval:
         genConfig = self._buildGenConfig(videoUuid, modelAir, outputFormat, rgbaColor)
         
         print(f"[DEBUG] Sending Video Background Removal Request:")
-        print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+        print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
         
         genResult = rwUtils.inferenecRequest(genConfig)
         
         print(f"[DEBUG] Received Video Background Removal Response:")
-        print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+        print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
         
         self._validateResponse(genResult)
         

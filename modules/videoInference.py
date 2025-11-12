@@ -1,6 +1,5 @@
 from .utils import runwareUtils as rwUtils
 from .videoModelSearch import videoModelSearch
-import json
 import comfy.model_management
 
 
@@ -180,8 +179,8 @@ class txt2vid:
         videoAdvancedFeatureInputs = kwargs.get("videoAdvancedFeatureInputs", None)
         runwareAccelerator = kwargs.get("Accelerator", None)
         useCustomDimensions = kwargs.get("useCustomDimensions", False)
-        customWidth = kwargs.get("width", 864)
-        customHeight = kwargs.get("height", 480)
+        customWidth = kwargs.get("width", None)
+        customHeight = kwargs.get("height", None)
         useDuration = kwargs.get("useDuration", True)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
@@ -197,18 +196,23 @@ class txt2vid:
         # Handle model input - could be dict or string
         if isinstance(runwareVideoModel, dict):
             model = runwareVideoModel.get("model", "")
+            model_use_resolution = runwareVideoModel.get("useResolution", True)
         else:
             model = runwareVideoModel
-        
-        # Determine dimensions based on custom setting
+            model_use_resolution = True
+
+        # Determine dimensions based on custom setting and model defaults
         if useCustomDimensions:
             width = customWidth
             height = customHeight
-        else:
+        elif model_use_resolution:
             modelDimensions = videoModelSearch.MODEL_DIMENSIONS.get(model, {"width": 1024, "height": 576})
-            width = modelDimensions["width"]
-            height = modelDimensions["height"]
-        
+            width = modelDimensions.get("width", None)
+            height = modelDimensions.get("height", None)
+        else:
+            width = None
+            height = None
+
         genConfig = [
             {
                 "taskType": "videoInference",
@@ -219,7 +223,10 @@ class txt2vid:
                 "includeCost": True,
             }
         ]
-        if height != 0 and width != 0:
+        if (
+            width is not None and height is not None
+            and width > 0 and height > 0
+        ):
             genConfig[0]['height'] = height
             genConfig[0]['width'] = width
         
@@ -253,25 +260,25 @@ class txt2vid:
         # Add frameImages if provided from Runware Frame Images node
         if frameImages is not None and len(frameImages) > 0:
             genConfig[0]["frameImages"] = frameImages
-            print(f"[Debugging] Frame images array: {frameImages}")
+            print(f"[Debugging] Frame images array: {rwUtils.sanitize_for_logging(frameImages)}")
         # Add referenceImages if provided from Runware Reference Images node
         if referenceImages is not None and len(referenceImages) > 0:
             genConfig[0]["referenceImages"] = referenceImages
-            print(f"[Debugging] Reference images array: {referenceImages}")
+            print(f"[Debugging] Reference images array: {rwUtils.sanitize_for_logging(referenceImages)}")
         # Add inputAudios if provided
         if inputAudios is not None and len(inputAudios) > 0:
             genConfig[0]["inputAudios"] = inputAudios
-            print(f"[Debugging] Input audios array: {inputAudios}")
+            print(f"[Debugging] Input audios array: {rwUtils.sanitize_for_logging(inputAudios)}")
         
         # Add referenceVideos if provided and not empty
         if referenceVideos is not None:
             # Handle both single mediaUUID (string) and multiple mediaUUIDs (list)
             if isinstance(referenceVideos, str) and referenceVideos.strip() != "":
                 genConfig[0]["referenceVideos"] = [referenceVideos.strip()]
-                print(f"[Debugging] Reference videos: {genConfig[0].get('referenceVideos', [])}")
+                print(f"[Debugging] Reference videos: {rwUtils.sanitize_for_logging(genConfig[0].get('referenceVideos', []))}")
             elif isinstance(referenceVideos, list) and len(referenceVideos) > 0:
                 genConfig[0]["referenceVideos"] = referenceVideos
-                print(f"[Debugging] Reference videos: {genConfig[0].get('referenceVideos', [])}")
+                print(f"[Debugging] Reference videos: {rwUtils.sanitize_for_logging(genConfig[0].get('referenceVideos', []))}")
         
         # Add speech parameters if both voice and text are provided
         if speechVoice and speechVoice.strip() != "" and speechText and speechText.strip() != "":
@@ -291,24 +298,23 @@ class txt2vid:
             for key, value in inputs.items():
                 genConfig[0]["inputs"][key] = value
             
-            print(f"[Debugging] Video inference inputs merged: {inputs}")
-            print(f"[Debugging] Final genConfig inputs: {genConfig[0].get('inputs', {})}")
+            print(f"[Debugging] Video inference inputs merged: {rwUtils.sanitize_for_logging(inputs)}")
+            print(f"[Debugging] Final genConfig inputs: {rwUtils.sanitize_for_logging(genConfig[0].get('inputs', {}))}")
         
         # Handle providerSettings - extract provider name from model and merge with custom settings
         if providerSettings is not None:
-            # Extract provider name from model (e.g., "pixverse:1@1" -> "pixverse")
             provider_name = model.split(":")[0] if ":" in model else model
-            
-            # If providerSettings is a dictionary, create the correct API format
+
             if isinstance(providerSettings, dict):
-                # Create the providerSettings object with provider name as key
-                final_provider_settings = {
-                    provider_name: providerSettings
-                }
-                genConfig[0]["providerSettings"] = final_provider_settings
-                print(f"[Debugging] Provider settings: {final_provider_settings}")
+                if provider_name in providerSettings:
+                    final_provider_settings = providerSettings
+                else:
+                    final_provider_settings = {provider_name: providerSettings}
+
+                if final_provider_settings:
+                    genConfig[0]["providerSettings"] = final_provider_settings
+                    print(f"[Debugging] Provider settings: {rwUtils.sanitize_for_logging(final_provider_settings)}")
             else:
-                # If it's just a string, use it directly
                 genConfig[0]["providerSettings"] = providerSettings
         
         # Add safety inputs if provided
@@ -339,15 +345,15 @@ class txt2vid:
             try:
                 # Debug: Print the request being sent
                 print(f"[DEBUG] Sending Video Inference Request:")
-                print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+                print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
                 
                 genResult = rwUtils.inferenecRequest(genConfig)
                 
                 # Debug: Print the response received
                 print(f"[DEBUG] Received Video Inference Response:")
-                print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+                print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
                 
-                print(f"[Debugging] Generation config: {genConfig}")
+                print(f"[Debugging] Generation config: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
             except Exception as e:
                 # Check if it's a dimension error and provide helpful information
                 error_msg = str(e)
@@ -376,7 +382,7 @@ class txt2vid:
                 
                 # Poll for video result
                 pollResult = rwUtils.pollVideoResult(taskUUID)
-                print(f"[Debugging] Poll result: {pollResult}")
+                print(f"[Debugging] Poll result: {rwUtils.safe_json_dumps(pollResult, indent=2) if isinstance(pollResult, (dict, list)) else pollResult}")
                 
                 # Check for errors first
                 if pollResult and "errors" in pollResult and len(pollResult["errors"]) > 0:

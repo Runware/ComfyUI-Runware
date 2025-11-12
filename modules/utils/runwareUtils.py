@@ -18,6 +18,7 @@ import json
 import os
 import io
 import threading
+import re
 
 load_dotenv()
 
@@ -43,6 +44,50 @@ session = requests.Session()
 adapter = HTTPAdapter(pool_connections=10, pool_maxsize=10)
 session.mount("http://", adapter)
 session.mount("https://", adapter)
+
+_BASE64_PATTERN = re.compile(r'^(?:data:[^;]+;base64,)?[A-Za-z0-9+/=\s]+$')
+
+def _truncate_base64_string(value: str, preview_length: int = 20) -> str:
+    """Return a short preview for base64/data URI strings."""
+    if value is None:
+        return value
+
+    prefix = ""
+    payload = value
+
+    if value.startswith("data:") and "base64," in value:
+        prefix, payload = value.split("base64,", 1)
+        prefix += "base64,"
+
+    payload = payload.replace("\n", "").replace("\r", "")
+    if len(payload) > preview_length:
+        return f"{prefix}{payload[:preview_length]}...(truncated)"
+    return value
+
+def sanitize_for_logging(data, preview_length: int = 20, max_string_length: int = 2048):
+    """
+    Sanitize data structures for debug logging by truncating base64 strings.
+    """
+    if isinstance(data, dict):
+        return {key: sanitize_for_logging(value, preview_length, max_string_length) for key, value in data.items()}
+    if isinstance(data, list):
+        return [sanitize_for_logging(item, preview_length, max_string_length) for item in data]
+    if isinstance(data, tuple):
+        return tuple(sanitize_for_logging(item, preview_length, max_string_length) for item in data)
+    if isinstance(data, str):
+        stripped = data.strip()
+        if (len(stripped) > preview_length and _BASE64_PATTERN.match(stripped)
+                and not stripped.lower().startswith("http")):
+            return _truncate_base64_string(stripped, preview_length)
+        if len(data) > max_string_length:
+            return f"{data[:max_string_length]}...(truncated)"
+        return data
+    return data
+
+def safe_json_dumps(data, **kwargs) -> str:
+    """Dump JSON after sanitizing potential base64 payloads."""
+    sanitized = sanitize_for_logging(data)
+    return json.dumps(sanitized, **kwargs)
 
 def generalRequestWrapper(recaller, *args, **kwargs):
     for attempt in range(MAX_RETRIES + 1):
@@ -303,7 +348,7 @@ def inferenecRequest(genConfig):
             print(f"[Debugging] Runware Raw Response Content: {genResult.content}")
             raise Exception("Error: Invalid JSON response from API!")
         if "errors" in genResult:
-            print(f"[DEBUG] API Error Response: {genResult}")
+            print(f"[DEBUG] API Error Response: {safe_json_dumps(genResult, indent=2) if isinstance(genResult, dict) else genResult}")
             raise Exception(genResult["errors"][0]["message"])
         else:
             return genResult
@@ -400,14 +445,12 @@ def convertTensor2IMG(tensorImage):
 
     image = Image.fromarray(imageNP)
     with io.BytesIO() as buffer:
-        image.save(
-            buffer, format="webp", quality=100, subsampling=0, method=6, exact=True
-        )
+        image.save(buffer, format="PNG")
         imageRawData = buffer.getvalue()
         imgBytes = len(imageRawData)
         imgSize = int(imgBytes / 1024)
         imgb64 = base64.b64encode(imageRawData).decode("utf-8")
-        imgDataUri = f"data:image/webp;base64,{imgb64}"
+        imgDataUri = f"data:image/png;base64,{imgb64}"
 
         if ENABLE_IMAGES_CACHING and imgSize >= MIN_IMAGE_CACHE_SIZE:
             try:
@@ -606,7 +649,7 @@ def pollVideoResult(taskUUID):
             return None
             
         if "errors" in pollResult:
-            print(f"[Debugging] Poll error: {pollResult}")
+            print(f"[Debugging] Poll error: {safe_json_dumps(pollResult, indent=2) if isinstance(pollResult, (dict, list)) else pollResult}")
             return pollResult
         else:
             return pollResult

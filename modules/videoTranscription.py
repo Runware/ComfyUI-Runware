@@ -1,9 +1,13 @@
 from .utils import runwareUtils as rwUtils
-import json
 import comfy.model_management
 
 
 class videoTranscription:
+    RUNWARE_VIDEO_TRANSCRIPTION_MODELS = {
+        "Memories Video Captioning": "memories:1@1",
+        "Memories Age Detection": "memories:2@1",
+    }
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -25,9 +29,9 @@ class videoTranscription:
                     "placeholder": "Enter video URL, file path, or Runware video UUID",
                     "tooltip": "The video to transcribe. Can be a URL, file path, or Runware video UUID."
                 }),
-                "model": ("STRING", {
-                    "default": "memories:1@1",
-                    "tooltip": "The model to use for video transcription. Default: memories:1@1"
+                "model": (list(cls.RUNWARE_VIDEO_TRANSCRIPTION_MODELS.keys()), {
+                    "default": "Memories Video Captioning",
+                    "tooltip": "Choose the model to use for video transcription."
                 }),
             },
             "hidden": { "node_id": "UNIQUE_ID" }
@@ -37,7 +41,7 @@ class videoTranscription:
 
     FUNCTION = "transcribeVideo"
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("Video Transcription",)
+    RETURN_NAMES = ("Video Caption",)
     CATEGORY = "Runware"
     OUTPUT_NODE = True
 
@@ -50,7 +54,8 @@ class videoTranscription:
 
     def transcribeVideo(self, **kwargs):
         video = kwargs.get("video", "")
-        model = kwargs.get("model", "memories:1@1")
+        modelKey = kwargs.get("model", "Memories Video Captioning")
+        model = self.RUNWARE_VIDEO_TRANSCRIPTION_MODELS.get(modelKey, modelKey)
         
         if not video or not video.strip():
             raise Exception("Video URL, file path, or UUID is required")
@@ -70,14 +75,14 @@ class videoTranscription:
         
         # Debug: Print the request being sent
         print(f"[DEBUG] Sending Video Transcription Request:")
-        print(f"[DEBUG] Request Payload: {json.dumps(genConfig, indent=2)}")
+        print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
         
         try:
             genResult = rwUtils.inferenecRequest(genConfig)
             
             # Debug: Print the response received
             print(f"[DEBUG] Received Video Transcription Response:")
-            print(f"[DEBUG] Response: {json.dumps(genResult, indent=2)}")
+            print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
         except Exception as e:
             raise e
         

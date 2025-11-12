@@ -3,7 +3,7 @@ Runware Runway Provider Settings Node
 Provides Runway-specific settings for video generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 class RunwareRunwayProviderSettings:
@@ -14,9 +14,9 @@ class RunwareRunwayProviderSettings:
         return {
             "required": {},
             "optional": {
-                "publicFigureThreshold": ("STRING", {
-                    "tooltip": "Public figure threshold for content moderation (provider key: contentModeration.publicFigureThreshold).",
-                    "default": None,
+                "publicFigureThreshold": (["auto", "low"], {
+                    "tooltip": "Select the public figure detection threshold (provider key: contentModeration.publicFigureThreshold).",
+                    "default": "auto",
                 }),
             }
         }
@@ -30,12 +30,11 @@ class RunwareRunwayProviderSettings:
     def createProviderSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create Runway provider settings"""
 
-        publicFigureThreshold = kwargs.get("publicFigureThreshold", None)
+        publicFigureThreshold = kwargs.get("publicFigureThreshold")
 
         runwaySettings: Dict[str, Any] = {}
 
-        # Build contentModeration if publicFigureThreshold is provided
-        if publicFigureThreshold is not None and publicFigureThreshold.strip():
+        if isinstance(publicFigureThreshold, str) and publicFigureThreshold.strip() != "":
             contentModeration: Dict[str, Any] = {}
             contentModeration["publicFigureThreshold"] = publicFigureThreshold.strip()
             runwaySettings["contentModeration"] = contentModeration
