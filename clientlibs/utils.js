@@ -657,6 +657,28 @@ function toggleWidgetEnabled(widget, enabled, node) {
     }
 }
 
+function videoUpscalerToggleHandler(videoUpscalerNode) {
+    if (!videoUpscalerNode?.widgets) return;
+
+    const useUpscaleFactorWidget = videoUpscalerNode.widgets.find(w => w && w.name === "useUpscaleFactor");
+    const upscaleFactorWidget = videoUpscalerNode.widgets.find(w => w && w.name === "upscaleFactor");
+
+    if (!useUpscaleFactorWidget || !upscaleFactorWidget) return;
+
+    function applyToggleState() {
+        const enabled = useUpscaleFactorWidget.value === true;
+        toggleWidgetEnabled(upscaleFactorWidget, enabled, videoUpscalerNode);
+        videoUpscalerNode.setDirtyCanvas(true);
+    }
+
+    // Initialize state once widgets are rendered
+    setTimeout(applyToggleState, 100);
+
+    appendWidgetCB(useUpscaleFactorWidget, () => {
+        setTimeout(applyToggleState, 50);
+    });
+}
+
 function useParameterToggleHandler(node) {
     // Prevent double registration
     if (node._useParameterToggleHandlerRegistered) return;
@@ -1931,6 +1953,137 @@ function lumaProviderSettingsToggleHandler(lumaNode) {
     }
 }
 
+function briaProviderSettingsToggleHandler(briaNode) {
+    // Find all "use" parameter widgets for Bria Provider Settings
+    const useMediumWidget = briaNode.widgets.find(w => w.name === "useMedium");
+    const mediumWidget = briaNode.widgets.find(w => w.name === "medium");
+    const usePromptEnhancementWidget = briaNode.widgets.find(w => w.name === "usePromptEnhancement");
+    const promptEnhancementWidget = briaNode.widgets.find(w => w.name === "promptEnhancement");
+    const useEnhanceImageWidget = briaNode.widgets.find(w => w.name === "useEnhanceImage");
+    const enhanceImageWidget = briaNode.widgets.find(w => w.name === "enhanceImage");
+    const usePromptContentModerationWidget = briaNode.widgets.find(w => w.name === "usePromptContentModeration");
+    const promptContentModerationWidget = briaNode.widgets.find(w => w.name === "promptContentModeration");
+    const useContentModerationWidget = briaNode.widgets.find(w => w.name === "useContentModeration");
+    const contentModerationWidget = briaNode.widgets.find(w => w.name === "contentModeration");
+    const useIpSignalWidget = briaNode.widgets.find(w => w.name === "useIpSignal");
+    const ipSignalWidget = briaNode.widgets.find(w => w.name === "ipSignal");
+    const usePreserveAlphaWidget = briaNode.widgets.find(w => w.name === "usePreserveAlpha");
+    const preserveAlphaWidget = briaNode.widgets.find(w => w.name === "preserveAlpha");
+    const useModeWidget = briaNode.widgets.find(w => w.name === "useMode");
+    const modeWidget = briaNode.widgets.find(w => w.name === "mode");
+    const useEnhanceReferenceImagesWidget = briaNode.widgets.find(w => w.name === "useEnhanceReferenceImages");
+    const enhanceReferenceImagesWidget = briaNode.widgets.find(w => w.name === "enhanceReferenceImages");
+    const useRefinePromptWidget = briaNode.widgets.find(w => w.name === "useRefinePrompt");
+    const refinePromptWidget = briaNode.widgets.find(w => w.name === "refinePrompt");
+    const useOriginalQualityWidget = briaNode.widgets.find(w => w.name === "useOriginalQuality");
+    const originalQualityWidget = briaNode.widgets.find(w => w.name === "originalQuality");
+    const useForceBackgroundDetectionWidget = briaNode.widgets.find(w => w.name === "useForceBackgroundDetection");
+    const forceBackgroundDetectionWidget = briaNode.widgets.find(w => w.name === "forceBackgroundDetection");
+    
+    // Helper function to toggle widget enabled state (exact same pattern)
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            // Disable/enable widgets using inputEl if available (exact same pattern)
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            // Handle dropdown widgets (for medium and mode)
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            
+            // Also set widget property
+            paramWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!paramWidget.inputEl) {
+                const nodeElement = briaNode.htmlElements?.widgetsContainer || briaNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            briaNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback (exact same pattern)
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up all toggle handlers
+    if (useMediumWidget && mediumWidget) {
+        toggleWidgetState(useMediumWidget, mediumWidget, "medium");
+    }
+    
+    if (usePromptEnhancementWidget && promptEnhancementWidget) {
+        toggleWidgetState(usePromptEnhancementWidget, promptEnhancementWidget, "promptEnhancement");
+    }
+    
+    if (useEnhanceImageWidget && enhanceImageWidget) {
+        toggleWidgetState(useEnhanceImageWidget, enhanceImageWidget, "enhanceImage");
+    }
+    
+    if (usePromptContentModerationWidget && promptContentModerationWidget) {
+        toggleWidgetState(usePromptContentModerationWidget, promptContentModerationWidget, "promptContentModeration");
+    }
+    
+    if (useContentModerationWidget && contentModerationWidget) {
+        toggleWidgetState(useContentModerationWidget, contentModerationWidget, "contentModeration");
+    }
+    
+    if (useIpSignalWidget && ipSignalWidget) {
+        toggleWidgetState(useIpSignalWidget, ipSignalWidget, "ipSignal");
+    }
+    
+    if (usePreserveAlphaWidget && preserveAlphaWidget) {
+        toggleWidgetState(usePreserveAlphaWidget, preserveAlphaWidget, "preserveAlpha");
+    }
+    
+    if (useModeWidget && modeWidget) {
+        toggleWidgetState(useModeWidget, modeWidget, "mode");
+    }
+    
+    if (useEnhanceReferenceImagesWidget && enhanceReferenceImagesWidget) {
+        toggleWidgetState(useEnhanceReferenceImagesWidget, enhanceReferenceImagesWidget, "enhanceReferenceImages");
+    }
+    
+    if (useRefinePromptWidget && refinePromptWidget) {
+        toggleWidgetState(useRefinePromptWidget, refinePromptWidget, "refinePrompt");
+    }
+    
+    if (useOriginalQualityWidget && originalQualityWidget) {
+        toggleWidgetState(useOriginalQualityWidget, originalQualityWidget, "originalQuality");
+    }
+    
+    if (useForceBackgroundDetectionWidget && forceBackgroundDetectionWidget) {
+        toggleWidgetState(useForceBackgroundDetectionWidget, forceBackgroundDetectionWidget, "forceBackgroundDetection");
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -1947,10 +2100,12 @@ export {
     useParameterToggleHandler,
     imageInferenceToggleHandler,
     upscalerToggleHandler,
+    videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     klingProviderSettingsToggleHandler,
     lumaProviderSettingsToggleHandler,
+    briaProviderSettingsToggleHandler,
 };
