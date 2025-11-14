@@ -252,15 +252,12 @@ class videoModelSearch:
         dimensions = self.MODEL_DIMENSIONS.get(modelAirCode, self.DEFAULT_DIMENSIONS)
         
         if useResolution:
-            width = customWidth if customWidth > 0 else dimensions["width"]
-            height = customHeight if customHeight > 0 else dimensions["height"]
+            width = dimensions["width"]
+            height = dimensions["height"]
 
-            if width == 0 and height == 0:
-                width = None
-                height = None
         else:
-            width = 0
-            height = 0
+            width = None
+            height = None
         
         return ({
             "model": modelAirCode,
