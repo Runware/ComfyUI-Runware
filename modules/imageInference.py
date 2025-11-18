@@ -6,9 +6,6 @@ class txt2img:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "Model": ("RUNWAREMODEL", {
-                    "tooltip": "Connect a Runware Model From Runware Model Node.",
-                }),
                 "positivePrompt": ("STRING", {
                     "multiline": True,
                     "placeholder": "Positive Prompt: a text instruction to guide the model on generating the image. It is usually a sentence or a paragraph that provides positive guidance for the task. This parameter is essential to shape the desired results.\n\nYou Can Press (Ctrl + Alt + E) To Enhance The Prompt!",
@@ -18,6 +15,9 @@ class txt2img:
                     "multiline": True,
                     "placeholder": "Negative Prompt: a text instruction to guide the model on generating the image. It is usually a sentence or a paragraph that provides negative guidance for the task. This parameter helps to avoid certain undesired results.",
                     "tooltip": "Negative Prompt: a text instruction to guide the model on generating the image."
+                }),
+                "Model": ("RUNWAREMODEL", {
+                    "tooltip": "Connect a Runware Model From Runware Model Node.",
                 }),
                 "Multi Inference Mode": ("BOOLEAN", {
                     "tooltip": "If Enabled the node will skip the image generation process and will only return the Runware Task Object to be used in the Multi Inference Node.",
@@ -175,24 +175,31 @@ class txt2img:
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Connect a Runware Provider Settings Node to configure provider-specific parameters.",
                 }),
+                "safetyInputs": ("RUNWARESAFETYINPUTS", {
+                    "tooltip": "Connect Runware Safety Inputs node to configure safety and content moderation settings.",
+                }),
             }
         }
-
-    @classmethod
-    def VALIDATE_INPUTS(cls, positivePrompt, negativePrompt):
-        if (positivePrompt is not None and (positivePrompt == "" or len(positivePrompt) < 3 or len(positivePrompt) > 2000)):
-            raise Exception(
-                "Positive Prompt Must Be Between 3 And 2000 characters!")
-        if (negativePrompt is not None and negativePrompt != "" and (len(negativePrompt) < 3 or len(negativePrompt) > 2000)):
-            raise Exception(
-                "Negative Prompt Must Be Between 3 And 2000 characters!")
-        return True
 
     DESCRIPTION = "Generates Images Lightning Fast With Runware Image Inference Sonic Engine."
     FUNCTION = "generateImage"
     RETURN_TYPES = ("IMAGE", "RUNWARETASK")
     RETURN_NAMES = ("IMAGE", "RW-Task")
     CATEGORY = "Runware"
+
+    @classmethod
+    def VALIDATE_INPUTS(cls, **kwargs):
+        positivePrompt = kwargs.get("positivePrompt", "")
+        negativePrompt = kwargs.get("negativePrompt", "")
+        
+        # Only validate positivePrompt length if it's provided
+        if positivePrompt and len(positivePrompt) > 2000:
+            return "Positive Prompt is too long. Maximum length is 2000 characters."
+        
+        if negativePrompt and len(negativePrompt) > 2000:
+            return "Negative Prompt is too long. Maximum length is 2000 characters."
+        
+        return True
 
     def generateImage(self, **kwargs):
         runwareModel = kwargs.get("Model")
@@ -211,6 +218,7 @@ class txt2img:
         referenceImages = kwargs.get("referenceImages", None)
         inputs = kwargs.get("inputs", None)
         providerSettings = kwargs.get("providerSettings", None)
+        safetyInputs = kwargs.get("safetyInputs", None)
         seedImage = kwargs.get("seedImage", None)
         seedImageStrength = kwargs.get("strength", 0.8)
         maskImage = kwargs.get("maskImage", None)
@@ -240,7 +248,6 @@ class txt2img:
             {
                 "taskType": "imageInference",
                 "taskUUID": rwUtils.genRandUUID(),
-                "positivePrompt": positivePrompt,
                 "model": runwareModel,
                 "outputType": "base64Data",
                 "outputFormat": outputFormat,
@@ -248,6 +255,11 @@ class txt2img:
                 "numberResults": batchSize,
             }
         ]
+        
+        # Add positivePrompt only if provided
+        if positivePrompt is not None and positivePrompt != "":
+            genConfig[0]["positivePrompt"] = positivePrompt
+        
 
         # For Debugging Purposes Only
         print(f"[Debugging] Task UUID: {genConfig[0]['taskUUID']}")
@@ -343,6 +355,10 @@ class txt2img:
             else:
                 # If it's already in the correct format, use it directly
                 genConfig[0]["providerSettings"] = providerSettings
+
+        # Add safety inputs if provided
+        if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
+            genConfig[0]["safety"] = safetyInputs
 
         if (multiInferenceMode):
             return (None, genConfig)
