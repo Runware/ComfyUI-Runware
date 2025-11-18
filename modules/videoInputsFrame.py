@@ -50,7 +50,7 @@ class RunwareVideoInputsFrameImages:
     
     def _createFrameEntry(self, image, frameLabel):
         imageData = rwUtils.convertTensor2IMGBase64Only(image)
-        entry = {"inputImage": imageData}
+        entry = {"image": imageData}
         
         if isinstance(frameLabel, str) and frameLabel.strip() != "":
             if frameLabel.strip().isdigit():
