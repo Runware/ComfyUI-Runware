@@ -14,6 +14,7 @@ class videoModelSearch:
             "klingai:5@1 (KlingAI V2.1 Standard (I2V))",
             "klingai:5@2 (KlingAI V2.1 Pro (I2V))",
             "klingai:5@3 (KlingAI V2.0 Master)",
+            "klingai:6@1 (KlingAI 2.5 Turbo Pro)",
             "klingai:7@1 (KlingAI Lip-Sync)",
         ],
         "Veo": [
@@ -89,6 +90,7 @@ class videoModelSearch:
         "klingai:5@1": {"width": 1280, "height": 720},
         "klingai:5@2": {"width": 1920, "height": 1080},
         "klingai:5@3": {"width": 1920, "height": 1080},
+        "klingai:6@1": {"width": 1920, "height": 1080},
         "klingai:7@1": {"width": 0, "height": 0},
         
         # Veo Models

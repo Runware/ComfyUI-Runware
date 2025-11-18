@@ -50,7 +50,7 @@ class RunwareFrameImages:
 
     def _createFrameData(self, image, position):
         """Create frame data object from image and position"""
-        imageData = rwUtils.convertTensor2IMG(image)
+        imageData = rwUtils.convertTensor2IMGBase64Only(image)
         frameData = {"inputImage": imageData}
         
         if position != "auto":

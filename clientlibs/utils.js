@@ -1347,6 +1347,7 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
         "klingai:3@1": {width: 1280, height: 720}, "klingai:3@2": {width: 1920, height: 1080},
         "klingai:4@3": {width: 1280, height: 720}, "klingai:5@1": {width: 1280, height: 720},
         "klingai:5@2": {width: 1920, height: 1080}, "klingai:5@3": {width: 1920, height: 1080},
+        "klingai:6@1": {width: 1920, height: 1080},
         "klingai:7@1": {width: 0, height: 0},
         "google:2@0": {width: 1280, height: 720}, "google:3@0": {width: 1280, height: 720},
         "google:3@1": {width: 1280, height: 720}, "google:3@2": {width: 1280, height: 720},
@@ -1568,6 +1569,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:3@1 (KlingAI V1.6 Standard)", "klingai:3@2 (KlingAI V1.6 Pro)",
             "klingai:4@3 (KlingAI V2.1 Master)", "klingai:5@1 (KlingAI V2.1 Standard (I2V))",
             "klingai:5@2 (KlingAI V2.1 Pro (I2V))", "klingai:5@3 (KlingAI V2.0 Master)",
+            "klingai:6@1 (KlingAI 2.5 Turbo Pro)",
             "klingai:7@1 (KlingAI Lip-Sync)",
         ],
         "Veo": [
@@ -1626,6 +1628,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:5@1": {"width": 1280, "height": 720},
         "klingai:5@2": {"width": 1920, "height": 1080},
         "klingai:5@3": {"width": 1920, "height": 1080},
+        "klingai:6@1": {"width": 1920, "height": 1080},
         "klingai:7@1": {"width": 0, "height": 0},
         "google:2@0": {"width": 1280, "height": 720},
         "google:3@0": {"width": 1280, "height": 720},

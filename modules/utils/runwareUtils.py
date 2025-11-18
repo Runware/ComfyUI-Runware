@@ -467,6 +467,20 @@ def convertTensor2IMG(tensorImage):
 
 
 
+def convertTensor2IMGBase64Only(tensorImage):
+    """Convert tensor to base64 data URI without caching - for frame images"""
+    imageNP = (tensorImage.squeeze().numpy() * 255).astype(np.uint8)
+    image = Image.fromarray(imageNP)
+    
+    with io.BytesIO() as buffer:
+        image.save(buffer, format="PNG")
+        imageRawData = buffer.getvalue()
+        imgb64 = base64.b64encode(imageRawData).decode("utf-8")
+        imgDataUri = f"data:image/png;base64,{imgb64}"
+    
+    return imgDataUri
+
+
 def convertTensor2IMGForVideo(tensorImage):
     """Convert tensor to image and force upload to get UUID for video frame images"""
     imageNP = (tensorImage.squeeze().numpy() * 255).astype(np.uint8)
