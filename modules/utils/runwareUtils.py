@@ -349,7 +349,19 @@ def inferenecRequest(genConfig):
             raise Exception("Error: Invalid JSON response from API!")
         if "errors" in genResult:
             print(f"[DEBUG] API Error Response: {safe_json_dumps(genResult, indent=2) if isinstance(genResult, dict) else genResult}")
-            raise Exception(genResult["errors"][0]["message"])
+            error_obj = genResult["errors"][0]
+            error_message = error_obj.get("message", "Unknown error")
+            
+            # Add allowedValues if present
+            if "allowedValues" in error_obj:
+                allowed_values = error_obj["allowedValues"]
+                error_message += f"\n\nAllowed values:\n" + "\n".join(f"  - {val}" for val in allowed_values)
+            
+            # Add documentation link if present
+            if "documentation" in error_obj:
+                error_message += f"\n\nDocumentation: {error_obj['documentation']}"
+            
+            raise Exception(error_message)
         else:
             return genResult
     except requests.exceptions.Timeout:
