@@ -355,22 +355,8 @@ class txt2vid:
                 
                 print(f"[Debugging] Generation config: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
             except Exception as e:
-                # Check if it's a dimension error and provide helpful information
-                error_msg = str(e)
-                if ("unsupported width" in error_msg.lower() or 
-                    "unsupported height" in error_msg.lower() or 
-                    "invalid width" in error_msg.lower() or 
-                    "invalid height" in error_msg.lower() or
-                    "dimension not supported" in error_msg.lower()):
-                    # Get model default dimensions for comparison
-                    modelDimensions = videoModelSearch.MODEL_DIMENSIONS.get(model, {"width": 1024, "height": 576})
-                    expectedWidth = modelDimensions["width"]
-                    expectedHeight = modelDimensions["height"]
-                    
-                    raise Exception(f"Error: Unsupported width/height combination for this model architecture. You used {width}x{height}, but {model} expects {expectedWidth}x{expectedHeight}. Please use 'Model Default' or set custom dimensions to {expectedWidth}x{expectedHeight}.")
-                else:
-                    # Re-raise the original error
-                    raise e
+                # Re-raise the original error without modification
+                raise e
             
             # Extract task UUID for polling
             taskUUID = genConfig[0]["taskUUID"]
