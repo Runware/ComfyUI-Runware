@@ -121,9 +121,6 @@ class videoUpscaler:
                         if status == "success":
                             if "mediaURL" in video_data or "videoURL" in video_data or "videoBase64Data" in video_data:
                                 videos = rwUtils.convertVideoB64List(pollResult, 1920, 1080)
-                                print(f"[DEBUG] Returning videos: {videos}, type: {type(videos)}, length: {len(videos) if hasattr(videos, '__len__') else 'N/A'}")
-                                if videos and len(videos) > 0:
-                                    print(f"[DEBUG] First video object: {videos[0]}, video_url: {videos[0].video_url if hasattr(videos[0], 'video_url') else 'N/A'}")
                                 return videos
                         
                         # If status is "processing", continue polling
