@@ -113,13 +113,25 @@ class videoTranscription:
                     status = data["status"]
                     
                     if status == "success":
-                        # Check if transcription is complete
+                        # Handle both text (video captioning) and structuredData (age detection) outputs
+                        outputText = None
+                        
                         if "text" in data:
-                            transcriptionText = data["text"]
-                            
+                            # Video captioning result
+                            outputText = data["text"]
+                        elif "structuredData" in data:
+                            # Age detection result - format as readable text
+                            structuredData = data["structuredData"]
+                            ageGroup = structuredData.get("ageGroup", "Unknown")
+                            confidence = structuredData.get("confidence", 0.0)
+                            outputText = f"Age Group: {ageGroup}\nConfidence: {confidence:.2%}"
+                        
+                        if outputText:
                             # Send transcription result
-                            rwUtils.sendVideoTranscription(transcriptionText, kwargs.get("node_id"))
-                            return (transcriptionText,)
+                            rwUtils.sendVideoTranscription(outputText, kwargs.get("node_id"))
+                            return (outputText,)
+                        else:
+                            raise Exception("No valid output (text or structuredData) in successful response")
                     elif status == "processing":
                         # Continue polling
                         pass
