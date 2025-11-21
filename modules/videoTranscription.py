@@ -12,12 +12,6 @@ class videoTranscription:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "Always Retranscribe": ("BOOLEAN", {
-                    "default": False,
-                    "tooltip": "Enable this option to always retranscribe the video each time you run the workflow.",
-                    "label_on": "Enabled",
-                    "label_off": "Disabled",
-                }),
                 "prompt": ("STRING", {
                     "multiline": True,
                     "default": "",
@@ -44,13 +38,6 @@ class videoTranscription:
     RETURN_NAMES = ("Video Caption",)
     CATEGORY = "Runware"
     OUTPUT_NODE = True
-
-    @classmethod
-    def IS_CHANGED(s, **kwargs):
-        alwaysRetranscribe = kwargs.get("Always Retranscribe")
-        if(alwaysRetranscribe):
-            return float("NAN")
-        return True
 
     def transcribeVideo(self, **kwargs):
         video = kwargs.get("video", "")
