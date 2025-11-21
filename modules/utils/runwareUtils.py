@@ -569,6 +569,7 @@ def convertImageB64List(imageDataObject):
 class VideoObject:
     def __init__(self, video_url, width=None, height=None):
         self.video_url = video_url
+        self.video_path = None  # Will be set after download
         # Use provided dimensions or default to 864x480 for Seedance Lite
         self.width = width if width is not None else 864
         self.height = height if height is not None else 480
@@ -603,6 +604,7 @@ class VideoObject:
                         f.write(chunk)
                 
                 print(f"[Video Download] Successfully downloaded video to {filename}")
+                self.video_path = filename  # Store the downloaded path
                 return True
                 
             except requests.exceptions.RequestException as e:
@@ -620,7 +622,7 @@ class VideoObject:
         return False
     
     def __str__(self):
-        return f"VideoObject(url={self.video_url}, dimensions={self.width}x{self.height})"
+        return f"VideoObject(url={self.video_url}, path={self.video_path}, dimensions={self.width}x{self.height})"
 
 def convertVideoB64List(videoDataObject, width=None, height=None):
     videos = ()
@@ -631,8 +633,8 @@ def convertVideoB64List(videoDataObject, width=None, height=None):
             video_obj = VideoObject(f"data:video/mp4;base64,{generatedVideo}", width, height)
             videos += (video_obj,)
         else:
-            # If no base64 data, try to get video URL
-            videoURL = result.get("videoURL", False)
+            # If no base64 data, try to get video URL (check both mediaURL and videoURL)
+            videoURL = result.get("mediaURL") or result.get("videoURL")
             if videoURL:
                 # Create a proper video object that ComfyUI can handle
                 video_obj = VideoObject(videoURL, width, height)
