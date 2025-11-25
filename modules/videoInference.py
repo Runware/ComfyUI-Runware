@@ -21,26 +21,6 @@ class txt2vid:
                     "default": "Disabled",
                     "tooltip": "Prompt weighting allows you to adjust how strongly different parts of your prompt influence the generated video.\n\nChoose between \"compel\" notation with advanced weighting operations or \"sdEmbeds\" for simple emphasis adjustments.\n\nCompel Example: \"small+ dog, pixar style\"\n\nsdEmbeds Example: \"(small:2.5) dog, pixar style\"",
                 }),
-                "useCustomDimensions": ("BOOLEAN", {
-                    "tooltip": "Model Default: Uses optimal dimensions for selected model. Custom: Uses width/height values below.",
-                    "default": False,
-                    "label_on": "Custom",
-                    "label_off": "Model Default",
-                }),
-                "width": ("INT", {
-                    "tooltip": "Width in pixels. Only used when 'Custom' is selected above.",
-                    "default": 1024,
-                    "min": 256,
-                    "max": 1920,
-                    "step": 1,
-                }),
-                "height": ("INT", {
-                    "tooltip": "Height in pixels. Only used when 'Custom' is selected above.",
-                    "default": 576,
-                    "min": 256,
-                    "max": 1920,
-                    "step": 1,
-                }),
                 "useDuration": ("BOOLEAN", {
                     "tooltip": "Enable to include duration parameter in API request. Disable if your model doesn't support duration.",
                     "default": True,
@@ -178,9 +158,6 @@ class txt2vid:
         safetyInputs = kwargs.get("safetyInputs", None)
         videoAdvancedFeatureInputs = kwargs.get("videoAdvancedFeatureInputs", None)
         runwareAccelerator = kwargs.get("Accelerator", None)
-        useCustomDimensions = kwargs.get("useCustomDimensions", False)
-        customWidth = kwargs.get("width", None)
-        customHeight = kwargs.get("height", None)
         useDuration = kwargs.get("useDuration", True)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
@@ -196,20 +173,10 @@ class txt2vid:
         # Handle model input - could be dict or string
         if isinstance(runwareVideoModel, dict):
             model = runwareVideoModel.get("model", "")
-            model_use_resolution = runwareVideoModel.get("useResolution", True)
+            width = runwareVideoModel.get("width")
+            height = runwareVideoModel.get("height")
         else:
             model = runwareVideoModel
-            model_use_resolution = True
-
-        # Determine dimensions based on custom setting and model defaults
-        if useCustomDimensions:
-            width = customWidth
-            height = customHeight
-        elif model_use_resolution:
-            modelDimensions = videoModelSearch.MODEL_DIMENSIONS.get(model, {"width": 1024, "height": 576})
-            width = modelDimensions.get("width", None)
-            height = modelDimensions.get("height", None)
-        else:
             width = None
             height = None
 

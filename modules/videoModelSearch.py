@@ -196,11 +196,11 @@ class videoModelSearch:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
-                "useResolution": ("BOOLEAN", {
-                    "tooltip": "Enable to automatically use the model's recommended resolution. Disable to output 0x0 and set custom resolution downstream.",
-                    "default": True,
-                    "label_on": "Enabled",
-                    "label_off": "Disabled",
+                "useCustomDimensions": ("BOOLEAN", {
+                    "tooltip": "Enable to use custom Width/Height values set below. Disable to automatically use the model's recommended resolution.",
+                    "default": False,
+                    "label_on": "Custom",
+                    "label_off": "Model Default",
                 }),
                 "Width": ("INT", {
                     "default": defaultDims["width"],
@@ -243,7 +243,7 @@ class videoModelSearch:
         searchInput = kwargs.get("Model Search")
         customWidth = kwargs.get("Width", 0)
         customHeight = kwargs.get("Height", 0)
-        useResolution = kwargs.get("useResolution", True)
+        useCustomDimensions = kwargs.get("useCustomDimensions", True)
 
         if enableSearchValue:
             modelAirCode = searchInput
@@ -253,16 +253,18 @@ class videoModelSearch:
 
         dimensions = self.MODEL_DIMENSIONS.get(modelAirCode, self.DEFAULT_DIMENSIONS)
         
-        if useResolution:
+        if useCustomDimensions:
+            # Use custom dimensions from Width/Height widgets
+            width = customWidth
+            height = customHeight
+        else:
+            # Use model default dimensions
             width = dimensions["width"]
             height = dimensions["height"]
-
-        else:
-            width = None
-            height = None
         
         return ({
             "model": modelAirCode,
-            "useResolution": useResolution,
-            "useResolution": useResolution,
+            "useCustomDimensions": useCustomDimensions,
+            "width": width,
+            "height": height,
         }, width, height)
