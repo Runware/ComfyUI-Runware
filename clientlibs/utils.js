@@ -1335,40 +1335,7 @@ function imageInferenceToggleHandler(imageInferenceNode) {
 }
 
 function videoInferenceDimensionsHandler(videoInferenceNode) {
-    const widthWidget = videoInferenceNode.widgets.find(w => w.name === "width");
-    const heightWidget = videoInferenceNode.widgets.find(w => w.name === "height");
-    const useCustomDimensionsWidget = videoInferenceNode.widgets.find(w => w.name === "useCustomDimensions");
-    
-    if (!widthWidget || !heightWidget || !useCustomDimensionsWidget) return;
-
-    const MODEL_DIMENSIONS = {
-        "klingai:1@2": {width: 1280, height: 720}, "klingai:1@1": {width: 1280, height: 720},
-        "klingai:2@2": {width: 1920, height: 1080}, "klingai:2@1": {width: 1280, height: 720},
-        "klingai:3@1": {width: 1280, height: 720}, "klingai:3@2": {width: 1920, height: 1080},
-        "klingai:4@3": {width: 1280, height: 720}, "klingai:5@1": {width: 1280, height: 720},
-        "klingai:5@2": {width: 1920, height: 1080}, "klingai:5@3": {width: 1920, height: 1080},
-        "klingai:6@1": {width: 1920, height: 1080},
-        "klingai:7@1": {width: 0, height: 0},
-        "google:2@0": {width: 1280, height: 720}, "google:3@0": {width: 1280, height: 720},
-        "google:3@1": {width: 1280, height: 720}, "google:3@2": {width: 1280, height: 720},
-        "google:3@3": {width: 1280, height: 720},
-        "bytedance:2@1": {width: 864, height: 480}, "bytedance:1@1": {width: 864, height: 480},
-        "bytedance:5@1": {width: 1024, height: 1024}, "bytedance:5@2": {width: 1024, height: 1024},
-        "minimax:1@1": {width: 1366, height: 768}, "minimax:2@1": {width: 1366, height: 768},
-        "minimax:2@3": {width: 1366, height: 768}, "minimax:3@1": {width: 1366, height: 768},
-        "minimax:4@1": {width: 1366, height: 768}, "minimax:4@2": {width: 1366, height: 768},
-        "pixverse:1@1": {width: 640, height: 360}, "pixverse:1@2": {width: 640, height: 360},
-        "pixverse:1@3": {width: 640, height: 360}, "pixverse:lipsync@1": {width: 640, height: 360},
-        "vidu:1@0": {width: 1920, height: 1080}, "vidu:1@1": {width: 1920, height: 1080},
-        "vidu:1@5": {width: 1920, height: 1080}, "vidu:2@0": {width: 1920, height: 1080},
-        "runware:200@1": {width: 853, height: 480}, "runware:200@2": {width: 853, height: 480},
-        "runware:200@6": {width: 1280, height: 720},
-        "openai:3@1": {width: 1280, height: 720}, "openai:3@0": {width: 1280, height: 720},
-        "lightricks:2@0": {width: 1920, height: 1080}, "lightricks:2@1": {width: 1920, height: 1080},
-        "runware:190@1": {width: 0, height: 0},
-    };
-
-    // Find other "use" parameter widgets for Video Inference
+    // Find "use" parameter widgets for Video Inference
     const useDurationWidget = videoInferenceNode.widgets.find(w => w.name === "useDuration");
     const durationWidget = videoInferenceNode.widgets.find(w => w.name === "duration");
     const useFpsWidget = videoInferenceNode.widgets.find(w => w.name === "useFps");
@@ -1378,14 +1345,14 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     const useStepsWidget = videoInferenceNode.widgets.find(w => w.name === "useSteps");
     const stepsWidget = videoInferenceNode.widgets.find(w => w.name === "steps");
     
-    // Helper function to toggle widget enabled state (exact same pattern as toggleDimensionsEnabled)
+    // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
         
         function toggleEnabled() {
             const enabled = useWidget.value === true;
             
-            // Disable/enable widgets using inputEl if available (exact same pattern)
+            // Disable/enable widgets using inputEl if available
             if (paramWidget.inputEl) {
                 paramWidget.inputEl.disabled = !enabled;
                 paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
@@ -1415,7 +1382,7 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
             videoInferenceNode.setDirtyCanvas(true);
         }
         
-        // Set up callback (exact same pattern as useCustomDimensions)
+        // Set up callback
         appendWidgetCB(useWidget, () => {
             setTimeout(toggleEnabled, 50);
         });
@@ -1424,59 +1391,7 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
         setTimeout(toggleEnabled, 100);
     }
     
-    function toggleDimensionsEnabled() {
-        const isCustom = useCustomDimensionsWidget.value === true;
-        
-        // Disable/enable widgets using inputEl if available
-        if (widthWidget) {
-            if (widthWidget.inputEl) {
-                widthWidget.inputEl.disabled = !isCustom;
-                widthWidget.inputEl.style.opacity = isCustom ? "1" : "0.5";
-                widthWidget.inputEl.style.cursor = isCustom ? "text" : "not-allowed";
-                widthWidget.inputEl.readOnly = !isCustom;
-            }
-            // Also set widget property
-            widthWidget.disabled = !isCustom;
-        }
-        
-        if (heightWidget) {
-            if (heightWidget.inputEl) {
-                heightWidget.inputEl.disabled = !isCustom;
-                heightWidget.inputEl.style.opacity = isCustom ? "1" : "0.5";
-                heightWidget.inputEl.style.cursor = isCustom ? "text" : "not-allowed";
-                heightWidget.inputEl.readOnly = !isCustom;
-            }
-            // Also set widget property
-            heightWidget.disabled = !isCustom;
-        }
-        
-        // Fallback: try to find inputs via DOM if inputEl is not available
-        if (!widthWidget.inputEl || !heightWidget.inputEl) {
-            const nodeElement = videoInferenceNode.htmlElements?.widgetsContainer || videoInferenceNode.htmlElements;
-            if (nodeElement) {
-                const widthInput = nodeElement.querySelector(`input[name="width"]`);
-                const heightInput = nodeElement.querySelector(`input[name="height"]`);
-                
-                if (widthInput) {
-                    widthInput.disabled = !isCustom;
-                    widthInput.style.opacity = isCustom ? "1" : "0.5";
-                    widthInput.style.cursor = isCustom ? "text" : "not-allowed";
-                    widthInput.readOnly = !isCustom;
-                }
-                
-                if (heightInput) {
-                    heightInput.disabled = !isCustom;
-                    heightInput.style.opacity = isCustom ? "1" : "0.5";
-                    heightInput.style.cursor = isCustom ? "text" : "not-allowed";
-                    heightInput.readOnly = !isCustom;
-                }
-            }
-        }
-        
-        videoInferenceNode.setDirtyCanvas(true);
-    }
-    
-    // Set up all toggle handlers for "use" parameters (useCustomDimensions is handled separately below)
+    // Set up all toggle handlers for "use" parameters
     if (useDurationWidget && durationWidget) {
         toggleWidgetState(useDurationWidget, durationWidget, "duration");
     }
@@ -1492,65 +1407,6 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     if (useStepsWidget && stepsWidget) {
         toggleWidgetState(useStepsWidget, stepsWidget, "steps");
     }
-
-    function updateDimensions() {
-        if (useCustomDimensionsWidget.value === true) return;
-
-        const modelInput = videoInferenceNode.inputs.find(input => input.name === "Model");
-        let model = null;
-
-        if (modelInput && modelInput.link) {
-            const link = app.graph.links[modelInput.link];
-            if (link) {
-                const sourceNode = app.graph.getNodeById(link.origin_id);
-                if (sourceNode && sourceNode.imgs && sourceNode.imgs.length > 0) {
-                    const modelValue = sourceNode.imgs[0];
-                    model = typeof modelValue === "object" && modelValue.model ? modelValue.model : modelValue;
-                }
-            }
-        }
-
-        if (!model) {
-            const modelWidget = videoInferenceNode.widgets.find(w => w.name === "Model");
-            if (modelWidget && modelWidget.value) {
-                const modelValue = modelWidget.value;
-                model = typeof modelValue === "object" && modelValue.model ? modelValue.model : modelValue;
-            }
-        }
-
-        if (model && MODEL_DIMENSIONS[model]) {
-            const dims = MODEL_DIMENSIONS[model];
-            if (dims.width !== 0 && dims.height !== 0) {
-                if (widthWidget.callback) widthWidget.callback(dims.width, "customSetOperation");
-                if (heightWidget.callback) heightWidget.callback(dims.height, "customSetOperation");
-                videoInferenceNode.setDirtyCanvas(true);
-            }
-        }
-    }
-
-    const originalOnConnect = videoInferenceNode.onConnect;
-    videoInferenceNode.onConnect = function(...args) {
-        if (originalOnConnect) originalOnConnect.apply(this, args);
-        setTimeout(() => {
-            updateDimensions();
-            toggleDimensionsEnabled();
-        }, 100);
-    };
-
-    if (useCustomDimensionsWidget) {
-        appendWidgetCB(useCustomDimensionsWidget, () => {
-            setTimeout(() => {
-                updateDimensions();
-                toggleDimensionsEnabled();
-            }, 100);
-        });
-    }
-
-    // Initial setup
-    setTimeout(() => {
-        updateDimensions();
-        toggleDimensionsEnabled();
-    }, 200);
 }
 
 function videoModelSearchFilterHandler(videoModelSearchNode) {
@@ -1558,7 +1414,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
     const videoListWidget = videoModelSearchNode.widgets.find(w => w.name === "VideoList");
     const widthWidget = videoModelSearchNode.widgets.find(w => w.name === "Width");
     const heightWidget = videoModelSearchNode.widgets.find(w => w.name === "Height");
-    const useResolutionWidget = videoModelSearchNode.widgets.find(w => w.name === "useResolution");
+    const useCustomDimensionsWidget = videoModelSearchNode.widgets.find(w => w.name === "useCustomDimensions");
     
     if (!modelArchWidget || !videoListWidget) return;
 
@@ -1689,7 +1545,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         const selectedModel = videoListWidget.value;
         if (!selectedModel) return;
 
-        if (useResolutionWidget && !useResolutionWidget.value) {
+        if (useCustomDimensionsWidget && !useCustomDimensionsWidget.value) {
             setWidthHeightEnabled(false);
             if (widthWidget.callback) widthWidget.callback(0, "customSetOperation");
             widthWidget.value = 0;
@@ -1743,8 +1599,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
     if (videoListWidget) {
         appendWidgetCB(videoListWidget, updateDimensions);
     }
-    if (useResolutionWidget) {
-        appendWidgetCB(useResolutionWidget, () => {
+    if (useCustomDimensionsWidget) {
+        appendWidgetCB(useCustomDimensionsWidget, () => {
             updateDimensions();
         });
     }
