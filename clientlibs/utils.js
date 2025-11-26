@@ -1246,6 +1246,80 @@ function openaiProviderSettingsToggleHandler(openaiNode) {
     }
 }
 
+function lightricksProviderSettingsToggleHandler(lightricksNode) {
+    const useStartTimeWidget = lightricksNode.widgets.find(w => w.name === "useStartTime");
+    const startTimeWidget = lightricksNode.widgets.find(w => w.name === "startTime");
+    const useDurationWidget = lightricksNode.widgets.find(w => w.name === "useDuration");
+    const durationWidget = lightricksNode.widgets.find(w => w.name === "duration");
+    const useModeWidget = lightricksNode.widgets.find(w => w.name === "useMode");
+    const modeWidget = lightricksNode.widgets.find(w => w.name === "mode");
+    const useGenerateAudioWidget = lightricksNode.widgets.find(w => w.name === "useGenerateAudio");
+    const generateAudioWidget = lightricksNode.widgets.find(w => w.name === "generateAudio");
+    
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = lightricksNode.htmlElements?.widgetsContainer || lightricksNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            lightricksNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    if (useStartTimeWidget && startTimeWidget) {
+        toggleWidgetState(useStartTimeWidget, startTimeWidget, "startTime");
+    }
+    
+    if (useDurationWidget && durationWidget) {
+        toggleWidgetState(useDurationWidget, durationWidget, "duration");
+    }
+    
+    if (useModeWidget && modeWidget) {
+        toggleWidgetState(useModeWidget, modeWidget, "mode");
+    }
+
+    if (useGenerateAudioWidget && generateAudioWidget) {
+        toggleWidgetState(useGenerateAudioWidget, generateAudioWidget, "generateAudio");
+    }
+}
+
 function imageInferenceToggleHandler(imageInferenceNode) {
     // Find all "use" parameter widgets for Image Inference
     const useStepsWidget = imageInferenceNode.widgets.find(w => w.name === "useSteps");
@@ -1458,6 +1532,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "Lightricks": [
             "lightricks:2@0 (LTX Fast)", "lightricks:2@1 (LTX Pro)",
+            "lightricks:3@1 (LTX-2 Retake)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",
@@ -1516,6 +1591,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "openai:3@0": {"width": 1280, "height": 720},
         "lightricks:2@0": {"width": 1920, "height": 1080},
         "lightricks:2@1": {"width": 1920, "height": 1080},
+        "lightricks:3@1": {"width": 0, "height": 0},
         "runware:190@1": {"width": 0, "height": 0},
         "runway:2@1": {"width": 1280, "height": 720},
         "runway:1@1": {"width": 1280, "height": 720},
@@ -1964,6 +2040,7 @@ export {
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
+    lightricksProviderSettingsToggleHandler,
     klingProviderSettingsToggleHandler,
     lumaProviderSettingsToggleHandler,
     briaProviderSettingsToggleHandler,

@@ -62,6 +62,7 @@ class videoModelSearch:
         "Lightricks": [
             "lightricks:2@0 (LTX Fast)",
             "lightricks:2@1 (LTX Pro)",
+            "lightricks:3@1 (LTX-2 Retake)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",
@@ -138,6 +139,7 @@ class videoModelSearch:
         # Lightricks Models
         "lightricks:2@0": {"width": 1920, "height": 1080},
         "lightricks:2@1": {"width": 1920, "height": 1080},
+        "lightricks:3@1": {"width": 0, "height": 0},
         
         # Ovi Models
         "runware:190@1": {"width": 0, "height": 0},
