@@ -50,10 +50,10 @@ class txt2vid:
                     "default": True,
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value. Set to 0 to auto-generate a random seed.",
+                    "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value.",
                     "default": 1,
-                    "min": 0,
-                    "max": 4294967295,
+                    "min": 1,
+                    "max": 2147483647,
                 }),
                 "useSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps.",

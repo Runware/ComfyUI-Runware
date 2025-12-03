@@ -561,8 +561,25 @@ def convertImageB64List(imageDataObject):
                 "maskImageBase64Data", result.get("guideImageBase64Data", False)
             ),
         )
-        generatedImage = convertIMG2Tensor(generatedImage)
-        images += (generatedImage,)
+        if generatedImage:
+            # Handle base64 data
+            generatedImage = convertIMG2Tensor(generatedImage)
+            images += (generatedImage,)
+        else:
+            # If no base64 data, try to get image URL (check both imageURL and mediaURL)
+            imageURL = result.get("imageURL") or result.get("mediaURL")
+            if imageURL:
+                # Download image from URL and convert to tensor
+                try:
+                    response = requests.get(imageURL, timeout=30)
+                    response.raise_for_status()
+                    image = Image.open(io.BytesIO(response.content))
+                    imageNP = np.array(image).astype(np.float32) / 255.0
+                    tensorImage = torch.from_numpy(imageNP).squeeze()
+                    images += (tensorImage,)
+                except Exception as e:
+                    print(f"[Error] Failed to download image from URL {imageURL}: {str(e)}")
+                    raise Exception(f"Failed to download image from URL: {str(e)}")
     images = torch.stack(images, dim=0)
     return images
 

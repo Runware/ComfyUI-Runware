@@ -42,6 +42,7 @@ class videoModelSearch:
             "pixverse:1@1 (PixVerse v3.5)",
             "pixverse:1@2 (PixVerse v4)",
             "pixverse:1@3 (PixVerse v4.5)",
+            "pixverse:1@6 (PixVerse v5.5)",
             "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
@@ -119,6 +120,7 @@ class videoModelSearch:
         "pixverse:1@1": {"width": 640, "height": 360},
         "pixverse:1@2": {"width": 640, "height": 360},
         "pixverse:1@3": {"width": 640, "height": 360},
+        "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         
         # Vidu Models
