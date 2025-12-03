@@ -1,4 +1,5 @@
 from .utils import runwareUtils as rwUtils
+import comfy.model_management
 
 
 class txt2img:
@@ -52,6 +53,14 @@ class txt2img:
                     "max": 6048,
                     "step": 1,
                 }),
+                "useResolution": ("BOOLEAN", {
+                    "tooltip": "Enable to include resolution parameter in API request. Disable if your model doesn't support resolution.",
+                    "default": False,
+                }),
+                "resolution": (["960p", "1080p", "1k", "2k", "4k"], {
+                    "tooltip": "Select a standard resolution for Image Inference. Only used when 'Use Resolution' is enabled.",
+                    "default": "1k",
+                }),
                 "useSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps (like nano banana).",
                     "default": True,
@@ -86,10 +95,10 @@ class txt2img:
                     "default": True,
                 }),
                 "seed": ("INT", {
-                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value. Set to 0 to auto-generate a random seed.",
+                    "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
                     "default": 1,
-                    "min": 0,
-                    "max": 4294967295,
+                    "min": 1,
+                    "max": 2147483647,
                 }),
                 "useClipSkip": ("BOOLEAN", {
                     "tooltip": "Enable to include clipSkip parameter in API request. Disable if your model doesn't support clipSkip.",
@@ -134,6 +143,7 @@ class txt2img:
                     "tooltip": "Applies optimized acceleration presets that automatically configure multiple generation parameters for the best speed and quality balance. This parameter serves as an abstraction layer that intelligently adjusts acceleratorOptions, steps, scheduler, and other underlying settings.\n\nAvailable values:\n- none: No acceleration applied, uses default parameter values.\n- low: Minimal acceleration with optimized settings for lowest quality loss.\n- medium: Balanced acceleration preset with moderate speed improvements.\n- high: Maximum acceleration with caching and aggressive optimizations for fastest generation.",
                     "default": "none",
                 }),
+
             },
             "optional": {
                 "Accelerator": ("RUNWAREACCELERATOR", {
@@ -240,6 +250,8 @@ class txt2img:
         outputFormat = kwargs.get("outputFormat", "WEBP")
         batchSize = kwargs.get("batchSize", 1)
         acceleration = kwargs.get("acceleration", "none")
+        useResolution = kwargs.get("useResolution", False)
+        resolution = kwargs.get("resolution", "1k")
         
         if (maskImage is not None and seedImage is None):
             raise Exception("Mask Image Requires Seed Image To Be Provided!")
@@ -249,10 +261,11 @@ class txt2img:
                 "taskType": "imageInference",
                 "taskUUID": rwUtils.genRandUUID(),
                 "model": runwareModel,
-                "outputType": "base64Data",
+                "outputType": "URL",
                 "outputFormat": outputFormat,
                 "outputQuality": rwUtils.OUTPUT_QUALITY,
                 "numberResults": batchSize,
+                "deliveryMethod": "async",
             }
         ]
         
@@ -298,6 +311,10 @@ class txt2img:
         # Add acceleration if not "none"
         if acceleration and acceleration != "none":
             genConfig[0]["acceleration"] = acceleration
+        
+        # Add resolution if enabled
+        if useResolution:
+            genConfig[0]["resolution"] = resolution
         
         if (runwareLora is not None):
             if (isinstance(runwareLora, list)):
@@ -363,15 +380,75 @@ class txt2img:
         if (multiInferenceMode):
             return (None, genConfig)
         else:
-            # Debug: Print the request being sent
-            print(f"[DEBUG] Sending Image Inference Request:")
-            print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
+            try:
+                # Debug: Print the request being sent
+                print(f"[DEBUG] Sending Image Inference Request:")
+                print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
+                
+                genResult = rwUtils.inferenecRequest(genConfig)
+                
+                # Debug: Print the response received
+                print(f"[DEBUG] Received Image Inference Response:")
+                print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
+            except Exception as e:
+                # Re-raise the original error without modification
+                raise e
             
-            genResult = rwUtils.inferenecRequest(genConfig)
+            # Extract task UUID for polling (async delivery)
+            taskUUID = genConfig[0]["taskUUID"]
             
-            # Debug: Print the response received
-            print(f"[DEBUG] Received Image Inference Response:")
-            print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
-            
-            images = rwUtils.convertImageB64List(genResult)
-            return (images, None)
+            # Poll for image completion
+            while True:
+                # Check for interrupt before each poll
+                comfy.model_management.throw_exception_if_processing_interrupted()
+                
+                # Poll for image result
+                pollResult = rwUtils.pollVideoResult(taskUUID)  # Reuse pollVideoResult as it's generic
+                print(f"[Debugging] Poll result: {rwUtils.safe_json_dumps(pollResult, indent=2) if isinstance(pollResult, (dict, list)) else pollResult}")
+                
+                # Check for errors first
+                if pollResult and "errors" in pollResult and len(pollResult["errors"]) > 0:
+                    error_info = pollResult["errors"][0]
+                    error_message = error_info.get("message", "Unknown error")
+                    
+                    # Extract more detailed error info if available
+                    if "responseContent" in error_info:
+                        response_content = error_info["responseContent"]
+                        # Handle both string and dict response content
+                        if isinstance(response_content, str):
+                            detailed_message = response_content
+                        elif isinstance(response_content, dict):
+                            detailed_message = response_content.get("message", str(response_content))
+                        else:
+                            detailed_message = str(response_content)
+                        
+                        if detailed_message:
+                            error_message = f"{error_message}\nProvider Error: {detailed_message}"
+                    
+                    # Include taskUUID for debugging
+                    task_uuid = error_info.get("taskUUID", "unknown")
+                    raise Exception(f"Image generation failed (Task: {task_uuid}): {error_message}")
+                
+                if pollResult and "data" in pollResult and len(pollResult["data"]) > 0:
+                    image_data = pollResult["data"][0]
+                    
+                    # Check status directly
+                    if "status" in image_data:
+                        status = image_data["status"]
+                        
+                        if status == "success":
+                            # Check for image data (imageURL, imageBase64Data, mediaURL)
+                            if "imageURL" in image_data or "imageBase64Data" in image_data or "imageURL" in image_data:
+                                # Convert and return images
+                                images = rwUtils.convertImageB64List(pollResult)
+                                return (images, None)
+                        
+                        # If status is "processing", continue polling
+                
+                # Check for interrupt before waiting
+                comfy.model_management.throw_exception_if_processing_interrupted()
+                
+                # Wait before next poll (split into smaller chunks to allow more frequent interrupt checks)
+                for _ in range(10):  # 10 x 0.1 second = 1 second total
+                    comfy.model_management.throw_exception_if_processing_interrupted()
+                    rwUtils.time.sleep(0.1)

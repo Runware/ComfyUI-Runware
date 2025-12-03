@@ -1246,6 +1246,114 @@ function openaiProviderSettingsToggleHandler(openaiNode) {
     }
 }
 
+function pixverseProviderSettingsToggleHandler(pixverseNode) {
+    // Find all "use" parameter widgets for Pixverse Provider Settings
+    const useEffectWidget = pixverseNode.widgets.find(w => w.name === "useEffect");
+    const effectWidget = pixverseNode.widgets.find(w => w.name === "effect");
+    const useCameraMovementWidget = pixverseNode.widgets.find(w => w.name === "useCameraMovement");
+    const cameraMovementWidget = pixverseNode.widgets.find(w => w.name === "cameraMovement");
+    const useStyleWidget = pixverseNode.widgets.find(w => w.name === "useStyle");
+    const styleWidget = pixverseNode.widgets.find(w => w.name === "style");
+    const useMotionModeWidget = pixverseNode.widgets.find(w => w.name === "useMotionMode");
+    const motionModeWidget = pixverseNode.widgets.find(w => w.name === "motionMode");
+    const useSoundEffectSwitchWidget = pixverseNode.widgets.find(w => w.name === "useSoundEffectSwitch");
+    const soundEffectSwitchWidget = pixverseNode.widgets.find(w => w.name === "soundEffectSwitch");
+    const useSoundEffectContentWidget = pixverseNode.widgets.find(w => w.name === "useSoundEffectContent");
+    const soundEffectContentWidget = pixverseNode.widgets.find(w => w.name === "soundEffectContent");
+    const useAudioWidget = pixverseNode.widgets.find(w => w.name === "useAudio");
+    const audioWidget = pixverseNode.widgets.find(w => w.name === "audio");
+    const useMultiClipWidget = pixverseNode.widgets.find(w => w.name === "useMultiClip");
+    const multiClipWidget = pixverseNode.widgets.find(w => w.name === "multiClip");
+    const useThinkingWidget = pixverseNode.widgets.find(w => w.name === "useThinking");
+    const thinkingWidget = pixverseNode.widgets.find(w => w.name === "thinking");
+    
+    // Helper function to toggle widget enabled state (exact same pattern)
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            // Handle dropdown widgets
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = pixverseNode.htmlElements?.widgetsContainer || pixverseNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            pixverseNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up all toggle handlers
+    if (useEffectWidget && effectWidget) {
+        toggleWidgetState(useEffectWidget, effectWidget, "effect");
+    }
+    
+    if (useCameraMovementWidget && cameraMovementWidget) {
+        toggleWidgetState(useCameraMovementWidget, cameraMovementWidget, "cameraMovement");
+    }
+    
+    if (useStyleWidget && styleWidget) {
+        toggleWidgetState(useStyleWidget, styleWidget, "style");
+    }
+    
+    if (useMotionModeWidget && motionModeWidget) {
+        toggleWidgetState(useMotionModeWidget, motionModeWidget, "motionMode");
+    }
+    
+    if (useSoundEffectSwitchWidget && soundEffectSwitchWidget) {
+        toggleWidgetState(useSoundEffectSwitchWidget, soundEffectSwitchWidget, "soundEffectSwitch");
+    }
+    
+    if (useSoundEffectContentWidget && soundEffectContentWidget) {
+        toggleWidgetState(useSoundEffectContentWidget, soundEffectContentWidget, "soundEffectContent");
+    }
+    
+    if (useAudioWidget && audioWidget) {
+        toggleWidgetState(useAudioWidget, audioWidget, "audio");
+    }
+    
+    if (useMultiClipWidget && multiClipWidget) {
+        toggleWidgetState(useMultiClipWidget, multiClipWidget, "multiClip");
+    }
+    
+    if (useThinkingWidget && thinkingWidget) {
+        toggleWidgetState(useThinkingWidget, thinkingWidget, "thinking");
+    }
+}
+
 function lightricksProviderSettingsToggleHandler(lightricksNode) {
     const useStartTimeWidget = lightricksNode.widgets.find(w => w.name === "useStartTime");
     const startTimeWidget = lightricksNode.widgets.find(w => w.name === "startTime");
@@ -1334,6 +1442,11 @@ function imageInferenceToggleHandler(imageInferenceNode) {
     const clipSkipWidget = imageInferenceNode.widgets.find(w => w.name === "clipSkip");
     const maskMarginWidget = imageInferenceNode.widgets.find(w => w.name === "Mask Margin");
     const maskMarginValueWidget = imageInferenceNode.widgets.find(w => w.name === "maskMargin");
+    const useResolutionWidget = imageInferenceNode.widgets.find(w => w.name === "useResolution");
+    const resolutionWidget = imageInferenceNode.widgets.find(w => w.name === "resolution");
+    const dimensionsWidget = imageInferenceNode.widgets.find(w => w.name === "dimensions");
+    const widthWidget = imageInferenceNode.widgets.find(w => w.name === "width");
+    const heightWidget = imageInferenceNode.widgets.find(w => w.name === "height");
     
     // Helper function to toggle widget enabled state (exact same pattern as videoInferenceDimensionsHandler)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1405,6 +1518,66 @@ function imageInferenceToggleHandler(imageInferenceNode) {
     // Handle Mask Margin (BOOLEAN widget)
     if (maskMarginWidget && maskMarginValueWidget) {
         toggleWidgetState(maskMarginWidget, maskMarginValueWidget, "maskMargin");
+    }
+    
+    // Handle Resolution
+    if (useResolutionWidget && resolutionWidget) {
+        toggleWidgetState(useResolutionWidget, resolutionWidget, "resolution");
+    }
+    
+    // Handle Dimensions - disable width/height when dimensions is "None"
+    if (dimensionsWidget && widthWidget && heightWidget) {
+        function toggleDimensionsState() {
+            const dimensionsValue = dimensionsWidget.value;
+            const enabled = dimensionsValue !== "None";
+            
+            // Toggle width widget
+            if (widthWidget.inputEl) {
+                widthWidget.inputEl.disabled = !enabled;
+                widthWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                widthWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                widthWidget.inputEl.readOnly = !enabled;
+            }
+            widthWidget.disabled = !enabled;
+            
+            // Toggle height widget
+            if (heightWidget.inputEl) {
+                heightWidget.inputEl.disabled = !enabled;
+                heightWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                heightWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                heightWidget.inputEl.readOnly = !enabled;
+            }
+            heightWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!widthWidget.inputEl || !heightWidget.inputEl) {
+                const nodeElement = imageInferenceNode.htmlElements?.widgetsContainer || imageInferenceNode.htmlElements;
+                if (nodeElement) {
+                    const widthInput = nodeElement.querySelector(`input[name="width"]`);
+                    const heightInput = nodeElement.querySelector(`input[name="height"]`);
+                    if (widthInput) {
+                        widthInput.disabled = !enabled;
+                        widthInput.style.opacity = enabled ? "1" : "0.5";
+                        widthInput.style.cursor = enabled ? "text" : "not-allowed";
+                        widthInput.readOnly = !enabled;
+                    }
+                    if (heightInput) {
+                        heightInput.disabled = !enabled;
+                        heightInput.style.opacity = enabled ? "1" : "0.5";
+                        heightInput.style.cursor = enabled ? "text" : "not-allowed";
+                        heightInput.readOnly = !enabled;
+                    }
+                }
+            }
+            
+            imageInferenceNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(dimensionsWidget, () => {
+            setTimeout(toggleDimensionsState, 50);
+        });
+        
+        setTimeout(toggleDimensionsState, 100);
     }
 }
 
@@ -1517,7 +1690,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "PixVerse": [
             "pixverse:1@1 (PixVerse v3.5)", "pixverse:1@2 (PixVerse v4)",
-            "pixverse:1@3 (PixVerse v4.5)", "pixverse:lipsync@1 (PixVerse LipSync)",
+            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
@@ -1579,6 +1752,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@1": {"width": 640, "height": 360},
         "pixverse:1@2": {"width": 640, "height": 360},
         "pixverse:1@3": {"width": 640, "height": 360},
+        "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         "vidu:1@0": {"width": 1920, "height": 1080},
         "vidu:1@1": {"width": 1920, "height": 1080},
@@ -2044,4 +2218,5 @@ export {
     klingProviderSettingsToggleHandler,
     lumaProviderSettingsToggleHandler,
     briaProviderSettingsToggleHandler,
+    pixverseProviderSettingsToggleHandler,
 };
