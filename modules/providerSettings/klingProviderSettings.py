@@ -70,6 +70,16 @@ class RunwareKlingProviderSettings:
                     "tooltip": "Enable ASMR mode for audio generation",
                     "default": False,
                 }),
+                "useKeepOriginalSound": ("BOOLEAN", {
+                    "tooltip": "Enable to include keepOriginalSound parameter in provider settings",
+                    "default": False,
+                }),
+                "keepOriginalSound": ("BOOLEAN", {
+                    "tooltip": "Keep the original sound from the source video. Only used when 'Use Keep Original Sound' is enabled.",
+                    "default": True,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             }
         }
 
@@ -89,6 +99,7 @@ class RunwareKlingProviderSettings:
         useSoundEffectPrompt = kwargs.get("useSoundEffectPrompt", False)
         useBgmPrompt = kwargs.get("useBgmPrompt", False)
         useAsmrMode = kwargs.get("useAsmrMode", False)
+        useKeepOriginalSound = kwargs.get("useKeepOriginalSound", False)
 
         # Get value parameters
         cameraControl = kwargs.get("cameraControl", "none")
@@ -97,6 +108,7 @@ class RunwareKlingProviderSettings:
         soundEffectPrompt = kwargs.get("soundEffectPrompt", "")
         bgmPrompt = kwargs.get("bgmPrompt", "")
         asmrMode = kwargs.get("asmrMode", False)
+        keepOriginalSound = kwargs.get("keepOriginalSound", True)
 
         # Build settings dictionary - only include what is enabled
         klingSettings: Dict[str, Any] = {}
@@ -124,6 +136,10 @@ class RunwareKlingProviderSettings:
         # Add asmrMode only if useAsmrMode is enabled
         if useAsmrMode:
             klingSettings["asmrMode"] = asmrMode
+
+        # Add keepOriginalSound only if useKeepOriginalSound is enabled
+        if useKeepOriginalSound:
+            klingSettings["keepOriginalSound"] = keepOriginalSound
 
         # Clean up None values
         klingSettings = {k: v for k, v in klingSettings.items() if v is not None}

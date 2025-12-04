@@ -1674,6 +1674,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:5@2 (KlingAI V2.1 Pro (I2V))", "klingai:5@3 (KlingAI V2.0 Master)",
             "klingai:6@1 (KlingAI 2.5 Turbo Pro)",
             "klingai:7@1 (KlingAI Lip-Sync)",
+            "klingai:kling@o1 (Kling VIDEO O1)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)", "google:3@0 (Veo 3.0)", "google:3@1 (Veo 3.0 Fast)",
@@ -1734,6 +1735,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:5@3": {"width": 1920, "height": 1080},
         "klingai:6@1": {"width": 1920, "height": 1080},
         "klingai:7@1": {"width": 0, "height": 0},
+        "klingai:kling@o1": {"width": 1440, "height": 1440},
         "google:2@0": {"width": 1280, "height": 720},
         "google:3@0": {"width": 1280, "height": 720},
         "google:3@1": {"width": 1280, "height": 720},
@@ -1795,7 +1797,10 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         const selectedModel = videoListWidget.value;
         if (!selectedModel) return;
 
-        if (useCustomDimensionsWidget && !useCustomDimensionsWidget.value) {
+        const useCustomDimensionsValue = useCustomDimensionsWidget ? useCustomDimensionsWidget.value : "Model Default";
+        
+        // Handle "Disabled" option - disable widgets and set to 0 (but Python will use None in dict)
+        if (useCustomDimensionsValue === "Disabled") {
             setWidthHeightEnabled(false);
             if (widthWidget.callback) widthWidget.callback(0, "customSetOperation");
             widthWidget.value = 0;
@@ -1805,11 +1810,19 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             return;
         }
 
+        // Handle "Model Default" option - disable widgets and use model defaults
+        if (useCustomDimensionsValue === "Model Default") {
+            setWidthHeightEnabled(false);
+        } else if (useCustomDimensionsValue === "Custom") {
+            // Handle "Custom" option - enable widgets
         setWidthHeightEnabled(true);
+        }
 
         const modelCode = selectedModel.split(" (")[0];
         const dims = MODEL_DIMENSIONS[modelCode] || DEFAULT_DIMENSIONS;
 
+        // Only update dimensions if "Model Default" is selected (widgets are disabled but we show the values)
+        if (useCustomDimensionsValue === "Model Default") {
         if (dims.width === 0 && dims.height === 0) {
             // Set to None when dimensions are 0,0
             if (widthWidget.callback) widthWidget.callback(null, "customSetOperation");
@@ -1820,6 +1833,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             if (heightWidget.callback) heightWidget.callback(dims.height, "customSetOperation");
             videoModelSearchNode.setDirtyCanvas(true);
         }
+        }
+        // For "Custom" mode, don't update - let user set their own values
+        // For "Disabled" mode, already handled above (set to None and disabled)
     }
 
     function filterModelList() {
@@ -1915,6 +1931,8 @@ function klingProviderSettingsToggleHandler(klingNode) {
     const bgmPromptWidget = klingNode.widgets.find(w => w.name === "bgmPrompt");
     const useAsmrModeWidget = klingNode.widgets.find(w => w.name === "useAsmrMode");
     const asmrModeWidget = klingNode.widgets.find(w => w.name === "asmrMode");
+    const useKeepOriginalSoundWidget = klingNode.widgets.find(w => w.name === "useKeepOriginalSound");
+    const keepOriginalSoundWidget = klingNode.widgets.find(w => w.name === "keepOriginalSound");
     
     // Helper function to toggle widget enabled state (EXACT same pattern as imageInferenceToggleHandler)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1985,6 +2003,10 @@ function klingProviderSettingsToggleHandler(klingNode) {
     
     if (useAsmrModeWidget && asmrModeWidget) {
         toggleWidgetState(useAsmrModeWidget, asmrModeWidget, "asmrMode");
+    }
+    
+    if (useKeepOriginalSoundWidget && keepOriginalSoundWidget) {
+        toggleWidgetState(useKeepOriginalSoundWidget, keepOriginalSoundWidget, "keepOriginalSound");
     }
 }
 
