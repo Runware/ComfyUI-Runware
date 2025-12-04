@@ -16,6 +16,7 @@ class videoModelSearch:
             "klingai:5@3 (KlingAI V2.0 Master)",
             "klingai:6@1 (KlingAI 2.5 Turbo Pro)",
             "klingai:7@1 (KlingAI Lip-Sync)",
+            "klingai:kling@o1 (Kling VIDEO O1)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)",
@@ -94,6 +95,7 @@ class videoModelSearch:
         "klingai:5@3": {"width": 1920, "height": 1080},
         "klingai:6@1": {"width": 1920, "height": 1080},
         "klingai:7@1": {"width": 0, "height": 0},
+        "klingai:kling@o1": {"width": 1440, "height": 1440},
         
         # Veo Models
         "google:2@0": {"width": 1280, "height": 720},
@@ -200,11 +202,9 @@ class videoModelSearch:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
-                "useCustomDimensions": ("BOOLEAN", {
-                    "tooltip": "Enable to use custom Width/Height values set below. Disable to automatically use the model's recommended resolution.",
-                    "default": False,
-                    "label_on": "Custom",
-                    "label_off": "Model Default",
+                "useCustomDimensions": (["Model Default", "Custom", "Disabled"], {
+                    "tooltip": "Model Default: Use model's recommended resolution. Custom: Use custom Width/Height values. Disabled: Don't pass width/height to API.",
+                    "default": "Model Default",
                 }),
                 "Width": ("INT", {
                     "default": defaultDims["width"],
@@ -247,7 +247,7 @@ class videoModelSearch:
         searchInput = kwargs.get("Model Search")
         customWidth = kwargs.get("Width", 0)
         customHeight = kwargs.get("Height", 0)
-        useCustomDimensions = kwargs.get("useCustomDimensions", True)
+        useCustomDimensions = kwargs.get("useCustomDimensions", "Model Default")
 
         if enableSearchValue:
             modelAirCode = searchInput
@@ -257,18 +257,28 @@ class videoModelSearch:
 
         dimensions = self.MODEL_DIMENSIONS.get(modelAirCode, self.DEFAULT_DIMENSIONS)
         
-        if useCustomDimensions:
+        if useCustomDimensions == "Custom":
             # Use custom dimensions from Width/Height widgets
             width = customWidth
             height = customHeight
-        else:
+            returnWidth = width
+            returnHeight = height
+        elif useCustomDimensions == "Disabled":
+            # Don't pass width/height (use None in dict, but return 0 for INT output)
+            width = None
+            height = None
+            returnWidth = 0
+            returnHeight = 0
+        else:  # "Model Default"
             # Use model default dimensions
             width = dimensions["width"]
             height = dimensions["height"]
+            returnWidth = width
+            returnHeight = height
         
         return ({
             "model": modelAirCode,
             "useCustomDimensions": useCustomDimensions,
             "width": width,
             "height": height,
-        }, width, height)
+        }, returnWidth, returnHeight)
