@@ -158,6 +158,84 @@ class videoModelSearch:
         "lumaai:2@2": {"width": 1080, "height": 720},
     }
     
+    # Model resolutions mapping
+    MODEL_RESOLUTIONS = {
+        # KlingAI Models
+        "klingai:1@2": "720p",
+        "klingai:1@1": "720p",
+        "klingai:2@2": "1080p",
+        "klingai:2@1": "720p",
+        "klingai:3@1": "720p",
+        "klingai:3@2": "1080p",
+        "klingai:4@3": "720p",
+        "klingai:5@1": "720p",
+        "klingai:5@2": "1080p",
+        "klingai:5@3": "1080p",
+        "klingai:6@1": "1080p",
+        "klingai:7@1": None,  # No resolution support
+        "klingai:kling@o1": None,  # No standard resolution (1440x1440)
+        
+        # Veo Models
+        "google:2@0": "720p",
+        "google:3@0": "720p",
+        "google:3@1": "720p",
+        "google:3@2": "720p",
+        "google:3@3": "720p",
+        
+        # Bytedance Models
+        "bytedance:2@1": "480p",
+        "bytedance:1@1": "480p",
+        "bytedance:5@1": None,  # No resolution support (fixed 1024x1024)
+        "bytedance:5@2": None,  # No resolution support (fixed 1024x1024)
+        
+        # MiniMax Models (support both 768p and 720p, using 768p as primary)
+        "minimax:1@1": "768p",
+        "minimax:2@1": "768p",
+        "minimax:2@3": "768p",
+        "minimax:3@1": "768p",
+        "minimax:4@1": "768p",
+        "minimax:4@2": "768p",
+        
+        # PixVerse Models
+        "pixverse:1@1": "360p",
+        "pixverse:1@2": "360p",
+        "pixverse:1@3": "360p",
+        "pixverse:1@6": "360p",
+        "pixverse:lipsync@1": "360p",
+        
+        # Vidu Models
+        "vidu:1@0": "1080p",
+        "vidu:1@1": "1080p",
+        "vidu:1@5": "1080p",
+        "vidu:2@0": "1080p",
+        
+        # Wan Models
+        "runware:200@1": "480p",
+        "runware:200@2": "480p",
+        "runware:200@6": "720p",
+        
+        # OpenAI Models
+        "openai:3@1": "720p",
+        "openai:3@0": "720p",
+        
+        # Lightricks Models
+        "lightricks:2@0": "1080p",
+        "lightricks:2@1": "1080p",
+        "lightricks:3@1": None,  # No resolution support
+        
+        # Ovi Models
+        "runware:190@1": None,  # No resolution support
+        
+        # Runway Models
+        "runway:2@1": "720p",
+        "runway:1@1": "720p",
+        
+        # Luma Models
+        "lumaai:1@1": "720p",
+        "lumaai:2@1": "720p",
+        "lumaai:2@2": "720p",
+    }
+    
     MODEL_ARCHITECTURES = [
         "All",
         "KlingAI",
@@ -182,6 +260,7 @@ class videoModelSearch:
         defaultModel = "klingai:5@3 (KlingAI V2.0 Master)"
         defaultModelCode = defaultModel.split(" (")[0]
         defaultDims = cls.MODEL_DIMENSIONS.get(defaultModelCode, cls.DEFAULT_DIMENSIONS)
+        defaultResolution = cls.MODEL_RESOLUTIONS.get(defaultModelCode, None)
         
         return {
             "required": {
@@ -220,6 +299,14 @@ class videoModelSearch:
                     "step": 1,
                     "tooltip": "Custom Height For The Selected Model. Defaults To Model's Recommended Height.",
                 }),
+                "useResolution": ("BOOLEAN", {
+                    "tooltip": "Enable to include resolution parameter in API request. Disable if your model doesn't support resolution.",
+                    "default": False,
+                }),
+                "resolution": (["360p", "480p", "720p", "768p", "1080p"], {
+                    "tooltip": "Select a standard resolution for Video Inference. Only used when 'Use Resolution' is enabled.",
+                    "default": defaultResolution if defaultResolution else "720p",
+                }),
             },
         }
 
@@ -248,6 +335,8 @@ class videoModelSearch:
         customWidth = kwargs.get("Width", 0)
         customHeight = kwargs.get("Height", 0)
         useCustomDimensions = kwargs.get("useCustomDimensions", "Model Default")
+        useResolution = kwargs.get("useResolution", False)
+        resolution = kwargs.get("resolution", "720p")
 
         if enableSearchValue:
             modelAirCode = searchInput
@@ -256,6 +345,7 @@ class videoModelSearch:
             modelAirCode = currentModel.split(" (")[0]
 
         dimensions = self.MODEL_DIMENSIONS.get(modelAirCode, self.DEFAULT_DIMENSIONS)
+        modelResolution = self.MODEL_RESOLUTIONS.get(modelAirCode, None)
         
         if useCustomDimensions == "Custom":
             # Use custom dimensions from Width/Height widgets
@@ -276,9 +366,18 @@ class videoModelSearch:
             returnWidth = width
             returnHeight = height
         
-        return ({
+        resultDict = {
             "model": modelAirCode,
             "useCustomDimensions": useCustomDimensions,
             "width": width,
             "height": height,
-        }, returnWidth, returnHeight)
+        }
+        
+        # Add resolution if enabled and model supports it
+        if useResolution and modelResolution is not None:
+            resultDict["resolution"] = resolution
+            resultDict["useResolution"] = True
+        else:
+            resultDict["useResolution"] = False
+        
+        return (resultDict, returnWidth, returnHeight)
