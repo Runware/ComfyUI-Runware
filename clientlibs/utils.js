@@ -1662,6 +1662,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
     const widthWidget = videoModelSearchNode.widgets.find(w => w.name === "Width");
     const heightWidget = videoModelSearchNode.widgets.find(w => w.name === "Height");
     const useCustomDimensionsWidget = videoModelSearchNode.widgets.find(w => w.name === "useCustomDimensions");
+    const useResolutionWidget = videoModelSearchNode.widgets.find(w => w.name === "useResolution");
+    const resolutionWidget = videoModelSearchNode.widgets.find(w => w.name === "resolution");
     
     if (!modelArchWidget || !videoListWidget) return;
 
@@ -1776,6 +1778,60 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lumaai:2@2": {"width": 1080, "height": 720},
     };
 
+    const MODEL_RESOLUTIONS = {
+        "klingai:1@2": "720p",
+        "klingai:1@1": "720p",
+        "klingai:2@2": "1080p",
+        "klingai:2@1": "720p",
+        "klingai:3@1": "720p",
+        "klingai:3@2": "1080p",
+        "klingai:4@3": "720p",
+        "klingai:5@1": "720p",
+        "klingai:5@2": "1080p",
+        "klingai:5@3": "1080p",
+        "klingai:6@1": "1080p",
+        "klingai:7@1": null,  // No resolution support
+        "klingai:kling@o1": null,  // No standard resolution
+        "google:2@0": "720p",
+        "google:3@0": "720p",
+        "google:3@1": "720p",
+        "google:3@2": "720p",
+        "google:3@3": "720p",
+        "bytedance:2@1": "480p",
+        "bytedance:1@1": "480p",
+        "bytedance:5@1": null,  // No resolution support
+        "bytedance:5@2": null,  // No resolution support
+        "minimax:1@1": "768p",
+        "minimax:2@1": "768p",
+        "minimax:2@3": "768p",
+        "minimax:3@1": "768p",
+        "minimax:4@1": "768p",
+        "minimax:4@2": "768p",
+        "pixverse:1@1": "360p",
+        "pixverse:1@2": "360p",
+        "pixverse:1@3": "360p",
+        "pixverse:1@6": "360p",
+        "pixverse:lipsync@1": "360p",
+        "vidu:1@0": "1080p",
+        "vidu:1@1": "1080p",
+        "vidu:1@5": "1080p",
+        "vidu:2@0": "1080p",
+        "runware:200@1": "480p",
+        "runware:200@2": "480p",
+        "runware:200@6": "720p",
+        "openai:3@1": "720p",
+        "openai:3@0": "720p",
+        "lightricks:2@0": "1080p",
+        "lightricks:2@1": "1080p",
+        "lightricks:3@1": null,  // No resolution support
+        "runware:190@1": null,  // No resolution support
+        "runway:2@1": "720p",
+        "runway:1@1": "720p",
+        "lumaai:1@1": "720p",
+        "lumaai:2@1": "720p",
+        "lumaai:2@2": "720p",
+    };
+
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
 
     function setWidthHeightEnabled(enabled) {
@@ -1836,6 +1892,49 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         }
         // For "Custom" mode, don't update - let user set their own values
         // For "Disabled" mode, already handled above (set to None and disabled)
+        
+        // Update resolution based on selected model
+        if (resolutionWidget && useResolutionWidget) {
+            const modelCode = selectedModel.split(" (")[0];
+            const modelResolution = MODEL_RESOLUTIONS[modelCode];
+            
+            // If model supports resolution
+            if (modelResolution !== null && modelResolution !== undefined) {
+                // Enable useResolution checkbox
+                if (useResolutionWidget.inputEl) {
+                    useResolutionWidget.inputEl.disabled = false;
+                    useResolutionWidget.inputEl.style.opacity = "1";
+                }
+                useResolutionWidget.disabled = false;
+                
+                // Only update resolution value if useResolution is enabled
+                if (useResolutionWidget.value === true) {
+                    // Set resolution value to model's default
+                    if (resolutionWidget.callback) resolutionWidget.callback(modelResolution, "customSetOperation");
+                    resolutionWidget.value = modelResolution;
+                }
+            } else {
+                // Model doesn't support resolution, disable useResolution checkbox and resolution dropdown
+                if (useResolutionWidget.callback) useResolutionWidget.callback(false, "customSetOperation");
+                useResolutionWidget.value = false;
+                
+                // Disable useResolution checkbox
+                if (useResolutionWidget.inputEl) {
+                    useResolutionWidget.inputEl.disabled = true;
+                    useResolutionWidget.inputEl.style.opacity = "0.5";
+                }
+                useResolutionWidget.disabled = true;
+                
+                // Disable resolution dropdown
+                if (resolutionWidget.inputEl) {
+                    resolutionWidget.inputEl.disabled = true;
+                    resolutionWidget.inputEl.style.opacity = "0.5";
+                    resolutionWidget.inputEl.style.cursor = "not-allowed";
+                }
+                resolutionWidget.disabled = true;
+            }
+            videoModelSearchNode.setDirtyCanvas(true);
+        }
     }
 
     function filterModelList() {
@@ -1870,6 +1969,58 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             updateDimensions();
         });
     }
+    
+    // Handle useResolution toggle
+    if (useResolutionWidget && resolutionWidget) {
+        function toggleResolutionState() {
+            // Check if current model supports resolution
+            const selectedModel = videoListWidget ? videoListWidget.value : null;
+            if (!selectedModel) return;
+            
+            const modelCode = selectedModel.split(" (")[0];
+            const modelResolution = MODEL_RESOLUTIONS[modelCode];
+            
+            // Only enable resolution if model supports it and useResolution is enabled
+            const enabled = useResolutionWidget.value === true && modelResolution !== null && modelResolution !== undefined;
+            
+            if (resolutionWidget.inputEl) {
+                resolutionWidget.inputEl.disabled = !enabled;
+                resolutionWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                resolutionWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+            }
+            
+            resolutionWidget.disabled = !enabled;
+            
+            // Fallback: try to find input via DOM if inputEl is not available
+            if (!resolutionWidget.inputEl) {
+                const nodeElement = videoModelSearchNode.htmlElements?.widgetsContainer || videoModelSearchNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`select[name="resolution"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            }
+            
+            videoModelSearchNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useResolutionWidget, () => {
+            setTimeout(toggleResolutionState, 50);
+        });
+        
+        // Also update when model changes
+        if (videoListWidget) {
+            appendWidgetCB(videoListWidget, () => {
+                setTimeout(toggleResolutionState, 50);
+            });
+        }
+        
+        setTimeout(toggleResolutionState, 100);
+    }
+    
     filterModelList();
     updateDimensions();
 }
@@ -2007,6 +2158,59 @@ function klingProviderSettingsToggleHandler(klingNode) {
     
     if (useKeepOriginalSoundWidget && keepOriginalSoundWidget) {
         toggleWidgetState(useKeepOriginalSoundWidget, keepOriginalSoundWidget, "keepOriginalSound");
+    }
+}
+
+function alibabaProviderSettingsToggleHandler(alibabaNode) {
+    // Find all "use" parameter widgets for Alibaba Provider Settings
+    const usePromptEnhancerWidget = alibabaNode.widgets.find(w => w.name === "usePromptEnhancer");
+    const promptEnhancerWidget = alibabaNode.widgets.find(w => w.name === "promptEnhancer");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = alibabaNode.htmlElements?.widgetsContainer || alibabaNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            alibabaNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler
+    if (usePromptEnhancerWidget && promptEnhancerWidget) {
+        toggleWidgetState(usePromptEnhancerWidget, promptEnhancerWidget, "promptEnhancer");
     }
 }
 
@@ -2241,4 +2445,5 @@ export {
     lumaProviderSettingsToggleHandler,
     briaProviderSettingsToggleHandler,
     pixverseProviderSettingsToggleHandler,
+    alibabaProviderSettingsToggleHandler,
 };
