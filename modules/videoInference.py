@@ -175,10 +175,14 @@ class txt2vid:
             model = runwareVideoModel.get("model", "")
             width = runwareVideoModel.get("width")
             height = runwareVideoModel.get("height")
+            useResolution = runwareVideoModel.get("useResolution", False)
+            resolution = runwareVideoModel.get("resolution", None)
         else:
             model = runwareVideoModel
             width = None
             height = None
+            useResolution = False
+            resolution = None
 
         genConfig = [
             {
@@ -190,6 +194,12 @@ class txt2vid:
                 "includeCost": True,
             }
         ]
+        
+        # Add resolution if enabled
+        if useResolution and resolution:
+            genConfig[0]["resolution"] = resolution
+        
+        # Add width/height if not using resolution (or if resolution is not provided)
         if (
             width is not None and height is not None
             and width > 0 and height > 0
