@@ -9,9 +9,14 @@ Imagine creating stunning images or videos, refining details, or even removing b
 This integration adds a suite of custom nodes to ComfyUI, allowing you to:
 - Perform advanced image inference tasks, including image generation and editing with powerful models.
 - Utilize PhotoMaker V2 pipelines
-- Leverage cutting-edge models like **Flux .1 Kontext Pro** and **Flux .1 Kontext Max** for superior image generation and editing.
+- Leverage cutting-edge image models like **Flux .1 Kontext Pro**, **Flux .1 Kontext Max**, **Nano Banana**, **Seedream**, and more for superior image generation and editing.
 - Upscale images
 - Remove backgrounds
+- Generate videos from text prompts and/or images with video inference
+- Generate audio from text
+- Upscale videos
+- Generate video captions
+- Remove video backgrounds
 - Leverage specialized models and LoRAs
 - Use your custom uploaded models and LoRAs
 
@@ -22,15 +27,22 @@ This integration adds a suite of custom nodes to ComfyUI, allowing you to:
 ## 📖 Table of Contents
 
 1. [Introduction](#-what-is-comfyui-runware)
-2. [Installation](#-installation)
-3. [Node Features](#-node-features)
-4. [Support & Community](#-support--community)
+2. [Workflows](#-workflows)
+3. [Installation](#-installation)
+4. [Node Features](#-node-features)
+5. [Support & Community](#-support--community)
 
 ---
 
-Here’s a sneak peek of the ComfyUI-Runware nodes in action:
+## 🎬 Workflows
 
-![Screenshot](assets/screenshot.jpg)
+Here are some example workflows showcasing the power of ComfyUI-Runware:
+
+### Image Workflows
+![Image Inference Workflow](assets/image-inference.png)
+
+### Video Workflows
+![Video Inference Workflow](assets/video-inference.png)
 
 ---
 
@@ -126,9 +138,22 @@ Here's a breakdown of the amazing nodes included in this integration:
 - **Runware Frame Images**: Configure keyframe images with precise positioning control for video generation. 🖼️➡️🎥
 - **Runware Reference Images**: Provide reference images for overall visual guidance in video generation. 🖼️
 
-- **Runware Pixverse Provider Settings**: Configure Pixverse-specific settings with effect, style, motion, and sound options. 🎬
-- **Runware OpenAI Provider Settings**: Configure OpenAI-specific settings with quality, background, and style options. 🤖
+### Provider Settings
 
+Configure provider-specific settings for various services:
+- **Runware Alibaba Provider Settings**: Configure Alibaba-specific settings. ☁️
+- **Runware BRIA Image Provider Settings**: Configure BRIA Image-specific settings. 🖼️
+- **Runware ByteDance Provider Settings**: Configure ByteDance-specific settings. 🎬
+- **Runware ElevenLabs Provider Settings**: Configure ElevenLabs-specific settings for audio generation. 🎤
+- **Runware Kling Provider Settings**: Configure Kling-specific settings. 🎥
+- **Runware Lightricks Provider Settings**: Configure Lightricks-specific settings. ✨
+- **Runware Luma Provider Settings**: Configure Luma-specific settings. 🎬
+- **Runware Midjourney Provider Settings**: Configure Midjourney-specific settings. 🎨
+- **Runware MiniMax Provider Settings**: Configure MiniMax-specific settings. 🤖
+- **Runware OpenAI Provider Settings**: Configure OpenAI-specific settings with quality, background, and style options. 🤖
+- **Runware Pixverse Provider Settings**: Configure Pixverse-specific settings with effect, style, motion, and sound options. 🎬
+- **Runware Runway Provider Settings**: Configure Runway-specific settings. 🎥
+- **Runware Vidu Provider Settings**: Configure Vidu-specific settings. 🎬
 
 ---
 
