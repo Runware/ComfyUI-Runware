@@ -17,6 +17,7 @@ class videoModelSearch:
             "klingai:6@1 (KlingAI 2.5 Turbo Pro)",
             "klingai:7@1 (KlingAI Lip-Sync)",
             "klingai:kling@o1 (Kling VIDEO O1)",
+            "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)",
@@ -96,6 +97,7 @@ class videoModelSearch:
         "klingai:6@1": {"width": 1920, "height": 1080},
         "klingai:7@1": {"width": 0, "height": 0},
         "klingai:kling@o1": {"width": 1440, "height": 1440},
+        "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
         
         # Veo Models
         "google:2@0": {"width": 1280, "height": 720},
@@ -174,6 +176,7 @@ class videoModelSearch:
         "klingai:6@1": "1080p",
         "klingai:7@1": None,  # No resolution support
         "klingai:kling@o1": None,  # No standard resolution (1440x1440)
+        "klingai:kling-video@2.6-pro": "1080p",
         
         # Veo Models
         "google:2@0": "720p",
