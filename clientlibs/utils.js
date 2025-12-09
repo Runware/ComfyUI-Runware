@@ -1677,6 +1677,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:6@1 (KlingAI 2.5 Turbo Pro)",
             "klingai:7@1 (KlingAI Lip-Sync)",
             "klingai:kling@o1 (Kling VIDEO O1)",
+            "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)", "google:3@0 (Veo 3.0)", "google:3@1 (Veo 3.0 Fast)",
@@ -1738,6 +1739,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:6@1": {"width": 1920, "height": 1080},
         "klingai:7@1": {"width": 0, "height": 0},
         "klingai:kling@o1": {"width": 1440, "height": 1440},
+        "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
         "google:2@0": {"width": 1280, "height": 720},
         "google:3@0": {"width": 1280, "height": 720},
         "google:3@1": {"width": 1280, "height": 720},
@@ -1792,6 +1794,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:6@1": "1080p",
         "klingai:7@1": null,  // No resolution support
         "klingai:kling@o1": null,  // No standard resolution
+        "klingai:kling-video@2.6-pro": "1080p",
         "google:2@0": "720p",
         "google:3@0": "720p",
         "google:3@1": "720p",

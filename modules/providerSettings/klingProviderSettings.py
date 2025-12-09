@@ -80,6 +80,16 @@ class RunwareKlingProviderSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useSound": ("BOOLEAN", {
+                    "tooltip": "Enable to include sound parameter in provider settings",
+                    "default": False,
+                }),
+                "sound": ("BOOLEAN", {
+                    "tooltip": "Whether sound is generated simultaneously when generating a video",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             }
         }
 
@@ -87,7 +97,7 @@ class RunwareKlingProviderSettings:
     RETURN_NAMES = ("Provider Settings",)
     FUNCTION = "createProviderSettings"
     CATEGORY = "Runware/Provider Settings"
-    DESCRIPTION = "Configure KlingAI-specific provider settings for video generation including camera control, audio volume, sound effects, and ASMR mode."
+    DESCRIPTION = "Configure KlingAI-specific provider settings for video generation including camera control, audio volume, sound effects, ASMR mode, and sound generation."
 
     def createProviderSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create KlingAI provider settings"""
@@ -100,6 +110,7 @@ class RunwareKlingProviderSettings:
         useBgmPrompt = kwargs.get("useBgmPrompt", False)
         useAsmrMode = kwargs.get("useAsmrMode", False)
         useKeepOriginalSound = kwargs.get("useKeepOriginalSound", False)
+        useSound = kwargs.get("useSound", False)
 
         # Get value parameters
         cameraControl = kwargs.get("cameraControl", "none")
@@ -109,6 +120,7 @@ class RunwareKlingProviderSettings:
         bgmPrompt = kwargs.get("bgmPrompt", "")
         asmrMode = kwargs.get("asmrMode", False)
         keepOriginalSound = kwargs.get("keepOriginalSound", True)
+        sound = kwargs.get("sound", False)
 
         # Build settings dictionary - only include what is enabled
         klingSettings: Dict[str, Any] = {}
@@ -140,6 +152,10 @@ class RunwareKlingProviderSettings:
         # Add keepOriginalSound only if useKeepOriginalSound is enabled
         if useKeepOriginalSound:
             klingSettings["keepOriginalSound"] = keepOriginalSound
+
+        # Add sound only if useSound is enabled
+        if useSound:
+            klingSettings["sound"] = sound
 
         # Clean up None values
         klingSettings = {k: v for k, v in klingSettings.items() if v is not None}
