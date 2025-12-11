@@ -362,12 +362,21 @@ class txt2img:
             # Extract provider name from model (e.g., "bytedance:1@1" -> "bytedance")
             provider_name = runwareModel.split(":")[0] if ":" in runwareModel else runwareModel
             
+            # Special case: model "runware:201@10" uses "alibaba" as provider
+            if runwareModel == "runware:201@10":
+                provider_name = "alibaba"
+            
             # If providerSettings is a dictionary, create the correct API format
             if isinstance(providerSettings, dict):
-                # Create the providerSettings object with provider name as key
-                final_provider_settings = {
-                    provider_name: providerSettings
-                }
+                # Check if providerSettings already has a provider key (e.g., {"alibaba": {...}})
+                if any(key in providerSettings for key in ["alibaba", "bytedance", "klingai", "openai", "pixverse", 
+                                                          "bria", "lightricks", "luma", "minimax", "runway", "vidu", "elevenlabs", "bfl"]):
+                    final_provider_settings = providerSettings
+                else:
+                    # Otherwise, wrap with the extracted provider name
+                    final_provider_settings = {
+                        provider_name: providerSettings
+                    }
                 genConfig[0]["providerSettings"] = final_provider_settings
             else:
                 # If it's already in the correct format, use it directly
