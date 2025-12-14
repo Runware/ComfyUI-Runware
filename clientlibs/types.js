@@ -93,9 +93,7 @@ const RUNWARE_NODE_TYPES = {
     MEDIAUPLOAD: "Runware Media Upload",
     INPUTAUDIOS: "Runware Input Audios",
     AUDIOINPUT: "Runware Video Audio Input",
-    AUDIOINPUTCOMBINE: "Runware Audio Inputs Combine",
     SPEECHINPUT: "Runware Video Speech Input",
-    SPEECHINPUTCOMBINE: "Runware Speech Inputs Combine",
     REFERENCEVIDEOS: "Runware Reference Videos",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
@@ -302,15 +300,7 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
-    [RUNWARE_NODE_TYPES.AUDIOINPUTCOMBINE]: {
-        bgColor: DEFAULT_BGCOLOR,
-        colorModeOnly: true,
-    },
     [RUNWARE_NODE_TYPES.SPEECHINPUT]: {
-        bgColor: DEFAULT_BGCOLOR,
-        colorModeOnly: true,
-    },
-    [RUNWARE_NODE_TYPES.SPEECHINPUTCOMBINE]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
