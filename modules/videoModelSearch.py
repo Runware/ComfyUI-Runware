@@ -79,6 +79,11 @@ class videoModelSearch:
             "lumaai:2@1 (Luma Ray 2)",
             "lumaai:2@2 (Luma Ray 2 Flash)",
         ],
+        "Sync": [
+            "sync:lipsync-2@1 (Sync LipSync 2)",
+            "sync:lipsync-2-pro@1 (Sync LipSync 2 Pro)",
+            "sync:react-1@1 (Sync React-1)",
+        ],
     }
     
     # Model dimensions mapping
@@ -158,6 +163,11 @@ class videoModelSearch:
         "lumaai:1@1": {"width": 1080, "height": 720},
         "lumaai:2@1": {"width": 1080, "height": 720},
         "lumaai:2@2": {"width": 1080, "height": 720},
+        
+        # Sync Models
+        "sync:lipsync-2@1": {"width": 0, "height": 0},
+        "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
+        "sync:react-1@1": {"width": 0, "height": 0},
     }
     
     # Model resolutions mapping
@@ -237,6 +247,11 @@ class videoModelSearch:
         "lumaai:1@1": "720p",
         "lumaai:2@1": "720p",
         "lumaai:2@2": "720p",
+        
+        # Sync Models
+        "sync:lipsync-2@1": "720p",
+        "sync:lipsync-2-pro@1": "720p",
+        "sync:react-1@1": "720p",
     }
     
     MODEL_ARCHITECTURES = [
@@ -252,7 +267,8 @@ class videoModelSearch:
         "Lightricks",
         "Ovi",
         "Runway",
-        "Luma"
+        "Luma",
+        "Sync"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}

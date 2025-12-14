@@ -17,7 +17,13 @@ class videoInferenceInputs:
                     "tooltip": "Connect the Runware Video Inputs Frame node to provide timeline-constrained frame images."
                 }),
                 "Audio": ("STRING", {
-                    "tooltip": "Connect the mediaUUID output from Runware Media Upload node with audio file. This audio will be synchronized with the generated video."
+                    "tooltip": "Connect the mediaUUID output from Runware Media Upload node with audio file. This audio will be synchronized with the generated video. (Legacy: single audio string)"
+                }),
+                "Audio Inputs": ("RUNWAREAUDIOINPUT", {
+                    "tooltip": "Connect Runware Video Audio Input node or Runware Audio Inputs Combine node to provide audio inputs with reference IDs."
+                }),
+                "Speech Inputs": ("RUNWARESPEECHINPUT", {
+                    "tooltip": "Connect Runware Video Speech Input node or Runware Speech Inputs Combine node to provide TTS speech inputs with reference IDs."
                 }),
                 "Video": ("STRING", {
                     "tooltip": "Connect the mediaUUID output from Runware Media Upload node with a reference/input video."
@@ -47,6 +53,8 @@ class videoInferenceInputs:
         """Create video inference inputs from provided parameters"""
         image = kwargs.get("Image", None)
         audio = kwargs.get("Audio", None)
+        audioInputs = kwargs.get("Audio Inputs", None)
+        speechInputs = kwargs.get("Speech Inputs", None)
         video = kwargs.get("Video", None)
         mask = kwargs.get("Mask", None)
         frame = kwargs.get("Frame", None)
@@ -59,8 +67,25 @@ class videoInferenceInputs:
         if image is not None:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
 
-        if audio is not None and audio.strip() != "":
+        # Handle audio: can be either a string (legacy), a single dict, or a list of audio inputs
+        if audioInputs is not None:
+            if isinstance(audioInputs, list) and len(audioInputs) > 0:
+                # List from combine node
+                inputs["audio"] = audioInputs
+            elif isinstance(audioInputs, dict) and len(audioInputs) > 0:
+                # Single audio input dict
+                inputs["audio"] = [audioInputs]
+        elif audio is not None and audio.strip() != "":
             inputs["audio"] = audio.strip()
+        
+        # Handle speech inputs: can be a single dict or a list of speech inputs
+        if speechInputs is not None:
+            if isinstance(speechInputs, list) and len(speechInputs) > 0:
+                # List from combine node
+                inputs["speech"] = speechInputs
+            elif isinstance(speechInputs, dict) and len(speechInputs) > 0:
+                # Single speech input dict
+                inputs["speech"] = [speechInputs]
 
         if video is not None and video.strip() != "":
             inputs["video"] = video.strip()
