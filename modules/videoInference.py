@@ -65,8 +65,12 @@ class txt2vid:
                     "min": 1,
                     "max": 100,
                 }),
+                "useBatchSize": ("BOOLEAN", {
+                    "tooltip": "Enable to include batchSize parameter in API request. Disable if your model doesn't support batch size.",
+                    "default": False,
+                }),
                 "batchSize": ("INT", {
-                    "tooltip": "The number of videos to generate in a single request.",
+                    "tooltip": "The number of videos to generate in a single request. Only used when 'Use Batch Size' is enabled.",
                     "default": 1,
                     "min": 1,
                     "max": 4,
@@ -163,11 +167,12 @@ class txt2vid:
         fps = kwargs.get("fps", 24)
         useFps = kwargs.get("useFps", True)
         outputFormat = kwargs.get("outputFormat", "mp4")
-        batchSize = kwargs.get("batchSize", 1)
         seed = kwargs.get("seed", 1)
         useSeed = kwargs.get("useSeed", True)
         steps = kwargs.get("steps", 20)
         useSteps = kwargs.get("useSteps", False)
+        useBatchSize = kwargs.get("useBatchSize", False)
+        batchSize = kwargs.get("batchSize", 1)
         acceleration = kwargs.get("acceleration", "none")
         
         # Handle model input - could be dict or string
@@ -190,10 +195,13 @@ class txt2vid:
                 "taskUUID": rwUtils.genRandUUID(),
                 "model": model,
                 "outputFormat": outputFormat,
-                "numberResults": batchSize,
                 "includeCost": True,
             }
         ]
+        
+        # Add batchSize (numberResults) only if enabled
+        if useBatchSize:
+            genConfig[0]["numberResults"] = batchSize
         
         # Add resolution if enabled
         if useResolution and resolution:

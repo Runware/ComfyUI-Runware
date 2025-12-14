@@ -42,6 +42,10 @@ from .modules.acceleratorOptions import acceleratorOptions
 from .modules.providerSettings.viduProviderSettings import RunwareViduProviderSettings
 from .modules.mediaUpload import runwareMediaUpload
 from .modules.inputAudios import inputAudios
+from .modules.audioInput import RunwareAudioInput
+from .modules.audioInputCombine import RunwareAudioInputCombine
+from .modules.speechInput import RunwareSpeechInput
+from .modules.speechInputCombine import RunwareSpeechInputCombine
 from .modules.referenceVideos import referenceVideos
 from .modules.videoInferenceInputs import videoInferenceInputs
 from .modules.providerSettings.lightricksProviderSettings import RunwareLightricksProviderSettings
@@ -51,6 +55,8 @@ from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProvid
 from .modules.providerSettings.lumaProviderSettings import RunwareLumaProviderSettings
 from .modules.providerSettings.midjourneyProviderSettings import RunwareMidjourneyProviderSettings
 from .modules.providerSettings.alibabaProviderSettings import RunwareAlibabaProviderSettings
+from .modules.providerSettings.syncSegment import RunwareSyncSegment
+from .modules.providerSettings.syncProviderSettings import RunwareSyncProviderSettings
 from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
@@ -114,6 +120,10 @@ NODE_CLASS_MAPPINGS = {
     "Runware Vidu Provider Settings": RunwareViduProviderSettings,
     "Runware Media Upload": runwareMediaUpload,
     "Runware Input Audios": inputAudios,
+    "Runware Video Audio Input": RunwareAudioInput,
+    "Runware Audio Inputs Combine": RunwareAudioInputCombine,
+    "Runware Video Speech Input": RunwareSpeechInput,
+    "Runware Speech Inputs Combine": RunwareSpeechInputCombine,
     "Runware Reference Videos": referenceVideos,
     "Runware Video Inference Inputs": videoInferenceInputs,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
@@ -123,6 +133,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
     "Runware Midjourney Provider Settings": RunwareMidjourneyProviderSettings,
     "Runware Alibaba Provider Settings": RunwareAlibabaProviderSettings,
+    "Runware Sync Segment": RunwareSyncSegment,
+    "Runware Sync Provider Settings": RunwareSyncProviderSettings,
     "Runware Vectorize": vectorize,
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,

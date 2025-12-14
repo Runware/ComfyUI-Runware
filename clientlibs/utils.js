@@ -1591,6 +1591,8 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     const seedWidget = videoInferenceNode.widgets.find(w => w.name === "seed");
     const useStepsWidget = videoInferenceNode.widgets.find(w => w.name === "useSteps");
     const stepsWidget = videoInferenceNode.widgets.find(w => w.name === "steps");
+    const useBatchSizeWidget = videoInferenceNode.widgets.find(w => w.name === "useBatchSize");
+    const batchSizeWidget = videoInferenceNode.widgets.find(w => w.name === "batchSize");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1653,6 +1655,10 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     
     if (useStepsWidget && stepsWidget) {
         toggleWidgetState(useStepsWidget, stepsWidget, "steps");
+    }
+    
+    if (useBatchSizeWidget && batchSizeWidget) {
+        toggleWidgetState(useBatchSizeWidget, batchSizeWidget, "batchSize");
     }
 }
 
@@ -1723,6 +1729,11 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "lumaai:2@1 (Luma Ray 2)",
             "lumaai:2@2 (Luma Ray 2 Flash)",
         ],
+        "Sync": [
+            "sync:lipsync-2@1 (Sync LipSync 2)",
+            "sync:lipsync-2-pro@1 (Sync LipSync 2 Pro)",
+            "sync:react-1@1 (Sync React-1)",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -1778,6 +1789,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lumaai:1@1": {"width": 1080, "height": 720},
         "lumaai:2@1": {"width": 1080, "height": 720},
         "lumaai:2@2": {"width": 1080, "height": 720},
+        "sync:lipsync-2@1": {"width": 0, "height": 0},
+        "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
+        "sync:react-1@1": {"width": 0, "height": 0},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -1833,6 +1847,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lumaai:1@1": "720p",
         "lumaai:2@1": "720p",
         "lumaai:2@2": "720p",
+        "sync:lipsync-2@1": "720p",
+        "sync:lipsync-2-pro@1": "720p",
+        "sync:react-1@1": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -2449,4 +2466,137 @@ export {
     briaProviderSettingsToggleHandler,
     pixverseProviderSettingsToggleHandler,
     alibabaProviderSettingsToggleHandler,
+    syncProviderSettingsToggleHandler,
+    syncSegmentToggleHandler,
 };
+
+function syncProviderSettingsToggleHandler(syncNode) {
+    // Find all "use" parameter widgets for Sync Provider Settings
+    const useEditRegionWidget = syncNode.widgets.find(w => w.name === "useEditRegion");
+    const editRegionWidget = syncNode.widgets.find(w => w.name === "editRegion");
+    const useEmotionPromptWidget = syncNode.widgets.find(w => w.name === "useEmotionPrompt");
+    const emotionPromptWidget = syncNode.widgets.find(w => w.name === "emotionPrompt");
+    const useTemperatureWidget = syncNode.widgets.find(w => w.name === "useTemperature");
+    const temperatureWidget = syncNode.widgets.find(w => w.name === "temperature");
+    const useActiveSpeakerDetectionWidget = syncNode.widgets.find(w => w.name === "useActiveSpeakerDetection");
+    const activeSpeakerDetectionWidget = syncNode.widgets.find(w => w.name === "activeSpeakerDetection");
+    const useOcclusionDetectionEnabledWidget = syncNode.widgets.find(w => w.name === "useOcclusionDetectionEnabled");
+    const occlusionDetectionEnabledWidget = syncNode.widgets.find(w => w.name === "occlusionDetectionEnabled");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = syncNode.htmlElements?.widgetsContainer || syncNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            syncNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handlers
+    if (useEditRegionWidget && editRegionWidget) {
+        toggleWidgetState(useEditRegionWidget, editRegionWidget, "editRegion");
+    }
+    if (useEmotionPromptWidget && emotionPromptWidget) {
+        toggleWidgetState(useEmotionPromptWidget, emotionPromptWidget, "emotionPrompt");
+    }
+    if (useTemperatureWidget && temperatureWidget) {
+        toggleWidgetState(useTemperatureWidget, temperatureWidget, "temperature");
+    }
+    if (useActiveSpeakerDetectionWidget && activeSpeakerDetectionWidget) {
+        toggleWidgetState(useActiveSpeakerDetectionWidget, activeSpeakerDetectionWidget, "activeSpeakerDetection");
+    }
+    if (useOcclusionDetectionEnabledWidget && occlusionDetectionEnabledWidget) {
+        toggleWidgetState(useOcclusionDetectionEnabledWidget, occlusionDetectionEnabledWidget, "occlusionDetectionEnabled");
+    }
+}
+
+function syncSegmentToggleHandler(syncSegmentNode) {
+    // Find all "use" parameter widgets for Sync Segment
+    const useAudioStartTimeWidget = syncSegmentNode.widgets.find(w => w.name === "useAudioStartTime");
+    const audioStartTimeWidget = syncSegmentNode.widgets.find(w => w.name === "audioStartTime");
+    const useAudioEndTimeWidget = syncSegmentNode.widgets.find(w => w.name === "useAudioEndTime");
+    const audioEndTimeWidget = syncSegmentNode.widgets.find(w => w.name === "audioEndTime");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = syncSegmentNode.htmlElements?.widgetsContainer || syncSegmentNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            syncSegmentNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handlers
+    if (useAudioStartTimeWidget && audioStartTimeWidget) {
+        toggleWidgetState(useAudioStartTimeWidget, audioStartTimeWidget, "audioStartTime");
+    }
+    if (useAudioEndTimeWidget && audioEndTimeWidget) {
+        toggleWidgetState(useAudioEndTimeWidget, audioEndTimeWidget, "audioEndTime");
+    }
+}

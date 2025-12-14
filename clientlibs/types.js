@@ -92,6 +92,10 @@ const RUNWARE_NODE_TYPES = {
     LORAMIX: "Runware Lora Mix",
     MEDIAUPLOAD: "Runware Media Upload",
     INPUTAUDIOS: "Runware Input Audios",
+    AUDIOINPUT: "Runware Video Audio Input",
+    AUDIOINPUTCOMBINE: "Runware Audio Inputs Combine",
+    SPEECHINPUT: "Runware Video Speech Input",
+    SPEECHINPUTCOMBINE: "Runware Speech Inputs Combine",
     REFERENCEVIDEOS: "Runware Reference Videos",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
@@ -100,6 +104,8 @@ const RUNWARE_NODE_TYPES = {
     LUMAPROVIDERSETTINGS: "Runware Luma Provider Settings",
     MIDJOURNEYPROVIDERSETTINGS: "Runware Midjourney Provider Settings",
     ALIBABAPROVIDERSETTINGS: "Runware Alibaba Provider Settings",
+    SYNCSEGMENT: "Runware Sync Segment",
+    SYNCPROVIDERSETTINGS: "Runware Sync Provider Settings",
     VECTORIZE: "Runware Vectorize",
     VIDEOBGREMOVAL: "Runware Video Background Removal",
     VIDEOUPSCALER: "Runware Video Upscaler",
@@ -292,6 +298,22 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.AUDIOINPUT]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOINPUTCOMBINE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SPEECHINPUT]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SPEECHINPUTCOMBINE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.REFERENCEVIDEOS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
@@ -321,6 +343,14 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.ALIBABAPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SYNCSEGMENT]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SYNCPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
