@@ -102,6 +102,7 @@ const RUNWARE_NODE_TYPES = {
     LUMAPROVIDERSETTINGS: "Runware Luma Provider Settings",
     MIDJOURNEYPROVIDERSETTINGS: "Runware Midjourney Provider Settings",
     ALIBABAPROVIDERSETTINGS: "Runware Alibaba Provider Settings",
+    GOOGLEPROVIDERSETTINGS: "Runware Google Provider Settings",
     SYNCSEGMENT: "Runware Sync Segment",
     SYNCPROVIDERSETTINGS: "Runware Sync Provider Settings",
     VECTORIZE: "Runware Vectorize",
@@ -113,6 +114,7 @@ const RUNWARE_NODE_TYPES = {
     VIDEOTRANSCRIPTION: "Runware Video Transcription",
     MINIMAXPROVIDERSETTINGS: "Runware MiniMax Provider Settings",
     SAFETYINPUTS: "Runware Safety Inputs",
+    SETTINGS: "Runware Settings",
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
 };
 
@@ -336,6 +338,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.GOOGLEPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.SYNCSEGMENT]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
@@ -378,6 +384,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.SAFETYINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

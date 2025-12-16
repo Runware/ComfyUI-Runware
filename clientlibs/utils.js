@@ -2466,9 +2466,137 @@ export {
     briaProviderSettingsToggleHandler,
     pixverseProviderSettingsToggleHandler,
     alibabaProviderSettingsToggleHandler,
+    googleProviderSettingsToggleHandler,
     syncProviderSettingsToggleHandler,
     syncSegmentToggleHandler,
+    settingsToggleHandler,
 };
+
+function googleProviderSettingsToggleHandler(googleNode) {
+    // Find all "use" parameter widgets for Google Provider Settings
+    const useGenerateAudioWidget = googleNode.widgets.find(w => w.name === "useGenerateAudio");
+    const generateAudioWidget = googleNode.widgets.find(w => w.name === "generateAudio");
+    const useEnhancePromptWidget = googleNode.widgets.find(w => w.name === "useEnhancePrompt");
+    const enhancePromptWidget = googleNode.widgets.find(w => w.name === "enhancePrompt");
+    const useSearchWidget = googleNode.widgets.find(w => w.name === "useSearch");
+    const searchWidget = googleNode.widgets.find(w => w.name === "search");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = googleNode.htmlElements?.widgetsContainer || googleNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            googleNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handlers
+    if (useGenerateAudioWidget && generateAudioWidget) {
+        toggleWidgetState(useGenerateAudioWidget, generateAudioWidget, "generateAudio");
+    }
+    if (useEnhancePromptWidget && enhancePromptWidget) {
+        toggleWidgetState(useEnhancePromptWidget, enhancePromptWidget, "enhancePrompt");
+    }
+    if (useSearchWidget && searchWidget) {
+        toggleWidgetState(useSearchWidget, searchWidget, "search");
+    }
+}
+
+function settingsToggleHandler(settingsNode) {
+    // Find all "use" parameter widgets for Settings
+    const useTemperatureWidget = settingsNode.widgets.find(w => w.name === "useTemperature");
+    const temperatureWidget = settingsNode.widgets.find(w => w.name === "temperature");
+    const useSystemPromptWidget = settingsNode.widgets.find(w => w.name === "useSystemPrompt");
+    const systemPromptWidget = settingsNode.widgets.find(w => w.name === "systemPrompt");
+    const useTopPWidget = settingsNode.widgets.find(w => w.name === "useTopP");
+    const topPWidget = settingsNode.widgets.find(w => w.name === "topP");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = settingsNode.htmlElements?.widgetsContainer || settingsNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            settingsNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handlers
+    if (useTemperatureWidget && temperatureWidget) {
+        toggleWidgetState(useTemperatureWidget, temperatureWidget, "temperature");
+    }
+    if (useSystemPromptWidget && systemPromptWidget) {
+        toggleWidgetState(useSystemPromptWidget, systemPromptWidget, "systemPrompt");
+    }
+    if (useTopPWidget && topPWidget) {
+        toggleWidgetState(useTopPWidget, topPWidget, "topP");
+    }
+}
 
 function syncProviderSettingsToggleHandler(syncNode) {
     // Find all "use" parameter widgets for Sync Provider Settings

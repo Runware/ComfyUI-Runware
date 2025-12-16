@@ -55,6 +55,7 @@ from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProvid
 from .modules.providerSettings.lumaProviderSettings import RunwareLumaProviderSettings
 from .modules.providerSettings.midjourneyProviderSettings import RunwareMidjourneyProviderSettings
 from .modules.providerSettings.alibabaProviderSettings import RunwareAlibabaProviderSettings
+from .modules.providerSettings.googleProviderSettings import RunwareGoogleProviderSettings
 from .modules.providerSettings.syncSegment import RunwareSyncSegment
 from .modules.providerSettings.syncProviderSettings import RunwareSyncProviderSettings
 from .modules.vectorize import vectorize
@@ -63,6 +64,7 @@ from .modules.videoUpscaler import videoUpscaler
 from .modules.videoInputsReferences import videoInputsReferences
 from .modules.videoInputsFrame import RunwareVideoInputsFrameImages
 from .modules.safetyInputs import safetyInputs
+from .modules.settings import RunwareSettings
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
@@ -133,6 +135,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
     "Runware Midjourney Provider Settings": RunwareMidjourneyProviderSettings,
     "Runware Alibaba Provider Settings": RunwareAlibabaProviderSettings,
+    "Runware Google Provider Settings": RunwareGoogleProviderSettings,
     "Runware Sync Segment": RunwareSyncSegment,
     "Runware Sync Provider Settings": RunwareSyncProviderSettings,
     "Runware Vectorize": vectorize,
@@ -141,6 +144,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inputs References": videoInputsReferences,
     "Runware Video Inputs Frame Images": RunwareVideoInputsFrameImages,
     "Runware Safety Inputs": safetyInputs,
+    "Runware Settings": RunwareSettings,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
 }
 

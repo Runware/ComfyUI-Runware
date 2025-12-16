@@ -188,6 +188,9 @@ class txt2img:
                 "safetyInputs": ("RUNWARESAFETYINPUTS", {
                     "tooltip": "Connect Runware Safety Inputs node to configure safety and content moderation settings.",
                 }),
+                "settings": ("RUNWARESETTINGS", {
+                    "tooltip": "Connect Runware Settings node to configure temperature, systemPrompt, and topP parameters.",
+                }),
             }
         }
 
@@ -229,6 +232,7 @@ class txt2img:
         inputs = kwargs.get("inputs", None)
         providerSettings = kwargs.get("providerSettings", None)
         safetyInputs = kwargs.get("safetyInputs", None)
+        settings = kwargs.get("settings", None)
         seedImage = kwargs.get("seedImage", None)
         seedImageStrength = kwargs.get("strength", 0.8)
         maskImage = kwargs.get("maskImage", None)
@@ -385,6 +389,10 @@ class txt2img:
         # Add safety inputs if provided
         if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
             genConfig[0]["safety"] = safetyInputs
+
+        # Add settings if provided
+        if settings is not None and isinstance(settings, dict) and len(settings) > 0:
+            genConfig[0]["settings"] = settings
 
         if (multiInferenceMode):
             return (None, genConfig)
