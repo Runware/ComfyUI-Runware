@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -73,10 +73,14 @@ app.registerExtension({
             pixverseProviderSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.ALIBABAPROVIDERSETTINGS) {
             alibabaProviderSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.GOOGLEPROVIDERSETTINGS) {
+            googleProviderSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.SYNCPROVIDERSETTINGS) {
             syncProviderSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.SYNCSEGMENT) {
             syncSegmentToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.SETTINGS) {
+            settingsToggleHandler(node);
         }
 
         if(crNodeProps.colorModeOnly === true) return;
