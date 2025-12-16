@@ -55,6 +55,7 @@ from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProvid
 from .modules.providerSettings.lumaProviderSettings import RunwareLumaProviderSettings
 from .modules.providerSettings.midjourneyProviderSettings import RunwareMidjourneyProviderSettings
 from .modules.providerSettings.alibabaProviderSettings import RunwareAlibabaProviderSettings
+from .modules.providerSettings.blackForestProviderSettings import RunwareBlackForestProviderSettings
 from .modules.providerSettings.syncSegment import RunwareSyncSegment
 from .modules.providerSettings.syncProviderSettings import RunwareSyncProviderSettings
 from .modules.vectorize import vectorize
@@ -133,6 +134,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
     "Runware Midjourney Provider Settings": RunwareMidjourneyProviderSettings,
     "Runware Alibaba Provider Settings": RunwareAlibabaProviderSettings,
+    "Runware BlackForest Labs Provider Settings": RunwareBlackForestProviderSettings,
     "Runware Sync Segment": RunwareSyncSegment,
     "Runware Sync Provider Settings": RunwareSyncProviderSettings,
     "Runware Vectorize": vectorize,
