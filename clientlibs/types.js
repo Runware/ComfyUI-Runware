@@ -102,6 +102,7 @@ const RUNWARE_NODE_TYPES = {
     LUMAPROVIDERSETTINGS: "Runware Luma Provider Settings",
     MIDJOURNEYPROVIDERSETTINGS: "Runware Midjourney Provider Settings",
     ALIBABAPROVIDERSETTINGS: "Runware Alibaba Provider Settings",
+    BLACKFORESTPROVIDERSETTINGS: "Runware BlackForest Labs Provider Settings",
     GOOGLEPROVIDERSETTINGS: "Runware Google Provider Settings",
     SYNCSEGMENT: "Runware Sync Segment",
     SYNCPROVIDERSETTINGS: "Runware Sync Provider Settings",
@@ -335,6 +336,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.ALIBABAPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.BLACKFORESTPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
