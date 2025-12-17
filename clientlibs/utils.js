@@ -1709,6 +1709,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Wan": [
             "runware:200@1 (Wan 2.1 1.3B)", "runware:200@2 (Wan 2.1 14B)",
             "runware:200@6 (Wan 2.2)",
+            "alibaba:wan@2.6 (Wan 2.6)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)", "openai:3@0 (OpenAI Sora 3.0)",
@@ -1778,6 +1779,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@1": {"width": 853, "height": 480},
         "runware:200@2": {"width": 853, "height": 480},
         "runware:200@6": {"width": 1280, "height": 720},
+        "alibaba:wan@2.6": {"width": 1280, "height": 720},
         "openai:3@1": {"width": 1280, "height": 720},
         "openai:3@0": {"width": 1280, "height": 720},
         "lightricks:2@0": {"width": 1920, "height": 1080},
@@ -1836,6 +1838,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@1": "480p",
         "runware:200@2": "480p",
         "runware:200@6": "720p",
+        "alibaba:wan@2.6": "720p",
         "openai:3@1": "720p",
         "openai:3@0": "720p",
         "lightricks:2@0": "1080p",
@@ -2185,6 +2188,12 @@ function alibabaProviderSettingsToggleHandler(alibabaNode) {
     // Find all "use" parameter widgets for Alibaba Provider Settings
     const usePromptEnhancerWidget = alibabaNode.widgets.find(w => w.name === "usePromptEnhancer");
     const promptEnhancerWidget = alibabaNode.widgets.find(w => w.name === "promptEnhancer");
+    const usePromptExtendWidget = alibabaNode.widgets.find(w => w.name === "usePromptExtend");
+    const promptExtendWidget = alibabaNode.widgets.find(w => w.name === "promptExtend");
+    const useAudioWidget = alibabaNode.widgets.find(w => w.name === "useAudio");
+    const audioWidget = alibabaNode.widgets.find(w => w.name === "audio");
+    const useShotTypeWidget = alibabaNode.widgets.find(w => w.name === "useShotType");
+    const shotTypeWidget = alibabaNode.widgets.find(w => w.name === "shotType");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -2228,9 +2237,78 @@ function alibabaProviderSettingsToggleHandler(alibabaNode) {
         setTimeout(toggleEnabled, 100);
     }
     
-    // Set up toggle handler
+    // Special handler for shotType - depends on both usePromptExtend AND promptExtend being true
+    function toggleShotTypeEnabled() {
+        if (!useShotTypeWidget || !shotTypeWidget || !usePromptExtendWidget || !promptExtendWidget) return;
+        
+        const usePromptExtendEnabled = usePromptExtendWidget.value === true;
+        const promptExtendValue = promptExtendWidget.value === true;
+        const useShotTypeEnabled = useShotTypeWidget.value === true;
+        
+        // shotType is enabled only if: useShotType is enabled AND usePromptExtend is enabled AND promptExtend is true
+        const enabled = useShotTypeEnabled && usePromptExtendEnabled && promptExtendValue;
+        
+        if (shotTypeWidget.inputEl) {
+            shotTypeWidget.inputEl.disabled = !enabled;
+            shotTypeWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+            shotTypeWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+            shotTypeWidget.inputEl.readOnly = !enabled;
+        }
+        
+        shotTypeWidget.disabled = !enabled;
+        
+        if (!shotTypeWidget.inputEl) {
+            const nodeElement = alibabaNode.htmlElements?.widgetsContainer || alibabaNode.htmlElements;
+            if (nodeElement) {
+                const input = nodeElement.querySelector(`input[name="shotType"], select[name="shotType"]`);
+                if (input) {
+                    input.disabled = !enabled;
+                    input.style.opacity = enabled ? "1" : "0.5";
+                    input.style.cursor = enabled ? "text" : "not-allowed";
+                    input.readOnly = !enabled;
+                    if (input.tagName === "SELECT") {
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            }
+        }
+        
+        alibabaNode.setDirtyCanvas(true);
+    }
+    
+    // Set up toggle handlers
     if (usePromptEnhancerWidget && promptEnhancerWidget) {
         toggleWidgetState(usePromptEnhancerWidget, promptEnhancerWidget, "promptEnhancer");
+    }
+    
+    if (usePromptExtendWidget && promptExtendWidget) {
+        toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");
+        
+        // Also listen to promptExtend value changes to update shotType
+        appendWidgetCB(promptExtendWidget, () => {
+            setTimeout(toggleShotTypeEnabled, 50);
+        });
+    }
+    
+    if (useAudioWidget && audioWidget) {
+        toggleWidgetState(useAudioWidget, audioWidget, "audio");
+    }
+    
+    if (useShotTypeWidget && shotTypeWidget) {
+        // Listen to useShotType changes
+        appendWidgetCB(useShotTypeWidget, () => {
+            setTimeout(toggleShotTypeEnabled, 50);
+        });
+        
+        // Also listen to usePromptExtend changes
+        if (usePromptExtendWidget) {
+            appendWidgetCB(usePromptExtendWidget, () => {
+                setTimeout(toggleShotTypeEnabled, 50);
+            });
+        }
+        
+        // Initial state
+        setTimeout(toggleShotTypeEnabled, 100);
     }
 }
 
