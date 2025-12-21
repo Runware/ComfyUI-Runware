@@ -1684,6 +1684,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:7@1 (KlingAI Lip-Sync)",
             "klingai:kling@o1 (Kling VIDEO O1)",
             "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
+            "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
+            "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)", "google:3@0 (Veo 3.0)", "google:3@1 (Veo 3.0 Fast)",
@@ -1752,6 +1754,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:7@1": {"width": 0, "height": 0},
         "klingai:kling@o1": {"width": 1440, "height": 1440},
         "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
+        "klingai:avatar@2.0-standard": {"width": 0, "height": 0},
+        "klingai:avatar@2.0-pro": {"width": 0, "height": 0},
         "google:2@0": {"width": 1280, "height": 720},
         "google:3@0": {"width": 1280, "height": 720},
         "google:3@1": {"width": 1280, "height": 720},
@@ -1811,6 +1815,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:7@1": null,  // No resolution support
         "klingai:kling@o1": null,  // No standard resolution
         "klingai:kling-video@2.6-pro": "1080p",
+        "klingai:avatar@2.0-standard": null,  // No resolution support
+        "klingai:avatar@2.0-pro": null,  // No resolution support
         "google:2@0": "720p",
         "google:3@0": "720p",
         "google:3@1": "720p",
@@ -2517,6 +2523,120 @@ function briaProviderSettingsToggleHandler(briaNode) {
     }
 }
 
+function audioInputToggleHandler(audioInputNode) {
+    // Find "use" parameter widget and "id" widget for Audio Input
+    const useIdWidget = audioInputNode.widgets.find(w => w.name === "useId");
+    const idWidget = audioInputNode.widgets.find(w => w.name === "id");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            // Disable/enable widgets using inputEl if available
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            // Also set widget property
+            paramWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!paramWidget.inputEl) {
+                const nodeElement = audioInputNode.htmlElements?.widgetsContainer || audioInputNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            audioInputNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler for "useId" parameter
+    if (useIdWidget && idWidget) {
+        toggleWidgetState(useIdWidget, idWidget, "id");
+    }
+}
+
+function speechInputToggleHandler(speechInputNode) {
+    // Find "use" parameter widget and "id" widget for Speech Input
+    const useIdWidget = speechInputNode.widgets.find(w => w.name === "useId");
+    const idWidget = speechInputNode.widgets.find(w => w.name === "id");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            // Disable/enable widgets using inputEl if available
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            // Also set widget property
+            paramWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!paramWidget.inputEl) {
+                const nodeElement = speechInputNode.htmlElements?.widgetsContainer || speechInputNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            speechInputNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler for "useId" parameter
+    if (useIdWidget && idWidget) {
+        toggleWidgetState(useIdWidget, idWidget, "id");
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -2548,6 +2668,8 @@ export {
     syncProviderSettingsToggleHandler,
     syncSegmentToggleHandler,
     settingsToggleHandler,
+    audioInputToggleHandler,
+    speechInputToggleHandler,
 };
 
 function googleProviderSettingsToggleHandler(googleNode) {
