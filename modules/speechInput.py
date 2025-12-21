@@ -13,10 +13,6 @@ class RunwareSpeechInput:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "id": ("STRING", {
-                    "tooltip": "Reference ID used to map speech input. Required when using segments array.",
-                    "default": "",
-                }),
                 "provider": ("STRING", {
                     "tooltip": "TTS provider name. Currently supports: elevenlabs",
                     "default": "elevenlabs",
@@ -31,7 +27,16 @@ class RunwareSpeechInput:
                     "default": "",
                 }),
             },
-            "optional": {}
+            "optional": {
+                "useId": ("BOOLEAN", {
+                    "tooltip": "Enable to include reference ID for mapping speech input. Required when using segments array.",
+                    "default": False,
+                }),
+                "id": ("STRING", {
+                    "tooltip": "Reference ID used to map speech input. Required when using segments array.",
+                    "default": "",
+                }),
+            }
         }
 
     RETURN_TYPES = ("RUNWARESPEECHINPUT",)
@@ -43,20 +48,24 @@ class RunwareSpeechInput:
     def createSpeechInput(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create speech input configuration"""
         
+        useId = kwargs.get("useId", False)
         speech_id = kwargs.get("id", "").strip()
         provider = kwargs.get("provider", "elevenlabs").strip()
         voiceId = kwargs.get("voiceId", "").strip()
         text = kwargs.get("text", "").strip()
         
-        if not speech_id or not provider or not voiceId or not text:
+        if not provider or not voiceId or not text:
             return ({},)
         
         speechInput: Dict[str, Any] = {
-            "id": speech_id,
             "provider": provider,
             "voiceId": voiceId,
             "text": text,
         }
+        
+        # Only include id if useId is enabled and id is provided
+        if useId and speech_id:
+            speechInput["id"] = speech_id
         
         return (speechInput,)
 

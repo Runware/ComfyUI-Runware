@@ -13,16 +13,21 @@ class RunwareAudioInput:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "id": ("STRING", {
-                    "tooltip": "Reference ID used to map audio input. Required when using segments array.",
-                    "default": "",
-                }),
                 "source": ("STRING", {
                     "tooltip": "URL, base64, data URI, or UUID for the audio file. Audio formats: WAV, MP3, OGG, M4A, M3A, AAC, WMA, FLAC, MP4. Recommended: WAV/MP3 at 44.1kHz or 48kHz sampling rate.",
                     "default": "",
                 }),
             },
-            "optional": {}
+            "optional": {
+                "useId": ("BOOLEAN", {
+                    "tooltip": "Enable to include reference ID for mapping audio input. Required when using segments array.",
+                    "default": False,
+                }),
+                "id": ("STRING", {
+                    "tooltip": "Reference ID used to map audio input. Required when using segments array.",
+                    "default": "",
+                }),
+            }
         }
 
     RETURN_TYPES = ("RUNWAREAUDIOINPUT",)
@@ -34,16 +39,20 @@ class RunwareAudioInput:
     def createAudioInput(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio input configuration"""
         
+        useId = kwargs.get("useId", False)
         audio_id = kwargs.get("id", "").strip()
         source = kwargs.get("source", "").strip()
         
-        if not audio_id or not source:
+        if not source:
             return ({},)
         
         audioInput: Dict[str, Any] = {
-            "id": audio_id,
             "source": source,
         }
+        
+        # Only include id if useId is enabled and id is provided
+        if useId and audio_id:
+            audioInput["id"] = audio_id
         
         return (audioInput,)
 
