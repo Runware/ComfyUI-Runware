@@ -130,6 +130,47 @@ class RunwareBriaProviderSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useAutoTrim": ("BOOLEAN", {
+                    "tooltip": "Enable to include autoTrim parameter in API request.",
+                    "default": False,
+                }),
+                "autoTrim": ("BOOLEAN", {
+                    "tooltip": "If true, videos longer than 5 seconds are trimmed to the first 5 seconds. If false, videos longer than 5 seconds are rejected. Only used when 'Use Auto Trim' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useMaskForeground": ("BOOLEAN", {
+                    "tooltip": "Enable to include mask.foreground parameter in API request.",
+                    "default": False,
+                }),
+                "maskForeground": ("BOOLEAN", {
+                    "tooltip": "Triggers the foreground mask endpoint. Only used when 'Use Mask Foreground' is enabled.",
+                    "default": True,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useMaskPrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include mask.prompt parameter in API request.",
+                    "default": False,
+                }),
+                "maskPrompt": ("STRING", {
+                    "tooltip": "Text instruction describing the object to be masked. Only used when 'Use Mask Prompt' is enabled.",
+                    "default": "",
+                    "multiline": True,
+                }),
+                "useMaskFrameIndex": ("BOOLEAN", {
+                    "tooltip": "Enable to include mask.frameIndex parameter in API request.",
+                    "default": False,
+                }),
+                "maskFrameIndex": ("INT", {
+                    "tooltip": "The frame number to apply key points to. Specifies which frame in the video to use for masking. Only used when 'Use Mask Frame Index' is enabled.",
+                    "default": 0,
+                    "min": 0,
+                }),
+                "Key Points": ("RUNWAREBRIAPROVIDERKEYPOINTS", {
+                    "tooltip": "Connect Runware Bria Provider Key Points node to provide key points for mask generation.",
+                }),
             }
         }
     
@@ -155,6 +196,10 @@ class RunwareBriaProviderSettings:
         useRefinePrompt = kwargs.get("useRefinePrompt", False)
         useOriginalQuality = kwargs.get("useOriginalQuality", False)
         useForceBackgroundDetection = kwargs.get("useForceBackgroundDetection", False)
+        useAutoTrim = kwargs.get("useAutoTrim", False)
+        useMaskForeground = kwargs.get("useMaskForeground", False)
+        useMaskPrompt = kwargs.get("useMaskPrompt", False)
+        useMaskFrameIndex = kwargs.get("useMaskFrameIndex", False)
         
         # Get actual parameters
         medium = kwargs.get("medium", "photography")
@@ -169,6 +214,11 @@ class RunwareBriaProviderSettings:
         refinePrompt = kwargs.get("refinePrompt", True)
         originalQuality = kwargs.get("originalQuality", True)
         forceBackgroundDetection = kwargs.get("forceBackgroundDetection", False)
+        autoTrim = kwargs.get("autoTrim", False)
+        maskForeground = kwargs.get("maskForeground", True)
+        maskPrompt = kwargs.get("maskPrompt", "").strip()
+        maskFrameIndex = kwargs.get("maskFrameIndex", 0)
+        keyPoints = kwargs.get("Key Points", None)
         
         # Build settings dictionary
         settings = {}
@@ -220,6 +270,35 @@ class RunwareBriaProviderSettings:
         # Add forceBackgroundDetection only if useForceBackgroundDetection is enabled
         if useForceBackgroundDetection:
             settings["forceBackgroundDetection"] = forceBackgroundDetection
+        
+        # Add autoTrim only if useAutoTrim is enabled
+        if useAutoTrim:
+            settings["autoTrim"] = autoTrim
+        
+        # Build mask object if any mask parameters are enabled
+        mask = {}
+        maskEnabled = False
+        
+        if useMaskForeground:
+            mask["foreground"] = maskForeground
+            maskEnabled = True
+        
+        if useMaskPrompt and maskPrompt:
+            mask["prompt"] = maskPrompt
+            maskEnabled = True
+        
+        if useMaskFrameIndex:
+            mask["frameIndex"] = maskFrameIndex
+            maskEnabled = True
+        
+        # Add keyPoints if provided
+        if keyPoints is not None and isinstance(keyPoints, list) and len(keyPoints) > 0:
+            mask["keyPoints"] = keyPoints
+            maskEnabled = True
+        
+        # Only add mask object if it has at least one property
+        if maskEnabled:
+            settings["mask"] = mask
         
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}

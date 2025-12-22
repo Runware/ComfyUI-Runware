@@ -18,6 +18,8 @@ class videoModelSearch:
             "klingai:7@1 (KlingAI Lip-Sync)",
             "klingai:kling@o1 (Kling VIDEO O1)",
             "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
+            "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
+            "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)",
@@ -85,6 +87,9 @@ class videoModelSearch:
             "sync:lipsync-2-pro@1 (Sync LipSync 2 Pro)",
             "sync:react-1@1 (Sync React-1)",
         ],
+        "Bria": [
+            "bria:60@1 (Bria Video Eraser)",
+        ],
     }
     
     # Model dimensions mapping
@@ -104,6 +109,8 @@ class videoModelSearch:
         "klingai:7@1": {"width": 0, "height": 0},
         "klingai:kling@o1": {"width": 1440, "height": 1440},
         "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
+        "klingai:avatar@2.0-standard": {"width": 0, "height": 0},
+        "klingai:avatar@2.0-pro": {"width": 0, "height": 0},
         
         # Veo Models
         "google:2@0": {"width": 1280, "height": 720},
@@ -170,6 +177,9 @@ class videoModelSearch:
         "sync:lipsync-2@1": {"width": 0, "height": 0},
         "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
         "sync:react-1@1": {"width": 0, "height": 0},
+        
+        # Bria Models
+        "bria:60@1": {"width": 1280, "height": 720},
     }
     
     # Model resolutions mapping
@@ -189,6 +199,8 @@ class videoModelSearch:
         "klingai:7@1": None,  # No resolution support
         "klingai:kling@o1": None,  # No standard resolution (1440x1440)
         "klingai:kling-video@2.6-pro": "1080p",
+        "klingai:avatar@2.0-standard": None,  # No resolution support
+        "klingai:avatar@2.0-pro": None,  # No resolution support
         
         # Veo Models
         "google:2@0": "720p",
@@ -255,6 +267,9 @@ class videoModelSearch:
         "sync:lipsync-2@1": "720p",
         "sync:lipsync-2-pro@1": "720p",
         "sync:react-1@1": "720p",
+        
+        # Bria Models
+        "bria:60@1": "720p",
     }
     
     MODEL_ARCHITECTURES = [
@@ -271,7 +286,8 @@ class videoModelSearch:
         "Ovi",
         "Runway",
         "Luma",
-        "Sync"
+        "Sync",
+        "Bria"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}

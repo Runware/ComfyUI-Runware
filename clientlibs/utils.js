@@ -1737,6 +1737,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "sync:lipsync-2-pro@1 (Sync LipSync 2 Pro)",
             "sync:react-1@1 (Sync React-1)",
         ],
+        "Bria": [
+            "bria:60@1 (Bria Video Eraser)",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -1798,6 +1801,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2@1": {"width": 0, "height": 0},
         "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
         "sync:react-1@1": {"width": 0, "height": 0},
+        "bria:60@1": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -1859,6 +1863,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2@1": "720p",
         "sync:lipsync-2-pro@1": "720p",
         "sync:react-1@1": "720p",
+        "bria:60@1": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -2418,6 +2423,14 @@ function briaProviderSettingsToggleHandler(briaNode) {
     const originalQualityWidget = briaNode.widgets.find(w => w.name === "originalQuality");
     const useForceBackgroundDetectionWidget = briaNode.widgets.find(w => w.name === "useForceBackgroundDetection");
     const forceBackgroundDetectionWidget = briaNode.widgets.find(w => w.name === "forceBackgroundDetection");
+    const useAutoTrimWidget = briaNode.widgets.find(w => w.name === "useAutoTrim");
+    const autoTrimWidget = briaNode.widgets.find(w => w.name === "autoTrim");
+    const useMaskForegroundWidget = briaNode.widgets.find(w => w.name === "useMaskForeground");
+    const maskForegroundWidget = briaNode.widgets.find(w => w.name === "maskForeground");
+    const useMaskPromptWidget = briaNode.widgets.find(w => w.name === "useMaskPrompt");
+    const maskPromptWidget = briaNode.widgets.find(w => w.name === "maskPrompt");
+    const useMaskFrameIndexWidget = briaNode.widgets.find(w => w.name === "useMaskFrameIndex");
+    const maskFrameIndexWidget = briaNode.widgets.find(w => w.name === "maskFrameIndex");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -2520,6 +2533,22 @@ function briaProviderSettingsToggleHandler(briaNode) {
     
     if (useForceBackgroundDetectionWidget && forceBackgroundDetectionWidget) {
         toggleWidgetState(useForceBackgroundDetectionWidget, forceBackgroundDetectionWidget, "forceBackgroundDetection");
+    }
+    
+    if (useAutoTrimWidget && autoTrimWidget) {
+        toggleWidgetState(useAutoTrimWidget, autoTrimWidget, "autoTrim");
+    }
+    
+    if (useMaskForegroundWidget && maskForegroundWidget) {
+        toggleWidgetState(useMaskForegroundWidget, maskForegroundWidget, "maskForeground");
+    }
+    
+    if (useMaskPromptWidget && maskPromptWidget) {
+        toggleWidgetState(useMaskPromptWidget, maskPromptWidget, "maskPrompt");
+    }
+    
+    if (useMaskFrameIndexWidget && maskFrameIndexWidget) {
+        toggleWidgetState(useMaskFrameIndexWidget, maskFrameIndexWidget, "maskFrameIndex");
     }
 }
 
@@ -2637,6 +2666,76 @@ function speechInputToggleHandler(speechInputNode) {
     }
 }
 
+function briaProviderKeyPointsToggleHandler(keyPointsNode) {
+    // Helper function to toggle widget enabled state for multiple widgets
+    function toggleWidgetState(useWidget, paramWidgets, paramNames) {
+        if (!useWidget || !paramWidgets || paramWidgets.length === 0) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            paramWidgets.forEach((paramWidget, idx) => {
+                if (!paramWidget) return;
+                
+                if (paramWidget.inputEl) {
+                    paramWidget.inputEl.disabled = !enabled;
+                    paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                    paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                    paramWidget.inputEl.readOnly = !enabled;
+                }
+                
+                // Handle dropdown widgets (for Type fields)
+                if (paramWidget.options && paramWidget.options.element) {
+                    paramWidget.options.element.disabled = !enabled;
+                    paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                    paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+                }
+                
+                paramWidget.disabled = !enabled;
+                
+                // Fallback: try to find inputs via DOM if inputEl is not available
+                if (!paramWidget.inputEl && paramNames[idx]) {
+                    const nodeElement = keyPointsNode.htmlElements?.widgetsContainer || keyPointsNode.htmlElements;
+                    if (nodeElement) {
+                        const input = nodeElement.querySelector(`input[name="${paramNames[idx]}"], textarea[name="${paramNames[idx]}"], select[name="${paramNames[idx]}"]`);
+                        if (input) {
+                            input.disabled = !enabled;
+                            input.style.opacity = enabled ? "1" : "0.5";
+                            input.style.cursor = enabled ? "text" : "not-allowed";
+                            input.readOnly = !enabled;
+                            if (input.tagName === "SELECT") {
+                                input.style.pointerEvents = enabled ? "auto" : "none";
+                            }
+                        }
+                    }
+                }
+            });
+            
+            keyPointsNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handlers for all 6 key points
+    for (let i = 1; i <= 6; i++) {
+        const useWidget = keyPointsNode.widgets.find(w => w.name === `use_${i}`);
+        const xWidget = keyPointsNode.widgets.find(w => w.name === `X${i}`);
+        const yWidget = keyPointsNode.widgets.find(w => w.name === `Y${i}`);
+        const typeWidget = keyPointsNode.widgets.find(w => w.name === `Type${i}`);
+        
+        if (useWidget && xWidget && yWidget && typeWidget) {
+            toggleWidgetState(useWidget, [xWidget, yWidget, typeWidget], [`X${i}`, `Y${i}`, `Type${i}`]);
+        }
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -2670,6 +2769,7 @@ export {
     settingsToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
+    briaProviderKeyPointsToggleHandler,
 };
 
 function googleProviderSettingsToggleHandler(googleNode) {

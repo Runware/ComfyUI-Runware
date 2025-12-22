@@ -28,8 +28,8 @@ class videoInferenceInputs:
                 "Video": ("STRING", {
                     "tooltip": "Connect the mediaUUID output from Runware Media Upload node with a reference/input video."
                 }),
-                "Mask": ("IMAGE", {
-                    "tooltip": "Mask image to specify a specific subject in the image to speak. Use white/black mask format."
+                "Mask": ("STRING", {
+                    "tooltip": "Mask URL or mediaUUID for video masking. Connect the mediaUUID output from Runware Media Upload node with a video mask file, or provide a URL. Used for video eraser and similar operations."
                 }),
                 "Frame": ("IMAGE", {
                     "tooltip": "Frame image for video generation. Connect a Load Image node to provide the frame image."
@@ -43,7 +43,7 @@ class videoInferenceInputs:
             }
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Video Inference with OmniHuman 1.5 support, including image, audio, video, and mask inputs."
+    DESCRIPTION = "Configure custom inputs for Runware Video Inference with OmniHuman 1.5 support, including image, audio, video, and mask inputs. Supports both image masks and video masks (URL/UUID)."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREVIDEOINFERENCEINPUTS",)
     RETURN_NAMES = ("Video Inference Inputs",)
@@ -90,8 +90,8 @@ class videoInferenceInputs:
         if video is not None and video.strip() != "":
             inputs["video"] = video.strip()
 
-        if mask is not None:
-            inputs["mask"] = rwUtils.convertTensor2IMG(mask)
+        if mask is not None and mask.strip() != "":
+            inputs["mask"] = mask.strip()
 
         if frame is not None:
             inputs["frame"] = rwUtils.convertTensor2IMG(frame)
