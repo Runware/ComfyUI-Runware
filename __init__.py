@@ -32,7 +32,7 @@ from .modules.providerSettings.pixverseProviderSettings import RunwarePixversePr
 from .modules.providerSettings.openaiProviderSettings import RunwareOpenAIProviderSettings
 from .modules.providerSettings.bytedanceImageProviderSettings import RunwareBytedanceProviderSettings
 from .modules.providerSettings.briaImageProviderSettings import RunwareBriaProviderSettings
-from .modules.providerSettings.briaProviderKeyPoints import RunwareBriaProviderKeyPoints
+from .modules.providerSettings.briaProviderMask import RunwareBriaProviderMask
 from .modules.audioInference import RunwareAudioInference
 from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.audioSections import RunwareAudioSections
@@ -114,7 +114,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware OpenAI Provider Settings": RunwareOpenAIProviderSettings,
     "Runware Bytedance Provider Settings": RunwareBytedanceProviderSettings,
     "Runware Bria Provider Settings": RunwareBriaProviderSettings,
-    "Runware Bria Provider Key Points": RunwareBriaProviderKeyPoints,
+    "Runware Bria Provider Mask": RunwareBriaProviderMask,
     "Runware Audio Inference": RunwareAudioInference,
     "Runware Audio Model Search": RunwareAudioModelSearch,
     "Runware Audio Sections": RunwareAudioSections,

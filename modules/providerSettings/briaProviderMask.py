@@ -1,19 +1,47 @@
 """
-Runware Bria Provider Key Points Node
-Creates key points configuration for Bria mask settings
+Runware Bria Provider Mask Node
+Creates mask configuration for Bria video eraser settings
 """
 
 from typing import Optional, Dict, Any, List
 
 
-class RunwareBriaProviderKeyPoints:
-    """Runware Bria Provider Key Points Node"""
+class RunwareBriaProviderMask:
+    """Runware Bria Provider Mask Node"""
 
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {},
             "optional": {
+                "useForeground": ("BOOLEAN", {
+                    "tooltip": "Enable to include mask.foreground parameter in API request.",
+                    "default": False,
+                }),
+                "foreground": ("BOOLEAN", {
+                    "tooltip": "Triggers the foreground mask endpoint. Only used when 'Use Foreground' is enabled.",
+                    "default": True,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "usePrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include mask.prompt parameter in API request.",
+                    "default": False,
+                }),
+                "prompt": ("STRING", {
+                    "tooltip": "Text instruction describing the object to be masked. Only used when 'Use Prompt' is enabled.",
+                    "default": "",
+                    "multiline": True,
+                }),
+                "useFrameIndex": ("BOOLEAN", {
+                    "tooltip": "Enable to include mask.frameIndex parameter in API request.",
+                    "default": False,
+                }),
+                "frameIndex": ("INT", {
+                    "tooltip": "The frame number to apply key points to. Specifies which frame in the video to use for masking. Only used when 'Use Frame Index' is enabled.",
+                    "default": 0,
+                    "min": 0,
+                }),
                 "use_1": ("BOOLEAN", {
                     "tooltip": "Enable to include the first key point in the mask configuration.",
                     "default": False,
@@ -125,18 +153,42 @@ class RunwareBriaProviderKeyPoints:
             }
         }
 
-    RETURN_TYPES = ("RUNWAREBRIAPROVIDERKEYPOINTS",)
-    RETURN_NAMES = ("Key Points",)
-    FUNCTION = "createKeyPoints"
+    RETURN_TYPES = ("RUNWAREBRIAPROVIDERMASK",)
+    RETURN_NAMES = ("Bria Provider Setting Mask",)
+    FUNCTION = "createMask"
     CATEGORY = "Runware/Provider Settings"
-    DESCRIPTION = "Create key points configuration for Bria mask settings. Each key point defines a coordinate (x, y) and type (positive/negative) to guide mask generation."
+    DESCRIPTION = "Create mask configuration for Bria video eraser settings. Supports foreground mask, text-based masking, and coordinate-based key points for precise object removal."
 
-    def createKeyPoints(self, **kwargs) -> tuple[List[Dict[str, Any]]]:
-        """Create key points array from provided parameters"""
+    def createMask(self, **kwargs) -> tuple[Dict[str, Any]]:
+        """Create mask configuration from provided parameters"""
         
+        mask: Dict[str, Any] = {}
+        maskEnabled = False
+        
+        # Handle foreground
+        useForeground = kwargs.get("useForeground", False)
+        if useForeground:
+            foreground = kwargs.get("foreground", True)
+            mask["foreground"] = foreground
+            maskEnabled = True
+        
+        # Handle prompt
+        usePrompt = kwargs.get("usePrompt", False)
+        if usePrompt:
+            prompt = kwargs.get("prompt", "").strip()
+            if prompt:
+                mask["prompt"] = prompt
+                maskEnabled = True
+        
+        # Handle frameIndex
+        useFrameIndex = kwargs.get("useFrameIndex", False)
+        if useFrameIndex:
+            frameIndex = kwargs.get("frameIndex", 0)
+            mask["frameIndex"] = frameIndex
+            maskEnabled = True
+        
+        # Process key points
         keyPoints: List[Dict[str, Any]] = []
-        
-        # Process up to 6 key points
         for i in range(1, 7):
             use_key = kwargs.get(f"use_{i}", False)
             
@@ -147,7 +199,6 @@ class RunwareBriaProviderKeyPoints:
                 point_type = kwargs.get(f"Type{i}", "positive")
                 
                 # Only add key point if both x and y are provided and at least one is non-zero
-                # This allows users to leave unused key points at 0,0
                 if x > 0 or y > 0:
                     keyPoints.append({
                         "x": x,
@@ -155,15 +206,23 @@ class RunwareBriaProviderKeyPoints:
                         "type": point_type
                     })
         
-        return (keyPoints,)
+        # Add keyPoints if any were provided
+        if len(keyPoints) > 0:
+            mask["keyPoints"] = keyPoints
+            maskEnabled = True
+        
+        # Only return mask if it has at least one property
+        if maskEnabled:
+            return (mask,)
+        else:
+            return ({},)
 
 
 # Node class mappings
 NODE_CLASS_MAPPINGS = {
-    "RunwareBriaProviderKeyPoints": RunwareBriaProviderKeyPoints,
+    "RunwareBriaProviderMask": RunwareBriaProviderMask,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "RunwareBriaProviderKeyPoints": "Runware Bria Provider Key Points",
+    "RunwareBriaProviderMask": "Runware Bria Provider Mask",
 }
-
