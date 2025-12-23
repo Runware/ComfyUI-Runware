@@ -1123,6 +1123,8 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     const maxSequentialImagesWidget = bytedanceNode.widgets.find(w => w.name === "maxSequentialImages");
     const useFastModeWidget = bytedanceNode.widgets.find(w => w.name === "useFastMode");
     const fastModeWidget = bytedanceNode.widgets.find(w => w.name === "fastMode");
+    const useAudioWidget = bytedanceNode.widgets.find(w => w.name === "useAudio");
+    const audioWidget = bytedanceNode.widgets.find(w => w.name === "audio");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1176,6 +1178,10 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     
     if (useFastModeWidget && fastModeWidget) {
         toggleWidgetState(useFastModeWidget, fastModeWidget, "fastMode");
+    }
+
+    if (useAudioWidget && audioWidget) {
+        toggleWidgetState(useAudioWidget, audioWidget, "audio");
     }
 }
 
@@ -1694,6 +1700,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Bytedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)", "bytedance:1@1 (Seedance 1.0 Lite)",
             "bytedance:5@1 (OmniHuman 1)", "bytedance:5@2 (OmniHuman 1.5)",
+            "bytedance:seedance@1.5-pro (Seedance 1.5 Pro)",
         ],
         "MiniMax": [
             "minimax:1@1 (MiniMax 01 Base)", "minimax:2@1 (MiniMax 01 Director)",
@@ -1765,6 +1772,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:1@1": {"width": 864, "height": 480},
         "bytedance:5@1": {"width": 1024, "height": 1024},
         "bytedance:5@2": {"width": 1024, "height": 1024},
+        "bytedance:seedance@1.5-pro": {"width": 864, "height": 480},
         "minimax:1@1": {"width": 1366, "height": 768},
         "minimax:2@1": {"width": 1366, "height": 768},
         "minimax:2@3": {"width": 1366, "height": 768},
@@ -1826,6 +1834,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:1@1": "480p",
         "bytedance:5@1": null,  // No resolution support
         "bytedance:5@2": null,  // No resolution support
+        "bytedance:seedance@1.5-pro": "480p",
         "minimax:1@1": "768p",
         "minimax:2@1": "768p",
         "minimax:2@3": "768p",
