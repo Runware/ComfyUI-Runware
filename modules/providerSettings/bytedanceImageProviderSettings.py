@@ -39,6 +39,14 @@ class RunwareBytedanceProviderSettings:
                     "tooltip": "When enabled, speeds up generation by sacrificing some effects. Default: false. RTF: 25-28 (fast) vs 35 (normal). Supported by OmniHuman 1.5.",
                     "default": False,
                 }),
+                "useAudio": ("BOOLEAN", {
+                    "tooltip": "Enable to include audio parameter in provider settings.",
+                    "default": False,
+                }),
+                "audio": ("BOOLEAN", {
+                    "tooltip": "Enable audio generation support when available.",
+                    "default": False,
+                }),
             }
         }
     
@@ -54,11 +62,13 @@ class RunwareBytedanceProviderSettings:
         useCameraFixed = kwargs.get("useCameraFixed", False)
         useMaxSequentialImages = kwargs.get("useMaxSequentialImages", False)
         useFastMode = kwargs.get("useFastMode", False)
+        useAudio = kwargs.get("useAudio", False)
         
         # Get value parameters
         cameraFixed = kwargs.get("cameraFixed", False)
         maxSequentialImages = kwargs.get("maxSequentialImages", 1)
         fastMode = kwargs.get("fastMode", False)
+        audio = kwargs.get("audio", False)
         
         # Build settings dictionary - only include what is enabled
         settings = {}
@@ -74,6 +84,10 @@ class RunwareBytedanceProviderSettings:
         # Add fastMode only if useFastMode is enabled
         if useFastMode:
             settings["fastMode"] = fastMode
+
+        # Add audio only if useAudio is enabled
+        if useAudio:
+            settings["audio"] = audio
         
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
