@@ -118,7 +118,7 @@ class videoModelSearch:
         "bytedance:1@1": {"width": 864, "height": 480},
         "bytedance:5@1": {"width": 1024, "height": 1024},
         "bytedance:5@2": {"width": 1024, "height": 1024},
-        "bytedance:seedance@1.5-pro": {"width": 864, "height": 480},
+        "bytedance:seedance@1.5-pro": {"width": 864, "height": 496},
         
         # MiniMax Models
         "minimax:1@1": {"width": 1366, "height": 768},
