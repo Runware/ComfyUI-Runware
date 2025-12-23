@@ -86,6 +86,7 @@ const RUNWARE_NODE_TYPES = {
     OPENAIPROVIDERSETTINGS: "Runware OpenAI Provider Settings",
     BYTEDANCEPROVIDERSETTINGS: "Runware Bytedance Provider Settings",
     BRIAPROVIDERSETTINGS: "Runware Bria Provider Settings",
+    BRIAPROVIDERMASK: "Runware Bria Provider Mask",
     ELEVENLABSPROVIDERSETTINGS: "Runware ElevenLabs Provider Settings",
     ELEVENLABSPROVIDERSETTINGSSECTIONS: "Runware ElevenLabs Provider Settings Sections",
     VIDUPROVIDERSETTINGS: "Runware Vidu Provider Settings",
@@ -272,6 +273,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.BRIAPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.BRIAPROVIDERMASK]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

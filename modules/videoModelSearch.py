@@ -86,6 +86,9 @@ class videoModelSearch:
             "sync:lipsync-2-pro@1 (Sync LipSync 2 Pro)",
             "sync:react-1@1 (Sync React-1)",
         ],
+        "Bria": [
+            "bria:60@1 (Bria Video Eraser)",
+        ],
     }
     
     # Model dimensions mapping
@@ -172,6 +175,9 @@ class videoModelSearch:
         "sync:lipsync-2@1": {"width": 0, "height": 0},
         "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
         "sync:react-1@1": {"width": 0, "height": 0},
+        
+        # Bria Models
+        "bria:60@1": {"width": 0, "height": 0},
     }
     
     # Model resolutions mapping
@@ -258,6 +264,9 @@ class videoModelSearch:
         "sync:lipsync-2@1": "720p",
         "sync:lipsync-2-pro@1": "720p",
         "sync:react-1@1": "720p",
+        
+        # Bria Models
+        "bria:60@1": "720p",
     }
     
     MODEL_ARCHITECTURES = [
@@ -274,7 +283,8 @@ class videoModelSearch:
         "Ovi",
         "Runway",
         "Luma",
-        "Sync"
+        "Sync",
+        "Bria"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}

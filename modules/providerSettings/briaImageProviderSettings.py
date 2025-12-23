@@ -130,6 +130,29 @@ class RunwareBriaProviderSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "usePreserveAudio": ("BOOLEAN", {
+                    "tooltip": "Enable to include preserveAudio parameter in API request.",
+                    "default": False,
+                }),
+                "preserveAudio": ("BOOLEAN", {
+                    "tooltip": "Whether to keep the original audio track. Only used when 'Use Preserve Audio' is enabled.",
+                    "default": True,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useAutoTrim": ("BOOLEAN", {
+                    "tooltip": "Enable to include autoTrim parameter in API request.",
+                    "default": False,
+                }),
+                "autoTrim": ("BOOLEAN", {
+                    "tooltip": "If true, videos longer than 5 seconds are trimmed to the first 5 seconds. If false, videos longer than 5 seconds are rejected. Only used when 'Use Auto Trim' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "Bria Provider Setting Mask": ("RUNWAREBRIAPROVIDERMASK", {
+                    "tooltip": "Connect Runware Bria Provider Mask node to provide mask configuration for video eraser operations.",
+                }),
             }
         }
     
@@ -155,6 +178,8 @@ class RunwareBriaProviderSettings:
         useRefinePrompt = kwargs.get("useRefinePrompt", False)
         useOriginalQuality = kwargs.get("useOriginalQuality", False)
         useForceBackgroundDetection = kwargs.get("useForceBackgroundDetection", False)
+        usePreserveAudio = kwargs.get("usePreserveAudio", False)
+        useAutoTrim = kwargs.get("useAutoTrim", False)
         
         # Get actual parameters
         medium = kwargs.get("medium", "photography")
@@ -169,6 +194,9 @@ class RunwareBriaProviderSettings:
         refinePrompt = kwargs.get("refinePrompt", True)
         originalQuality = kwargs.get("originalQuality", True)
         forceBackgroundDetection = kwargs.get("forceBackgroundDetection", False)
+        preserveAudio = kwargs.get("preserveAudio", True)
+        autoTrim = kwargs.get("autoTrim", False)
+        mask = kwargs.get("Bria Provider Setting Mask", None)
         
         # Build settings dictionary
         settings = {}
@@ -220,6 +248,18 @@ class RunwareBriaProviderSettings:
         # Add forceBackgroundDetection only if useForceBackgroundDetection is enabled
         if useForceBackgroundDetection:
             settings["forceBackgroundDetection"] = forceBackgroundDetection
+        
+        # Add preserveAudio only if usePreserveAudio is enabled
+        if usePreserveAudio:
+            settings["preserveAudio"] = preserveAudio
+        
+        # Add autoTrim only if useAutoTrim is enabled
+        if useAutoTrim:
+            settings["autoTrim"] = autoTrim
+        
+        # Add mask if provided from Mask node
+        if mask is not None and isinstance(mask, dict) and len(mask) > 0:
+            settings["mask"] = mask
         
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
