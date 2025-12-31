@@ -1718,6 +1718,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Wan": [
             "runware:200@1 (Wan 2.1 1.3B)", "runware:200@2 (Wan 2.1 14B)",
             "runware:200@6 (Wan 2.2)",
+            "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
         ],
         "OpenAI": [
@@ -1794,6 +1795,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@1": {"width": 853, "height": 480},
         "runware:200@2": {"width": 853, "height": 480},
         "runware:200@6": {"width": 1280, "height": 720},
+        "runware:200@8": {"width": 1104, "height": 832},
         "alibaba:wan@2.6": {"width": 1280, "height": 720},
         "openai:3@1": {"width": 1280, "height": 720},
         "openai:3@0": {"width": 1280, "height": 720},
@@ -1857,6 +1859,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@1": "480p",
         "runware:200@2": "480p",
         "runware:200@6": "720p",
+        "runware:200@8": "720p",
         "alibaba:wan@2.6": "720p",
         "openai:3@1": "720p",
         "openai:3@0": "720p",
@@ -2127,6 +2130,10 @@ function klingProviderSettingsToggleHandler(klingNode) {
     const asmrModeWidget = klingNode.widgets.find(w => w.name === "asmrMode");
     const useKeepOriginalSoundWidget = klingNode.widgets.find(w => w.name === "useKeepOriginalSound");
     const keepOriginalSoundWidget = klingNode.widgets.find(w => w.name === "keepOriginalSound");
+    const useSoundWidget = klingNode.widgets.find(w => w.name === "useSound");
+    const soundWidget = klingNode.widgets.find(w => w.name === "sound");
+    const useCharacterOrientationWidget = klingNode.widgets.find(w => w.name === "useCharacterOrientation");
+    const characterOrientationWidget = klingNode.widgets.find(w => w.name === "characterOrientation");
     
     // Helper function to toggle widget enabled state (EXACT same pattern as imageInferenceToggleHandler)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -2201,6 +2208,14 @@ function klingProviderSettingsToggleHandler(klingNode) {
     
     if (useKeepOriginalSoundWidget && keepOriginalSoundWidget) {
         toggleWidgetState(useKeepOriginalSoundWidget, keepOriginalSoundWidget, "keepOriginalSound");
+    }
+    
+    if (useSoundWidget && soundWidget) {
+        toggleWidgetState(useSoundWidget, soundWidget, "sound");
+    }
+    
+    if (useCharacterOrientationWidget && characterOrientationWidget) {
+        toggleWidgetState(useCharacterOrientationWidget, characterOrientationWidget, "characterOrientation");
     }
 }
 
@@ -2752,6 +2767,203 @@ function briaProviderMaskToggleHandler(maskNode) {
     }
 }
 
+function wanAnimateAdvancedFeatureSettingsToggleHandler(wanAnimateNode) {
+    // Find widgets
+    const useModeWidget = wanAnimateNode.widgets.find(w => w.name === "useMode");
+    const modeWidget = wanAnimateNode.widgets.find(w => w.name === "mode");
+    const useRetargetPoseWidget = wanAnimateNode.widgets.find(w => w.name === "useRetargetPose");
+    const retargetPoseWidget = wanAnimateNode.widgets.find(w => w.name === "retargetPose");
+    const usePrevSegCondFramesWidget = wanAnimateNode.widgets.find(w => w.name === "usePrevSegCondFrames");
+    const prevSegCondFramesWidget = wanAnimateNode.widgets.find(w => w.name === "prevSegCondFrames");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            // Handle dropdown widgets (for mode field)
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = wanAnimateNode.htmlElements?.widgetsContainer || wanAnimateNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            wanAnimateNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler for mode
+    if (useModeWidget && modeWidget) {
+        toggleWidgetState(useModeWidget, modeWidget, "mode");
+    }
+    
+    // Set up toggle handler for retargetPose (with mode dependency)
+    if (useRetargetPoseWidget && retargetPoseWidget) {
+        function toggleRetargetPoseEnabled() {
+            const useRetargetPoseEnabled = useRetargetPoseWidget.value === true;
+            const modeValue = modeWidget ? modeWidget.value : "animate";
+            // retargetPose is only supported for animate mode
+            const enabled = useRetargetPoseEnabled && modeValue === "animate";
+            
+            if (retargetPoseWidget.inputEl) {
+                retargetPoseWidget.inputEl.disabled = !enabled;
+                retargetPoseWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                retargetPoseWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                retargetPoseWidget.inputEl.readOnly = !enabled;
+            }
+            
+            retargetPoseWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM
+            if (!retargetPoseWidget.inputEl) {
+                const nodeElement = wanAnimateNode.htmlElements?.widgetsContainer || wanAnimateNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="retargetPose"], textarea[name="retargetPose"], select[name="retargetPose"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                    }
+                }
+            }
+            
+            wanAnimateNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback for useRetargetPose toggle
+        appendWidgetCB(useRetargetPoseWidget, () => {
+            setTimeout(toggleRetargetPoseEnabled, 50);
+        });
+        
+        // Set up callback for mode change (to disable retargetPose when mode is "replace")
+        if (modeWidget) {
+            appendWidgetCB(modeWidget, () => {
+                setTimeout(toggleRetargetPoseEnabled, 50);
+            });
+        }
+        
+        // Initial call to set initial state
+        setTimeout(toggleRetargetPoseEnabled, 100);
+    }
+    
+    // Set up toggle handler for prevSegCondFrames
+    if (usePrevSegCondFramesWidget && prevSegCondFramesWidget) {
+        toggleWidgetState(usePrevSegCondFramesWidget, prevSegCondFramesWidget, "prevSegCondFrames");
+    }
+}
+
+function videoAdvancedFeatureInputsToggleHandler(advancedFeatureNode) {
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = advancedFeatureNode.htmlElements?.widgetsContainer || advancedFeatureNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                    }
+                }
+            }
+            
+            advancedFeatureNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handlers for each parameter
+    const useVideoCFGScaleWidget = advancedFeatureNode.widgets.find(w => w.name === "useVideoCFGScale");
+    const videoCFGScaleWidget = advancedFeatureNode.widgets.find(w => w.name === "videoCFGScale");
+    if (useVideoCFGScaleWidget && videoCFGScaleWidget) {
+        toggleWidgetState(useVideoCFGScaleWidget, videoCFGScaleWidget, "videoCFGScale");
+    }
+    
+    const useAudioCFGScaleWidget = advancedFeatureNode.widgets.find(w => w.name === "useAudioCFGScale");
+    const audioCFGScaleWidget = advancedFeatureNode.widgets.find(w => w.name === "audioCFGScale");
+    if (useAudioCFGScaleWidget && audioCFGScaleWidget) {
+        toggleWidgetState(useAudioCFGScaleWidget, audioCFGScaleWidget, "audioCFGScale");
+    }
+    
+    const useVideoNegativePromptWidget = advancedFeatureNode.widgets.find(w => w.name === "useVideoNegativePrompt");
+    const videoNegativePromptWidget = advancedFeatureNode.widgets.find(w => w.name === "videoNegativePrompt");
+    if (useVideoNegativePromptWidget && videoNegativePromptWidget) {
+        toggleWidgetState(useVideoNegativePromptWidget, videoNegativePromptWidget, "videoNegativePrompt");
+    }
+    
+    const useAudioNegativePromptWidget = advancedFeatureNode.widgets.find(w => w.name === "useAudioNegativePrompt");
+    const audioNegativePromptWidget = advancedFeatureNode.widgets.find(w => w.name === "audioNegativePrompt");
+    if (useAudioNegativePromptWidget && audioNegativePromptWidget) {
+        toggleWidgetState(useAudioNegativePromptWidget, audioNegativePromptWidget, "audioNegativePrompt");
+    }
+    
+    const useSlgLayerWidget = advancedFeatureNode.widgets.find(w => w.name === "useSlgLayer");
+    const slgLayerWidget = advancedFeatureNode.widgets.find(w => w.name === "slgLayer");
+    if (useSlgLayerWidget && slgLayerWidget) {
+        toggleWidgetState(useSlgLayerWidget, slgLayerWidget, "slgLayer");
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -2786,6 +2998,8 @@ export {
     audioInputToggleHandler,
     speechInputToggleHandler,
     briaProviderMaskToggleHandler,
+    wanAnimateAdvancedFeatureSettingsToggleHandler,
+    videoAdvancedFeatureInputsToggleHandler,
 };
 
 function googleProviderSettingsToggleHandler(googleNode) {

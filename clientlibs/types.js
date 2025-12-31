@@ -96,6 +96,7 @@ const RUNWARE_NODE_TYPES = {
     AUDIOINPUT: "Runware Video Audio Input",
     SPEECHINPUT: "Runware Video Speech Input",
     REFERENCEVIDEOS: "Runware Reference Videos",
+    REFERENCEVOICES: "Runware Reference Voices",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
@@ -118,6 +119,7 @@ const RUNWARE_NODE_TYPES = {
     SAFETYINPUTS: "Runware Safety Inputs",
     SETTINGS: "Runware Settings",
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
+    WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -316,6 +318,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.REFERENCEVOICES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.VIDEOINFERENCEINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
@@ -402,6 +408,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.VIDEOADVANCEDFEATUREINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.WANANIMATEADVANCEDFEATURESETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

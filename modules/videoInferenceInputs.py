@@ -40,6 +40,9 @@ class videoInferenceInputs:
                 "Reference Videos": ("RUNWAREREFERENCEVIDEOS", {
                     "tooltip": "Connect the Reference Videos node to provide reference video mediaUUIDs."
                 }),
+                "Reference Voices": ("RUNWAREREFERENCEVOICES", {
+                    "tooltip": "Connect the Reference Voices node to provide reference voice URLs or mediaUUIDs."
+                }),
             }
         }
 
@@ -61,6 +64,7 @@ class videoInferenceInputs:
         frameImages = kwargs.get("Frame Images", None)
         references = kwargs.get("References", None)
         referenceVideos = kwargs.get("Reference Videos", None)
+        referenceVoices = kwargs.get("Reference Voices", None)
 
         inputs = {}
 
@@ -104,5 +108,8 @@ class videoInferenceInputs:
 
         if referenceVideos is not None and len(referenceVideos) > 0:
             inputs["referenceVideos"] = referenceVideos
+
+        if referenceVoices is not None and len(referenceVoices) > 0:
+            inputs["referenceVoices"] = referenceVoices
 
         return (inputs,)

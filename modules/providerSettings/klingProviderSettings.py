@@ -90,6 +90,14 @@ class RunwareKlingProviderSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useCharacterOrientation": ("BOOLEAN", {
+                    "tooltip": "Enable to include characterOrientation parameter in provider settings",
+                    "default": False,
+                }),
+                "characterOrientation": (["image", "video"], {
+                    "tooltip": "Character orientation mode. 'image': has the same orientation as the person in the picture (reference video duration should not exceed 10 seconds). 'video': consistent with the orientation of the characters in the video (reference video duration should not exceed 30 seconds). Only used when 'Use Character Orientation' is enabled.",
+                    "default": "image",
+                }),
             }
         }
 
@@ -111,6 +119,7 @@ class RunwareKlingProviderSettings:
         useAsmrMode = kwargs.get("useAsmrMode", False)
         useKeepOriginalSound = kwargs.get("useKeepOriginalSound", False)
         useSound = kwargs.get("useSound", False)
+        useCharacterOrientation = kwargs.get("useCharacterOrientation", False)
 
         # Get value parameters
         cameraControl = kwargs.get("cameraControl", "none")
@@ -121,6 +130,7 @@ class RunwareKlingProviderSettings:
         asmrMode = kwargs.get("asmrMode", False)
         keepOriginalSound = kwargs.get("keepOriginalSound", True)
         sound = kwargs.get("sound", False)
+        characterOrientation = kwargs.get("characterOrientation", "image")
 
         # Build settings dictionary - only include what is enabled
         klingSettings: Dict[str, Any] = {}
@@ -156,6 +166,10 @@ class RunwareKlingProviderSettings:
         # Add sound only if useSound is enabled
         if useSound:
             klingSettings["sound"] = sound
+
+        # Add characterOrientation only if useCharacterOrientation is enabled
+        if useCharacterOrientation and characterOrientation:
+            klingSettings["characterOrientation"] = characterOrientation
 
         # Clean up None values
         klingSettings = {k: v for k, v in klingSettings.items() if v is not None}
