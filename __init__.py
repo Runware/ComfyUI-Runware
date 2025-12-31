@@ -48,6 +48,7 @@ from .modules.audioInputCombine import RunwareAudioInputCombine
 from .modules.speechInput import RunwareSpeechInput
 from .modules.speechInputCombine import RunwareSpeechInputCombine
 from .modules.referenceVideos import referenceVideos
+from .modules.referenceVoices import referenceVoices
 from .modules.videoInferenceInputs import videoInferenceInputs
 from .modules.providerSettings.lightricksProviderSettings import RunwareLightricksProviderSettings
 from .modules.providerSettings.minimaxProviderSettings import RunwareMiniMaxProviderSettings
@@ -68,6 +69,7 @@ from .modules.videoInputsFrame import RunwareVideoInputsFrameImages
 from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
+from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -130,6 +132,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Speech Input": RunwareSpeechInput,
     "Runware Speech Inputs Combine": RunwareSpeechInputCombine,
     "Runware Reference Videos": referenceVideos,
+    "Runware Reference Voices": referenceVoices,
     "Runware Video Inference Inputs": videoInferenceInputs,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,
@@ -150,6 +153,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Safety Inputs": safetyInputs,
     "Runware Settings": RunwareSettings,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
+    "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

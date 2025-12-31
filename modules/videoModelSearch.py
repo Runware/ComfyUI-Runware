@@ -58,6 +58,7 @@ class videoModelSearch:
             "runware:200@1 (Wan 2.1 1.3B)",
             "runware:200@2 (Wan 2.1 14B)",
             "runware:200@6 (Wan 2.2)",
+            "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
         ],
         "OpenAI": [
@@ -148,6 +149,7 @@ class videoModelSearch:
         "runware:200@1": {"width": 853, "height": 480},
         "runware:200@2": {"width": 853, "height": 480},
         "runware:200@6": {"width": 1280, "height": 720},
+        "runware:200@8": {"width": 1104, "height": 832},
         "alibaba:wan@2.6": {"width": 1280, "height": 720},
         
         # OpenAI Models
@@ -237,6 +239,7 @@ class videoModelSearch:
         "runware:200@1": "480p",
         "runware:200@2": "480p",
         "runware:200@6": "720p",
+        "runware:200@8": "720p",
         "alibaba:wan@2.6": "720p",
         
         # OpenAI Models
