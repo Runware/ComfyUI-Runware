@@ -18,7 +18,7 @@ class upscaler:
             },
             "optional": {
                 "model": ("STRING", {
-                    "tooltip": "Model AIR ID (runware:500@1, runware:501@1, runware:502@1, runware:503@1, bria:52@1)",
+                    "tooltip": "Model AIR ID (runware:500@1, runware:501@1, runware:502@1, runware:503@1, runware:504@1, bria:52@1)",
                     "default": "",
                 }),
                 # Common parameters toggles
