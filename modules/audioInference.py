@@ -93,8 +93,8 @@ class RunwareAudioInference:
             }
         }
 
-    RETURN_TYPES = ("AUDIO",)
-    RETURN_NAMES = ("audio",)
+    RETURN_TYPES = ("AUDIO", "VIDEO")
+    RETURN_NAMES = ("audio", "video")
     FUNCTION = "generateAudio"
     CATEGORY = "Runware/Audio"
 
@@ -107,10 +107,25 @@ class RunwareAudioInference:
         self._logResponse(genResult)
         self._validateResponse(genResult)
         
+
+        audioData = genResult["data"][0]
         audioUrl = self._extractAudioUrl(genResult)
-        audioObj = self._downloadAndProcessAudio(audioUrl, params["sampleRate"])
         
-        return (audioObj,)
+
+        hasAudio = audioUrl is not None
+        hasVideo = bool(audioData.get("videoURL") or audioData.get("videoBase64Data", False))
+        
+        if hasAudio:
+            audioObj = self._downloadAndProcessAudio(audioUrl, params["sampleRate"])
+            print(f"[DEBUG] Audio URL found, returning audio. Audio URL: {audioUrl}")
+            return (audioObj, None)
+
+        if hasVideo:
+            videos = rwUtils.convertVideoB64List(genResult, width=None, height=None)
+            print(f"[DEBUG] No audio URL in response, but video is present. Returning video.")
+            return (None, videos)
+        
+        raise Exception("No audio or video data received from API")
 
     def _extractParameters(self, kwargs):
         """Extract and validate parameters from kwargs"""
@@ -241,10 +256,18 @@ class RunwareAudioInference:
             raise Exception(f"Audio generation failed: {errorMessage}")
         
         if "data" not in genResult or len(genResult["data"]) == 0:
-            raise Exception("No audio data received from API")
+            raise Exception("No data received from API")
+        
+        
+        audioData = genResult["data"][0]
+        hasAudio = bool(audioData.get("audioURL") or audioData.get("audioDataURI") or audioData.get("audioBase64Data"))
+        hasVideo = bool(audioData.get("videoURL") or audioData.get("videoBase64Data") or audioData.get("videoUUID"))
+        
+        if not hasAudio and not hasVideo:
+            raise Exception("No audio or video data received from API")
 
     def _extractAudioUrl(self, genResult):
-        """Extract audio URL from API response"""
+        """Extract audio URL from API response. Returns None if no audio URL is present (e.g., when only video is returned)."""
         audioData = genResult["data"][0]
         
         audioUrl = audioData.get("audioURL", "")
@@ -253,10 +276,8 @@ class RunwareAudioInference:
         if not audioUrl:
             audioUrl = audioData.get("audioBase64Data", "")
         
-        if not audioUrl:
-            raise Exception("No audio URL received from API")
-        
-        return audioUrl
+
+        return audioUrl if audioUrl else None
 
     def _downloadAndProcessAudio(self, audioUrl, targetSampleRate):
         """Download audio file and process it for ComfyUI"""
