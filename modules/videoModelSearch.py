@@ -90,6 +90,10 @@ class videoModelSearch:
         "Bria": [
             "bria:60@1 (Bria Video Eraser)",
         ],
+        "Creatify": [
+            "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
+            "creatify:aurora@0 (Creatify Aurora Avatar Model API (480p))",
+        ],
     }
     
     # Model dimensions mapping
@@ -180,6 +184,10 @@ class videoModelSearch:
         
         # Bria Models
         "bria:60@1": {"width": 0, "height": 0},
+        
+        # Creatify Models
+        "creatify:aurora@fast": {"width": 1280, "height": 720},
+        "creatify:aurora@0": {"width": 1280, "height": 720},
     }
     
     # Model resolutions mapping
@@ -270,6 +278,10 @@ class videoModelSearch:
         
         # Bria Models
         "bria:60@1": "720p",
+        
+        # Creatify Models
+        "creatify:aurora@fast": "720p",
+        "creatify:aurora@0": "480p",
     }
     
     MODEL_ARCHITECTURES = [
@@ -287,7 +299,8 @@ class videoModelSearch:
         "Runway",
         "Luma",
         "Sync",
-        "Bria"
+        "Bria",
+        "Creatify"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}

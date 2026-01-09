@@ -1812,6 +1812,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
         "sync:react-1@1": {"width": 0, "height": 0},
         "bria:60@1": {"width": 1280, "height": 720},
+        "creatify:aurora@fast": {"width": 1280, "height": 720},
+        "creatify:aurora@0": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -1876,6 +1878,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2-pro@1": "720p",
         "sync:react-1@1": "720p",
         "bria:60@1": "720p",
+        "creatify:aurora@fast": "720p",
+        "creatify:aurora@0": "480p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
