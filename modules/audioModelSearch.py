@@ -11,12 +11,16 @@ class RunwareAudioModelSearch:
         "KlingAI": [
             "klingai:8@1 (KlingAI Audio)",
         ],
+        "Mirelo": [
+            "mirelo:1@1 (Mirelo SFX 1.5)",
+        ],
     }
     
     MODEL_PROVIDERS = [
         "All",
         "ElevenLabs",
         "KlingAI",
+        "Mirelo",
     ]
     
     @classmethod
