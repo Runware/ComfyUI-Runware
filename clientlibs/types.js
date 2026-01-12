@@ -103,6 +103,7 @@ const RUNWARE_NODE_TYPES = {
     RUNWAYPROVIDERSETTINGS: "Runware Runway Provider Settings",
     LUMAPROVIDERSETTINGS: "Runware Luma Provider Settings",
     MIDJOURNEYPROVIDERSETTINGS: "Runware Midjourney Provider Settings",
+    MIRELOPROVIDERSETTINGS: "Runware Mirelo Provider Settings",
     ALIBABAPROVIDERSETTINGS: "Runware Alibaba Provider Settings",
     BLACKFORESTPROVIDERSETTINGS: "Runware BlackForest Labs Provider Settings",
     GOOGLEPROVIDERSETTINGS: "Runware Google Provider Settings",
@@ -343,6 +344,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.MIDJOURNEYPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.MIRELOPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

@@ -596,6 +596,11 @@ class VideoObject:
     
     def save_to(self, filename, **kwargs):
         """Save video to file by downloading from URL with retry logic"""
+        # If video URL is empty, this is a placeholder object (e.g., when only audio is returned)
+        if not self.video_url or self.video_url.strip() == "":
+            print(f"[Video Download] Skipping download - empty video URL (placeholder object)")
+            return False
+        
         max_retries = 10
         retry_delays = [2, 5, 10, 15, 20]  # Longer delays for retries with larger videos
         

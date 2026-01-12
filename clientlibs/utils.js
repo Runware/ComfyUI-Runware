@@ -966,6 +966,8 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     const sampleRateWidget = audioInferenceNode.widgets.find(w => w.name === "sampleRate");
     const useBitrateWidget = audioInferenceNode.widgets.find(w => w.name === "useBitrate");
     const bitrateWidget = audioInferenceNode.widgets.find(w => w.name === "bitrate");
+    const useStepsWidget = audioInferenceNode.widgets.find(w => w.name === "useSteps");
+    const stepsWidget = audioInferenceNode.widgets.find(w => w.name === "steps");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1023,6 +1025,10 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     
     if (useBitrateWidget && bitrateWidget) {
         toggleWidgetState(useBitrateWidget, bitrateWidget, "bitrate");
+    }
+    
+    if (useStepsWidget && stepsWidget) {
+        toggleWidgetState(useStepsWidget, stepsWidget, "steps");
     }
 }
 
@@ -1748,6 +1754,10 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Bria": [
             "bria:60@1 (Bria Video Eraser)",
         ],
+        "Creatify": [
+            "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
+            "creatify:aurora@0 (Creatify Aurora Avatar Model API (720p))",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -1812,6 +1822,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
         "sync:react-1@1": {"width": 0, "height": 0},
         "bria:60@1": {"width": 1280, "height": 720},
+        "creatify:aurora@fast": {"width": 1280, "height": 720},
+        "creatify:aurora@0": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -1876,6 +1888,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2-pro@1": "720p",
         "sync:react-1@1": "720p",
         "bria:60@1": "720p",
+        "creatify:aurora@fast": "720p",
+        "creatify:aurora@0": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -2085,6 +2099,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "KlingAI": [
             "klingai:8@1 (KlingAI Audio)",
+        ],
+        "Mirelo": [
+            "mirelo:1@1 (Mirelo SFX 1.5)",
         ],
     };
 
@@ -2344,6 +2361,59 @@ function alibabaProviderSettingsToggleHandler(alibabaNode) {
         
         // Initial state
         setTimeout(toggleShotTypeEnabled, 100);
+    }
+}
+
+function mireloProviderSettingsToggleHandler(mireloNode) {
+    // Find all "use" parameter widgets for Mirelo Provider Settings
+    const useStartOffsetWidget = mireloNode.widgets.find(w => w.name === "useStartOffset");
+    const startOffsetWidget = mireloNode.widgets.find(w => w.name === "startOffset");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            if (!paramWidget.inputEl) {
+                const nodeElement = mireloNode.htmlElements?.widgetsContainer || mireloNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+            
+            mireloNode.setDirtyCanvas(true);
+        }
+        
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler
+    if (useStartOffsetWidget && startOffsetWidget) {
+        toggleWidgetState(useStartOffsetWidget, startOffsetWidget, "startOffset");
     }
 }
 
@@ -2964,6 +3034,105 @@ function videoAdvancedFeatureInputsToggleHandler(advancedFeatureNode) {
     }
 }
 
+function audioInferenceInputsToggleHandler(audioInputsNode) {
+    // Find widgets
+    const useVideoWidget = audioInputsNode.widgets.find(w => w.name === "useVideo");
+    const videoWidget = audioInputsNode.widgets.find(w => w.name === "Video");
+    const useVideosWidget = audioInputsNode.widgets.find(w => w.name === "useVideos");
+    
+    // Helper function to toggle widget enabled state
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            
+            paramWidget.disabled = !enabled;
+            
+            // Fallback: try to find inputs via DOM if inputEl is not available
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = audioInputsNode.htmlElements?.widgetsContainer || audioInputsNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                    }
+                }
+            }
+            
+            audioInputsNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler for single video
+    if (useVideoWidget && videoWidget) {
+        toggleWidgetState(useVideoWidget, videoWidget, "Video");
+    }
+    
+    // Set up toggle handlers for multiple videos (Video1, Video2, Video3, Video4)
+    if (useVideosWidget) {
+        function toggleVideosEnabled() {
+            const enabled = useVideosWidget.value === true;
+            
+            for (let i = 1; i <= 4; i++) {
+                const videoWidget = audioInputsNode.widgets.find(w => w.name === `Video${i}`);
+                if (videoWidget) {
+                    if (videoWidget.inputEl) {
+                        videoWidget.inputEl.disabled = !enabled;
+                        videoWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                        videoWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                        videoWidget.inputEl.readOnly = !enabled;
+                    }
+                    
+                    videoWidget.disabled = !enabled;
+                    
+                    // Fallback: try to find inputs via DOM
+                    if (!videoWidget.inputEl) {
+                        const nodeElement = audioInputsNode.htmlElements?.widgetsContainer || audioInputsNode.htmlElements;
+                        if (nodeElement) {
+                            const input = nodeElement.querySelector(`input[name="Video${i}"], textarea[name="Video${i}"], select[name="Video${i}"]`);
+                            if (input) {
+                                input.disabled = !enabled;
+                                input.style.opacity = enabled ? "1" : "0.5";
+                                input.style.cursor = enabled ? "text" : "not-allowed";
+                                input.readOnly = !enabled;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            audioInputsNode.setDirtyCanvas(true);
+        }
+        
+        // Set up callback
+        appendWidgetCB(useVideosWidget, () => {
+            setTimeout(toggleVideosEnabled, 50);
+        });
+        
+        // Initial call to set initial state
+        setTimeout(toggleVideosEnabled, 100);
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -2991,6 +3160,7 @@ export {
     briaProviderSettingsToggleHandler,
     pixverseProviderSettingsToggleHandler,
     alibabaProviderSettingsToggleHandler,
+    mireloProviderSettingsToggleHandler,
     googleProviderSettingsToggleHandler,
     syncProviderSettingsToggleHandler,
     syncSegmentToggleHandler,
@@ -3000,6 +3170,7 @@ export {
     briaProviderMaskToggleHandler,
     wanAnimateAdvancedFeatureSettingsToggleHandler,
     videoAdvancedFeatureInputsToggleHandler,
+    audioInferenceInputsToggleHandler,
 };
 
 function googleProviderSettingsToggleHandler(googleNode) {

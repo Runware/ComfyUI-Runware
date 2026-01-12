@@ -56,6 +56,7 @@ from .modules.providerSettings.klingProviderSettings import RunwareKlingProvider
 from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProviderSettings
 from .modules.providerSettings.lumaProviderSettings import RunwareLumaProviderSettings
 from .modules.providerSettings.midjourneyProviderSettings import RunwareMidjourneyProviderSettings
+from .modules.providerSettings.mireloProviderSettings import RunwareMireloProviderSettings
 from .modules.providerSettings.alibabaProviderSettings import RunwareAlibabaProviderSettings
 from .modules.providerSettings.googleProviderSettings import RunwareGoogleProviderSettings
 from .modules.providerSettings.blackForestProviderSettings import RunwareBlackForestProviderSettings
@@ -140,6 +141,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware KlingAI Provider Settings": RunwareKlingProviderSettings,
     "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
     "Runware Midjourney Provider Settings": RunwareMidjourneyProviderSettings,
+    "Runware Mirelo Provider Settings": RunwareMireloProviderSettings,
     "Runware Alibaba Provider Settings": RunwareAlibabaProviderSettings,
     "Runware Google Provider Settings": RunwareGoogleProviderSettings,
     "Runware BlackForest Labs Provider Settings": RunwareBlackForestProviderSettings,
