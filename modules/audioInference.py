@@ -5,6 +5,7 @@ import numpy as np
 import librosa
 import tempfile
 import os
+import comfy.model_management
 from .utils import runwareUtils as rwUtils
 
 
@@ -72,7 +73,7 @@ class RunwareAudioInference:
                     "default": "URL",
                     "tooltip": "Output type for the generated audio"
                 }),
-                "outputFormat": (["MP3"], {
+                "outputFormat": (["MP3", "MP4"], {
                     "default": "MP3",
                     "tooltip": "Format of the output audio"
                 }),
@@ -81,6 +82,16 @@ class RunwareAudioInference:
                     "min": 1,
                     "max": 3,
                     "tooltip": "Number of audio files to generate"
+                }),
+                "useSteps": ("BOOLEAN", {
+                    "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps.",
+                    "default": False,
+                }),
+                "steps": ("INT", {
+                    "tooltip": "Number of inference steps for audio generation. More steps generally result in higher quality but longer generation time.",
+                    "default": 20,
+                    "min": 1,
+                    "max": 100,
                 }),
             },
             "optional": {
@@ -102,30 +113,102 @@ class RunwareAudioInference:
         """Main function to generate audio using Runware API"""
         params = self._extractParameters(kwargs)
         genConfig = self._buildGenConfig(params)
-        genResult = rwUtils.inferenecRequest(genConfig)
         
-        self._logResponse(genResult)
-        self._validateResponse(genResult)
+        try:
+            # Debug: Print the request being sent
+            print(f"[DEBUG] Sending Audio Inference Request:")
+            print(f"[DEBUG] Request Payload: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
+            
+            genResult = rwUtils.inferenecRequest(genConfig)
+            
+            # Debug: Print the response received
+            print(f"[DEBUG] Received Audio Inference Response:")
+            print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
+            
+            print(f"[Debugging] Generation config: {rwUtils.safe_json_dumps(genConfig, indent=2)}")
+        except Exception as e:
+            # Re-raise the original error without modification
+            raise e
         
-
-        audioData = genResult["data"][0]
-        audioUrl = self._extractAudioUrl(genResult)
+        # Extract task UUID for polling
+        taskUUID = genConfig[0]["taskUUID"]
         
-
-        hasAudio = audioUrl is not None
-        hasVideo = bool(audioData.get("videoURL") or audioData.get("videoBase64Data", False))
-        
-        if hasAudio:
-            audioObj = self._downloadAndProcessAudio(audioUrl, params["sampleRate"])
-            print(f"[DEBUG] Audio URL found, returning audio. Audio URL: {audioUrl}")
-            return (audioObj, None)
-
-        if hasVideo:
-            videos = rwUtils.convertVideoB64List(genResult, width=None, height=None)
-            print(f"[DEBUG] No audio URL in response, but video is present. Returning video.")
-            return (None, videos)
-        
-        raise Exception("No audio or video data received from API")
+        # Poll for audio completion
+        while True:
+            # Check for interrupt before each poll
+            comfy.model_management.throw_exception_if_processing_interrupted()
+            
+            # Poll for audio result
+            pollResult = rwUtils.pollVideoResult(taskUUID)
+            print(f"[Debugging] Poll result: {rwUtils.safe_json_dumps(pollResult, indent=2) if isinstance(pollResult, (dict, list)) else pollResult}")
+            
+            # Check for errors first
+            if pollResult and "errors" in pollResult and len(pollResult["errors"]) > 0:
+                error_info = pollResult["errors"][0]
+                error_message = error_info.get("message", "Unknown error")
+                
+                # Extract more detailed error info if available
+                if "responseContent" in error_info:
+                    response_content = error_info["responseContent"]
+                    # Handle both string and dict response content
+                    if isinstance(response_content, str):
+                        detailed_message = response_content
+                    elif isinstance(response_content, dict):
+                        detailed_message = response_content.get("message", str(response_content))
+                    else:
+                        detailed_message = str(response_content)
+                    
+                    if detailed_message:
+                        error_message = f"{error_message}\nProvider Error: {detailed_message}"
+                
+                # Include taskUUID for debugging
+                task_uuid = error_info.get("taskUUID", "unknown")
+                raise Exception(f"Audio generation failed (Task: {task_uuid}): {error_message}")
+            
+            if pollResult and "data" in pollResult and len(pollResult["data"]) > 0:
+                audioData = pollResult["data"][0]
+                
+                # Check status directly
+                if "status" in audioData:
+                    status = audioData["status"]
+                    
+                    if status == "success":
+                        audioUrl = self._extractAudioUrl(pollResult)
+                        hasAudio = audioUrl is not None
+                        hasVideo = bool(audioData.get("videoURL") or audioData.get("videoBase64Data", False))
+                        
+                        if hasAudio:
+                            audioObj = self._downloadAndProcessAudio(audioUrl, params["sampleRate"])
+                            print(f"[DEBUG] Audio URL found, returning audio. Audio URL: {audioUrl}")
+                            # Return empty video object when only audio is present (prevents errors in downstream nodes)
+                            emptyVideoObj = rwUtils.VideoObject("", width=0, height=0)
+                            return (audioObj, emptyVideoObj)
+                        
+                        if hasVideo:
+                            videos = rwUtils.convertVideoB64List(pollResult, width=None, height=None)
+                            print(f"[DEBUG] No audio URL in response, but video is present. Returning video.")
+                            # Extract first video object from tuple (ComfyUI expects single VideoObject, not tuple)
+                            if len(videos) > 0:
+                                # Return empty audio object when only video is present (prevents errors in downstream nodes)
+                                emptyAudioObj = {
+                                    "waveform": torch.zeros((1, 1, 1)),  # [batch, channels, samples]
+                                    "sample_rate": params["sampleRate"]
+                                }
+                                return (emptyAudioObj, videos[0])
+                            else:
+                                raise Exception("No video object found in response")
+                        
+                        raise Exception("No audio or video data received from API")
+                    
+                    # If status is "processing", continue polling
+            
+            # Check for interrupt before waiting
+            comfy.model_management.throw_exception_if_processing_interrupted()
+            
+            # Wait before next poll (split into smaller chunks to allow more frequent interrupt checks)
+            for _ in range(10):  # 10 x 0.1 second = 1 second total
+                comfy.model_management.throw_exception_if_processing_interrupted()
+                rwUtils.time.sleep(0.1)
 
     def _extractParameters(self, kwargs):
         """Extract and validate parameters from kwargs"""
@@ -143,6 +226,8 @@ class RunwareAudioInference:
             "outputFormat": kwargs.get("outputFormat", "MP3"),
             "negativePrompt": kwargs.get("negativePrompt", ""),
             "numberResults": kwargs.get("numberResults", 1),
+            "steps": kwargs.get("steps", 20),
+            "useSteps": kwargs.get("useSteps", False),
             "inputs": kwargs.get("inputs", None),
             "providerSettings": kwargs.get("providerSettings", None),
         }
@@ -170,7 +255,7 @@ class RunwareAudioInference:
             "model": params["model"],
             "outputType": params["outputType"],
             "outputFormat": params["outputFormat"],
-            "deliveryMethod": "sync",
+            "deliveryMethod": "async",
             "includeCost": True,
             "numberResults": params["numberResults"],
         }]
@@ -204,6 +289,13 @@ class RunwareAudioInference:
             print(f"[DEBUG] Added duration: {params['duration']}")
         else:
             print(f"[DEBUG] Skipped duration")
+        
+        # Add steps parameter only if enabled
+        if params["useSteps"]:
+            genConfig[0]["steps"] = params["steps"]
+            print(f"[DEBUG] Added steps: {params['steps']}")
+        else:
+            print(f"[DEBUG] Skipped steps")
         
         # Add optional parameters
         if params["negativePrompt"]:

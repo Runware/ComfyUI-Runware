@@ -92,7 +92,7 @@ class videoModelSearch:
         ],
         "Creatify": [
             "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
-            "creatify:aurora@0 (Creatify Aurora Avatar Model API (480p))",
+            "creatify:aurora@0 (Creatify Aurora Avatar Model API (720p))",
         ],
     }
     
@@ -281,7 +281,7 @@ class videoModelSearch:
         
         # Creatify Models
         "creatify:aurora@fast": "720p",
-        "creatify:aurora@0": "480p",
+        "creatify:aurora@0": "720p",
     }
     
     MODEL_ARCHITECTURES = [

@@ -966,6 +966,8 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     const sampleRateWidget = audioInferenceNode.widgets.find(w => w.name === "sampleRate");
     const useBitrateWidget = audioInferenceNode.widgets.find(w => w.name === "useBitrate");
     const bitrateWidget = audioInferenceNode.widgets.find(w => w.name === "bitrate");
+    const useStepsWidget = audioInferenceNode.widgets.find(w => w.name === "useSteps");
+    const stepsWidget = audioInferenceNode.widgets.find(w => w.name === "steps");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1023,6 +1025,10 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     
     if (useBitrateWidget && bitrateWidget) {
         toggleWidgetState(useBitrateWidget, bitrateWidget, "bitrate");
+    }
+    
+    if (useStepsWidget && stepsWidget) {
+        toggleWidgetState(useStepsWidget, stepsWidget, "steps");
     }
 }
 
@@ -1748,6 +1754,10 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Bria": [
             "bria:60@1 (Bria Video Eraser)",
         ],
+        "Creatify": [
+            "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
+            "creatify:aurora@0 (Creatify Aurora Avatar Model API (720p))",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -1879,7 +1889,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:react-1@1": "720p",
         "bria:60@1": "720p",
         "creatify:aurora@fast": "720p",
-        "creatify:aurora@0": "480p",
+        "creatify:aurora@0": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
