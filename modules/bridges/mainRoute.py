@@ -38,7 +38,7 @@ async def setMaxTimeout(reqPayload):
 async def setOutputFormat(reqPayload):
     reqData = await reqPayload.json()
     outputFormat = reqData.get('outputFormat', 'WEBP')
-    if outputFormat not in ['WEBP', 'PNG', 'JPEG']:
+    if outputFormat not in ['WEBP', 'PNG', 'JPEG', 'TIFF']:
         return web.json_response({'success': False, 'error': 'Invalid Output Format!'})
     try:
         rwUtils.setOutputFormat(outputFormat)
