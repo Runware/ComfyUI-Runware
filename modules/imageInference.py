@@ -129,7 +129,7 @@ class txt2img:
                     "min": 32,
                     "max": 128,
                 }),
-                "outputFormat": (["WEBP", "PNG", "JPEG", "SVG"], {
+                "outputFormat": (["WEBP", "PNG", "JPEG", "SVG", "TIFF"], {
                     "tooltip": "Choose the output image format.",
                     "default": "WEBP",
                 }),

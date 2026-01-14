@@ -45,6 +45,27 @@ class RunwareSettings:
                     "max": 1.0,
                     "step": 0.01,
                 }),
+                "useLayers": ("BOOLEAN", {
+                    "tooltip": "Enable to include layers parameter in API request",
+                    "default": False,
+                }),
+                "layers": ("INT", {
+                    "tooltip": "The number of layers to generate. Only used when 'Use Layers' is enabled.",
+                    "default": 4,
+                    "min": 1,
+                    "max": 10,
+                    "step": 1,
+                }),
+                "useTrueCFGScale": ("BOOLEAN", {
+                    "tooltip": "Enable to include true_cfg_scale parameter in API request",
+                    "default": False,
+                }),
+                "trueCFGScale": ("FLOAT", {
+                    "tooltip": "Guidance scale as defined in Classifier-Free Diffusion Guidance. Classifier-free guidance is enabled by setting true_cfg_scale > 1 and a provided negative_prompt. Higher guidance scale encourages to generate images that are closely linked to the text prompt, usually at the expense of lower image quality. Only used when 'Use True CFG Scale' is enabled.",
+                    "default": 1.0,
+                    "min": 1.0,
+                    "step": 0.1,
+                }),
             }
         }
 
@@ -61,11 +82,15 @@ class RunwareSettings:
         useTemperature = kwargs.get("useTemperature", False)
         useSystemPrompt = kwargs.get("useSystemPrompt", False)
         useTopP = kwargs.get("useTopP", False)
+        useLayers = kwargs.get("useLayers", False)
+        useTrueCFGScale = kwargs.get("useTrueCFGScale", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
         systemPrompt = kwargs.get("systemPrompt", "")
         topP = kwargs.get("topP", 1.0)
+        layers = kwargs.get("layers")
+        trueCFGScale = kwargs.get("trueCFGScale")
 
         # Build settings dictionary - only include what is enabled
         settings: Dict[str, Any] = {}
@@ -77,6 +102,10 @@ class RunwareSettings:
             settings["systemPrompt"] = systemPrompt.strip()
         if useTopP:
             settings["topP"] = float(topP)
+        if useLayers:
+            settings["layers"] = int(layers)
+        if useTrueCFGScale:
+            settings["true_cfg_scale"] = float(trueCFGScale)
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
