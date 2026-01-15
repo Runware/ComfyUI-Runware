@@ -206,11 +206,11 @@ class txt2img:
         negativePrompt = kwargs.get("negativePrompt", "")
         
         # Only validate positivePrompt length if it's provided
-        if positivePrompt and len(positivePrompt) > 2000:
-            return "Positive Prompt is too long. Maximum length is 2000 characters."
+        if positivePrompt and len(positivePrompt) > 10000:
+            return "Positive Prompt is too long. Maximum length is 10000 characters."
         
-        if negativePrompt and len(negativePrompt) > 2000:
-            return "Negative Prompt is too long. Maximum length is 2000 characters."
+        if negativePrompt and len(negativePrompt) > 10000:
+            return "Negative Prompt is too long. Maximum length is 10000 characters."
         
         return True
 
