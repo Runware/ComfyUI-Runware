@@ -1715,7 +1715,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "PixVerse": [
             "pixverse:1@1 (PixVerse v3.5)", "pixverse:1@2 (PixVerse v4)",
-            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:lipsync@1 (PixVerse LipSync)",
+            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
@@ -1732,7 +1732,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "Lightricks": [
             "lightricks:2@0 (LTX Fast)", "lightricks:2@1 (LTX Pro)",
-            "lightricks:3@1 (LTX-2 Retake)",
+            "lightricks:3@1 (LTX-2 Retake)", "lightricks:ltx@2 (LTX-2)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",

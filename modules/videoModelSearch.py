@@ -45,6 +45,7 @@ class videoModelSearch:
             "pixverse:1@1 (PixVerse v3.5)",
             "pixverse:1@2 (PixVerse v4)",
             "pixverse:1@3 (PixVerse v4.5)",
+            "pixverse:1@5-fast (PixVerse v5 Fast)",
             "pixverse:1@6 (PixVerse v5.5)",
             "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
@@ -69,6 +70,7 @@ class videoModelSearch:
             "lightricks:2@0 (LTX Fast)",
             "lightricks:2@1 (LTX Pro)",
             "lightricks:3@1 (LTX-2 Retake)",
+            "lightricks:ltx@2 (LTX-2)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",
@@ -140,6 +142,7 @@ class videoModelSearch:
         "pixverse:1@1": {"width": 640, "height": 360},
         "pixverse:1@2": {"width": 640, "height": 360},
         "pixverse:1@3": {"width": 640, "height": 360},
+        "pixverse:1@5-fast": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         
@@ -164,6 +167,7 @@ class videoModelSearch:
         "lightricks:2@0": {"width": 1920, "height": 1080},
         "lightricks:2@1": {"width": 1920, "height": 1080},
         "lightricks:3@1": {"width": 0, "height": 0},
+        "lightricks:ltx@2": {"width": 1920, "height": 1080},
         
         # Ovi Models
         "runware:190@1": {"width": 0, "height": 0},
@@ -234,6 +238,7 @@ class videoModelSearch:
         "pixverse:1@1": "360p",
         "pixverse:1@2": "360p",
         "pixverse:1@3": "360p",
+        "pixverse:1@5-fast": "360p",
         "pixverse:1@6": "360p",
         "pixverse:lipsync@1": "360p",
         
@@ -258,6 +263,7 @@ class videoModelSearch:
         "lightricks:2@0": "1080p",
         "lightricks:2@1": "1080p",
         "lightricks:3@1": None,  # No resolution support
+        "lightricks:ltx@2": "1080p",
         
         # Ovi Models
         "runware:190@1": None,  # No resolution support
