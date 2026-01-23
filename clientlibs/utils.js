@@ -1726,6 +1726,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "runware:200@6 (Wan 2.2)",
             "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
+            "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)", "openai:3@0 (OpenAI Sora 3.0)",
@@ -1757,6 +1758,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Creatify": [
             "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
             "creatify:aurora@0 (Creatify Aurora Avatar Model API (720p))",
+        ],
+        "Hunyuan": [
+            "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
     };
 
@@ -1807,6 +1811,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@6": {"width": 1280, "height": 720},
         "runware:200@8": {"width": 1104, "height": 832},
         "alibaba:wan@2.6": {"width": 1280, "height": 720},
+        "alibaba:wan@2.6-flash": {"width": 1280, "height": 720},
         "openai:3@1": {"width": 1280, "height": 720},
         "openai:3@0": {"width": 1280, "height": 720},
         "lightricks:2@0": {"width": 1920, "height": 1080},
@@ -1824,6 +1829,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bria:60@1": {"width": 1280, "height": 720},
         "creatify:aurora@fast": {"width": 1280, "height": 720},
         "creatify:aurora@0": {"width": 1280, "height": 720},
+        "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -1873,6 +1879,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@6": "720p",
         "runware:200@8": "720p",
         "alibaba:wan@2.6": "720p",
+        "alibaba:wan@2.6-flash": "720p",
         "openai:3@1": "720p",
         "openai:3@0": "720p",
         "lightricks:2@0": "1080p",
@@ -1890,6 +1897,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bria:60@1": "720p",
         "creatify:aurora@fast": "720p",
         "creatify:aurora@0": "720p",
+        "runware:hunyuanvideo@1.5": "480p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};

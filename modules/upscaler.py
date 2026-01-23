@@ -8,12 +8,12 @@ class upscaler:
                 "Image": ("IMAGE", {
                         "tooltip": "Specifies the input image to be upscaled."
                 }),
-                "upscaleFactor": ("FLOAT", {
+                "upscaleFactor": ("INT", {
                     "tooltip": "Each level will increase the size of the image by the corresponding factor.",
-                    "default": 2.0,
-                    "min": 1.0,
-                    "max": 8.0,
-                    "step": 0.1,
+                    "default": 2,
+                    "min": 1,
+                    "max": 8,
+                    "step": 1,
                 }),
             },
             "optional": {
@@ -132,7 +132,7 @@ class upscaler:
 
     def upscale(self, **kwargs):
         image = kwargs.get("Image")
-        upscaleFactor = kwargs.get("upscaleFactor", 2.0)
+        upscaleFactor = int(kwargs.get("upscaleFactor", 2))
         
         # Get toggle parameters
         useSteps = kwargs.get("useSteps", False)
@@ -165,7 +165,7 @@ class upscaler:
             "taskType": "imageUpscale",
             "taskUUID": rwUtils.genRandUUID(),
             "inputImage": rwUtils.convertTensor2IMG(image),
-            "upscaleFactor": upscaleFactor,
+            "upscaleFactor": int(upscaleFactor),
             "outputFormat": rwUtils.OUTPUT_FORMAT,
             "outputQuality": rwUtils.OUTPUT_QUALITY,
             "outputType": "base64Data",

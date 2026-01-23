@@ -61,6 +61,7 @@ class videoModelSearch:
             "runware:200@6 (Wan 2.2)",
             "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
+            "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)",
@@ -95,6 +96,9 @@ class videoModelSearch:
         "Creatify": [
             "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
             "creatify:aurora@0 (Creatify Aurora Avatar Model API (720p))",
+        ],
+        "Hunyuan": [
+            "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
     }
     
@@ -158,6 +162,7 @@ class videoModelSearch:
         "runware:200@6": {"width": 1280, "height": 720},
         "runware:200@8": {"width": 1104, "height": 832},
         "alibaba:wan@2.6": {"width": 1280, "height": 720},
+        "alibaba:wan@2.6-flash": {"width": 1280, "height": 720},
         
         # OpenAI Models
         "openai:3@1": {"width": 1280, "height": 720},
@@ -192,6 +197,9 @@ class videoModelSearch:
         # Creatify Models
         "creatify:aurora@fast": {"width": 1280, "height": 720},
         "creatify:aurora@0": {"width": 1280, "height": 720},
+        
+        # Hunyuan Models
+        "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
     }
     
     # Model resolutions mapping
@@ -254,6 +262,7 @@ class videoModelSearch:
         "runware:200@6": "720p",
         "runware:200@8": "720p",
         "alibaba:wan@2.6": "720p",
+        "alibaba:wan@2.6-flash": "720p",
         
         # OpenAI Models
         "openai:3@1": "720p",
@@ -288,6 +297,9 @@ class videoModelSearch:
         # Creatify Models
         "creatify:aurora@fast": "720p",
         "creatify:aurora@0": "720p",
+        
+        # Hunyuan Models
+        "runware:hunyuanvideo@1.5": "480p",
     }
     
     MODEL_ARCHITECTURES = [
@@ -306,7 +318,8 @@ class videoModelSearch:
         "Luma",
         "Sync",
         "Bria",
-        "Creatify"
+        "Creatify",
+        "Hunyuan"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}
