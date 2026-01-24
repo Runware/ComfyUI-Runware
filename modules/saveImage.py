@@ -37,7 +37,7 @@ class RunwareSaveImage:
         image_urls = [url.strip() for url in Images.split(",") if url.strip()]
         
         if not image_urls:
-            raise Exception("No image URL provided. Please connect the 'Image URL' output from Runware Image Inference node.")
+            raise Exception("No image added provided. Please connect the 'Image' from Runware Image Inference node.")
         
         saved_files = []
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -63,7 +63,7 @@ class RunwareSaveImage:
             # Write the downloaded file
             with open(filepath, 'wb') as f:
                 f.write(img_data)
-            print(f"[Runware] Saved original file from URL: {filepath}")
+            print(f"[Runware] Saved original file: {filepath}")
             
             # Add preview data for ComfyUI
             saved_files.append({
