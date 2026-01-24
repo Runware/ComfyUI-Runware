@@ -112,7 +112,8 @@ class photoMaker:
 
     DESCRIPTION = "Transform and style images using PhotoMaker's advanced personalization technology. Create consistent, high-quality image variations with precise subject fidelity and style control."
     FUNCTION = "photoMaker"
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("Image",)
     CATEGORY = "Runware"
 
     @classmethod
@@ -171,7 +172,7 @@ class photoMaker:
                 "CFGScale": cfgScale,
                 "clipSkip": clipSkip,
                 "numberResults": batchSize,
-                "outputType": "base64Data",
+                "outputType": "URL",
                 "outputFormat": rwUtils.OUTPUT_FORMAT,
                 "outputQuality": rwUtils.OUTPUT_QUALITY,
             }
@@ -186,5 +187,5 @@ class photoMaker:
                 genConfig[0]["promptWeighting"] = "compel"
 
         genResult = rwUtils.inferenecRequest(genConfig)
-        images = rwUtils.convertImageB64List(genResult)
-        return (images, )
+        images = rwUtils.extractImageURLs(genResult)
+        return (images,)

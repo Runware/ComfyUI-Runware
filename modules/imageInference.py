@@ -1,5 +1,6 @@
 from .utils import runwareUtils as rwUtils
 import comfy.model_management
+import os
 
 
 class txt2img:
@@ -129,9 +130,9 @@ class txt2img:
                     "min": 32,
                     "max": 128,
                 }),
-                "outputFormat": (["WEBP", "PNG", "JPEG", "SVG", "TIFF"], {
-                    "tooltip": "Choose the output image format.",
-                    "default": "WEBP",
+                "outputFormat": (["WEBP", "PNG", "JPEG", "TIFF"], {
+                    "tooltip": "Choose the output image format. This will be used for the API request. The actual saved format will match the format returned by the API (visible in imageURL).",
+                    "default": rwUtils.getOutputFormat(),
                 }),
                 "batchSize": ("INT", {
                     "tooltip": "The number of images to generate in a single request.",
@@ -196,8 +197,8 @@ class txt2img:
 
     DESCRIPTION = "Generates Images Lightning Fast With Runware Image Inference Sonic Engine."
     FUNCTION = "generateImage"
-    RETURN_TYPES = ("IMAGE", "RUNWARETASK")
-    RETURN_NAMES = ("IMAGE", "RW-Task")
+    RETURN_TYPES = ("RUNWARETASK", "STRING")
+    RETURN_NAMES = ("RW-Task", "Image")
     CATEGORY = "Runware"
 
     @classmethod
@@ -251,7 +252,7 @@ class txt2img:
         useSeed = kwargs.get("useSeed", True)
         useClipSkip = kwargs.get("useClipSkip", True)
         dimensions = kwargs.get("dimensions", "Square (512x512)")
-        outputFormat = kwargs.get("outputFormat", "WEBP")
+        outputFormat = kwargs.get("outputFormat", rwUtils.getOutputFormat())
         batchSize = kwargs.get("batchSize", 1)
         acceleration = kwargs.get("acceleration", "none")
         useResolution = kwargs.get("useResolution", False)
@@ -454,11 +455,20 @@ class txt2img:
                         status = image_data["status"]
                         
                         if status == "success":
-                            # Check for image data (imageURL, imageBase64Data, mediaURL)
-                            if "imageURL" in image_data or "imageBase64Data" in image_data or "imageURL" in image_data:
-                                # Convert and return images
-                                images = rwUtils.convertImageB64List(pollResult)
-                                return (images, None)
+                            # Check for image data (imageURL, imageBase64Data)
+                            if "imageURL" in image_data or "imageBase64Data" in image_data:
+                                # Extract URLs from all results
+                                image_urls = []
+                                
+                                for result in pollResult.get("data", []):
+                                    imageURL = result.get("imageURL")
+                                    if imageURL:
+                                        image_urls.append(imageURL)
+                                
+                                # Return URLs as comma-separated string (or single URL)
+                                image_url_str = ",".join(image_urls) if image_urls else ""
+                                
+                                return (None, image_url_str)
                         
                         # If status is "processing", continue polling
                 

@@ -127,7 +127,8 @@ class upscaler:
 
     DESCRIPTION = "Enhance the resolution and quality of your images using Runware's advanced upscaling API. Transform low-resolution images into sharp, high-definition visuals."
     FUNCTION = "upscale"
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("Image",)
     CATEGORY = "Runware"
 
     def upscale(self, **kwargs):
@@ -168,28 +169,28 @@ class upscaler:
             "upscaleFactor": int(upscaleFactor),
             "outputFormat": rwUtils.OUTPUT_FORMAT,
             "outputQuality": rwUtils.OUTPUT_QUALITY,
-            "outputType": "base64Data",
+            "outputType": "URL",
         }
         
         # Add model if specified
         if model:
             genConfig["model"] = model
+        
+        # Add common parameters at top level - only add if their toggle is enabled
+        if useSteps:
+            genConfig["steps"] = steps
+        if useSeed:
+            genConfig["seed"] = seed
+        if useCFGScale:
+            genConfig["CFGScale"] = CFGScale
+        if usePrompts:
+            if positivePrompt:
+                genConfig["positivePrompt"] = positivePrompt
+            if negativePrompt:
+                genConfig["negativePrompt"] = negativePrompt
             
         # Build settings object for advanced parameters
         settings = {}
-        
-        # Common parameters - only add if their toggle is enabled
-        if useSteps:
-            settings["steps"] = steps
-        if useSeed:
-            settings["seed"] = seed
-        if useCFGScale:
-            settings["CFGScale"] = CFGScale
-        if usePrompts:
-            if positivePrompt:
-                settings["positivePrompt"] = positivePrompt
-            if negativePrompt:
-                settings["negativePrompt"] = negativePrompt
                 
         # Clarity upscaler specific parameters
         if useClarityParams:
@@ -249,5 +250,5 @@ class upscaler:
             print(f"[DEBUG] Error in Image Upscale Request: {str(e)}", flush=True)
             raise
         
-        images = rwUtils.convertImageB64List(genResult)
-        return (images, )
+        images = rwUtils.extractImageURLs(genResult)
+        return (images,)

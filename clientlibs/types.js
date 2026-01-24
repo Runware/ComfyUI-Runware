@@ -121,6 +121,7 @@ const RUNWARE_NODE_TYPES = {
     SETTINGS: "Runware Settings",
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
     WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
+    SAVEIMAGE: "Runware Save Image",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -417,6 +418,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.WANANIMATEADVANCEDFEATURESETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SAVEIMAGE]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

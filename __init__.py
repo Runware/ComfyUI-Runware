@@ -7,8 +7,6 @@ from .modules.modelSearch import modelSearch
 from .modules.bridges import mainRoute
 from .modules.controlNet import controlNet
 from .modules.multiInference import multiInference
-from .modules.runwareBFL import runwareKontext
-from .modules.runwareImagen import runwareImagen
 from .modules.loraSearch import loraSearch
 from .modules.loraCombine import loraCombine
 from .modules.refiner import refiner
@@ -71,6 +69,7 @@ from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
+from .modules.saveImage import RunwareSaveImage
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -90,8 +89,6 @@ NODE_CLASS_MAPPINGS = {
     "Runware PhotoMaker V2": photoMaker,
     "Runware Image Upscaler": upscaler,
     "Runware Model Search": modelSearch,
-    "Runware Kontext Inference": runwareKontext,
-    "Runware Imagen Inference": runwareImagen,
     "Runware Multi Inference": multiInference,
     "Runware Lora Search": loraSearch,
     "Runware Embedding Search": embeddingSearch,
@@ -156,6 +153,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Settings": RunwareSettings,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
+    "Runware Save Image": RunwareSaveImage,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
