@@ -26,7 +26,7 @@ class vectorize:
     DESCRIPTION = "Convert images to vector format using Runware's vectorization service."
     FUNCTION = "vectorizeImage"
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("Image",)
+    RETURN_NAMES = ("IMAGE",)
     CATEGORY = "Runware"
 
     def vectorizeImage(self, **kwargs):

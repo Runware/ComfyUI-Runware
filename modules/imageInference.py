@@ -197,8 +197,8 @@ class txt2img:
 
     DESCRIPTION = "Generates Images Lightning Fast With Runware Image Inference Sonic Engine."
     FUNCTION = "generateImage"
-    RETURN_TYPES = ("RUNWARETASK", "STRING")
-    RETURN_NAMES = ("RW-Task", "Image")
+    RETURN_TYPES = ("STRING", "RUNWARETASK")
+    RETURN_NAMES = ("IMAGE", "RW-Task")
     CATEGORY = "Runware"
 
     @classmethod
@@ -468,7 +468,7 @@ class txt2img:
                                 # Return URLs as comma-separated string (or single URL)
                                 image_url_str = ",".join(image_urls) if image_urls else ""
                                 
-                                return (None, image_url_str)
+                                return (image_url_str, None)
                         
                         # If status is "processing", continue polling
                 

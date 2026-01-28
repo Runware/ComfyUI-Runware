@@ -128,7 +128,7 @@ class upscaler:
     DESCRIPTION = "Enhance the resolution and quality of your images using Runware's advanced upscaling API. Transform low-resolution images into sharp, high-definition visuals."
     FUNCTION = "upscale"
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("Image",)
+    RETURN_NAMES = ("IMAGE",)
     CATEGORY = "Runware"
 
     def upscale(self, **kwargs):
