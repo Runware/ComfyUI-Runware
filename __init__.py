@@ -7,6 +7,8 @@ from .modules.modelSearch import modelSearch
 from .modules.bridges import mainRoute
 from .modules.controlNet import controlNet
 from .modules.multiInference import multiInference
+from .modules.runwareBFL import runwareKontext
+from .modules.runwareImagen import runwareImagen
 from .modules.loraSearch import loraSearch
 from .modules.loraCombine import loraCombine
 from .modules.refiner import refiner
@@ -89,6 +91,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware PhotoMaker V2": photoMaker,
     "Runware Image Upscaler": upscaler,
     "Runware Model Search": modelSearch,
+    "Runware Kontext Inference": runwareKontext,
+    "Runware Imagen Inference": runwareImagen,
     "Runware Multi Inference": multiInference,
     "Runware Lora Search": loraSearch,
     "Runware Embedding Search": embeddingSearch,

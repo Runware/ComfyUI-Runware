@@ -1,6 +1,5 @@
 from .utils import runwareUtils as rwUtils
 import comfy.model_management
-import os
 
 
 class txt2img:
