@@ -113,7 +113,7 @@ class photoMaker:
     DESCRIPTION = "Transform and style images using PhotoMaker's advanced personalization technology. Create consistent, high-quality image variations with precise subject fidelity and style control."
     FUNCTION = "photoMaker"
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("Image",)
+    RETURN_NAMES = ("IMAGE",)
     CATEGORY = "Runware"
 
     @classmethod

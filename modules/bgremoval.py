@@ -81,7 +81,7 @@ class bgremoval:
     DESCRIPTION = "Remove backgrounds from images effortlessly using Runware's low-cost image editing Inference."
     FUNCTION = "rembg"
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("Image",)
+    RETURN_NAMES = ("IMAGE",)
     CATEGORY = "Runware"
 
     def rembg(self, **kwargs):
