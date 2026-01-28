@@ -76,7 +76,7 @@ class controlNetPreprocessor:
 
     DESCRIPTION = "ControlNet offers advanced capabilities for precise image processing through the use of guide images in specific formats, known as preprocessed images. This powerful tool enhances the control and customization of image generation, enabling users to achieve desired artistic styles and detailed adjustments effectively."
     FUNCTION = "controlNetPreProcess"
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("GUIDE IMAGE",)
     CATEGORY = "Runware"
 
@@ -98,7 +98,7 @@ class controlNetPreprocessor:
                 "preProcessorType": preProcessorType,
                 "outputFormat": rwUtils.OUTPUT_FORMAT,
                 "outputQuality": rwUtils.OUTPUT_QUALITY,
-                "outputType": "base64Data",
+                "outputType": "URL",
             }
         ]
 
@@ -115,5 +115,5 @@ class controlNetPreprocessor:
             genConfig[0]["highThresholdCanny"] = cannyHighThreshold
 
         genResult = rwUtils.inferenecRequest(genConfig)
-        images = rwUtils.convertImageB64List(genResult)
-        return (images, )
+        images = rwUtils.extractImageURLs(genResult)
+        return (images,)

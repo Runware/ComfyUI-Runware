@@ -80,7 +80,8 @@ class bgremoval:
 
     DESCRIPTION = "Remove backgrounds from images effortlessly using Runware's low-cost image editing Inference."
     FUNCTION = "rembg"
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("IMAGE",)
     CATEGORY = "Runware"
 
     def rembg(self, **kwargs):
@@ -112,7 +113,7 @@ class bgremoval:
             "model": modelAIR,
             "outputFormat": outputFormat,
             "outputQuality": rwUtils.OUTPUT_QUALITY,
-            "outputType": "base64Data",
+            "outputType": "URL",
         }
 
         if includeExtraSettings:
@@ -166,5 +167,5 @@ class bgremoval:
             print(f"[DEBUG] Error in Background Removal Request: {str(e)}", flush=True)
             raise
         
-        images = rwUtils.convertImageB64List(genResult)
-        return (images, )
+        images = rwUtils.extractImageURLs(genResult)
+        return (images,)

@@ -552,6 +552,15 @@ def convertIMG2Tensor(b64img):
     tensorImage = torch.from_numpy(imageNP).squeeze()
     return tensorImage
 
+def extractImageURLs(imageDataObject):
+    """Extract image URLs from API response and return as comma-separated string"""
+    image_urls = []
+    for result in imageDataObject.get("data", []):
+        imageURL = result.get("imageURL")
+        if imageURL:
+            image_urls.append(imageURL)
+    return ",".join(image_urls) if image_urls else ""
+
 def convertImageB64List(imageDataObject):
     images = ()
     for result in imageDataObject["data"]:
@@ -566,8 +575,8 @@ def convertImageB64List(imageDataObject):
             generatedImage = convertIMG2Tensor(generatedImage)
             images += (generatedImage,)
         else:
-            # If no base64 data, try to get image URL (check both imageURL and mediaURL)
-            imageURL = result.get("imageURL") or result.get("mediaURL")
+            # If no base64 data, try to get image URL
+            imageURL = result.get("imageURL")
             if imageURL:
                 # Download image from URL and convert to tensor
                 try:

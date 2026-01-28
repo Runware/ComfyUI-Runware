@@ -48,7 +48,7 @@ class imageMasking:
     DESCRIPTION = "Image Masking provides intelligent detection and mask generation for specific elements in images, particularly optimized for faces, hands, and people. Built on advanced detection models, this feature enhances the inpainting workflow by automatically creating precise masks around detected elements, enabling targeted enhancement and detailing."
 
     FUNCTION = "imageMasking"
-    RETURN_TYPES = ("IMAGE", "IMAGE", "MASK")
+    RETURN_TYPES = ("IMAGE", "STRING", "STRING")
     RETURN_NAMES = ("Image", "Mask Preview", "Mask")
     CATEGORY = "Runware"
 
@@ -87,7 +87,7 @@ class imageMasking:
                 "model": detectionModel,
                 "confidence": confidence,
                 "maxDetections": maxDetections,
-                "outputType": "base64Data",
+                "outputType": "URL",
                 "outputFormat": rwUtils.OUTPUT_FORMAT,
                 "outputQuality": rwUtils.OUTPUT_QUALITY,
             }
@@ -97,5 +97,5 @@ class imageMasking:
         genConfig[0]["maskBlur"] = maskBlur
 
         genResult = rwUtils.inferenecRequest(genConfig)
-        images = rwUtils.convertImageB64List(genResult)
-        return (image, images[0], images[0])
+        image_url = rwUtils.extractImageURLs(genResult)
+        return (image, image_url, image_url)
