@@ -1759,7 +1759,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "PixVerse": [
             "pixverse:1@1 (PixVerse v3.5)", "pixverse:1@2 (PixVerse v4)",
-            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:lipsync@1 (PixVerse LipSync)",
+            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:1@7 (PixVerse v5.6)", "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
@@ -1845,6 +1845,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@2": {"width": 640, "height": 360},
         "pixverse:1@3": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
+        "pixverse:1@7": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         "vidu:1@0": {"width": 1920, "height": 1080},
         "vidu:1@1": {"width": 1920, "height": 1080},
@@ -1913,6 +1914,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@2": "360p",
         "pixverse:1@3": "360p",
         "pixverse:1@6": "360p",
+        "pixverse:1@7": "360p",
         "pixverse:lipsync@1": "360p",
         "vidu:1@0": "1080p",
         "vidu:1@1": "1080p",
