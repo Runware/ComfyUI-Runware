@@ -121,7 +121,8 @@ class videoUpscaler:
                         if status == "success":
                             if "mediaURL" in video_data or "videoURL" in video_data or "videoBase64Data" in video_data:
                                 videos = rwUtils.convertVideoB64List(pollResult, 1920, 1080)
-                                return videos
+                                # SaveVideo expects a single video object, not a tuple
+                                return (videos[0],) if len(videos) > 0 else (None,)
                         
                         # If status is "processing", continue polling
                 

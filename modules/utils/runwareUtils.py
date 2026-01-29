@@ -317,6 +317,19 @@ def sendVideoTranscription(transcriptionText, nodeID):
         },
     )
 
+
+def sendVideoOutputs(draftId, videoId, nodeID):
+    """Send draftId and videoId to frontend for display in Video Inference Outputs node textboxes."""
+    PromptServer.instance.send_sync(
+        "runwareVideoOutputs",
+        {
+            "success": True,
+            "draftId": draftId or "",
+            "videoId": videoId or "",
+            "nodeID": nodeID,
+        },
+    )
+
 def inferenecRequest(genConfig):
     global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
     RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY")
