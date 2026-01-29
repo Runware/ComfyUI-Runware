@@ -106,6 +106,44 @@ function videoTranscriptionHandler(msgEvent) {
     return false;
 }
 
+function videoOutputsHandler(msgEvent) {
+    const outputData = msgEvent.detail;
+    const draftId = outputData.draftId || "";
+    const videoId = outputData.videoId || "";
+    const nodeID = outputData.nodeID;
+    
+    if(outputData.success && nodeID !== undefined && nodeID !== null) {
+        const nodeIdInt = typeof nodeID === 'string' ? parseInt(nodeID) : nodeID;
+        const outputNode = app.graph.getNodeById(nodeIdInt);
+        
+        if(outputNode !== null && outputNode !== undefined) {
+            const draftIdWidget = outputNode.widgets.find(widget => widget.name === "draftId");
+            const videoIdWidget = outputNode.widgets.find(widget => widget.name === "videoId");
+            
+            if(draftIdWidget) {
+                if(draftIdWidget.value !== undefined) draftIdWidget.value = draftId;
+                if(draftIdWidget.inputEl) {
+                    draftIdWidget.inputEl.value = draftId;
+                    draftIdWidget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    draftIdWidget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+            
+            if(videoIdWidget) {
+                if(videoIdWidget.value !== undefined) videoIdWidget.value = videoId;
+                if(videoIdWidget.inputEl) {
+                    videoIdWidget.inputEl.value = videoId;
+                    videoIdWidget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    videoIdWidget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+            
+            outputNode.setDirtyCanvas(true);
+        }
+    }
+    return false;
+}
+
 function notifyUser(message, type="info", title = "Runware", life = 4.5) {
     app.extensionManager.toast.add({
         severity: type, // 'info', 'success', 'warn', 'error' \\
@@ -1131,6 +1169,8 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     const fastModeWidget = bytedanceNode.widgets.find(w => w.name === "fastMode");
     const useAudioWidget = bytedanceNode.widgets.find(w => w.name === "useAudio");
     const audioWidget = bytedanceNode.widgets.find(w => w.name === "audio");
+    const useDraftWidget = bytedanceNode.widgets.find(w => w.name === "useDraft");
+    const draftWidget = bytedanceNode.widgets.find(w => w.name === "draft");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1188,6 +1228,10 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
 
     if (useAudioWidget && audioWidget) {
         toggleWidgetState(useAudioWidget, audioWidget, "audio");
+    }
+
+    if (useDraftWidget && draftWidget) {
+        toggleWidgetState(useDraftWidget, draftWidget, "draft");
     }
 }
 
@@ -3149,6 +3193,7 @@ export {
     mediaUUIDHandler,
     captionNodeHandler,
     videoTranscriptionHandler,
+    videoOutputsHandler,
     handleCustomErrors,
     APIKeyHandler,
     videoInferenceDimensionsHandler,

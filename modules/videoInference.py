@@ -141,8 +141,8 @@ class txt2vid:
 
     DESCRIPTION = "Generates Videos Lightning Fast With Runware Video Inference Engine."
     FUNCTION = "generateVideo"
-    RETURN_TYPES = ("VIDEO", "RUNWARETASK")
-    RETURN_NAMES = ("VIDEO", "RW-Task")
+    RETURN_TYPES = ("VIDEO", "RUNWARETASK", "RUNWARETASK")
+    RETURN_NAMES = ("VIDEO", "RW-Task", "OUTPUT")
     CATEGORY = "Runware"
 
     def generateVideo(self, **kwargs):
@@ -325,7 +325,7 @@ class txt2vid:
             genConfig[0]["acceleration"] = acceleration
 
         if (multiInferenceMode):
-            return (None, genConfig)
+            return (None, genConfig, None)
         else:
             try:
                 # Debug: Print the request being sent
@@ -388,7 +388,9 @@ class txt2vid:
                         if status == "success":
                             if "videoURL" in video_data or "videoBase64Data" in video_data:
                                 videos = rwUtils.convertVideoB64List(pollResult, width, height)
-                                return videos
+                                # SaveVideo expects a single video object, not a tuple
+                                video_output = videos[0] if len(videos) > 0 else None
+                                return (video_output, genConfig, pollResult)
                         
                         # If status is "processing", continue polling
                 
