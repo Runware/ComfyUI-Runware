@@ -29,7 +29,7 @@ class RunwareVideoInferenceOutputs:
     DESCRIPTION = "Extracts Runware video inference outputs such as draftId and videoId."
     FUNCTION = "get_outputs"
     RETURN_TYPES = ("STRING", "STRING")
-    RETURN_NAMES = ("Draft ID", "Video ID")
+    RETURN_NAMES = ("draftID", "videoID")
     CATEGORY = "Runware"
     OUTPUT_NODE = True  # Ensure node executes even if outputs aren't used
 
