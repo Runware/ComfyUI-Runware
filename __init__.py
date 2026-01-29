@@ -72,6 +72,7 @@ from .modules.settings import RunwareSettings
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 from .modules.saveImage import RunwareSaveImage
+from .modules.videoOutputs import RunwareVideoInferenceOutputs
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -158,6 +159,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
     "Runware Save Image": RunwareSaveImage,
+    "Runware Video Inference Outputs": RunwareVideoInferenceOutputs,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

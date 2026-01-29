@@ -122,6 +122,7 @@ const RUNWARE_NODE_TYPES = {
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
     WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
     SAVEIMAGE: "Runware Save Image",
+    VIDEOINFERENCEOUTPUTS: "Runware Video Inference Outputs",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -422,6 +423,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.SAVEIMAGE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCEOUTPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
