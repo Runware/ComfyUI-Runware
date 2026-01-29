@@ -390,8 +390,8 @@ class videoModelSearch:
 
     DESCRIPTION = "Directly Search and Connect Video Models to Runware Video Inference Nodes In ComfyUI."
     FUNCTION = "videoModelSearch"
-    RETURN_TYPES = ("RUNWAREVIDEOMODEL", "INT", "INT")
-    RETURN_NAMES = ("Runware Video Model", "Width", "Height")
+    RETURN_TYPES = ("RUNWAREVIDEOMODEL",)
+    RETURN_NAMES = ("Runware Video Model",)
     CATEGORY = "Runware"
 
     @classmethod
@@ -421,33 +421,27 @@ class videoModelSearch:
             # Use custom dimensions from Width/Height widgets
             width = customWidth
             height = customHeight
-            returnWidth = width
-            returnHeight = height
         elif useCustomDimensions == "Disabled":
-            # Don't pass width/height (use None in dict, but return 0 for INT output)
+            # Don't pass width/height (use None in dict)
             width = None
             height = None
-            returnWidth = 0
-            returnHeight = 0
         else:  # "Model Default"
             # Use model default dimensions
             width = dimensions["width"]
             height = dimensions["height"]
-            returnWidth = width
-            returnHeight = height
-        
+
         resultDict = {
             "model": modelAirCode,
             "useCustomDimensions": useCustomDimensions,
             "width": width,
             "height": height,
         }
-        
+
         # Add resolution if enabled and model supports it
         if useResolution and modelResolution is not None:
             resultDict["resolution"] = resolution
             resultDict["useResolution"] = True
         else:
             resultDict["useResolution"] = False
-        
-        return (resultDict, returnWidth, returnHeight)
+
+        return (resultDict,)
