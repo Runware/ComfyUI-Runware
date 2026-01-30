@@ -29,7 +29,8 @@ class RunwareSave3D:
             "hidden": {"node_id": "UNIQUE_ID"},
         }
 
-    RETURN_TYPES = ()
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("filepath",)
     FUNCTION = "save_3d"
     OUTPUT_NODE = True
     CATEGORY = "Runware"
@@ -54,9 +55,8 @@ class RunwareSave3D:
         url_without_params = file_url.split('?')[0]
         extension = url_without_params.split('.')[-1].lower()
 
-        # Validate extension
-        if extension not in ["glb"]:
-            extension = "glb"  # Default to GLB if unknown
+        if extension not in ["glb", "ply"]:
+            raise Exception(f"Unsupported 3D file extension '{extension}' from URL. Expected .glb or .ply.")
 
         # Generate filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -93,8 +93,8 @@ class RunwareSave3D:
                 # Send filepath to UI (like media upload mediaUUID)
                 rwUtils.sendSave3DFilepath(filepath, kwargs.get("node_id"))
 
-                # Return UI info for ComfyUI
-                return {"ui": {"text": [f"Saved: {filename}"]}}
+                # Return filepath as output and UI info for ComfyUI
+                return (filepath, {"ui": {"text": [f"Saved: {filename}"]}})
 
             except requests.exceptions.RequestException as e:
                 print(f"[Runware Save 3D] Attempt {attempt + 1} failed: {e}")
