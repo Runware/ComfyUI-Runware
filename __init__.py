@@ -72,6 +72,9 @@ from .modules.settings import RunwareSettings
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 from .modules.videoOutputs import RunwareVideoInferenceOutputs
+from .modules.threeDInference import threeDInference
+from .modules.threeDInferenceInputs import threeDInferenceInputs
+from .modules.save3D import RunwareSave3D
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -158,6 +161,9 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
     "Runware Video Inference Outputs": RunwareVideoInferenceOutputs,
+    "Runware 3D Inference": threeDInference,
+    "Runware 3D Inference Inputs": threeDInferenceInputs,
+    "Runware Save 3D": RunwareSave3D,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

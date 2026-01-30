@@ -122,6 +122,9 @@ const RUNWARE_NODE_TYPES = {
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
     WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
     VIDEOINFERENCEOUTPUTS: "Runware Video Inference Outputs",
+    THREEDINFERENCE: "Runware 3D Inference",
+    THREEDINFERENCEINPUTS: "Runware 3D Inference Inputs",
+    SAVE3D: "Runware Save 3D",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -422,6 +425,18 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.VIDEOINFERENCEOUTPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        promptEnhancer: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SAVE3D]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
