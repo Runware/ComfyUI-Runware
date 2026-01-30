@@ -70,6 +70,30 @@ function mediaUUIDHandler(msgEvent) {
     return false;
 }
 
+function save3DFilepathHandler(msgEvent) {
+    const data = msgEvent.detail;
+    const filepath = data.filepath;
+    const nodeID = parseInt(data.nodeID);
+    
+    if(data.success && filepath) {
+        const node = app.graph.getNodeById(nodeID);
+        if(node !== null && node !== undefined) {
+            const filepathWidget = node.widgets.find(widget => widget.name === "filepath");
+            if(filepathWidget) {
+                if(filepathWidget.value !== undefined) {
+                    filepathWidget.value = filepath;
+                }
+                if(filepathWidget.inputEl) {
+                    filepathWidget.inputEl.value = filepath;
+                    filepathWidget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    filepathWidget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        }
+    }
+    return false;
+}
+
 function captionNodeHandler(msgEvent) {
     const captionData = msgEvent.detail;
     const captionText = captionData.captionText;
@@ -3193,6 +3217,7 @@ export {
     syncDimensionsNodeHandler,
     searchNodeHandler,
     mediaUUIDHandler,
+    save3DFilepathHandler,
     captionNodeHandler,
     videoTranscriptionHandler,
     videoOutputsHandler,

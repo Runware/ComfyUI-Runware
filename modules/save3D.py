@@ -19,7 +19,14 @@ class RunwareSave3D:
                     "default": "ComfyUI",
                     "tooltip": "Prefix for the filename."
                 }),
-            }
+            },
+            "optional": {
+                "filepath": ("STRING", {
+                    "placeholder": "Saved file path will appear here after execution.",
+                    "tooltip": "This field is automatically populated with the saved file path after save.",
+                }),
+            },
+            "hidden": {"node_id": "UNIQUE_ID"},
         }
 
     RETURN_TYPES = ()
@@ -82,6 +89,9 @@ class RunwareSave3D:
                         f.write(chunk)
 
                 print(f"[Runware Save 3D] Successfully saved to: {filepath}")
+
+                # Send filepath to UI (like media upload mediaUUID)
+                rwUtils.sendSave3DFilepath(filepath, kwargs.get("node_id"))
 
                 # Return UI info for ComfyUI
                 return {"ui": {"text": [f"Saved: {filename}"]}}
