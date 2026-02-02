@@ -295,6 +295,18 @@ def sendMediaUUID(mediaUUID, nodeID):
         },
     )
 
+
+def sendSave3DFilepath(filepath, nodeID):
+    PromptServer.instance.send_sync(
+        "runwareSave3DFilepath",
+        {
+            "success": True,
+            "filepath": filepath,
+            "nodeID": nodeID,
+            "widgetName": "filepath",
+        },
+    )
+
 def sendImageCaption(captionText, nodeID):
     PromptServer.instance.send_sync(
         "runwareImageCaption",
