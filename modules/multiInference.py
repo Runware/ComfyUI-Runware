@@ -39,7 +39,7 @@ class multiInference:
 
     DESCRIPTION = "Allows you to Run Multiple Inference Tasks in Parallel."
     FUNCTION = "multiInference"
-    RETURN_TYPES = ("IMAGE", "IMAGE", "IMAGE", "IMAGE")
+    RETURN_TYPES = ("STRING", "STRING", "STRING", "STRING")
     RETURN_NAMES = ("Result 1", "Result 2", "Result 3", "Result 4")
     CATEGORY = "Runware"
 
@@ -60,8 +60,8 @@ class multiInference:
                 result = await loop.run_in_executor(
                     None, rwUtils.inferenecRequest, taskData
                 )
-                images = rwUtils.convertImageB64List(result)
-                return images
+                image_url = rwUtils.extractImageURLs(result)
+                return image_url
             except Exception as e:
                 print(f"\n---- Runware Multi Inference Task {oindex + 1} Failed ----")
                 print(f"Task-Type: {taskData[0]['taskType']}")

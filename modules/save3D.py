@@ -16,7 +16,7 @@ class RunwareSave3D:
                 "3dObject": ("STRING", {
                     "tooltip": "3D file URL from Runware 3D Inference node."
                 }),
-                "filename_prefix": ("STRING", {
+                "filenamePrefix": ("STRING", {
                     "default": "ComfyUI",
                     "tooltip": "Prefix for the filename."
                 }),
@@ -37,10 +37,9 @@ class RunwareSave3D:
     CATEGORY = "Runware"
     DESCRIPTION = "Save 3D model files (GLB/PLY) from Runware 3D Inference to the output folder."
 
-    def save_3d(self, **kwargs):
+    def save_3d(self, filenamePrefix="ComfyUI", **kwargs):
         """Save 3D file from URL"""
         file_url = kwargs.get("3dObject", "")
-        filename_prefix = kwargs.get("filename_prefix", "ComfyUI")
 
         if not file_url or not file_url.strip():
             raise Exception("No 3D URL provided. Please connect the '3dObject' output from Runware 3D Inference node.")
@@ -59,9 +58,9 @@ class RunwareSave3D:
         if extension not in ["glb", "ply"]:
             raise Exception(f"Unsupported 3D file extension '{extension}' from URL. Expected .glb or .ply.")
 
-        # Sanitize filename_prefix to prevent path traversal or arbitrary subdir creation
+        # Sanitize filenamePrefix to prevent path traversal or arbitrary subdir creation
         prefix_basename = os.path.basename(
-            filename_prefix.replace(os.sep, "_").replace(os.altsep or os.sep, "_")
+            filenamePrefix.replace(os.sep, "_").replace(os.altsep or os.sep, "_")
         )
         safe_prefix = re.sub(r"[^\w\-]", "", prefix_basename) or "ComfyUI"
 

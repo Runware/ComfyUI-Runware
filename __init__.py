@@ -71,6 +71,7 @@ from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
+from .modules.saveImage import RunwareSaveImage
 from .modules.videoOutputs import RunwareVideoInferenceOutputs
 from .modules.threeDInference import threeDInference
 from .modules.threeDInferenceInputs import threeDInferenceInputs
@@ -160,6 +161,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Settings": RunwareSettings,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
+    "Runware Save Image": RunwareSaveImage,
     "Runware Video Inference Outputs": RunwareVideoInferenceOutputs,
     "Runware 3D Inference": threeDInference,
     "Runware 3D Inference Inputs": threeDInferenceInputs,
