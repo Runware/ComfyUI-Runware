@@ -32,10 +32,8 @@ class RunwareSaveImage:
     OUTPUT_NODE = True
     CATEGORY = "Runware"
     
-    def save_images(self, Images, **kwargs):
+    def save_images(self, Images, filenamePrefix="ComfyUI", saveImage=True):
         """Save images using URL directly"""
-        filename_prefix = kwargs.get("filenamePrefix", "ComfyUI")
-        save_image = kwargs.get("saveImage", True)
         
         # Split URLs if comma-separated (for batch processing)
         image_urls = [url.strip() for url in Images.split(",") if url.strip()]
@@ -44,7 +42,7 @@ class RunwareSaveImage:
             raise Exception("No image added provided. Please connect the 'Image' from Runware Image Inference node.")
         
         # Use output dir when saving, temp dir for preview only (purged on restart)
-        if save_image:
+        if saveImage:
             output_dir = folder_paths.get_output_directory()
             os.makedirs(output_dir, exist_ok=True)
             file_type = "output"
@@ -64,14 +62,14 @@ class RunwareSaveImage:
             extension = "." + url_without_params.split('.')[-1]
             
             if len(image_urls) > 1:
-                filename = f"{filename_prefix}_{timestamp}_{i+1:03}.{extension.lstrip('.')}"
+                filename = f"{filenamePrefix}_{timestamp}_{i+1:03}.{extension.lstrip('.')}"
             else:
-                filename = f"{filename_prefix}_{timestamp}.{extension.lstrip('.')}"
+                filename = f"{filenamePrefix}_{timestamp}.{extension.lstrip('.')}"
             filepath = os.path.join(output_dir, filename)
             
             with open(filepath, 'wb') as f:
                 f.write(img_data)
-            print(f"[Runware] {'Saved' if save_image else 'Preview'}: {filepath}")
+            print(f"[Runware] {'Saved' if saveImage else 'Preview'}: {filepath}")
             
             saved_files.append({
                 "filename": filename,
