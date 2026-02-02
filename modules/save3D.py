@@ -16,7 +16,7 @@ class RunwareSave3D:
                 "3dObject": ("STRING", {
                     "tooltip": "3D file URL from Runware 3D Inference node."
                 }),
-                "filename_prefix": ("STRING", {
+                "filenamePrefix": ("STRING", {
                     "default": "ComfyUI",
                     "tooltip": "Prefix for the filename."
                 }),
@@ -40,7 +40,7 @@ class RunwareSave3D:
     def save_3d(self, **kwargs):
         """Save 3D file from URL"""
         file_url = kwargs.get("3dObject", "")
-        filename_prefix = kwargs.get("filename_prefix", "ComfyUI")
+        filename_prefix = kwargs.get("filenamePrefix", "ComfyUI")
 
         if not file_url or not file_url.strip():
             raise Exception("No 3D URL provided. Please connect the '3dObject' output from Runware 3D Inference node.")
