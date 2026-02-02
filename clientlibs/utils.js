@@ -73,8 +73,9 @@ function mediaUUIDHandler(msgEvent) {
 function save3DFilepathHandler(msgEvent) {
     const data = msgEvent.detail;
     const filepath = data.filepath;
-    const nodeID = parseInt(data.nodeID);
-    
+    const nodeID = parseInt(data.nodeID, 10);
+    if (Number.isNaN(nodeID)) return false;
+
     if(data.success && filepath) {
         const node = app.graph.getNodeById(nodeID);
         if(node !== null && node !== undefined) {

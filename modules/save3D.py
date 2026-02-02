@@ -1,6 +1,7 @@
 from .utils import runwareUtils as rwUtils
 import folder_paths
 import os
+import re
 import requests
 from datetime import datetime
 
@@ -58,9 +59,15 @@ class RunwareSave3D:
         if extension not in ["glb", "ply"]:
             raise Exception(f"Unsupported 3D file extension '{extension}' from URL. Expected .glb or .ply.")
 
+        # Sanitize filename_prefix to prevent path traversal or arbitrary subdir creation
+        prefix_basename = os.path.basename(
+            filename_prefix.replace(os.sep, "_").replace(os.altsep or os.sep, "_")
+        )
+        safe_prefix = re.sub(r"[^\w\-]", "", prefix_basename) or "ComfyUI"
+
         # Generate filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{filename_prefix}_{timestamp}.{extension}"
+        filename = f"{safe_prefix}_{timestamp}.{extension}"
         filepath = os.path.join(threed_output_dir, filename)
 
         # Download with retry logic
@@ -93,8 +100,7 @@ class RunwareSave3D:
                 # Send filepath to UI (like media upload mediaUUID)
                 rwUtils.sendSave3DFilepath(filepath, kwargs.get("node_id"))
 
-                # Return filepath as output and UI info for ComfyUI
-                return (filepath, {"ui": {"text": [f"Saved: {filename}"]}})
+                return {"result": (filepath,), "ui": {"text": (f"Saved: {filename}",)}}
 
             except requests.exceptions.RequestException as e:
                 print(f"[Runware Save 3D] Attempt {attempt + 1} failed: {e}")

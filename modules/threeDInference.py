@@ -97,7 +97,7 @@ class threeDInference:
             print(f"[DEBUG] Response: {rwUtils.safe_json_dumps(genResult, indent=2)}")
 
         except Exception as e:
-            raise e
+            raise
 
         # Extract task UUID for polling
         taskUUID = genConfig[0]["taskUUID"]
