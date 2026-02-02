@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, videoTranscriptionHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -10,7 +10,9 @@ app.registerExtension({
         api.addEventListener('runwareError', handleCustomErrors);
         api.addEventListener('runwareImageCaption', captionNodeHandler);
         api.addEventListener('runwareMediaUUID', mediaUUIDHandler);
+        api.addEventListener('runwareSave3DFilepath', save3DFilepathHandler);
         api.addEventListener('runwareVideoTranscription', videoTranscriptionHandler);
+        api.addEventListener('runwareVideoOutputs', videoOutputsHandler);
     },
 
     async nodeCreated(node) {
@@ -38,6 +40,27 @@ app.registerExtension({
                 mediaUUIDWidget.inputEl.style.minWidth = "300px";
                 mediaUUIDWidget.inputEl.style.fontSize = "11px";
                 mediaUUIDWidget.inputEl.style.fontFamily = "monospace";
+            }
+        } else if(nodeClass === RUNWARE_NODE_TYPES.VIDEOINFERENCEOUTPUTS) {
+            // Style draftId and videoId widgets to show full IDs (like Media Upload)
+            const draftIdWidget = node.widgets.find(widget => widget.name === "draftId");
+            const videoIdWidget = node.widgets.find(widget => widget.name === "videoId");
+            for(const w of [draftIdWidget, videoIdWidget]) {
+                if(w && w.inputEl) {
+                    w.inputEl.style.width = "100%";
+                    w.inputEl.style.minWidth = "300px";
+                    w.inputEl.style.fontSize = "11px";
+                    w.inputEl.style.fontFamily = "monospace";
+                }
+            }
+        } else if(nodeClass === RUNWARE_NODE_TYPES.SAVE3D) {
+            // Style the filepath widget to show full path (like Media Upload mediaUUID)
+            const filepathWidget = node.widgets.find(widget => widget.name === "filepath");
+            if(filepathWidget && filepathWidget.inputEl) {
+                filepathWidget.inputEl.style.width = "100%";
+                filepathWidget.inputEl.style.minWidth = "300px";
+                filepathWidget.inputEl.style.fontSize = "11px";
+                filepathWidget.inputEl.style.fontFamily = "monospace";
             }
         }
 

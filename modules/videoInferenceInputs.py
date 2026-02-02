@@ -43,6 +43,16 @@ class videoInferenceInputs:
                 "Reference Voices": ("RUNWAREREFERENCEVOICES", {
                     "tooltip": "Connect the Reference Voices node to provide reference voice URLs or mediaUUIDs."
                 }),
+                "draftId": ("STRING", {
+                    "default": "",
+                    "multiline": False,
+                    "tooltip": "Draft ID from a previous Bytedance video generation. Used when continuing or extending a draft output",
+                }),
+                "videoId": ("STRING", {
+                    "default": "",
+                    "multiline": False,
+                    "tooltip": "Video ID from a previous generation. Used when extending or editing an existing OpenAI Sora video",
+                }),
             }
         }
 
@@ -65,6 +75,8 @@ class videoInferenceInputs:
         references = kwargs.get("References", None)
         referenceVideos = kwargs.get("Reference Videos", None)
         referenceVoices = kwargs.get("Reference Voices", None)
+        draftId = kwargs.get("draftId", "")
+        videoId = kwargs.get("videoId", "")
 
         inputs = {}
 
@@ -111,5 +123,11 @@ class videoInferenceInputs:
 
         if referenceVoices is not None and len(referenceVoices) > 0:
             inputs["referenceVoices"] = referenceVoices
+
+        if draftId is not None and draftId.strip() != "":
+            inputs["draftId"] = draftId.strip()
+
+        if videoId is not None and videoId.strip() != "":
+            inputs["videoId"] = videoId.strip()
 
         return (inputs,)

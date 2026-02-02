@@ -70,6 +70,31 @@ function mediaUUIDHandler(msgEvent) {
     return false;
 }
 
+function save3DFilepathHandler(msgEvent) {
+    const data = msgEvent.detail;
+    const filepath = data.filepath;
+    const nodeID = parseInt(data.nodeID, 10);
+    if (Number.isNaN(nodeID)) return false;
+
+    if(data.success && filepath) {
+        const node = app.graph.getNodeById(nodeID);
+        if(node !== null && node !== undefined) {
+            const filepathWidget = node.widgets.find(widget => widget.name === "filepath");
+            if(filepathWidget) {
+                if(filepathWidget.value !== undefined) {
+                    filepathWidget.value = filepath;
+                }
+                if(filepathWidget.inputEl) {
+                    filepathWidget.inputEl.value = filepath;
+                    filepathWidget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    filepathWidget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        }
+    }
+    return false;
+}
+
 function captionNodeHandler(msgEvent) {
     const captionData = msgEvent.detail;
     const captionText = captionData.captionText;
@@ -101,6 +126,44 @@ function videoTranscriptionHandler(msgEvent) {
             if(promptWidget && promptWidget.inputEl) {
                 promptWidget.inputEl.value = transcriptionText;
             }
+        }
+    }
+    return false;
+}
+
+function videoOutputsHandler(msgEvent) {
+    const outputData = msgEvent.detail;
+    const draftId = outputData.draftId || "";
+    const videoId = outputData.videoId || "";
+    const nodeID = outputData.nodeID;
+    
+    if(outputData.success && nodeID !== undefined && nodeID !== null) {
+        const nodeIdInt = typeof nodeID === 'string' ? parseInt(nodeID) : nodeID;
+        const outputNode = app.graph.getNodeById(nodeIdInt);
+        
+        if(outputNode !== null && outputNode !== undefined) {
+            const draftIdWidget = outputNode.widgets.find(widget => widget.name === "draftId");
+            const videoIdWidget = outputNode.widgets.find(widget => widget.name === "videoId");
+            
+            if(draftIdWidget) {
+                if(draftIdWidget.value !== undefined) draftIdWidget.value = draftId;
+                if(draftIdWidget.inputEl) {
+                    draftIdWidget.inputEl.value = draftId;
+                    draftIdWidget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    draftIdWidget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+            
+            if(videoIdWidget) {
+                if(videoIdWidget.value !== undefined) videoIdWidget.value = videoId;
+                if(videoIdWidget.inputEl) {
+                    videoIdWidget.inputEl.value = videoId;
+                    videoIdWidget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    videoIdWidget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+            
+            outputNode.setDirtyCanvas(true);
         }
     }
     return false;
@@ -1131,6 +1194,8 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     const fastModeWidget = bytedanceNode.widgets.find(w => w.name === "fastMode");
     const useAudioWidget = bytedanceNode.widgets.find(w => w.name === "useAudio");
     const audioWidget = bytedanceNode.widgets.find(w => w.name === "audio");
+    const useDraftWidget = bytedanceNode.widgets.find(w => w.name === "useDraft");
+    const draftWidget = bytedanceNode.widgets.find(w => w.name === "draft");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1188,6 +1253,10 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
 
     if (useAudioWidget && audioWidget) {
         toggleWidgetState(useAudioWidget, audioWidget, "audio");
+    }
+
+    if (useDraftWidget && draftWidget) {
+        toggleWidgetState(useDraftWidget, draftWidget, "draft");
     }
 }
 
@@ -1715,7 +1784,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "PixVerse": [
             "pixverse:1@1 (PixVerse v3.5)", "pixverse:1@2 (PixVerse v4)",
-            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:lipsync@1 (PixVerse LipSync)",
+            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:1@7 (PixVerse v5.6)", "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
@@ -1801,6 +1870,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@2": {"width": 640, "height": 360},
         "pixverse:1@3": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
+        "pixverse:1@7": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         "vidu:1@0": {"width": 1920, "height": 1080},
         "vidu:1@1": {"width": 1920, "height": 1080},
@@ -1869,6 +1939,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@2": "360p",
         "pixverse:1@3": "360p",
         "pixverse:1@6": "360p",
+        "pixverse:1@7": "360p",
         "pixverse:lipsync@1": "360p",
         "vidu:1@0": "1080p",
         "vidu:1@1": "1080p",
@@ -3147,8 +3218,10 @@ export {
     syncDimensionsNodeHandler,
     searchNodeHandler,
     mediaUUIDHandler,
+    save3DFilepathHandler,
     captionNodeHandler,
     videoTranscriptionHandler,
+    videoOutputsHandler,
     handleCustomErrors,
     APIKeyHandler,
     videoInferenceDimensionsHandler,

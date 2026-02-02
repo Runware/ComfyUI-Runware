@@ -295,6 +295,18 @@ def sendMediaUUID(mediaUUID, nodeID):
         },
     )
 
+
+def sendSave3DFilepath(filepath, nodeID):
+    PromptServer.instance.send_sync(
+        "runwareSave3DFilepath",
+        {
+            "success": True,
+            "filepath": filepath,
+            "nodeID": nodeID,
+            "widgetName": "filepath",
+        },
+    )
+
 def sendImageCaption(captionText, nodeID):
     PromptServer.instance.send_sync(
         "runwareImageCaption",
@@ -314,6 +326,19 @@ def sendVideoTranscription(transcriptionText, nodeID):
             "transcriptionText": transcriptionText,
             "nodeID": nodeID,
             "widgetName": "prompt",  # Target the prompt widget (matching imageCaptioning pattern)
+        },
+    )
+
+
+def sendVideoOutputs(draftId, videoId, nodeID):
+    """Send draftId and videoId to frontend for display in Video Inference Outputs node textboxes."""
+    PromptServer.instance.send_sync(
+        "runwareVideoOutputs",
+        {
+            "success": True,
+            "draftId": draftId or "",
+            "videoId": videoId or "",
+            "nodeID": nodeID,
         },
     )
 

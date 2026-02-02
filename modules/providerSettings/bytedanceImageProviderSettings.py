@@ -47,6 +47,14 @@ class RunwareBytedanceProviderSettings:
                     "tooltip": "Enable audio generation support when available.",
                     "default": False,
                 }),
+                "useDraft": ("BOOLEAN", {
+                    "tooltip": "Enable to include draft parameter in provider settings",
+                    "default": False,
+                }),
+                "draft": ("BOOLEAN", {
+                    "tooltip": "Enable draft mode for Bytedance provider",
+                    "default": False,
+                }),
             }
         }
     
@@ -63,12 +71,14 @@ class RunwareBytedanceProviderSettings:
         useMaxSequentialImages = kwargs.get("useMaxSequentialImages", False)
         useFastMode = kwargs.get("useFastMode", False)
         useAudio = kwargs.get("useAudio", False)
+        useDraft = kwargs.get("useDraft", False)
         
         # Get value parameters
         cameraFixed = kwargs.get("cameraFixed", False)
         maxSequentialImages = kwargs.get("maxSequentialImages", 1)
         fastMode = kwargs.get("fastMode", False)
         audio = kwargs.get("audio", False)
+        draft = kwargs.get("draft", False)
         
         # Build settings dictionary - only include what is enabled
         settings = {}
@@ -88,6 +98,10 @@ class RunwareBytedanceProviderSettings:
         # Add audio only if useAudio is enabled
         if useAudio:
             settings["audio"] = audio
+
+        # Add draft only if useDraft is enabled
+        if useDraft:
+            settings["draft"] = draft
         
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
