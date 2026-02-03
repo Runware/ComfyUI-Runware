@@ -60,6 +60,7 @@ from .modules.providerSettings.mireloProviderSettings import RunwareMireloProvid
 from .modules.providerSettings.alibabaProviderSettings import RunwareAlibabaProviderSettings
 from .modules.providerSettings.googleProviderSettings import RunwareGoogleProviderSettings
 from .modules.providerSettings.blackForestProviderSettings import RunwareBlackForestProviderSettings
+from .modules.providerSettings.xaiProviderSettings import RunwareXAIProviderSettings
 from .modules.providerSettings.syncSegment import RunwareSyncSegment
 from .modules.providerSettings.syncProviderSettings import RunwareSyncProviderSettings
 from .modules.vectorize import vectorize
@@ -150,6 +151,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Alibaba Provider Settings": RunwareAlibabaProviderSettings,
     "Runware Google Provider Settings": RunwareGoogleProviderSettings,
     "Runware BlackForest Labs Provider Settings": RunwareBlackForestProviderSettings,
+    "Runware xAI Provider Settings": RunwareXAIProviderSettings,
     "Runware Sync Segment": RunwareSyncSegment,
     "Runware Sync Provider Settings": RunwareSyncProviderSettings,
     "Runware Vectorize": vectorize,
