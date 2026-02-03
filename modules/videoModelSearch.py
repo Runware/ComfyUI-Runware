@@ -101,6 +101,9 @@ class videoModelSearch:
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
+        "xAI": [
+            "xai:1@1 (xAI Video 480p)",
+        ],
     }
     
     # Model dimensions mapping
@@ -202,6 +205,9 @@ class videoModelSearch:
         
         # Hunyuan Models
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
+
+        # xAI Models
+        "xai:1@1": {"width": 480, "height": 480},
     }
     
     # Model resolutions mapping
@@ -303,6 +309,9 @@ class videoModelSearch:
         
         # Hunyuan Models
         "runware:hunyuanvideo@1.5": "480p",
+
+        # xAI Models
+        "xai:1@1": "480p",
     }
     
     MODEL_ARCHITECTURES = [
@@ -322,7 +331,8 @@ class videoModelSearch:
         "Sync",
         "Bria",
         "Creatify",
-        "Hunyuan"
+        "Hunyuan",
+        "xAI"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}

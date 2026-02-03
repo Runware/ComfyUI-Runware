@@ -1260,6 +1260,57 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     }
 }
 
+function xaiProviderSettingsToggleHandler(xaiNode) {
+    const useQualityWidget = xaiNode.widgets.find(w => w.name === "useQuality");
+    const qualityWidget = xaiNode.widgets.find(w => w.name === "quality");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = xaiNode.htmlElements?.widgetsContainer || xaiNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            }
+
+            xaiNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useQualityWidget && qualityWidget) {
+        toggleWidgetState(useQualityWidget, qualityWidget, "quality");
+    }
+}
+
 function openaiProviderSettingsToggleHandler(openaiNode) {
     // Find all "use" parameter widgets for OpenAI Provider Settings (these are COMBO widgets)
     const useBackgroundWidget = openaiNode.widgets.find(w => w.name === "useBackground");
@@ -1900,6 +1951,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": {"width": 1280, "height": 720},
         "creatify:aurora@0": {"width": 1280, "height": 720},
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
+        "xai:1@1": {"width": 480, "height": 480},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -1969,6 +2021,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": "720p",
         "creatify:aurora@0": "720p",
         "runware:hunyuanvideo@1.5": "480p",
+        "xai:1@1": "480p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -3234,6 +3287,7 @@ export {
     audioInferenceToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
+    xaiProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
     klingProviderSettingsToggleHandler,

@@ -12,6 +12,9 @@ class imageInferenceInputs:
             "image": ("IMAGE", {
                 "tooltip": "Specifies an image input for the inference process."
             }),
+            "mask": ("IMAGE", {
+                "tooltip": "Optional mask image for the inference process."
+            }),
         }
         
         for i in range(1, cls.MAX_REFERENCE_IMAGES + 1):
@@ -38,11 +41,14 @@ class imageInferenceInputs:
     def createInputs(self, **kwargs):
         """Create image inference inputs from provided parameters"""
         image = kwargs.get("image", None)
+        mask = kwargs.get("mask", None)
 
         inputs = {}
         
         if image is not None:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
+        if mask is not None:
+            inputs["mask"] = rwUtils.convertTensor2IMG(mask)
 
         references = self._collectReferences(kwargs)
         if len(references) > 0:

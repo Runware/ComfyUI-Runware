@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -82,6 +82,8 @@ app.registerExtension({
             acceleratorOptionsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.BYTEDANCEPROVIDERSETTINGS) {
             bytedanceProviderSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.XAIPROVIDERSETTINGS) {
+            xaiProviderSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.OPENAIPROVIDERSETTINGS) {
             openaiProviderSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.LIGHTRICKSPROVIDERSETTINGS) {

@@ -106,6 +106,7 @@ const RUNWARE_NODE_TYPES = {
     MIRELOPROVIDERSETTINGS: "Runware Mirelo Provider Settings",
     ALIBABAPROVIDERSETTINGS: "Runware Alibaba Provider Settings",
     BLACKFORESTPROVIDERSETTINGS: "Runware BlackForest Labs Provider Settings",
+    XAIPROVIDERSETTINGS: "Runware xAI Provider Settings",
     GOOGLEPROVIDERSETTINGS: "Runware Google Provider Settings",
     SYNCSEGMENT: "Runware Sync Segment",
     SYNCPROVIDERSETTINGS: "Runware Sync Provider Settings",
@@ -361,6 +362,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.BLACKFORESTPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.XAIPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
