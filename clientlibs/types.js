@@ -107,6 +107,7 @@ const RUNWARE_NODE_TYPES = {
     ALIBABAPROVIDERSETTINGS: "Runware Alibaba Provider Settings",
     BLACKFORESTPROVIDERSETTINGS: "Runware BlackForest Labs Provider Settings",
     XAIPROVIDERSETTINGS: "Runware xAI Provider Settings",
+    ULTRALYTICSINPUTS: "Runware Image Inference Ultralytics",
     GOOGLEPROVIDERSETTINGS: "Runware Google Provider Settings",
     SYNCSEGMENT: "Runware Sync Segment",
     SYNCPROVIDERSETTINGS: "Runware Sync Provider Settings",
@@ -366,6 +367,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.XAIPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.ULTRALYTICSINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

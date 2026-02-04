@@ -1260,6 +1260,69 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     }
 }
 
+function ultralyticsProviderSettingsToggleHandler(ultralyticsNode) {
+    const useParamPairs = [
+        ["useMaskBlur", "maskBlur"],
+        ["useMaskPadding", "maskPadding"],
+        ["useConfidence", "confidence"],
+        ["usePositivePrompt", "positivePrompt"],
+        ["useNegativePrompt", "negativePrompt"],
+        ["useSteps", "steps"],
+        ["useCFGScale", "CFGScale"],
+        ["useStrength", "strength"],
+    ];
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = ultralyticsNode.htmlElements?.widgetsContainer || ultralyticsNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            }
+
+            ultralyticsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    useParamPairs.forEach(([useName, paramName]) => {
+        const useWidget = ultralyticsNode.widgets.find(w => w.name === useName);
+        const paramWidget = ultralyticsNode.widgets.find(w => w.name === paramName);
+        if (useWidget && paramWidget) {
+            toggleWidgetState(useWidget, paramWidget, paramName);
+        }
+    });
+}
+
 function xaiProviderSettingsToggleHandler(xaiNode) {
     const useQualityWidget = xaiNode.widgets.find(w => w.name === "useQuality");
     const qualityWidget = xaiNode.widgets.find(w => w.name === "quality");
@@ -1882,6 +1945,12 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
+        "xAI": [
+            "xai:grok-imagine@video (Grok Imagine Video)",
+        ],
+        "VEED": [
+            "veed:fabric@1.0 (VEED Fabric 1.0)",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -1951,7 +2020,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": {"width": 1280, "height": 720},
         "creatify:aurora@0": {"width": 1280, "height": 720},
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
-        "xai:1@1": {"width": 480, "height": 480},
+        "xai:grok-imagine@video": {"width": 480, "height": 480},
+        "veed:fabric@1.0": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -2021,7 +2091,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": "720p",
         "creatify:aurora@0": "720p",
         "runware:hunyuanvideo@1.5": "480p",
-        "xai:1@1": "480p",
+        "xai:grok-imagine@video": "480p",
+        "veed:fabric@1.0": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -2285,9 +2356,8 @@ function klingProviderSettingsToggleHandler(klingNode) {
     const characterOrientationWidget = klingNode.widgets.find(w => w.name === "characterOrientation");
     
     // Helper function to toggle widget enabled state (EXACT same pattern as imageInferenceToggleHandler)
+    // Callers guard with if (useX && xWidget) before invoking
     function toggleWidgetState(useWidget, paramWidget, paramName) {
-        if (!useWidget || !paramWidget) return;
-        
         function toggleEnabled() {
             const enabled = useWidget.value === true;
             
@@ -3288,6 +3358,7 @@ export {
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,
+    ultralyticsProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
     klingProviderSettingsToggleHandler,
@@ -3379,6 +3450,12 @@ function settingsToggleHandler(settingsNode) {
     const systemPromptWidget = settingsNode.widgets.find(w => w.name === "systemPrompt");
     const useTopPWidget = settingsNode.widgets.find(w => w.name === "useTopP");
     const topPWidget = settingsNode.widgets.find(w => w.name === "topP");
+    const useLayersWidget = settingsNode.widgets.find(w => w.name === "useLayers");
+    const layersWidget = settingsNode.widgets.find(w => w.name === "layers");
+    const useTrueCFGScaleWidget = settingsNode.widgets.find(w => w.name === "useTrueCFGScale");
+    const trueCFGScaleWidget = settingsNode.widgets.find(w => w.name === "trueCFGScale");
+    const useQualityWidget = settingsNode.widgets.find(w => w.name === "useQuality");
+    const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -3431,6 +3508,15 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useTopPWidget && topPWidget) {
         toggleWidgetState(useTopPWidget, topPWidget, "topP");
+    }
+    if (useLayersWidget && layersWidget) {
+        toggleWidgetState(useLayersWidget, layersWidget, "layers");
+    }
+    if (useTrueCFGScaleWidget && trueCFGScaleWidget) {
+        toggleWidgetState(useTrueCFGScaleWidget, trueCFGScaleWidget, "trueCFGScale");
+    }
+    if (useQualityWidget && qualityWidget) {
+        toggleWidgetState(useQualityWidget, qualityWidget, "quality");
     }
 }
 

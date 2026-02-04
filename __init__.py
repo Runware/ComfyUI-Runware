@@ -61,6 +61,7 @@ from .modules.providerSettings.alibabaProviderSettings import RunwareAlibabaProv
 from .modules.providerSettings.googleProviderSettings import RunwareGoogleProviderSettings
 from .modules.providerSettings.blackForestProviderSettings import RunwareBlackForestProviderSettings
 from .modules.providerSettings.xaiProviderSettings import RunwareXAIProviderSettings
+from .modules.ultralyticsInputs import RunwareUltralyticsInputs
 from .modules.providerSettings.syncSegment import RunwareSyncSegment
 from .modules.providerSettings.syncProviderSettings import RunwareSyncProviderSettings
 from .modules.vectorize import vectorize
@@ -152,6 +153,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Google Provider Settings": RunwareGoogleProviderSettings,
     "Runware BlackForest Labs Provider Settings": RunwareBlackForestProviderSettings,
     "Runware xAI Provider Settings": RunwareXAIProviderSettings,
+    "Runware Image Inference Ultralytics": RunwareUltralyticsInputs,
     "Runware Sync Segment": RunwareSyncSegment,
     "Runware Sync Provider Settings": RunwareSyncProviderSettings,
     "Runware Vectorize": vectorize,

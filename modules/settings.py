@@ -66,6 +66,14 @@ class RunwareSettings:
                     "min": 1.0,
                     "step": 0.1,
                 }),
+                "useQuality": ("BOOLEAN", {
+                    "tooltip": "Enable to include quality parameter in API request",
+                    "default": False,
+                }),
+                "quality": (["low", "medium", "high"], {
+                    "default": "medium",
+                    "tooltip": "Quality of the output image. Only used when 'Use Quality' is enabled.",
+                }),
             }
         }
 
@@ -84,6 +92,7 @@ class RunwareSettings:
         useTopP = kwargs.get("useTopP", False)
         useLayers = kwargs.get("useLayers", False)
         useTrueCFGScale = kwargs.get("useTrueCFGScale", False)
+        useQuality = kwargs.get("useQuality", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -91,6 +100,7 @@ class RunwareSettings:
         topP = kwargs.get("topP", 1.0)
         layers = kwargs.get("layers")
         trueCFGScale = kwargs.get("trueCFGScale")
+        quality = kwargs.get("quality", "medium")
 
         # Build settings dictionary - only include what is enabled
         settings: Dict[str, Any] = {}
@@ -106,6 +116,8 @@ class RunwareSettings:
             settings["layers"] = int(layers)
         if useTrueCFGScale:
             settings["true_cfg_scale"] = float(trueCFGScale)
+        if useQuality:
+            settings["quality"] = quality
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}

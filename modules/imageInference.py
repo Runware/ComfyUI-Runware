@@ -191,6 +191,9 @@ class txt2img:
                 "settings": ("RUNWARESETTINGS", {
                     "tooltip": "Connect Runware Settings node to configure temperature, systemPrompt, and topP parameters.",
                 }),
+                "ultralytics": ("RUNWAREULTRALYTICSINPUTS", {
+                    "tooltip": "Connect Runware Image Inference Ultralytics node to configure Ultralytics parameters (maskBlur, maskPadding, confidence, prompts, steps, CFGScale, strength).",
+                }),
             }
         }
 
@@ -233,6 +236,7 @@ class txt2img:
         providerSettings = kwargs.get("providerSettings", None)
         safetyInputs = kwargs.get("safetyInputs", None)
         settings = kwargs.get("settings", None)
+        ultralytics = kwargs.get("ultralytics", None)
         seedImage = kwargs.get("seedImage", None)
         seedImageStrength = kwargs.get("strength", 0.8)
         maskImage = kwargs.get("maskImage", None)
@@ -393,6 +397,10 @@ class txt2img:
         # Add settings if provided
         if settings is not None and isinstance(settings, dict) and len(settings) > 0:
             genConfig[0]["settings"] = settings
+
+        # Add ultralytics parameters if provided
+        if ultralytics is not None and isinstance(ultralytics, dict) and len(ultralytics) > 0:
+            genConfig[0]["ultralytics"] = ultralytics
 
         if (multiInferenceMode):
             return (None, genConfig)

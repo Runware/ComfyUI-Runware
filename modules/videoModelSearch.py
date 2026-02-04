@@ -102,7 +102,10 @@ class videoModelSearch:
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
         "xAI": [
-            "xai:1@1 (xAI Video 480p)",
+            "xai:grok-imagine@video (Grok Imagine Video)",
+        ],
+        "VEED": [
+            "veed:fabric@1.0 (VEED Fabric 1.0)",
         ],
     }
     
@@ -207,7 +210,10 @@ class videoModelSearch:
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
 
         # xAI Models
-        "xai:1@1": {"width": 480, "height": 480},
+        "xai:grok-imagine@video": {"width": 480, "height": 480},
+
+        # VEED Models (preserves input aspect ratio; resolution = shorter side)
+        "veed:fabric@1.0": {"width": 1280, "height": 720},
     }
     
     # Model resolutions mapping
@@ -311,7 +317,10 @@ class videoModelSearch:
         "runware:hunyuanvideo@1.5": "480p",
 
         # xAI Models
-        "xai:1@1": "480p",
+        "xai:grok-imagine@video": "480p",
+
+        # VEED Models (480p or 720p)
+        "veed:fabric@1.0": "720p",
     }
     
     MODEL_ARCHITECTURES = [
@@ -332,7 +341,8 @@ class videoModelSearch:
         "Bria",
         "Creatify",
         "Hunyuan",
-        "xAI"
+        "xAI",
+        "VEED"
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}
