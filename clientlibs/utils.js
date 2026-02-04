@@ -1374,6 +1374,81 @@ function xaiProviderSettingsToggleHandler(xaiNode) {
     }
 }
 
+function viduProviderSettingsToggleHandler(viduNode) {
+    const useAudioWidget = viduNode.widgets.find(w => w.name === "useAudio");
+    const audioWidget = viduNode.widgets.find(w => w.name === "audio");
+    const useBgmWidget = viduNode.widgets.find(w => w.name === "useBgm");
+    const bgmWidget = viduNode.widgets.find(w => w.name === "bgm");
+    const useStyleWidget = viduNode.widgets.find(w => w.name === "useStyle");
+    const styleWidget = viduNode.widgets.find(w => w.name === "style");
+    const useMovementAmplitudeWidget = viduNode.widgets.find(w => w.name === "useMovementAmplitude");
+    const movementAmplitudeWidget = viduNode.widgets.find(w => w.name === "movementAmplitude");
+    const useTemplateNameWidget = viduNode.widgets.find(w => w.name === "useTemplateName");
+    const templateNameWidget = viduNode.widgets.find(w => w.name === "templateName");
+    const useTemplateAreaWidget = viduNode.widgets.find(w => w.name === "useTemplateArea");
+    const templateAreaWidget = viduNode.widgets.find(w => w.name === "templateArea");
+    const useTemplateBeastWidget = viduNode.widgets.find(w => w.name === "useTemplateBeast");
+    const templateBeastWidget = viduNode.widgets.find(w => w.name === "templateBeast");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = viduNode.htmlElements?.widgetsContainer || viduNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            }
+
+            viduNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useAudioWidget && audioWidget) {
+        toggleWidgetState(useAudioWidget, audioWidget, "audio");
+    }
+    if (useBgmWidget && bgmWidget) {
+        toggleWidgetState(useBgmWidget, bgmWidget, "bgm");
+    }
+    if (useStyleWidget && styleWidget) {
+        toggleWidgetState(useStyleWidget, styleWidget, "style");
+    }
+    if (useMovementAmplitudeWidget && movementAmplitudeWidget) {
+        toggleWidgetState(useMovementAmplitudeWidget, movementAmplitudeWidget, "movementAmplitude");
+    }
+    if (useTemplateNameWidget && templateNameWidget) {
+        toggleWidgetState(useTemplateNameWidget, templateNameWidget, "templateName");
+    }
+    if (useTemplateAreaWidget && templateAreaWidget) {
+        toggleWidgetState(useTemplateAreaWidget, templateAreaWidget, "templateArea");
+    }
+    if (useTemplateBeastWidget && templateBeastWidget) {
+        toggleWidgetState(useTemplateBeastWidget, templateBeastWidget, "templateBeast");
+    }
+}
+
 function openaiProviderSettingsToggleHandler(openaiNode) {
     // Find all "use" parameter widgets for OpenAI Provider Settings (these are COMBO widgets)
     const useBackgroundWidget = openaiNode.widgets.find(w => w.name === "useBackground");
@@ -1903,6 +1978,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
             "vidu:1@5 (Vidu 1.5)", "vidu:2@0 (Vidu 2.0)",
+            "vidu:4@1 (Vidu Q3)",
         ],
         "Wan": [
             "runware:200@1 (Wan 2.1 1.3B)", "runware:200@2 (Wan 2.1 14B)",
@@ -1924,6 +2000,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Runway": [
             "runway:2@1 (Runway Aleph)",
             "runway:1@1 (Runway Gen-4 Turbo)",
+            "runway:1@2 (Runway Gen-4.5)",
         ],
         "Luma": [
             "lumaai:1@1 (Luma Ray 1.6)",
@@ -1996,6 +2073,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "vidu:1@1": {"width": 1920, "height": 1080},
         "vidu:1@5": {"width": 1920, "height": 1080},
         "vidu:2@0": {"width": 1920, "height": 1080},
+        "vidu:4@1": {"width": 1920, "height": 1080},
         "runware:200@1": {"width": 853, "height": 480},
         "runware:200@2": {"width": 853, "height": 480},
         "runware:200@6": {"width": 1280, "height": 720},
@@ -2010,6 +2088,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:190@1": {"width": 0, "height": 0},
         "runway:2@1": {"width": 1280, "height": 720},
         "runway:1@1": {"width": 1280, "height": 720},
+        "runway:1@2": {"width": 1280, "height": 720},
         "lumaai:1@1": {"width": 1080, "height": 720},
         "lumaai:2@1": {"width": 1080, "height": 720},
         "lumaai:2@2": {"width": 1080, "height": 720},
@@ -2067,6 +2146,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "vidu:1@1": "1080p",
         "vidu:1@5": "1080p",
         "vidu:2@0": "1080p",
+        "vidu:4@1": "1080p",
         "runware:200@1": "480p",
         "runware:200@2": "480p",
         "runware:200@6": "720p",
@@ -2081,6 +2161,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:190@1": null,  // No resolution support
         "runway:2@1": "720p",
         "runway:1@1": "720p",
+        "runway:1@2": "720p",
         "lumaai:1@1": "720p",
         "lumaai:2@1": "720p",
         "lumaai:2@2": "720p",
@@ -3358,6 +3439,7 @@ export {
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,
+    viduProviderSettingsToggleHandler,
     ultralyticsProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
