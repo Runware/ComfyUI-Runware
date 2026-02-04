@@ -1945,6 +1945,12 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
+        "xAI": [
+            "xai:grok-imagine@video (Grok Imagine Video)",
+        ],
+        "VEED": [
+            "veed:fabric@1.0 (VEED Fabric 1.0)",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -2014,7 +2020,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": {"width": 1280, "height": 720},
         "creatify:aurora@0": {"width": 1280, "height": 720},
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
-        "xai:1@1": {"width": 480, "height": 480},
+        "xai:grok-imagine@video": {"width": 480, "height": 480},
+        "veed:fabric@1.0": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -2084,7 +2091,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": "720p",
         "creatify:aurora@0": "720p",
         "runware:hunyuanvideo@1.5": "480p",
-        "xai:1@1": "480p",
+        "xai:grok-imagine@video": "480p",
+        "veed:fabric@1.0": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -3443,6 +3451,10 @@ function settingsToggleHandler(settingsNode) {
     const systemPromptWidget = settingsNode.widgets.find(w => w.name === "systemPrompt");
     const useTopPWidget = settingsNode.widgets.find(w => w.name === "useTopP");
     const topPWidget = settingsNode.widgets.find(w => w.name === "topP");
+    const useLayersWidget = settingsNode.widgets.find(w => w.name === "useLayers");
+    const layersWidget = settingsNode.widgets.find(w => w.name === "layers");
+    const useTrueCFGScaleWidget = settingsNode.widgets.find(w => w.name === "useTrueCFGScale");
+    const trueCFGScaleWidget = settingsNode.widgets.find(w => w.name === "trueCFGScale");
     const useQualityWidget = settingsNode.widgets.find(w => w.name === "useQuality");
     const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
     
@@ -3497,6 +3509,12 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useTopPWidget && topPWidget) {
         toggleWidgetState(useTopPWidget, topPWidget, "topP");
+    }
+    if (useLayersWidget && layersWidget) {
+        toggleWidgetState(useLayersWidget, layersWidget, "layers");
+    }
+    if (useTrueCFGScaleWidget && trueCFGScaleWidget) {
+        toggleWidgetState(useTrueCFGScaleWidget, trueCFGScaleWidget, "trueCFGScale");
     }
     if (useQualityWidget && qualityWidget) {
         toggleWidgetState(useQualityWidget, qualityWidget, "quality");
