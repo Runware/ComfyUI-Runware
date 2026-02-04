@@ -5,6 +5,7 @@ class imageInferenceInputs:
     """Image Inference Inputs node for configuring image generation inputs"""
     
     MAX_REFERENCE_IMAGES = 14
+    MAX_SUPER_RESOLUTION_REFERENCE_IMAGES = 5
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -25,6 +26,12 @@ class imageInferenceInputs:
             optionalInputs[f"Reference Tag {i}"] = ("STRING", {
                 "tooltip": f"Optional tag describing {ordinal.capitalize()} Reference Image. Leave empty to omit.",
                 "default": "",
+            })
+        
+        for i in range(1, cls.MAX_SUPER_RESOLUTION_REFERENCE_IMAGES + 1):
+            ordinal = rwUtils.getOrdinal(i)
+            optionalInputs[f"Super Resolution Reference Image {i}"] = ("IMAGE", {
+                "tooltip": f"Specifies {ordinal.capitalize()} Super Resolution Reference Image for the inputs.",
             })
         
         return {
@@ -53,6 +60,10 @@ class imageInferenceInputs:
         references = self._collectReferences(kwargs)
         if len(references) > 0:
             inputs["referenceImages"] = references
+
+        super_resolution_refs = self._collectSuperResolutionReferences(kwargs)
+        if len(super_resolution_refs) > 0:
+            inputs["superResolutionReferenceImages"] = super_resolution_refs
 
         return (inputs,)
 
@@ -91,3 +102,12 @@ class imageInferenceInputs:
             references.append(entry)
 
         return references
+
+    def _collectSuperResolutionReferences(self, kwargs):
+        """Collect and convert super resolution reference images to list (same pattern as referenceImages)"""
+        images = []
+        for i in range(1, self.MAX_SUPER_RESOLUTION_REFERENCE_IMAGES + 1):
+            image = kwargs.get(f"Super Resolution Reference Image {i}", None)
+            if image is not None:
+                images.append(rwUtils.convertTensor2IMG(image))
+        return images
