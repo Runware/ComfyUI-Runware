@@ -55,6 +55,7 @@ class videoModelSearch:
             "vidu:1@1 (Vidu Q1)",
             "vidu:1@5 (Vidu 1.5)",
             "vidu:2@0 (Vidu 2.0)",
+            "vidu:4@1 (Vidu Q3)",
         ],
         "Wan": [
             "runware:200@1 (Wan 2.1 1.3B)",
@@ -80,6 +81,7 @@ class videoModelSearch:
         "Runway": [
             "runway:2@1 (Runway Aleph)",
             "runway:1@1 (Runway Gen-4 Turbo)",
+            "runway:1@2 (Runway Gen-4.5)",
         ],
         "Luma": [
             "lumaai:1@1 (Luma Ray 1.6)",
@@ -163,6 +165,7 @@ class videoModelSearch:
         "vidu:1@1": {"width": 1920, "height": 1080},
         "vidu:1@5": {"width": 1920, "height": 1080},
         "vidu:2@0": {"width": 1920, "height": 1080},
+        "vidu:4@1": {"width": 1920, "height": 1080},
         
         # Wan Models
         "runware:200@1": {"width": 853, "height": 480},
@@ -188,6 +191,7 @@ class videoModelSearch:
         # Runway Models
         "runway:2@1": {"width": 1280, "height": 720},
         "runway:1@1": {"width": 1280, "height": 720},
+        "runway:1@2": {"width": 1280, "height": 720},
         
         # Luma Models
         "lumaai:1@1": {"width": 1080, "height": 720},
@@ -270,6 +274,7 @@ class videoModelSearch:
         "vidu:1@1": "1080p",
         "vidu:1@5": "1080p",
         "vidu:2@0": "1080p",
+        "vidu:4@1": "1080p",
         
         # Wan Models
         "runware:200@1": "480p",
@@ -295,6 +300,7 @@ class videoModelSearch:
         # Runway Models
         "runway:2@1": "720p",
         "runway:1@1": "720p",
+        "runway:1@2": "720p",
         
         # Luma Models
         "lumaai:1@1": "720p",
@@ -319,7 +325,7 @@ class videoModelSearch:
         # xAI Models
         "xai:grok-imagine@video": "480p",
 
-        # VEED Models (480p or 720p)
+        # VEED Models 
         "veed:fabric@1.0": "720p",
     }
     
