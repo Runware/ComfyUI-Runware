@@ -1449,6 +1449,110 @@ function viduProviderSettingsToggleHandler(viduNode) {
     }
 }
 
+function sourcefulProviderSettingsToggleHandler(sourcefulNode) {
+    const useTransparencyWidget = sourcefulNode.widgets.find(w => w.name === "useTransparency");
+    const transparencyWidget = sourcefulNode.widgets.find(w => w.name === "transparency");
+    const useEnhancePromptWidget = sourcefulNode.widgets.find(w => w.name === "useEnhancePrompt");
+    const enhancePromptWidget = sourcefulNode.widgets.find(w => w.name === "enhancePrompt");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = sourcefulNode.htmlElements?.widgetsContainer || sourcefulNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            }
+
+            sourcefulNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useTransparencyWidget && transparencyWidget) {
+        toggleWidgetState(useTransparencyWidget, transparencyWidget, "transparency");
+    }
+    if (useEnhancePromptWidget && enhancePromptWidget) {
+        toggleWidgetState(useEnhancePromptWidget, enhancePromptWidget, "enhancePrompt");
+    }
+}
+
+function sourcefulProviderSettingsFontsToggleHandler(fontsNode) {
+    const useFont1Widget = fontsNode.widgets.find(w => w.name === "useFont1");
+    const fontUrl1Widget = fontsNode.widgets.find(w => w.name === "fontUrl1");
+    const text1Widget = fontsNode.widgets.find(w => w.name === "text1");
+    const useFont2Widget = fontsNode.widgets.find(w => w.name === "useFont2");
+    const fontUrl2Widget = fontsNode.widgets.find(w => w.name === "fontUrl2");
+    const text2Widget = fontsNode.widgets.find(w => w.name === "text2");
+
+    function toggleFontGroup(useWidget, fontUrlWidget, textWidget, fontParamName, textParamName) {
+        if (!useWidget || !fontUrlWidget || !textWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            [fontUrlWidget, textWidget].forEach(paramWidget => {
+                if (paramWidget.inputEl) {
+                    paramWidget.inputEl.disabled = !enabled;
+                    paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                    paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                    paramWidget.inputEl.readOnly = !enabled;
+                }
+                paramWidget.disabled = !enabled;
+            });
+
+            const nodeElement = fontsNode.htmlElements?.widgetsContainer || fontsNode.htmlElements;
+            if (nodeElement) {
+                [fontParamName, textParamName].forEach(paramName => {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                });
+            }
+
+            fontsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useFont1Widget && fontUrl1Widget && text1Widget) {
+        toggleFontGroup(useFont1Widget, fontUrl1Widget, text1Widget, "fontUrl1", "text1");
+    }
+    if (useFont2Widget && fontUrl2Widget && text2Widget) {
+        toggleFontGroup(useFont2Widget, fontUrl2Widget, text2Widget, "fontUrl2", "text2");
+    }
+}
+
 function openaiProviderSettingsToggleHandler(openaiNode) {
     // Find all "use" parameter widgets for OpenAI Provider Settings (these are COMBO widgets)
     const useBackgroundWidget = openaiNode.widgets.find(w => w.name === "useBackground");
@@ -3440,6 +3544,8 @@ export {
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,
     viduProviderSettingsToggleHandler,
+    sourcefulProviderSettingsToggleHandler,
+    sourcefulProviderSettingsFontsToggleHandler,
     ultralyticsProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
