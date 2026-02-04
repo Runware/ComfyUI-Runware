@@ -2356,9 +2356,8 @@ function klingProviderSettingsToggleHandler(klingNode) {
     const characterOrientationWidget = klingNode.widgets.find(w => w.name === "characterOrientation");
     
     // Helper function to toggle widget enabled state (EXACT same pattern as imageInferenceToggleHandler)
+    // Callers guard with if (useX && xWidget) before invoking
     function toggleWidgetState(useWidget, paramWidget, paramName) {
-        if (!useWidget || !paramWidget) return;
-        
         function toggleEnabled() {
             const enabled = useWidget.value === true;
             
