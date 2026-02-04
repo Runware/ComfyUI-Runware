@@ -1260,6 +1260,69 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     }
 }
 
+function ultralyticsProviderSettingsToggleHandler(ultralyticsNode) {
+    const useParamPairs = [
+        ["useMaskBlur", "maskBlur"],
+        ["useMaskPadding", "maskPadding"],
+        ["useConfidence", "confidence"],
+        ["usePositivePrompt", "positivePrompt"],
+        ["useNegativePrompt", "negativePrompt"],
+        ["useSteps", "steps"],
+        ["useCFGScale", "CFGScale"],
+        ["useStrength", "strength"],
+    ];
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = ultralyticsNode.htmlElements?.widgetsContainer || ultralyticsNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            }
+
+            ultralyticsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    useParamPairs.forEach(([useName, paramName]) => {
+        const useWidget = ultralyticsNode.widgets.find(w => w.name === useName);
+        const paramWidget = ultralyticsNode.widgets.find(w => w.name === paramName);
+        if (useWidget && paramWidget) {
+            toggleWidgetState(useWidget, paramWidget, paramName);
+        }
+    });
+}
+
 function xaiProviderSettingsToggleHandler(xaiNode) {
     const useQualityWidget = xaiNode.widgets.find(w => w.name === "useQuality");
     const qualityWidget = xaiNode.widgets.find(w => w.name === "quality");
@@ -3288,6 +3351,7 @@ export {
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,
+    ultralyticsProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
     klingProviderSettingsToggleHandler,
@@ -3379,6 +3443,8 @@ function settingsToggleHandler(settingsNode) {
     const systemPromptWidget = settingsNode.widgets.find(w => w.name === "systemPrompt");
     const useTopPWidget = settingsNode.widgets.find(w => w.name === "useTopP");
     const topPWidget = settingsNode.widgets.find(w => w.name === "topP");
+    const useQualityWidget = settingsNode.widgets.find(w => w.name === "useQuality");
+    const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -3431,6 +3497,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useTopPWidget && topPWidget) {
         toggleWidgetState(useTopPWidget, topPWidget, "topP");
+    }
+    if (useQualityWidget && qualityWidget) {
+        toggleWidgetState(useQualityWidget, qualityWidget, "quality");
     }
 }
 
