@@ -3,7 +3,7 @@ Runware Sourceful Provider Settings Fonts Node
 Creates font inputs array for Sourceful provider (up to 2 font references with fontUrl and text).
 """
 
-from typing import Dict, Any, List
+from typing import Dict, List
 
 
 class RunwareSourcefulProviderSettingsFonts:
@@ -58,7 +58,7 @@ class RunwareSourcefulProviderSettingsFonts:
             if use_font:
                 font_url = (kwargs.get(f"fontUrl{i}", "") or "").strip()
                 text = (kwargs.get(f"text{i}", "") or "").strip()
-                if font_url or text:
+                if font_url and text:
                     font_inputs.append({
                         "fontUrl": font_url,
                         "text": text,
