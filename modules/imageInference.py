@@ -378,7 +378,7 @@ class txt2img:
             if isinstance(providerSettings, dict):
                 # Check if providerSettings already has a provider key (e.g., {"alibaba": {...}})
                 if any(key in providerSettings for key in ["alibaba", "bytedance", "klingai", "openai", "pixverse", 
-                                                          "bria", "lightricks", "luma", "minimax", "runway", "vidu", "elevenlabs", "bfl", "xai"]):
+                                                          "bria", "lightricks", "luma", "minimax", "runway", "vidu", "elevenlabs", "bfl", "xai", "sourceful"]):
                     final_provider_settings = providerSettings
                 else:
                     # Otherwise, wrap with the extracted provider name
