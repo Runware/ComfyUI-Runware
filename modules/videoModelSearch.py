@@ -104,6 +104,9 @@ class videoModelSearch:
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
+        "Kandinsky": [
+            "runware:210@1 (Kandinsky 5.0 Lite)",
+        ],
         "xAI": [
             "xai:grok-imagine@video (Grok Imagine Video)",
         ],
@@ -215,6 +218,9 @@ class videoModelSearch:
         # Hunyuan Models
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
 
+        # Kandinsky Models
+        "runware:210@1": {"width": 512, "height": 512},
+
         # xAI Models
         "xai:grok-imagine@video": {"width": 480, "height": 480},
 
@@ -325,6 +331,9 @@ class videoModelSearch:
         # Hunyuan Models
         "runware:hunyuanvideo@1.5": "480p",
 
+        # Kandinsky Models
+        "runware:210@1": None,  # No resolution support (fixed 512x512)
+
         # xAI Models
         "xai:grok-imagine@video": "480p",
 
@@ -350,6 +359,7 @@ class videoModelSearch:
         "Bria",
         "Creatify",
         "Hunyuan",
+        "Kandinsky",
         "xAI",
         "VEED"
     ]

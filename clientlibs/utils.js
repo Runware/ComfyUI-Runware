@@ -760,6 +760,8 @@ function useParameterToggleHandler(node) {
         "useCustomDimensions": ["width", "height"], // Note: Also handled separately in videoInferenceDimensionsHandler
         "useDuration": ["duration"],
         "useFps": ["fps"],
+        "useSchedulers": ["scheduler"],
+        "useCFGScale": ["cfgScale"],
         // useSteps and useSeed are same as image inference, handled by fallback
         
         // Upscaler specific mappings (override for nodes that have CFGScale with capital C)
@@ -2022,6 +2024,10 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     const stepsWidget = videoInferenceNode.widgets.find(w => w.name === "steps");
     const useBatchSizeWidget = videoInferenceNode.widgets.find(w => w.name === "useBatchSize");
     const batchSizeWidget = videoInferenceNode.widgets.find(w => w.name === "batchSize");
+    const useSchedulersWidget = videoInferenceNode.widgets.find(w => w.name === "useSchedulers");
+    const schedulerWidget = videoInferenceNode.widgets.find(w => w.name === "scheduler");
+    const useCFGScaleWidget = videoInferenceNode.widgets.find(w => w.name === "useCFGScale");
+    const cfgScaleWidget = videoInferenceNode.widgets.find(w => w.name === "cfgScale");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -2088,6 +2094,14 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     
     if (useBatchSizeWidget && batchSizeWidget) {
         toggleWidgetState(useBatchSizeWidget, batchSizeWidget, "batchSize");
+    }
+    
+    if (useSchedulersWidget && schedulerWidget) {
+        toggleWidgetState(useSchedulersWidget, schedulerWidget, "scheduler");
+    }
+    
+    if (useCFGScaleWidget && cfgScaleWidget) {
+        toggleWidgetState(useCFGScaleWidget, cfgScaleWidget, "cfgScale");
     }
 }
 
@@ -2182,6 +2196,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
+        "Kandinsky": [
+            "runware:210@1 (Kandinsky 5.0 Lite)",
+        ],
         "xAI": [
             "xai:grok-imagine@video (Grok Imagine Video)",
         ],
@@ -2260,6 +2277,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": {"width": 1280, "height": 720},
         "creatify:aurora@0": {"width": 1280, "height": 720},
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
+        "runware:210@1": {"width": 512, "height": 512},
         "xai:grok-imagine@video": {"width": 480, "height": 480},
         "veed:fabric@1.0": {"width": 1280, "height": 720},
     };
@@ -2334,6 +2352,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@fast": "720p",
         "creatify:aurora@0": "720p",
         "runware:hunyuanvideo@1.5": "480p",
+        "runware:210@1": null,  // No resolution support (fixed 512x512)
         "xai:grok-imagine@video": "480p",
         "veed:fabric@1.0": "720p",
     };
