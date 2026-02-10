@@ -1559,11 +1559,7 @@ function threeDInferenceToggleHandler(node) {
     if (!useOutputQualityWidget || !outputQualityWidget) return;
     function toggleEnabled() {
         const enabled = useOutputQualityWidget.value === true;
-        if (outputQualityWidget.inputEl) {
-            outputQualityWidget.inputEl.disabled = !enabled;
-            outputQualityWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
-        }
-        outputQualityWidget.disabled = !enabled;
+        toggleWidgetEnabled(outputQualityWidget, enabled, node);
         node.setDirtyCanvas(true);
     }
     appendWidgetCB(useOutputQualityWidget, () => setTimeout(toggleEnabled, 50));
@@ -1583,11 +1579,7 @@ function threeDInferenceSettingsToggleHandler(node) {
         if (!useW || !paramW) return;
         function toggleEnabled() {
             const enabled = useW.value === true;
-            if (paramW.inputEl) {
-                paramW.inputEl.disabled = !enabled;
-                paramW.inputEl.style.opacity = enabled ? "1" : "0.5";
-            }
-            paramW.disabled = !enabled;
+            toggleWidgetEnabled(paramW, enabled, node);
             node.setDirtyCanvas(true);
         }
         appendWidgetCB(useW, () => setTimeout(toggleEnabled, 50));
@@ -1608,11 +1600,7 @@ function threeDInferenceSettingsLatToggleHandler(node) {
         if (!useW || !paramW) return;
         function toggleEnabled() {
             const enabled = useW.value === true;
-            if (paramW.inputEl) {
-                paramW.inputEl.disabled = !enabled;
-                paramW.inputEl.style.opacity = enabled ? "1" : "0.5";
-            }
-            paramW.disabled = !enabled;
+            toggleWidgetEnabled(paramW, enabled, node);
             node.setDirtyCanvas(true);
         }
         appendWidgetCB(useW, () => setTimeout(toggleEnabled, 50));
