@@ -56,6 +56,7 @@ class videoModelSearch:
             "vidu:1@5 (Vidu 1.5)",
             "vidu:2@0 (Vidu 2.0)",
             "vidu:4@1 (Vidu Q3)",
+            "vidu:4@2 (Vidu Q3 Turbo)",
         ],
         "Wan": [
             "runware:200@1 (Wan 2.1 1.3B)",
@@ -166,6 +167,7 @@ class videoModelSearch:
         "vidu:1@5": {"width": 1920, "height": 1080},
         "vidu:2@0": {"width": 1920, "height": 1080},
         "vidu:4@1": {"width": 1920, "height": 1080},
+        "vidu:4@2": {"width": 1920, "height": 1080},
         
         # Wan Models
         "runware:200@1": {"width": 853, "height": 480},
@@ -275,6 +277,7 @@ class videoModelSearch:
         "vidu:1@5": "1080p",
         "vidu:2@0": "1080p",
         "vidu:4@1": "1080p",
+        "vidu:4@2": "1080p",
         
         # Wan Models
         "runware:200@1": "480p",

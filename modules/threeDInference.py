@@ -8,6 +8,7 @@ class threeDInference:
     # Available 3D models
     THREED_MODELS = {
         "Meta SAM 3D": "meta:sam@3d",
+        "TRELLIS.2": "microsoft:trellis-2@4b",
     }
 
     # Output formats
@@ -38,8 +39,22 @@ class threeDInference:
                 }),
             },
             "optional": {
+                "useOutputQuality": ("BOOLEAN", {
+                    "tooltip": "Enable to include outputQuality in API request.",
+                    "default": False,
+                }),
+                "outputQuality": ("INT", {
+                    "tooltip": "Output quality (0-100). Only used when 'Use Output Quality' is enabled.",
+                    "default": 95,
+                    "min": 0,
+                    "max": 100,
+                    "step": 1,
+                }),
                 "inputs": ("RUNWARE3DINFERENCEINPUTS", {
                     "tooltip": "Connect a Runware 3D Inference Inputs node to provide image and mask inputs.",
+                }),
+                "settings": ("RUNWARE3DINFERENCESETTINGS", {
+                    "tooltip": "Connect Runware 3D Inference Settings node for textureSize, decimationTarget, remesh, resolution, sparseStructure, shapeSlat, texSlat.",
                 }),
             },
         }
@@ -56,7 +71,10 @@ class threeDInference:
         positivePrompt = kwargs.get("positivePrompt", "")
         seed = kwargs.get("seed", 1)
         outputFormat = kwargs.get("outputFormat", "GLB")
+        use_output_quality = kwargs.get("useOutputQuality", False)
+        output_quality = kwargs.get("outputQuality", 95)
         inputs = kwargs.get("inputs", None)
+        settings = kwargs.get("settings", None)
 
         # Get model AIR code
         model = self.THREED_MODELS.get(modelName, "meta:sam@3d")
@@ -82,9 +100,16 @@ class threeDInference:
         # Add seed
         genConfig[0]["seed"] = seed
 
+        if use_output_quality:
+            genConfig[0]["outputQuality"] = int(output_quality)
+
         # Handle inputs from 3D Inference Inputs node
         if inputs is not None and isinstance(inputs, dict) and len(inputs) > 0:
             genConfig[0]["inputs"] = inputs
+
+        # Handle settings from 3D Inference Settings node
+        if settings is not None and isinstance(settings, dict) and len(settings) > 0:
+            genConfig[0]["settings"] = settings
 
         try:
             print(f"[DEBUG] Sending 3D Inference Request:")

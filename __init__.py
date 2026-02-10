@@ -79,6 +79,10 @@ from .modules.saveImage import RunwareSaveImage
 from .modules.videoOutputs import RunwareVideoInferenceOutputs
 from .modules.threeDInference import threeDInference
 from .modules.threeDInferenceInputs import threeDInferenceInputs
+from .modules.threeDInferenceSettings import Runware3DInferenceSettings
+from .modules.threeDInferenceSettingsSparseStructure import Runware3DInferenceSettingsSparseStructure
+from .modules.threeDInferenceSettingsShapeSlat import Runware3DInferenceSettingsShapeSlat
+from .modules.threeDInferenceSettingsTexSlat import Runware3DInferenceSettingsTexSlat
 from .modules.save3D import RunwareSave3D
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
@@ -173,6 +177,10 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inference Outputs": RunwareVideoInferenceOutputs,
     "Runware 3D Inference": threeDInference,
     "Runware 3D Inference Inputs": threeDInferenceInputs,
+    "Runware 3D Inference Settings": Runware3DInferenceSettings,
+    "Runware 3D Inference Settings Sparse Structure": Runware3DInferenceSettingsSparseStructure,
+    "Runware 3D Inference Settings Shape Slat": Runware3DInferenceSettingsShapeSlat,
+    "Runware 3D Inference Settings Tex Slat": Runware3DInferenceSettingsTexSlat,
     "Runware Save 3D": RunwareSave3D,
 }
 

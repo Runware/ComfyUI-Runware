@@ -129,6 +129,10 @@ const RUNWARE_NODE_TYPES = {
     VIDEOINFERENCEOUTPUTS: "Runware Video Inference Outputs",
     THREEDINFERENCE: "Runware 3D Inference",
     THREEDINFERENCEINPUTS: "Runware 3D Inference Inputs",
+    THREEDINFERENCESETTINGS: "Runware 3D Inference Settings",
+    THREEDINFERENCESETTINGSSPARSESTRUCTURE: "Runware 3D Inference Settings Sparse Structure",
+    THREEDINFERENCESETTINGSSHAPESLAT: "Runware 3D Inference Settings Shape Slat",
+    THREEDINFERENCESETTINGSTEXSLAT: "Runware 3D Inference Settings Tex Slat",
     SAVE3D: "Runware Save 3D",
 };
 
@@ -458,6 +462,22 @@ const RUNWARE_NODE_PROPS = {
         promptEnhancer: true,
     },
     [RUNWARE_NODE_TYPES.THREEDINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSSPARSESTRUCTURE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSSHAPESLAT]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSTEXSLAT]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

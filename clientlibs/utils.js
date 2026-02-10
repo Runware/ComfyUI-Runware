@@ -1553,6 +1553,73 @@ function sourcefulProviderSettingsFontsToggleHandler(fontsNode) {
     }
 }
 
+function threeDInferenceToggleHandler(node) {
+    const useOutputQualityWidget = node.widgets.find(w => w.name === "useOutputQuality");
+    const outputQualityWidget = node.widgets.find(w => w.name === "outputQuality");
+    if (!useOutputQualityWidget || !outputQualityWidget) return;
+    function toggleEnabled() {
+        const enabled = useOutputQualityWidget.value === true;
+        if (outputQualityWidget.inputEl) {
+            outputQualityWidget.inputEl.disabled = !enabled;
+            outputQualityWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+        }
+        outputQualityWidget.disabled = !enabled;
+        node.setDirtyCanvas(true);
+    }
+    appendWidgetCB(useOutputQualityWidget, () => setTimeout(toggleEnabled, 50));
+    setTimeout(toggleEnabled, 100);
+}
+
+function threeDInferenceSettingsToggleHandler(node) {
+    const pairs = [
+        ["useTextureSize", "textureSize"],
+        ["useDecimationTarget", "decimationTarget"],
+        ["useRemesh", "remesh"],
+        ["useResolution", "resolution"],
+    ];
+    pairs.forEach(([useName, paramName]) => {
+        const useW = node.widgets.find(w => w.name === useName);
+        const paramW = node.widgets.find(w => w.name === paramName);
+        if (!useW || !paramW) return;
+        function toggleEnabled() {
+            const enabled = useW.value === true;
+            if (paramW.inputEl) {
+                paramW.inputEl.disabled = !enabled;
+                paramW.inputEl.style.opacity = enabled ? "1" : "0.5";
+            }
+            paramW.disabled = !enabled;
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useW, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    });
+}
+
+function threeDInferenceSettingsLatToggleHandler(node) {
+    const pairs = [
+        ["useGuidanceStrength", "guidanceStrength"],
+        ["useGuidanceRescale", "guidanceRescale"],
+        ["useSteps", "steps"],
+        ["useRescaleT", "rescaleT"],
+    ];
+    pairs.forEach(([useName, paramName]) => {
+        const useW = node.widgets.find(w => w.name === useName);
+        const paramW = node.widgets.find(w => w.name === paramName);
+        if (!useW || !paramW) return;
+        function toggleEnabled() {
+            const enabled = useW.value === true;
+            if (paramW.inputEl) {
+                paramW.inputEl.disabled = !enabled;
+                paramW.inputEl.style.opacity = enabled ? "1" : "0.5";
+            }
+            paramW.disabled = !enabled;
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useW, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    });
+}
+
 function openaiProviderSettingsToggleHandler(openaiNode) {
     // Find all "use" parameter widgets for OpenAI Provider Settings (these are COMBO widgets)
     const useBackgroundWidget = openaiNode.widgets.find(w => w.name === "useBackground");
@@ -2083,6 +2150,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
             "vidu:1@5 (Vidu 1.5)", "vidu:2@0 (Vidu 2.0)",
             "vidu:4@1 (Vidu Q3)",
+            "vidu:4@2 (Vidu Q3 Turbo)",
         ],
         "Wan": [
             "runware:200@1 (Wan 2.1 1.3B)", "runware:200@2 (Wan 2.1 14B)",
@@ -2178,6 +2246,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "vidu:1@5": {"width": 1920, "height": 1080},
         "vidu:2@0": {"width": 1920, "height": 1080},
         "vidu:4@1": {"width": 1920, "height": 1080},
+        "vidu:4@2": {"width": 1920, "height": 1080},
         "runware:200@1": {"width": 853, "height": 480},
         "runware:200@2": {"width": 853, "height": 480},
         "runware:200@6": {"width": 1280, "height": 720},
@@ -2251,6 +2320,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "vidu:1@5": "1080p",
         "vidu:2@0": "1080p",
         "vidu:4@1": "1080p",
+        "vidu:4@2": "1080p",
         "runware:200@1": "480p",
         "runware:200@2": "480p",
         "runware:200@6": "720p",
@@ -3546,6 +3616,9 @@ export {
     viduProviderSettingsToggleHandler,
     sourcefulProviderSettingsToggleHandler,
     sourcefulProviderSettingsFontsToggleHandler,
+    threeDInferenceToggleHandler,
+    threeDInferenceSettingsToggleHandler,
+    threeDInferenceSettingsLatToggleHandler,
     ultralyticsProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
