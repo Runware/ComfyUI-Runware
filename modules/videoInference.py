@@ -75,6 +75,25 @@ class txt2vid:
                     "min": 1,
                     "max": 4,
                 }),
+                "useSchedulers": ("BOOLEAN", {
+                    "tooltip": "Enable to include scheduler parameter in API request. Disable if your model doesn't support scheduler.",
+                    "default": False,
+                }),
+                "scheduler": (["euler", "dpm", "adams", "unipc"], {
+                    "default": "euler",
+                    "tooltip": "High-level scheduler name for video generation. Only used when 'Use Schedulers' is enabled.",
+                }),
+                "useCFGScale": ("BOOLEAN", {
+                    "tooltip": "Enable to include guidance_scale (CFG) parameter in API request. Disable for No-CFG models.",
+                    "default": False,
+                }),
+                "cfgScale": ("FLOAT", {
+                    "tooltip": "Classifier-free guidance strength. Set to 1 for No-CFG models. For Duration 5 use 1; for Duration 10, 1-7 is valid. Default 5.",
+                    "default": 5.0,
+                    "min": 1.0,
+                    "max": 7.0,
+                    "step": 0.1,
+                }),
                 "acceleration": (["none", "low", "medium", "high"], {
                     "tooltip": "Applies optimized acceleration presets that automatically configure multiple generation parameters for the best speed and quality balance. This parameter serves as an abstraction layer that intelligently adjusts acceleratorOptions, steps, scheduler, and other underlying settings.\n\nAvailable values:\n- none: No acceleration applied, uses default parameter values.\n- low: Minimal acceleration with optimized settings for lowest quality loss.\n- medium: Balanced acceleration preset with moderate speed improvements.\n- high: Maximum acceleration with caching and aggressive optimizations for fastest generation.",
                     "default": "none",
@@ -173,6 +192,10 @@ class txt2vid:
         useSteps = kwargs.get("useSteps", False)
         useBatchSize = kwargs.get("useBatchSize", False)
         batchSize = kwargs.get("batchSize", 1)
+        useSchedulers = kwargs.get("useSchedulers", False)
+        scheduler = kwargs.get("scheduler", "euler")
+        useCFGScale = kwargs.get("useCFGScale", False)
+        cfgScale = kwargs.get("cfgScale", 5.0)
         acceleration = kwargs.get("acceleration", "none")
         
         # Handle model input - could be dict or string
@@ -234,6 +257,14 @@ class txt2vid:
         # Add steps parameter only if enabled
         if useSteps:
             genConfig[0]["steps"] = steps
+
+        # Add scheduler parameter only if enabled
+        if useSchedulers:
+            genConfig[0]["scheduler"] = scheduler
+
+        # Add CFGScale parameter only if enabled
+        if useCFGScale:
+            genConfig[0]["CFGScale"] = cfgScale
 
         if (negativePrompt is not None and negativePrompt != ""):
             genConfig[0]["negativePrompt"] = negativePrompt
