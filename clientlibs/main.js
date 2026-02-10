@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, threeDInferenceToggleHandler, threeDInferenceSettingsToggleHandler, threeDInferenceSettingsLatToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -128,6 +128,14 @@ app.registerExtension({
             videoAdvancedFeatureInputsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOINFERENCEINPUTS) {
             audioInferenceInputsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.THREEDINFERENCE) {
+            threeDInferenceToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGS) {
+            threeDInferenceSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSSPARSESTRUCTURE ||
+                  nodeClass === RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSSHAPESLAT ||
+                  nodeClass === RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSTEXSLAT) {
+            threeDInferenceSettingsLatToggleHandler(node);
         }
 
         if(crNodeProps.colorModeOnly === true) return;
