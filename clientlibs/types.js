@@ -134,7 +134,6 @@ const RUNWARE_NODE_TYPES = {
     THREEDINFERENCESETTINGSSHAPESLAT: "Runware 3D Inference Settings Shape Slat",
     THREEDINFERENCESETTINGSTEXSLAT: "Runware 3D Inference Settings Tex Slat",
     SAVE3D: "Runware Save 3D",
-    LOADMESH: "Runware Load Mesh",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -483,10 +482,6 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.SAVE3D]: {
-        bgColor: DEFAULT_BGCOLOR,
-        colorModeOnly: true,
-    },
-    [RUNWARE_NODE_TYPES.LOADMESH]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
