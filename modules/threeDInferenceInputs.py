@@ -17,7 +17,7 @@ class threeDInferenceInputs:
                 }),
                 "meshFile": ("STRING", {
                     "default": "",
-                    "tooltip": "Base64 data URI of mesh file (.glb or .ply) from Runware Load Mesh, or media UUID from Runware Media Upload.",
+                    "tooltip": "Base64 data URI of mesh file (.glb or .ply) from Runware Load Mesh.",
                 }),
             }
         }
