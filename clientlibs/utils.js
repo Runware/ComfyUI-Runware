@@ -649,8 +649,8 @@ async function searchNodeHandler(searchNode, searchInputWidget) {
         }
         if(searchQuery.length === 0) {
             resetValues();
-        } else if(searchQuery.length < 2 || searchQuery.length > 32) {
-            notifyUser("Invalid Search Value, Search Query must be between 2 and 32 characters!", "error", "Runware Search");
+        } else if(searchQuery.length < 2) {
+            notifyUser("Invalid Search Value, Search Query must be at least 2 characters!", "error", "Runware Search");
             return;
         } else {
             await searchModels();
