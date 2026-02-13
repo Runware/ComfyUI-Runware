@@ -15,6 +15,10 @@ class threeDInferenceInputs:
                 "mask": ("IMAGE", {
                     "tooltip": "Optional mask image to specify a region of interest in the input image for 3D generation."
                 }),
+                "meshFile": ("STRING", {
+                    "default": "",
+                    "tooltip": "Base64 data URI of mesh file (.glb or .ply) from Runware Load Mesh, or media UUID from Runware Media Upload.",
+                }),
             }
         }
 
@@ -28,6 +32,7 @@ class threeDInferenceInputs:
         """Create 3D inference inputs from provided parameters"""
         image = kwargs.get("image", None)
         mask = kwargs.get("mask", None)
+        mesh_file = kwargs.get("meshFile", "")
 
         inputs = {}
 
@@ -36,6 +41,9 @@ class threeDInferenceInputs:
 
         if mask is not None:
             inputs["mask"] = rwUtils.convertTensor2IMG(mask)
+
+        if mesh_file and isinstance(mesh_file, str) and mesh_file.strip():
+            inputs["meshFile"] = mesh_file.strip()
 
         return (inputs,)
 

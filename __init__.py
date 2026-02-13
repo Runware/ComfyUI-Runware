@@ -84,6 +84,7 @@ from .modules.threeDInferenceSettingsSparseStructure import Runware3DInferenceSe
 from .modules.threeDInferenceSettingsShapeSlat import Runware3DInferenceSettingsShapeSlat
 from .modules.threeDInferenceSettingsTexSlat import Runware3DInferenceSettingsTexSlat
 from .modules.save3D import RunwareSave3D
+from .modules.loadMesh import RunwareLoadMesh
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
 
@@ -182,6 +183,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware 3D Inference Settings Shape Slat": Runware3DInferenceSettingsShapeSlat,
     "Runware 3D Inference Settings Tex Slat": Runware3DInferenceSettingsTexSlat,
     "Runware Save 3D": RunwareSave3D,
+    "Runware Load Mesh": RunwareLoadMesh,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
