@@ -48,7 +48,7 @@ class RunwareAudioInference:
                     "tooltip": "Length of generated audio in seconds (10-300)"
                 }),
                 "useSampleRate": ("BOOLEAN", {
-                    "default": True,
+                    "default": False,
                     "tooltip": "Enable/disable sampleRate parameter in API request"
                 }),
                 "sampleRate": ("INT", {
@@ -59,7 +59,7 @@ class RunwareAudioInference:
                     "tooltip": "Sample rate of the generated audio in Hz (8000-48000)"
                 }),
                 "useBitrate": ("BOOLEAN", {
-                    "default": True,
+                    "default": False,
                     "tooltip": "Enable/disable bitrate parameter in API request"
                 }),
                 "bitrate": ("INT", {
@@ -83,6 +83,16 @@ class RunwareAudioInference:
                     "max": 3,
                     "tooltip": "Number of audio files to generate"
                 }),
+                "useSeed": ("BOOLEAN", {
+                    "tooltip": "Enable to include seed parameter in API request for reproducible generation.",
+                    "default": False,
+                }),
+                "seed": ("INT", {
+                    "tooltip": "Seed for reproducible audio generation. Only used when 'Use Seed' is enabled.",
+                    "default": 1,
+                    "min": 1,
+                    "max": 2147483647,
+                }),
                 "useSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps.",
                     "default": False,
@@ -93,10 +103,35 @@ class RunwareAudioInference:
                     "min": 1,
                     "max": 100,
                 }),
+                "useStrength": ("BOOLEAN", {
+                    "tooltip": "Enable to include strength parameter in API request. Used for audio-to-audio generation.",
+                    "default": False,
+                }),
+                "strength": ("FLOAT", {
+                    "tooltip": "Influence of the input audio in audio-to-audio generation. Lower = more original, higher = more variation. Only used when 'Use Strength' is enabled.",
+                    "default": 0.8,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
+                "useCFGScale": ("BOOLEAN", {
+                    "tooltip": "Enable to include CFGScale parameter in API request. Disable if your model doesn't support CFG scale.",
+                    "default": False,
+                }),
+                "CFGScale": ("FLOAT", {
+                    "tooltip": "Classifier-free guidance scale. Higher values adhere more closely to the prompt. Only used when 'Use CFG Scale' is enabled.",
+                    "default": 12.0,
+                    "min": 1.0,
+                    "max": 50.0,
+                    "step": 0.5,
+                }),
             },
             "optional": {
                 "inputs": ("RUNWAREAUDIOINFERENCEINPUTS", {
                     "tooltip": "Custom inputs for audio generation (e.g., video URL for audio extraction)"
+                }),
+                "settings": ("RUNWAREAUDIOSETTINGS", {
+                    "tooltip": "Connect Runware Audio Settings for lyrics, guidanceType, etc."
                 }),
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Provider-specific configuration settings"
@@ -219,16 +254,23 @@ class RunwareAudioInference:
             "duration": kwargs.get("duration", 30),
             "useDuration": kwargs.get("useDuration", True),
             "sampleRate": kwargs.get("sampleRate", 22050),
-            "useSampleRate": kwargs.get("useSampleRate", True),
+            "useSampleRate": kwargs.get("useSampleRate", False),
             "bitrate": kwargs.get("bitrate", 32),
-            "useBitrate": kwargs.get("useBitrate", True),
+            "useBitrate": kwargs.get("useBitrate", False),
             "outputType": kwargs.get("outputType", "URL"),
             "outputFormat": kwargs.get("outputFormat", "MP3"),
             "negativePrompt": kwargs.get("negativePrompt", ""),
             "numberResults": kwargs.get("numberResults", 1),
+            "seed": kwargs.get("seed", 1),
+            "useSeed": kwargs.get("useSeed", False),
             "steps": kwargs.get("steps", 20),
             "useSteps": kwargs.get("useSteps", False),
+            "strength": kwargs.get("strength", 0.8),
+            "useStrength": kwargs.get("useStrength", False),
+            "CFGScale": kwargs.get("CFGScale", 12.0),
+            "useCFGScale": kwargs.get("useCFGScale", False),
             "inputs": kwargs.get("inputs", None),
+            "settings": kwargs.get("settings", None),
             "providerSettings": kwargs.get("providerSettings", None),
         }
 
@@ -290,16 +332,30 @@ class RunwareAudioInference:
         else:
             print(f"[DEBUG] Skipped duration")
         
+        # Add seed parameter only if enabled
+        if params["useSeed"]:
+            genConfig[0]["seed"] = params["seed"]
+
         # Add steps parameter only if enabled
         if params["useSteps"]:
             genConfig[0]["steps"] = params["steps"]
-            print(f"[DEBUG] Added steps: {params['steps']}")
-        else:
-            print(f"[DEBUG] Skipped steps")
-        
+
+        # Add strength parameter only if enabled
+        if params["useStrength"]:
+            genConfig[0]["strength"] = params["strength"]
+
+        # Add CFGScale parameter only if enabled
+        if params["useCFGScale"]:
+            genConfig[0]["CFGScale"] = params["CFGScale"]
+
         # Add optional parameters
         if params["negativePrompt"]:
             genConfig[0]["negativePrompt"] = params["negativePrompt"]
+        
+        # Handle audio settings (lyrics, guidance_type)
+        if params["settings"] is not None and isinstance(params["settings"], dict) and len(params["settings"]) > 0:
+            genConfig[0]["settings"] = params["settings"]
+            print(f"[DEBUG] Audio settings merged: {rwUtils.sanitize_for_logging(params['settings'])}")
         
         # Handle inputs - merge custom inputs from Audio Inference Inputs node
         if params["inputs"] is not None:

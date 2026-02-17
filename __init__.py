@@ -37,6 +37,7 @@ from .modules.audioInference import RunwareAudioInference
 from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.audioSections import RunwareAudioSections
 from .modules.audioInferenceInputs import audioInferenceInputs
+from .modules.audioSettings import RunwareAudioSettings
 from .modules.providerSettings.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
 from .modules.providerSettings.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
 from .modules.acceleratorOptions import acceleratorOptions
@@ -63,6 +64,8 @@ from .modules.providerSettings.alibabaProviderSettings import RunwareAlibabaProv
 from .modules.providerSettings.googleProviderSettings import RunwareGoogleProviderSettings
 from .modules.providerSettings.blackForestProviderSettings import RunwareBlackForestProviderSettings
 from .modules.providerSettings.xaiProviderSettings import RunwareXAIProviderSettings
+from .modules.providerSettings.recraftProviderSettings import RunwareRecraftProviderSettings
+from .modules.providerSettings.recraftProviderSettingsColor import RunwareRecraftColor
 from .modules.providerSettings.sourcefulProviderSettings import RunwareSourcefulProviderSettings
 from .modules.providerSettings.sourcefulProviderSettingsFonts import RunwareSourcefulProviderSettingsFonts
 from .modules.ultralyticsInputs import RunwareUltralyticsInputs
@@ -138,6 +141,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Audio Model Search": RunwareAudioModelSearch,
     "Runware Audio Sections": RunwareAudioSections,
     "Runware Audio Inference Inputs": audioInferenceInputs,
+    "Runware Audio Settings": RunwareAudioSettings,
     "Runware ElevenLabs Provider Settings": RunwareElevenLabsProviderSettings,
     "Runware ElevenLabs Provider Settings Sections": RunwareElevenLabsProviderSettingsSections,
     "Runware Accelerator Options": acceleratorOptions,
@@ -164,6 +168,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware Google Provider Settings": RunwareGoogleProviderSettings,
     "Runware BlackForest Labs Provider Settings": RunwareBlackForestProviderSettings,
     "Runware xAI Provider Settings": RunwareXAIProviderSettings,
+    "Runware Recraft Provider Settings": RunwareRecraftProviderSettings,
+    "Runware Provider Settings Recraft Color": RunwareRecraftColor,
     "Runware Sourceful Provider Settings": RunwareSourcefulProviderSettings,
     "Runware Sourceful Provider Settings Fonts": RunwareSourcefulProviderSettingsFonts,
     "Runware Image Inference Ultralytics": RunwareUltralyticsInputs,

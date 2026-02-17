@@ -772,6 +772,9 @@ function useParameterToggleHandler(node) {
         
         // Audio Inference
         "usePositivePrompt": ["positivePrompt"],
+        "useSeed": ["seed"],
+        "useSteps": ["steps"],
+        "useStrength": ["strength"],
         
         // Accelerator Options
         "useCacheDistance": ["cacheDistance"],
@@ -799,6 +802,10 @@ function useParameterToggleHandler(node) {
     const nodeSpecificMappings = {
         // Upscaler uses CFGScale (capital C) instead of cfgScale
         [RUNWARE_NODE_TYPES.UPSCALER]: {
+            "useCFGScale": ["CFGScale"],
+        },
+        // Audio Inference uses CFGScale (capital C)
+        [RUNWARE_NODE_TYPES.AUDIOINFERENCE]: {
             "useCFGScale": ["CFGScale"],
         },
     };
@@ -1031,9 +1038,15 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     const sampleRateWidget = audioInferenceNode.widgets.find(w => w.name === "sampleRate");
     const useBitrateWidget = audioInferenceNode.widgets.find(w => w.name === "useBitrate");
     const bitrateWidget = audioInferenceNode.widgets.find(w => w.name === "bitrate");
+    const useSeedWidget = audioInferenceNode.widgets.find(w => w.name === "useSeed");
+    const seedWidget = audioInferenceNode.widgets.find(w => w.name === "seed");
     const useStepsWidget = audioInferenceNode.widgets.find(w => w.name === "useSteps");
     const stepsWidget = audioInferenceNode.widgets.find(w => w.name === "steps");
-    
+    const useStrengthWidget = audioInferenceNode.widgets.find(w => w.name === "useStrength");
+    const strengthWidget = audioInferenceNode.widgets.find(w => w.name === "strength");
+    const useCFGScaleWidget = audioInferenceNode.widgets.find(w => w.name === "useCFGScale");
+    const CFGScaleWidget = audioInferenceNode.widgets.find(w => w.name === "CFGScale");
+
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1092,8 +1105,20 @@ function audioInferenceToggleHandler(audioInferenceNode) {
         toggleWidgetState(useBitrateWidget, bitrateWidget, "bitrate");
     }
     
+    if (useSeedWidget && seedWidget) {
+        toggleWidgetState(useSeedWidget, seedWidget, "seed");
+    }
+
     if (useStepsWidget && stepsWidget) {
         toggleWidgetState(useStepsWidget, stepsWidget, "steps");
+    }
+
+    if (useStrengthWidget && strengthWidget) {
+        toggleWidgetState(useStrengthWidget, strengthWidget, "strength");
+    }
+
+    if (useCFGScaleWidget && CFGScaleWidget) {
+        toggleWidgetState(useCFGScaleWidget, CFGScaleWidget, "CFGScale");
     }
 }
 
@@ -2573,6 +2598,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "Mirelo": [
             "mirelo:1@1 (Mirelo SFX 1.5)",
+        ],
+        "Ace": [
+            "runware:ace-step@0 (ACE Step v1 3.5B)",
         ],
     };
 

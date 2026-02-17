@@ -82,6 +82,7 @@ const RUNWARE_NODE_TYPES = {
     AUDIOMODELSEARCH: "Runware Audio Model Search",
     AUDIOSECTIONS: "Runware Audio Sections",
     AUDIOINFERENCEINPUTS: "Runware Audio Inference Inputs",
+    AUDIOSETTINGS: "Runware Audio Settings",
     PIXVERSEPROVIDERSETTINGS: "Runware Pixverse Provider Settings",
     OPENAIPROVIDERSETTINGS: "Runware OpenAI Provider Settings",
     BYTEDANCEPROVIDERSETTINGS: "Runware Bytedance Provider Settings",
@@ -109,6 +110,8 @@ const RUNWARE_NODE_TYPES = {
     ALIBABAPROVIDERSETTINGS: "Runware Alibaba Provider Settings",
     BLACKFORESTPROVIDERSETTINGS: "Runware BlackForest Labs Provider Settings",
     XAIPROVIDERSETTINGS: "Runware xAI Provider Settings",
+    RECRAFTPROVIDERSETTINGS: "Runware Recraft Provider Settings",
+    RECRAFTCOLOR: "Runware Provider Settings Recraft Color",
     SOURCEFULPROVIDERSETTINGS: "Runware Sourceful Provider Settings",
     SOURCEFULPROVIDERSETTINGSFONTS: "Runware Sourceful Provider Settings Fonts",
     ULTRALYTICSINPUTS: "Runware Image Inference Ultralytics",
@@ -387,6 +390,12 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.RECRAFTPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.RECRAFTCOLOR]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
     [RUNWARE_NODE_TYPES.SOURCEFULPROVIDERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
@@ -431,6 +440,9 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.AUDIOINFERENCEINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.ACCELERATOROPTIONS]: {
         bgColor: DEFAULT_BGCOLOR,

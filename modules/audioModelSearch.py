@@ -14,6 +14,9 @@ class RunwareAudioModelSearch:
         "Mirelo": [
             "mirelo:1@1 (Mirelo SFX 1.5)",
         ],
+        "Ace": [
+            "runware:ace-step@0 (ACE Step v1 3.5B)",
+        ],
     }
     
     MODEL_PROVIDERS = [
@@ -21,6 +24,7 @@ class RunwareAudioModelSearch:
         "ElevenLabs",
         "KlingAI",
         "Mirelo",
+        "Ace",
     ]
     
     @classmethod
