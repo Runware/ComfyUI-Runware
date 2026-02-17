@@ -100,6 +100,8 @@ const RUNWARE_NODE_TYPES = {
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
+    KLINGMULTIPROMPTSEGMENT: "Runware Kling MultiPrompt Segment",
+    KLINGPROVIDERSETTINGSMULTIPROMPT: "Runware Kling Provider Settings MultiPrompt",
     RUNWAYPROVIDERSETTINGS: "Runware Runway Provider Settings",
     LUMAPROVIDERSETTINGS: "Runware Luma Provider Settings",
     MIDJOURNEYPROVIDERSETTINGS: "Runware Midjourney Provider Settings",
@@ -346,6 +348,14 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.KLINGPROVIDERSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.KLINGMULTIPROMPTSEGMENT]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.KLINGPROVIDERSETTINGSMULTIPROMPT]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

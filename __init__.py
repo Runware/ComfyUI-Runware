@@ -53,6 +53,8 @@ from .modules.videoInferenceInputs import videoInferenceInputs
 from .modules.providerSettings.lightricksProviderSettings import RunwareLightricksProviderSettings
 from .modules.providerSettings.minimaxProviderSettings import RunwareMiniMaxProviderSettings
 from .modules.providerSettings.klingProviderSettings import RunwareKlingProviderSettings
+from .modules.providerSettings.klingMultiPromptSegment import RunwareKlingMultiPromptSegment
+from .modules.providerSettings.klingProviderSettingsMultiPrompt import RunwareKlingProviderSettingsMultiPrompt
 from .modules.providerSettings.runwayProviderSettings import RunwareRunwayProviderSettings
 from .modules.providerSettings.lumaProviderSettings import RunwareLumaProviderSettings
 from .modules.providerSettings.midjourneyProviderSettings import RunwareMidjourneyProviderSettings
@@ -153,6 +155,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,
     "Runware Luma Provider Settings": RunwareLumaProviderSettings,
     "Runware KlingAI Provider Settings": RunwareKlingProviderSettings,
+    "Runware Kling MultiPrompt Segment": RunwareKlingMultiPromptSegment,
+    "Runware Kling Provider Settings MultiPrompt": RunwareKlingProviderSettingsMultiPrompt,
     "Runware Runway Provider Settings": RunwareRunwayProviderSettings,
     "Runware Midjourney Provider Settings": RunwareMidjourneyProviderSettings,
     "Runware Mirelo Provider Settings": RunwareMireloProviderSettings,

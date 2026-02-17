@@ -2127,6 +2127,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:7@1 (KlingAI Lip-Sync)",
             "klingai:kling@o1 (Kling VIDEO O1)",
             "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
+            "klingai:kling-video@3-pro (Kling VIDEO 3.0 Pro)",
+            "klingai:kling-video@3-standard (Kling VIDEO 3.0 Standard)",
             "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
             "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
@@ -2222,6 +2224,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:7@1": {"width": 0, "height": 0},
         "klingai:kling@o1": {"width": 1440, "height": 1440},
         "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
+        "klingai:kling-video@3-pro": {"width": 1920, "height": 1080},
+        "klingai:kling-video@3-standard": {"width": 1920, "height": 1080},
         "klingai:avatar@2.0-standard": {"width": 0, "height": 0},
         "klingai:avatar@2.0-pro": {"width": 0, "height": 0},
         "google:2@0": {"width": 1280, "height": 720},
@@ -2297,6 +2301,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:7@1": null,  // No resolution support
         "klingai:kling@o1": null,  // No standard resolution
         "klingai:kling-video@2.6-pro": "1080p",
+        "klingai:kling-video@3-pro": "1080p",
+        "klingai:kling-video@3-standard": "1080p",
         "klingai:avatar@2.0-standard": null,  // No resolution support
         "klingai:avatar@2.0-pro": null,  // No resolution support
         "google:2@0": "720p",
@@ -2616,6 +2622,7 @@ function klingProviderSettingsToggleHandler(klingNode) {
     const soundWidget = klingNode.widgets.find(w => w.name === "sound");
     const useCharacterOrientationWidget = klingNode.widgets.find(w => w.name === "useCharacterOrientation");
     const characterOrientationWidget = klingNode.widgets.find(w => w.name === "characterOrientation");
+    const useMultipromptWidget = klingNode.widgets.find(w => w.name === "useMultiprompt");
     
     // Helper function to toggle widget enabled state (EXACT same pattern as imageInferenceToggleHandler)
     // Callers guard with if (useX && xWidget) before invoking
@@ -2697,6 +2704,25 @@ function klingProviderSettingsToggleHandler(klingNode) {
     
     if (useCharacterOrientationWidget && characterOrientationWidget) {
         toggleWidgetState(useCharacterOrientationWidget, characterOrientationWidget, "characterOrientation");
+    }
+    
+    // Toggle MultiPrompt Segment input slots when useMultiprompt changes
+    if (useMultipromptWidget) {
+        function toggleMultipromptInputs() {
+            const enabled = useMultipromptWidget.value === true;
+            klingNode.inputs?.forEach(inp => {
+                if (inp?.name?.startsWith("MultiPrompt Segment")) {
+                    inp.disabled = !enabled;
+                    if (inp.domElement) {
+                        inp.domElement.style.opacity = enabled ? "1" : "0.4";
+                        inp.domElement.style.pointerEvents = enabled ? "auto" : "none";
+                    }
+                }
+            });
+            klingNode.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useMultipromptWidget, () => setTimeout(toggleMultipromptInputs, 50));
+        setTimeout(toggleMultipromptInputs, 100);
     }
 }
 

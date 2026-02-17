@@ -3,7 +3,7 @@ Runware KlingAI Provider Settings Node
 Provides KlingAI-specific settings for video generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 
 class RunwareKlingProviderSettings:
@@ -98,6 +98,27 @@ class RunwareKlingProviderSettings:
                     "tooltip": "Character orientation mode. 'image': has the same orientation as the person in the picture (reference video duration should not exceed 10 seconds). 'video': consistent with the orientation of the characters in the video (reference video duration should not exceed 30 seconds). Only used when 'Use Character Orientation' is enabled.",
                     "default": "image",
                 }),
+                "useMultiprompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include multiPrompt in provider settings. When enabled, connect Runware Kling MultiPrompt Segment nodes.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "MultiPrompt Segment 1": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
+                    "tooltip": "Connect a Runware Kling MultiPrompt Segment. Only used when 'Use Multiprompt' is enabled.",
+                }),
+                "MultiPrompt Segment 2": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
+                    "tooltip": "Connect a Runware Kling MultiPrompt Segment. Only used when 'Use Multiprompt' is enabled.",
+                }),
+                "MultiPrompt Segment 3": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
+                    "tooltip": "Connect a Runware Kling MultiPrompt Segment. Only used when 'Use Multiprompt' is enabled.",
+                }),
+                "MultiPrompt Segment 4": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
+                    "tooltip": "Connect a Runware Kling MultiPrompt Segment. Only used when 'Use Multiprompt' is enabled.",
+                }),
+                "MultiPrompt Segment 5": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
+                    "tooltip": "Connect a Runware Kling MultiPrompt Segment. Only used when 'Use Multiprompt' is enabled.",
+                }),
             }
         }
 
@@ -120,6 +141,7 @@ class RunwareKlingProviderSettings:
         useKeepOriginalSound = kwargs.get("useKeepOriginalSound", False)
         useSound = kwargs.get("useSound", False)
         useCharacterOrientation = kwargs.get("useCharacterOrientation", False)
+        useMultiprompt = kwargs.get("useMultiprompt", False)
 
         # Get value parameters
         cameraControl = kwargs.get("cameraControl", "none")
@@ -170,6 +192,21 @@ class RunwareKlingProviderSettings:
         # Add characterOrientation only if useCharacterOrientation is enabled
         if useCharacterOrientation and characterOrientation:
             klingSettings["characterOrientation"] = characterOrientation
+
+        # Add multiPrompt only if useMultiprompt is enabled
+        if useMultiprompt:
+            segments: List[Dict[str, Any]] = []
+            for i in range(1, 6):
+                segment = kwargs.get(f"MultiPrompt Segment {i}")
+                if segment is not None and isinstance(segment, dict):
+                    prompt = segment.get("prompt", "").strip()
+                    if prompt:
+                        segments.append({
+                            "prompt": prompt,
+                            "duration": int(segment.get("duration", 4)),
+                        })
+            if segments:
+                klingSettings["multiPrompt"] = segments
 
         # Clean up None values
         klingSettings = {k: v for k, v in klingSettings.items() if v is not None}
