@@ -20,6 +20,8 @@ class videoModelSearch:
             "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
             "klingai:kling-video@3-pro (Kling VIDEO 3.0 Pro)",
             "klingai:kling-video@3-standard (Kling VIDEO 3.0 Standard)",
+            "klingai:kling-video@o3-pro (Kling VIDEO O3 Pro)",
+            "klingai:kling-video@o3-standard (Kling VIDEO O3 Standard)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)",
@@ -136,6 +138,8 @@ class videoModelSearch:
         "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@3-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@3-standard": {"width": 1920, "height": 1080},
+        "klingai:kling-video@o3-pro": {"width": 1920, "height": 1080},
+        "klingai:kling-video@o3-standard": {"width": 1920, "height": 1080},
         
         # Veo Models
         "google:2@0": {"width": 1280, "height": 720},
@@ -251,6 +255,8 @@ class videoModelSearch:
         "klingai:kling-video@2.6-pro": "1080p",
         "klingai:kling-video@3-pro": "1080p",
         "klingai:kling-video@3-standard": "1080p",
+        "klingai:kling-video@o3-pro": "1080p",
+        "klingai:kling-video@o3-standard": "1080p",
         
         # Veo Models
         "google:2@0": "720p",

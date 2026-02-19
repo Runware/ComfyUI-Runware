@@ -119,6 +119,9 @@ class RunwareKlingProviderSettings:
                 "MultiPrompt Segment 5": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
                     "tooltip": "Connect a Runware Kling MultiPrompt Segment. Only used when 'Use Multiprompt' is enabled.",
                 }),
+                "MultiPrompt Segment 6": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
+                    "tooltip": "Connect a Runware Kling MultiPrompt Segment. Only used when 'Use Multiprompt' is enabled.",
+                }),
             }
         }
 
@@ -196,7 +199,7 @@ class RunwareKlingProviderSettings:
         # Add multiPrompt only if useMultiprompt is enabled
         if useMultiprompt:
             segments: List[Dict[str, Any]] = []
-            for i in range(1, 6):
+            for i in range(1, 7):
                 segment = kwargs.get(f"MultiPrompt Segment {i}")
                 if segment is not None and isinstance(segment, dict):
                     prompt = segment.get("prompt", "").strip()

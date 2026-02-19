@@ -2154,6 +2154,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
             "klingai:kling-video@3-pro (Kling VIDEO 3.0 Pro)",
             "klingai:kling-video@3-standard (Kling VIDEO 3.0 Standard)",
+            "klingai:kling-video@o3-pro (Kling VIDEO O3 Pro)",
+            "klingai:kling-video@o3-standard (Kling VIDEO O3 Standard)",
             "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
             "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
@@ -2251,6 +2253,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@3-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@3-standard": {"width": 1920, "height": 1080},
+        "klingai:kling-video@o3-pro": {"width": 1920, "height": 1080},
+        "klingai:kling-video@o3-standard": {"width": 1920, "height": 1080},
         "klingai:avatar@2.0-standard": {"width": 0, "height": 0},
         "klingai:avatar@2.0-pro": {"width": 0, "height": 0},
         "google:2@0": {"width": 1280, "height": 720},
@@ -2328,6 +2332,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:kling-video@2.6-pro": "1080p",
         "klingai:kling-video@3-pro": "1080p",
         "klingai:kling-video@3-standard": "1080p",
+        "klingai:kling-video@o3-pro": "1080p",
+        "klingai:kling-video@o3-standard": "1080p",
         "klingai:avatar@2.0-standard": null,  // No resolution support
         "klingai:avatar@2.0-pro": null,  // No resolution support
         "google:2@0": "720p",
