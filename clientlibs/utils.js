@@ -772,6 +772,9 @@ function useParameterToggleHandler(node) {
         
         // Audio Inference
         "usePositivePrompt": ["positivePrompt"],
+        "useSeed": ["seed"],
+        "useSteps": ["steps"],
+        "useStrength": ["strength"],
         
         // Accelerator Options
         "useCacheDistance": ["cacheDistance"],
@@ -799,6 +802,10 @@ function useParameterToggleHandler(node) {
     const nodeSpecificMappings = {
         // Upscaler uses CFGScale (capital C) instead of cfgScale
         [RUNWARE_NODE_TYPES.UPSCALER]: {
+            "useCFGScale": ["CFGScale"],
+        },
+        // Audio Inference uses CFGScale (capital C)
+        [RUNWARE_NODE_TYPES.AUDIOINFERENCE]: {
             "useCFGScale": ["CFGScale"],
         },
     };
@@ -1031,9 +1038,15 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     const sampleRateWidget = audioInferenceNode.widgets.find(w => w.name === "sampleRate");
     const useBitrateWidget = audioInferenceNode.widgets.find(w => w.name === "useBitrate");
     const bitrateWidget = audioInferenceNode.widgets.find(w => w.name === "bitrate");
+    const useSeedWidget = audioInferenceNode.widgets.find(w => w.name === "useSeed");
+    const seedWidget = audioInferenceNode.widgets.find(w => w.name === "seed");
     const useStepsWidget = audioInferenceNode.widgets.find(w => w.name === "useSteps");
     const stepsWidget = audioInferenceNode.widgets.find(w => w.name === "steps");
-    
+    const useStrengthWidget = audioInferenceNode.widgets.find(w => w.name === "useStrength");
+    const strengthWidget = audioInferenceNode.widgets.find(w => w.name === "strength");
+    const useCFGScaleWidget = audioInferenceNode.widgets.find(w => w.name === "useCFGScale");
+    const CFGScaleWidget = audioInferenceNode.widgets.find(w => w.name === "CFGScale");
+
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1092,8 +1105,20 @@ function audioInferenceToggleHandler(audioInferenceNode) {
         toggleWidgetState(useBitrateWidget, bitrateWidget, "bitrate");
     }
     
+    if (useSeedWidget && seedWidget) {
+        toggleWidgetState(useSeedWidget, seedWidget, "seed");
+    }
+
     if (useStepsWidget && stepsWidget) {
         toggleWidgetState(useStepsWidget, stepsWidget, "steps");
+    }
+
+    if (useStrengthWidget && strengthWidget) {
+        toggleWidgetState(useStrengthWidget, strengthWidget, "strength");
+    }
+
+    if (useCFGScaleWidget && CFGScaleWidget) {
+        toggleWidgetState(useCFGScaleWidget, CFGScaleWidget, "CFGScale");
     }
 }
 
@@ -2129,6 +2154,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:kling-video@2.6-pro (Kling VIDEO 2.6 Pro)",
             "klingai:kling-video@3-pro (Kling VIDEO 3.0 Pro)",
             "klingai:kling-video@3-standard (Kling VIDEO 3.0 Standard)",
+            "klingai:kling-video@o3-pro (Kling VIDEO O3 Pro)",
+            "klingai:kling-video@o3-standard (Kling VIDEO O3 Standard)",
             "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
             "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
@@ -2226,6 +2253,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:kling-video@2.6-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@3-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@3-standard": {"width": 1920, "height": 1080},
+        "klingai:kling-video@o3-pro": {"width": 1920, "height": 1080},
+        "klingai:kling-video@o3-standard": {"width": 1920, "height": 1080},
         "klingai:avatar@2.0-standard": {"width": 0, "height": 0},
         "klingai:avatar@2.0-pro": {"width": 0, "height": 0},
         "google:2@0": {"width": 1280, "height": 720},
@@ -2303,6 +2332,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "klingai:kling-video@2.6-pro": "1080p",
         "klingai:kling-video@3-pro": "1080p",
         "klingai:kling-video@3-standard": "1080p",
+        "klingai:kling-video@o3-pro": "1080p",
+        "klingai:kling-video@o3-standard": "1080p",
         "klingai:avatar@2.0-standard": null,  // No resolution support
         "klingai:avatar@2.0-pro": null,  // No resolution support
         "google:2@0": "720p",
@@ -2573,6 +2604,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "Mirelo": [
             "mirelo:1@1 (Mirelo SFX 1.5)",
+        ],
+        "Ace": [
+            "runware:ace-step@0 (ACE Step v1 3.5B)",
         ],
     };
 

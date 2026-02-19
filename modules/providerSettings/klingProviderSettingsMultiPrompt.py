@@ -34,6 +34,9 @@ class RunwareKlingProviderSettingsMultiPrompt:
                 "MultiPrompt Segment 5": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
                     "tooltip": "Connect a Runware Kling MultiPrompt Segment",
                 }),
+                "MultiPrompt Segment 6": ("RUNWAREKLINGMULTIPROMPTSEGMENT", {
+                    "tooltip": "Connect a Runware Kling MultiPrompt Segment",
+                }),
             }
         }
 
@@ -49,7 +52,7 @@ class RunwareKlingProviderSettingsMultiPrompt:
         provider_settings = kwargs.get("providerSettings")
         segments: List[Dict[str, Any]] = []
 
-        for i in range(1, 6):
+        for i in range(1, 7):
             segment = kwargs.get(f"MultiPrompt Segment {i}")
             if segment is not None and isinstance(segment, dict):
                 prompt = segment.get("prompt", "").strip()
