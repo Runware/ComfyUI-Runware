@@ -34,10 +34,12 @@ from .modules.providerSettings.bytedanceImageProviderSettings import RunwareByte
 from .modules.providerSettings.briaImageProviderSettings import RunwareBriaProviderSettings
 from .modules.providerSettings.briaProviderMask import RunwareBriaProviderMask
 from .modules.audioInference import RunwareAudioInference
+from .modules.audioInferenceSpeech import RunwareAudioInferenceSpeech
 from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.audioSections import RunwareAudioSections
 from .modules.audioInferenceInputs import audioInferenceInputs
 from .modules.audioSettings import RunwareAudioSettings
+from .modules.audioSettingsVoiceModify import RunwareAudioSettingsVoiceModify
 from .modules.providerSettings.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
 from .modules.providerSettings.elevenlabsProviderSettingsSections import RunwareElevenLabsProviderSettingsSections
 from .modules.acceleratorOptions import acceleratorOptions
@@ -138,10 +140,12 @@ NODE_CLASS_MAPPINGS = {
     "Runware Bria Provider Settings": RunwareBriaProviderSettings,
     "Runware Bria Provider Mask": RunwareBriaProviderMask,
     "Runware Audio Inference": RunwareAudioInference,
+    "Runware Audio Inference Speech": RunwareAudioInferenceSpeech,
     "Runware Audio Model Search": RunwareAudioModelSearch,
     "Runware Audio Sections": RunwareAudioSections,
     "Runware Audio Inference Inputs": audioInferenceInputs,
-    "Runware Audio Settings": RunwareAudioSettings,
+    "Runware Audio Inference Settings": RunwareAudioSettings,
+    "Runware Audio Inference Settings Voice Modify": RunwareAudioSettingsVoiceModify,
     "Runware ElevenLabs Provider Settings": RunwareElevenLabsProviderSettings,
     "Runware ElevenLabs Provider Settings Sections": RunwareElevenLabsProviderSettingsSections,
     "Runware Accelerator Options": acceleratorOptions,
