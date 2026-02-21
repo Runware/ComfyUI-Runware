@@ -17,6 +17,9 @@ class RunwareAudioModelSearch:
         "Ace": [
             "runware:ace-step@0 (ACE Step v1 3.5B)",
         ],
+        "MiniMax": [
+            "minimax:speech@2.8 (MiniMax Speech 2.8)",
+        ],
     }
     
     MODEL_PROVIDERS = [
@@ -25,6 +28,7 @@ class RunwareAudioModelSearch:
         "KlingAI",
         "Mirelo",
         "Ace",
+        "MiniMax",
     ]
     
     @classmethod

@@ -79,10 +79,12 @@ const RUNWARE_NODE_TYPES = {
     VIDEOMODELSEARCH: "Runware Video Model Search",
     FRAMEIMAGES: "Runware Frame Images",
     AUDIOINFERENCE: "Runware Audio Inference",
+    AUDIOINFERENCESPEECH: "Runware Audio Inference Speech",
     AUDIOMODELSEARCH: "Runware Audio Model Search",
     AUDIOSECTIONS: "Runware Audio Sections",
     AUDIOINFERENCEINPUTS: "Runware Audio Inference Inputs",
-    AUDIOSETTINGS: "Runware Audio Settings",
+    AUDIOSETTINGS: "Runware Audio Inference Settings",
+    AUDIOSETTINGSVOICEMODIFY: "Runware Audio Inference Settings Voice Modify",
     PIXVERSEPROVIDERSETTINGS: "Runware Pixverse Provider Settings",
     OPENAIPROVIDERSETTINGS: "Runware OpenAI Provider Settings",
     BYTEDANCEPROVIDERSETTINGS: "Runware Bytedance Provider Settings",
@@ -270,6 +272,9 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         promptEnhancer: true,
     },
+    [RUNWARE_NODE_TYPES.AUDIOINFERENCESPEECH]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
     [RUNWARE_NODE_TYPES.AUDIOMODELSEARCH]: {
         bgColor: DEFAULT_BGCOLOR,
         liveSearch: true,
@@ -442,6 +447,9 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.AUDIOSETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOSETTINGSVOICEMODIFY]: {
         bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.ACCELERATOROPTIONS]: {
