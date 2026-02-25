@@ -325,11 +325,11 @@ class RunwareBriaProviderSettings:
         if useColor:
             settings["color"] = color
         
-        # Add lightDirection only if useLightDirection is enabled (maps to /relight; API may expect light_direction)
+        # Add lightDirection only if useLightDirection is enabled (maps to /relight
         if useLightDirection:
             settings["lightDirection"] = lightDirection
         
-        # Add lightType only if useLightType is enabled (maps to /relight; API may expect light_type)
+        # Add lightType only if useLightType is enabled (maps to /relight)
         if useLightType:
             settings["lightType"] = lightType
         

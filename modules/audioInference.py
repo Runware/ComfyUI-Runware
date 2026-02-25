@@ -51,22 +51,16 @@ class RunwareAudioInference:
                     "default": False,
                     "tooltip": "Enable/disable sampleRate parameter in API request"
                 }),
-                "sampleRate": ("INT", {
+                "sampleRate": ([8000, 16000, 22050, 24000, 32000, 44100], {
                     "default": 32000,
-                    "min": 8000,
-                    "max": 44100,
-                    "step": 1,
                     "tooltip": "Audio sample rate in Hz. Supported: 8000, 16000, 22050, 24000, 32000, 44100."
                 }),
                 "useBitrate": ("BOOLEAN", {
                     "default": False,
                     "tooltip": "Enable/disable bitrate parameter in API request (MP3 only)"
                 }),
-                "bitrate": ("INT", {
+                "bitrate": ([32, 64, 128, 256], {
                     "default": 128,
-                    "min": 32,
-                    "max": 256,
-                    "step": 1,
                     "tooltip": "Audio bitrate in kbps. Allowed: 32, 64, 128, 256. Only applies to MP3 format."
                 }),
                 "useChannels": ("BOOLEAN", {
@@ -270,7 +264,7 @@ class RunwareAudioInference:
             "model": kwargs.get("model", ""),
             "duration": kwargs.get("duration", 30),
             "useDuration": kwargs.get("useDuration", True),
-            "sampleRate": kwargs.get("sampleRate", 32000),
+            "sampleRate": int(kwargs.get("sampleRate", 32000)),
             "useSampleRate": kwargs.get("useSampleRate", False),
             "bitrate": kwargs.get("bitrate", 128),
             "useBitrate": kwargs.get("useBitrate", False),
@@ -326,9 +320,11 @@ class RunwareAudioInference:
         # Build audioSettings conditionally based on use flags
         audioSettings = {}
         if params["useSampleRate"]:
-            audioSettings["sampleRate"] = params["sampleRate"]
+            audioSettings["sampleRate"] = int(params["sampleRate"])
         if params["useBitrate"]:
-            audioSettings["bitrate"] = params["bitrate"]
+            _br = int(params["bitrate"])
+            _allowed_bitrates = (32, 64, 128, 256)
+            audioSettings["bitrate"] = _br if _br in _allowed_bitrates else min(_allowed_bitrates, key=lambda x: abs(x - _br))
         if params["useChannels"]:
             audioSettings["channels"] = params["channels"]
         
