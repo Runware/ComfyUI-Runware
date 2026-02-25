@@ -1,13 +1,13 @@
 """
-Runware Bria Provider Settings Node
-Provides Bria-specific settings for image/video generation
+Runware Bria Image Provider Settings Node
+Provides Bria-specific settings for image generation
 """
 
 import torch
 from typing import Optional, Dict, Any
 
 class RunwareBriaProviderSettings:
-    """Runware Bria Provider Settings Node"""
+    """Runware Bria Image Provider Settings Node"""
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -150,6 +150,52 @@ class RunwareBriaProviderSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useSeason": ("BOOLEAN", {
+                    "tooltip": "Enable to include season parameter (maps to /reseason).",
+                    "default": False,
+                }),
+                "season": (["spring", "summer", "autumn", "winter"], {
+                    "tooltip": "Desired season. Maps to /reseason.",
+                    "default": "spring",
+                }),
+                "useEdit": ("BOOLEAN", {
+                    "tooltip": "Enable to include edit parameter.",
+                    "default": False,
+                }),
+                "edit": (["colorize", "relight", "restore", "blend", "reseason", "sketch_to_image"], {
+                    "tooltip": "Edit mode: colorize, relight, restore, blend, reseason, sketch_to_image.",
+                    "default": "restore",
+                }),
+                "useColor": ("BOOLEAN", {
+                    "tooltip": "Enable to include color parameter (maps to /colorize).",
+                    "default": False,
+                }),
+                "color": (["contemporary color", "vivid color", "black and white colors", "sepia vintage"], {
+                    "tooltip": "Restoration/color style. Maps to /colorize.",
+                    "default": "contemporary color",
+                }),
+                "useLightDirection": ("BOOLEAN", {
+                    "tooltip": "Enable to include lightDirection parameter (maps to /relight).",
+                    "default": False,
+                }),
+                "lightDirection": (["front", "side", "bottom", "top-down"], {
+                    "tooltip": "Direction of light. Maps to /relight.",
+                    "default": "front",
+                }),
+                "useLightType": ("BOOLEAN", {
+                    "tooltip": "Enable to include lightType parameter (maps to /relight).",
+                    "default": False,
+                }),
+                "lightType": ([
+                    "midday", "blue hour light", "low-angle sunlight", "sunrise light",
+                    "spotlight on subject, keep background settings", "overcast light",
+                    "soft overcast daylight lighting", "cloud-filtered lighting", "fog-diffused lighting",
+                    "moonlight lighting", "starlight lighting nighttime", "soft bokeh lighting",
+                    "harsh studio lighting keep background setting",
+                ], {
+                    "tooltip": "Type of lighting. Maps to /relight.",
+                    "default": "midday",
+                }),
                 "Bria Provider Setting Mask": ("RUNWAREBRIAPROVIDERMASK", {
                     "tooltip": "Connect Runware Bria Provider Mask node to provide mask configuration for video eraser operations.",
                 }),
@@ -160,7 +206,7 @@ class RunwareBriaProviderSettings:
     RETURN_NAMES = ("providerSettings",)
     FUNCTION = "create_provider_settings"
     CATEGORY = "Runware/Provider Settings"
-    DESCRIPTION = "Configure Bria-specific provider settings for image generation, background replacement, and video operations including medium type, prompt enhancement, content moderation, and background replace mode."
+    DESCRIPTION = "Configure Bria-specific provider settings for image generation and background replacement including medium type, prompt enhancement, image enhancement, content moderation options, and background replace mode settings."
     
     def create_provider_settings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create Bria provider settings"""
@@ -180,6 +226,11 @@ class RunwareBriaProviderSettings:
         useForceBackgroundDetection = kwargs.get("useForceBackgroundDetection", False)
         usePreserveAudio = kwargs.get("usePreserveAudio", False)
         useAutoTrim = kwargs.get("useAutoTrim", False)
+        useSeason = kwargs.get("useSeason", False)
+        useEdit = kwargs.get("useEdit", False)
+        useColor = kwargs.get("useColor", False)
+        useLightDirection = kwargs.get("useLightDirection", False)
+        useLightType = kwargs.get("useLightType", False)
         
         # Get actual parameters
         medium = kwargs.get("medium", "photography")
@@ -196,6 +247,11 @@ class RunwareBriaProviderSettings:
         forceBackgroundDetection = kwargs.get("forceBackgroundDetection", False)
         preserveAudio = kwargs.get("preserveAudio", True)
         autoTrim = kwargs.get("autoTrim", False)
+        season = kwargs.get("season", "spring")
+        edit = kwargs.get("edit", "restore")
+        color = kwargs.get("color", "contemporary color")
+        lightDirection = kwargs.get("lightDirection", "front")
+        lightType = kwargs.get("lightType", "midday")
         mask = kwargs.get("Bria Provider Setting Mask", None)
         
         # Build settings dictionary
@@ -257,6 +313,26 @@ class RunwareBriaProviderSettings:
         if useAutoTrim:
             settings["autoTrim"] = autoTrim
         
+        # Add season only if useSeason is enabled (maps to /reseason)
+        if useSeason:
+            settings["season"] = season
+        
+        # Add edit only if useEdit is enabled
+        if useEdit:
+            settings["edit"] = edit
+        
+        # Add color only if useColor is enabled (maps to /colorize)
+        if useColor:
+            settings["color"] = color
+        
+        # Add lightDirection only if useLightDirection is enabled (maps to /relight
+        if useLightDirection:
+            settings["lightDirection"] = lightDirection
+        
+        # Add lightType only if useLightType is enabled (maps to /relight)
+        if useLightType:
+            settings["lightType"] = lightType
+        
         # Add mask if provided from Mask node
         if mask is not None and isinstance(mask, dict) and len(mask) > 0:
             settings["mask"] = mask
@@ -274,3 +350,4 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "RunwareBriaProviderSettings": "Runware Bria Provider Settings",
 }
+
