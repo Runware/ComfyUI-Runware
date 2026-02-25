@@ -63,11 +63,11 @@ class RunwareAudioInference:
                     "tooltip": "Enable/disable bitrate parameter in API request (MP3 only)"
                 }),
                 "bitrate": ("INT", {
-                    "default": 128000,
-                    "min": 32000,
-                    "max": 256000,
+                    "default": 128,
+                    "min": 32,
+                    "max": 256,
                     "step": 1,
-                    "tooltip": "Audio bitrate in bps. Supported: 32000, 64000, 128000, 256000. Only applies to MP3 format."
+                    "tooltip": "Audio bitrate in kbps. Allowed: 32, 64, 128, 256. Only applies to MP3 format."
                 }),
                 "useChannels": ("BOOLEAN", {
                     "default": False,
@@ -272,7 +272,7 @@ class RunwareAudioInference:
             "useDuration": kwargs.get("useDuration", True),
             "sampleRate": kwargs.get("sampleRate", 32000),
             "useSampleRate": kwargs.get("useSampleRate", False),
-            "bitrate": kwargs.get("bitrate", 128000),
+            "bitrate": kwargs.get("bitrate", 128),
             "useBitrate": kwargs.get("useBitrate", False),
             "channels": kwargs.get("channels", 2),
             "useChannels": kwargs.get("useChannels", False),

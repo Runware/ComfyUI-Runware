@@ -37,14 +37,11 @@ class RunwareAudioSettings:
                     "default": False,
                 }),
                 "languageBoost": ([
-                    "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian", "Spanish", "French",
-                    "Portuguese", "German", "Turkish", "Dutch", "Ukrainian", "Vietnamese", "Indonesian",
-                    "Japanese", "Italian", "Korean", "Thai", "Polish", "Romanian", "Greek", "Czech",
-                    "Finnish", "Hindi", "Bulgarian", "Danish", "Hebrew", "Malay", "Persian", "Slovak",
-                    "Swedish", "Croatian", "Filipino", "Hungarian", "Norwegian", "Slovenian", "Catalan",
-                    "Nynorsk", "Tamil", "Afrikaans",
+                    "auto", "zh", "yue", "en", "ar", "ru", "es", "fr", "pt", "de", "tr", "nl", "uk",
+                    "vi", "id", "ja", "it", "ko", "th", "pl", "ro", "el", "cs", "fi", "hi", "bg", "da",
+                    "he", "ms", "fa", "sk", "sv", "hr", "fil", "hu", "no", "sl", "ca", "nn", "ta", "af",
                 ], {
-                    "tooltip": "Language detection setting for audio generation.",
+                    "tooltip": "Language detection setting. Codes: zh, yue, en, ar, ru, es, fr, pt, de, tr, nl, uk, vi, id, ja, it, ko, th, pl, ro, el, cs, fi, hi, bg, da, he, ms, fa, sk, sv, hr, fil, hu, no, sl, ca, nn, ta, af, auto",
                     "default": "auto",
                 }),
                 "useTurbo": ("BOOLEAN", {
