@@ -1223,6 +1223,8 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
     const audioWidget = bytedanceNode.widgets.find(w => w.name === "audio");
     const useDraftWidget = bytedanceNode.widgets.find(w => w.name === "useDraft");
     const draftWidget = bytedanceNode.widgets.find(w => w.name === "draft");
+    const useOptimizePromptModeWidget = bytedanceNode.widgets.find(w => w.name === "useOptimizePromptMode");
+    const optimizePromptModeWidget = bytedanceNode.widgets.find(w => w.name === "optimizePromptMode");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1238,6 +1240,12 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
                 paramWidget.inputEl.readOnly = !enabled;
             }
             paramWidget.disabled = !enabled;
+            
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
             
             if (!paramWidget.inputEl) {
                 const nodeElement = bytedanceNode.htmlElements?.widgetsContainer || bytedanceNode.htmlElements;
@@ -1284,6 +1292,10 @@ function bytedanceProviderSettingsToggleHandler(bytedanceNode) {
 
     if (useDraftWidget && draftWidget) {
         toggleWidgetState(useDraftWidget, draftWidget, "draft");
+    }
+
+    if (useOptimizePromptModeWidget && optimizePromptModeWidget) {
+        toggleWidgetState(useOptimizePromptModeWidget, optimizePromptModeWidget, "optimizePromptMode");
     }
 }
 
