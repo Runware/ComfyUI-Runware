@@ -51,23 +51,28 @@ class RunwareAudioInference:
                     "default": False,
                     "tooltip": "Enable/disable sampleRate parameter in API request"
                 }),
-                "sampleRate": ("INT", {
-                    "default": 22050,
-                    "min": 8000,
-                    "max": 48000,
-                    "step": 1,
-                    "tooltip": "Sample rate of the generated audio in Hz (8000-48000)"
+                "sampleRate": ([8000, 16000, 22050, 24000, 32000, 44100], {
+                    "default": 32000,
+                    "tooltip": "Audio sample rate in Hz. Supported: 8000, 16000, 22050, 24000, 32000, 44100."
                 }),
                 "useBitrate": ("BOOLEAN", {
                     "default": False,
-                    "tooltip": "Enable/disable bitrate parameter in API request"
+                    "tooltip": "Enable/disable bitrate parameter in API request (MP3 only)"
                 }),
-                "bitrate": ("INT", {
-                    "default": 32,
-                    "min": 32,
-                    "max": 320,
-                    "step": 32,
-                    "tooltip": "Bitrate of the generated audio in kbps (32-320)"
+                "bitrate": ([32, 64, 128, 256], {
+                    "default": 128,
+                    "tooltip": "Audio bitrate in kbps. Allowed: 32, 64, 128, 256. Only applies to MP3 format."
+                }),
+                "useChannels": ("BOOLEAN", {
+                    "default": False,
+                    "tooltip": "Enable/disable channels parameter in API request"
+                }),
+                "channels": ("INT", {
+                    "default": 2,
+                    "min": 1,
+                    "max": 2,
+                    "step": 1,
+                    "tooltip": "Number of audio channels (1=mono, 2=stereo)"
                 }),
                 "outputType": (["URL", "dataURI", "base64Data"], {
                     "default": "URL",
@@ -131,7 +136,13 @@ class RunwareAudioInference:
                     "tooltip": "Custom inputs for audio generation (e.g., video URL for audio extraction)"
                 }),
                 "settings": ("RUNWAREAUDIOSETTINGS", {
-                    "tooltip": "Connect Runware Audio Settings for lyrics, guidanceType, etc."
+                    "tooltip": "Connect Runware Audio Inference Settings for lyrics, guidanceType, etc."
+                }),
+                "speech": ("RUNWARESPEECH", {
+                    "tooltip": "Connect Runware Audio Inference Speech for speech synthesis (e.g. Minimax)"
+                }),
+                "voiceModify": ("RUNWAREVOICEMODIFY", {
+                    "tooltip": "Connect Runware Audio Inference Settings Voice Modify for pitch, intensity, timbre, sound effects"
                 }),
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Provider-specific configuration settings"
@@ -253,10 +264,12 @@ class RunwareAudioInference:
             "model": kwargs.get("model", ""),
             "duration": kwargs.get("duration", 30),
             "useDuration": kwargs.get("useDuration", True),
-            "sampleRate": kwargs.get("sampleRate", 22050),
+            "sampleRate": int(kwargs.get("sampleRate", 32000)),
             "useSampleRate": kwargs.get("useSampleRate", False),
-            "bitrate": kwargs.get("bitrate", 32),
+            "bitrate": kwargs.get("bitrate", 128),
             "useBitrate": kwargs.get("useBitrate", False),
+            "channels": kwargs.get("channels", 2),
+            "useChannels": kwargs.get("useChannels", False),
             "outputType": kwargs.get("outputType", "URL"),
             "outputFormat": kwargs.get("outputFormat", "MP3"),
             "negativePrompt": kwargs.get("negativePrompt", ""),
@@ -271,6 +284,8 @@ class RunwareAudioInference:
             "useCFGScale": kwargs.get("useCFGScale", False),
             "inputs": kwargs.get("inputs", None),
             "settings": kwargs.get("settings", None),
+            "speech": kwargs.get("speech", None),
+            "voiceModify": kwargs.get("voiceModify", None),
             "providerSettings": kwargs.get("providerSettings", None),
         }
 
@@ -305,9 +320,13 @@ class RunwareAudioInference:
         # Build audioSettings conditionally based on use flags
         audioSettings = {}
         if params["useSampleRate"]:
-            audioSettings["sampleRate"] = params["sampleRate"]
+            audioSettings["sampleRate"] = int(params["sampleRate"])
         if params["useBitrate"]:
-            audioSettings["bitrate"] = params["bitrate"]
+            _br = int(params["bitrate"])
+            _allowed_bitrates = (32, 64, 128, 256)
+            audioSettings["bitrate"] = _br if _br in _allowed_bitrates else min(_allowed_bitrates, key=lambda x: abs(x - _br))
+        if params["useChannels"]:
+            audioSettings["channels"] = params["channels"]
         
         # Only add audioSettings if at least one setting is enabled
         if audioSettings:
@@ -356,6 +375,20 @@ class RunwareAudioInference:
         if params["settings"] is not None and isinstance(params["settings"], dict) and len(params["settings"]) > 0:
             genConfig[0]["settings"] = params["settings"]
             print(f"[DEBUG] Audio settings merged: {rwUtils.sanitize_for_logging(params['settings'])}")
+
+        # Handle speech (from Runware Audio Inference Speech node)
+        if params["speech"] is not None and isinstance(params["speech"], dict) and len(params["speech"]) > 0:
+            genConfig[0]["speech"] = params["speech"]
+            print(f"[DEBUG] Speech merged: {rwUtils.sanitize_for_logging(params['speech'])}")
+
+        # Handle voiceModify (from Runware Audio Inference Settings Voice Modify node) -> settings.voiceModify
+        if params["voiceModify"] is not None and isinstance(params["voiceModify"], dict) and len(params["voiceModify"]) > 0:
+            if "settings" not in genConfig[0]:
+                genConfig[0]["settings"] = {}
+            vm = dict(params["voiceModify"])
+
+            genConfig[0]["settings"]["voiceModify"] = vm
+            print(f"[DEBUG] Voice modify merged: {rwUtils.sanitize_for_logging(vm)}")
         
         # Handle inputs - merge custom inputs from Audio Inference Inputs node
         if params["inputs"] is not None:
