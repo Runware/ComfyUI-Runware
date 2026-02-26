@@ -419,8 +419,9 @@ async function syncDimensionsNodeHandler(node, dimensionsWidget) {
 
     appendWidgetCB(dimensionsWidget, function(...args) {
         const chosenDimension = args[0];
-        if(chosenDimension === "Custom") return;
+        if(chosenDimension === "Custom" || chosenDimension === "None") return;
         const dimensionValue = DEFAULT_DIMENSIONS_LIST[chosenDimension];
+        if(!dimensionValue) return;
         const [width, height] = dimensionValue.split("x");
         widthWidget.callback(width, "customSetOperation");
         heightWidget.callback(height, "customSetOperation");
@@ -1160,6 +1161,37 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useGuidanceTypeWidget && guidanceTypeWidget) toggleWidgetState(useGuidanceTypeWidget, guidanceTypeWidget, "guidanceType");
     if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
     if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
+}
+
+function videoSettingsToggleHandler(settingsNode) {
+    if (!settingsNode?.widgets) return;
+
+    const useDraftWidget = settingsNode.widgets.find(w => w && w.name === "useDraft");
+    const draftWidget = settingsNode.widgets.find(w => w && w.name === "draft");
+    const useAudioWidget = settingsNode.widgets.find(w => w && w.name === "useAudio");
+    const audioWidget = settingsNode.widgets.find(w => w && w.name === "audio");
+    const usePromptUpsamplingWidget = settingsNode.widgets.find(w => w && w.name === "usePromptUpsampling");
+    const promptUpsamplingWidget = settingsNode.widgets.find(w => w && w.name === "promptUpsampling");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, settingsNode);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            settingsNode.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useDraftWidget && draftWidget) toggleWidgetState(useDraftWidget, draftWidget, "draft");
+    if (useAudioWidget && audioWidget) toggleWidgetState(useAudioWidget, audioWidget, "audio");
+    if (usePromptUpsamplingWidget && promptUpsamplingWidget) toggleWidgetState(usePromptUpsamplingWidget, promptUpsamplingWidget, "promptUpsampling");
 }
 
 function audioInferenceSpeechToggleHandler(speechNode) {
@@ -2323,6 +2355,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "VEED": [
             "veed:fabric@1.0 (VEED Fabric 1.0)",
         ],
+        "Pruna": [
+            "prunaai:p-video@0 (P-Video)",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -2402,6 +2437,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:210@1": {"width": 512, "height": 512},
         "xai:grok-imagine@video": {"width": 480, "height": 480},
         "veed:fabric@1.0": {"width": 1280, "height": 720},
+        "prunaai:p-video@0": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -2481,6 +2517,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:210@1": null,  // No resolution support (fixed 512x512)
         "xai:grok-imagine@video": "480p",
         "veed:fabric@1.0": "720p",
+        "prunaai:p-video@0": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -2726,6 +2763,105 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
 
     appendWidgetCB(modelProviderWidget, filterModelList);
     filterModelList();
+}
+
+function vectorizeModelSearchFilterHandler(vectorizeNode) {
+    const modelArchWidget = vectorizeNode.widgets.find(w => w.name === "Model Architecture");
+    const vectorListWidget = vectorizeNode.widgets.find(w => w.name === "Vector Model List");
+
+    if (!modelArchWidget || !vectorListWidget) return;
+
+    const VECTORIZE_MODELS = {
+        "Recraft": [
+            "recraft:1@1 (Recraft 1)",
+            "recraft:v4-pro@vector (Recraft V4 Pro Vector)",
+            "recraft:v4@vector (Recraft V4 Vector)",
+        ],
+        "Picsart": [
+            "picsart:1@1 (Picsart 1)",
+        ],
+    };
+
+    function filterModelList() {
+        const selectedArch = modelArchWidget.value;
+        let filteredModels = [];
+
+        if (selectedArch === "All") {
+            Object.values(VECTORIZE_MODELS).forEach(models => filteredModels.push(...models));
+        } else if (VECTORIZE_MODELS[selectedArch]) {
+            filteredModels = VECTORIZE_MODELS[selectedArch];
+        }
+
+        if (filteredModels.length > 0) {
+            const currentValue = vectorListWidget.value;
+            vectorListWidget.options.values = filteredModels;
+
+            if (!filteredModels.includes(currentValue)) {
+                vectorListWidget.value = filteredModels[0];
+            }
+
+            vectorizeNode.setDirtyCanvas(true);
+        }
+    }
+
+    appendWidgetCB(modelArchWidget, filterModelList);
+    filterModelList();
+}
+
+function vectorizeToggleHandler(vectorizeNode) {
+    const usePositivePromptWidget = vectorizeNode.widgets.find(w => w.name === "Use Positive Prompt");
+    const positivePromptWidget = vectorizeNode.widgets.find(w => w.name === "positivePrompt");
+    const dimensionsWidget = vectorizeNode.widgets.find(w => w.name === "dimensions");
+    const widthWidget = vectorizeNode.widgets.find(w => w.name === "width");
+    const heightWidget = vectorizeNode.widgets.find(w => w.name === "height");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+            }
+        }
+        applyState();
+        appendWidgetCB(useWidget, applyState);
+    }
+
+    if (usePositivePromptWidget && positivePromptWidget) {
+        toggleWidgetState(usePositivePromptWidget, positivePromptWidget, "positivePrompt");
+    }
+
+    // Disable width/height when dimensions is "None" (same as image inference)
+    if (dimensionsWidget && widthWidget && heightWidget) {
+        function toggleDimensionsState() {
+            const dimensionsValue = dimensionsWidget.value;
+            const enabled = dimensionsValue !== "None";
+
+            if (widthWidget.inputEl) {
+                widthWidget.inputEl.disabled = !enabled;
+                widthWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                widthWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                widthWidget.inputEl.readOnly = !enabled;
+            }
+            widthWidget.disabled = !enabled;
+
+            if (heightWidget.inputEl) {
+                heightWidget.inputEl.disabled = !enabled;
+                heightWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                heightWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                heightWidget.inputEl.readOnly = !enabled;
+            }
+            heightWidget.disabled = !enabled;
+
+            vectorizeNode.setDirtyCanvas(true);
+        }
+        appendWidgetCB(dimensionsWidget, () => {
+            setTimeout(toggleDimensionsState, 50);
+        });
+        setTimeout(toggleDimensionsState, 100);
+    }
 }
 
 function klingProviderSettingsToggleHandler(klingNode) {
@@ -3794,6 +3930,8 @@ export {
     videoInferenceDimensionsHandler,
     videoModelSearchFilterHandler,
     audioModelSearchFilterHandler,
+    vectorizeModelSearchFilterHandler,
+    vectorizeToggleHandler,
     useParameterToggleHandler,
     imageInferenceToggleHandler,
     upscalerToggleHandler,
@@ -3801,6 +3939,7 @@ export {
     audioInferenceToggleHandler,
     audioInferenceSpeechToggleHandler,
     audioSettingsToggleHandler,
+    videoSettingsToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,

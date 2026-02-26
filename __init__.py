@@ -27,6 +27,7 @@ from .modules.referenceImages import referenceImages
 from .modules.imageInferenceInputs import imageInferenceInputs
 from .modules.videoInference import txt2vid
 from .modules.videoModelSearch import videoModelSearch
+from .modules.videoSettings import RunwareVideoSettings
 from .modules.frameImages import RunwareFrameImages
 from .modules.providerSettings.pixverseProviderSettings import RunwarePixverseProviderSettings
 from .modules.providerSettings.openaiProviderSettings import RunwareOpenAIProviderSettings
@@ -159,6 +160,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Reference Videos": referenceVideos,
     "Runware Reference Voices": referenceVoices,
     "Runware Video Inference Inputs": videoInferenceInputs,
+    "Runware Video Inference Settings": RunwareVideoSettings,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,
     "Runware Luma Provider Settings": RunwareLumaProviderSettings,
