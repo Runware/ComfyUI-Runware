@@ -2809,7 +2809,7 @@ function vectorizeModelSearchFilterHandler(vectorizeNode) {
 }
 
 function vectorizeToggleHandler(vectorizeNode) {
-    const usePositivePromptWidget = vectorizeNode.widgets.find(w => w.name === "Use Positive Prompt");
+    const usePositivePromptWidget = vectorizeNode.widgets.find(w => w.name === "Use positivePrompt");
     const positivePromptWidget = vectorizeNode.widgets.find(w => w.name === "positivePrompt");
     const dimensionsWidget = vectorizeNode.widgets.find(w => w.name === "dimensions");
     const widthWidget = vectorizeNode.widgets.find(w => w.name === "width");

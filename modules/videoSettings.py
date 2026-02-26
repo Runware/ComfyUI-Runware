@@ -53,7 +53,7 @@ class RunwareVideoSettings:
     CATEGORY = "Runware"
     DESCRIPTION = "Configure video inference settings (draft, audio, promptUpsampling) for Runware Video Inference. Connect to Runware Video Inference node."
 
-    def createSettings(self, **kwargs) -> tuple:
+    def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create settings dict for Video Inference API"""
         use_draft = kwargs.get("useDraft", False)
         draft = kwargs.get("draft", False)
