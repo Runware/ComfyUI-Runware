@@ -1,5 +1,5 @@
 """
-Runware Audio Settings Node
+Runware Audio Inference Settings Node
 Provides lyrics and guidanceType settings for Runware Audio Inference
 """
 
@@ -7,7 +7,7 @@ from typing import Dict, Any
 
 
 class RunwareAudioSettings:
-    """Runware Audio Settings Node"""
+    """Runware Audio Inference Settings Node"""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -32,6 +32,28 @@ class RunwareAudioSettings:
                     "tooltip": "Controls how the guidance value is used. apg = Adversarial Perceptual Guidance, cfg = Classifier-Free Guidance",
                     "default": "apg",
                 }),
+                "useLanguageBoost": ("BOOLEAN", {
+                    "tooltip": "Enable to include languageBoost (language detection setting) in audio generation settings",
+                    "default": False,
+                }),
+                "languageBoost": ([
+                    "auto", "zh", "yue", "en", "ar", "ru", "es", "fr", "pt", "de", "tr", "nl", "uk",
+                    "vi", "id", "ja", "it", "ko", "th", "pl", "ro", "el", "cs", "fi", "hi", "bg", "da",
+                    "he", "ms", "fa", "sk", "sv", "hr", "fil", "hu", "no", "sl", "ca", "nn", "ta", "af",
+                ], {
+                    "tooltip": "Language detection setting. Codes: zh, yue, en, ar, ru, es, fr, pt, de, tr, nl, uk, vi, id, ja, it, ko, th, pl, ro, el, cs, fi, hi, bg, da, he, ms, fa, sk, sv, hr, fil, hu, no, sl, ca, nn, ta, af, auto",
+                    "default": "auto",
+                }),
+                "useTurbo": ("BOOLEAN", {
+                    "tooltip": "Enable to include turbo (select turbo model or not) in audio generation settings",
+                    "default": False,
+                }),
+                "turbo": ("BOOLEAN", {
+                    "tooltip": "When enabled, use turbo model. Only used when 'Use Turbo' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -39,7 +61,7 @@ class RunwareAudioSettings:
     RETURN_NAMES = ("settings",)
     FUNCTION = "createSettings"
     CATEGORY = "Runware/Audio"
-    DESCRIPTION = "Configure audio generation settings (lyrics, guidanceType) for Runware Audio Inference. Connect to Runware Audio Inference node."
+    DESCRIPTION = "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo) for Runware Audio Inference. Connect to Runware Audio Inference node."
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio settings dict for API"""
@@ -47,6 +69,10 @@ class RunwareAudioSettings:
         lyrics = kwargs.get("lyrics", "")
         use_guidance_type = kwargs.get("useGuidanceType", False)
         guidance_type = kwargs.get("guidanceType", "apg")
+        use_language_boost = kwargs.get("useLanguageBoost", False)
+        language_boost = kwargs.get("languageBoost", "auto")
+        use_turbo = kwargs.get("useTurbo", False)
+        turbo = kwargs.get("turbo", False)
 
         settings: Dict[str, Any] = {}
 
@@ -56,6 +82,12 @@ class RunwareAudioSettings:
         if use_guidance_type:
             settings["guidanceType"] = guidance_type
 
+        if use_language_boost:
+            settings["languageBoost"] = language_boost
+
+        if use_turbo:
+            settings["turbo"] = bool(turbo)  # API requires true/false
+
         return (settings,)
 
 
@@ -64,5 +96,5 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "RunwareAudioSettings": "Runware Audio Settings",
+    "RunwareAudioSettings": "Runware Audio Inference Settings",
 }

@@ -1046,6 +1046,8 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     const strengthWidget = audioInferenceNode.widgets.find(w => w.name === "strength");
     const useCFGScaleWidget = audioInferenceNode.widgets.find(w => w.name === "useCFGScale");
     const CFGScaleWidget = audioInferenceNode.widgets.find(w => w.name === "CFGScale");
+    const useChannelsWidget = audioInferenceNode.widgets.find(w => w.name === "useChannels");
+    const channelsWidget = audioInferenceNode.widgets.find(w => w.name === "channels");
 
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -1120,6 +1122,81 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     if (useCFGScaleWidget && CFGScaleWidget) {
         toggleWidgetState(useCFGScaleWidget, CFGScaleWidget, "CFGScale");
     }
+
+    if (useChannelsWidget && channelsWidget) {
+        toggleWidgetState(useChannelsWidget, channelsWidget, "channels");
+    }
+}
+
+function audioSettingsToggleHandler(settingsNode) {
+    if (!settingsNode?.widgets) return;
+
+    const useLyricsWidget = settingsNode.widgets.find(w => w && w.name === "useLyrics");
+    const lyricsWidget = settingsNode.widgets.find(w => w && w.name === "lyrics");
+    const useGuidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "useGuidanceType");
+    const guidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "guidanceType");
+    const useLanguageBoostWidget = settingsNode.widgets.find(w => w && w.name === "useLanguageBoost");
+    const languageBoostWidget = settingsNode.widgets.find(w => w && w.name === "languageBoost");
+    const useTurboWidget = settingsNode.widgets.find(w => w && w.name === "useTurbo");
+    const turboWidget = settingsNode.widgets.find(w => w && w.name === "turbo");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, settingsNode);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            settingsNode.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useLyricsWidget && lyricsWidget) toggleWidgetState(useLyricsWidget, lyricsWidget, "lyrics");
+    if (useGuidanceTypeWidget && guidanceTypeWidget) toggleWidgetState(useGuidanceTypeWidget, guidanceTypeWidget, "guidanceType");
+    if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
+    if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
+}
+
+function audioInferenceSpeechToggleHandler(speechNode) {
+    if (!speechNode?.widgets) return;
+
+    const useSpeedWidget = speechNode.widgets.find(w => w && w.name === "useSpeed");
+    const speedWidget = speechNode.widgets.find(w => w && w.name === "speed");
+    const useVolumeWidget = speechNode.widgets.find(w => w && w.name === "useVolume");
+    const volumeWidget = speechNode.widgets.find(w => w && w.name === "volume");
+    const usePitchWidget = speechNode.widgets.find(w => w && w.name === "usePitch");
+    const pitchWidget = speechNode.widgets.find(w => w && w.name === "pitch");
+    const useEmotionWidget = speechNode.widgets.find(w => w && w.name === "useEmotion");
+    const emotionWidget = speechNode.widgets.find(w => w && w.name === "emotion");
+    const useToneWidget = speechNode.widgets.find(w => w && w.name === "useTone");
+    const toneWidget = speechNode.widgets.find(w => w && w.name === "tone");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, speechNode);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            speechNode.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useSpeedWidget && speedWidget) toggleWidgetState(useSpeedWidget, speedWidget, "speed");
+    if (useVolumeWidget && volumeWidget) toggleWidgetState(useVolumeWidget, volumeWidget, "volume");
+    if (usePitchWidget && pitchWidget) toggleWidgetState(usePitchWidget, pitchWidget, "pitch");
+    if (useEmotionWidget && emotionWidget) toggleWidgetState(useEmotionWidget, emotionWidget, "emotion");
+    if (useToneWidget && toneWidget) toggleWidgetState(useToneWidget, toneWidget, "tone");
 }
 
 function acceleratorOptionsToggleHandler(acceleratorNode) {
@@ -2620,6 +2697,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         "Ace": [
             "runware:ace-step@0 (ACE Step v1 3.5B)",
         ],
+        "MiniMax": [
+            "minimax:speech@2.8 (MiniMax Speech 2.8)",
+        ],
     };
 
     function filterModelList() {
@@ -3057,6 +3137,16 @@ function briaProviderSettingsToggleHandler(briaNode) {
     const autoTrimWidget = briaNode.widgets.find(w => w.name === "autoTrim");
     const usePreserveAudioWidget = briaNode.widgets.find(w => w.name === "usePreserveAudio");
     const preserveAudioWidget = briaNode.widgets.find(w => w.name === "preserveAudio");
+    const useSeasonWidget = briaNode.widgets.find(w => w.name === "useSeason");
+    const seasonWidget = briaNode.widgets.find(w => w.name === "season");
+    const useEditWidget = briaNode.widgets.find(w => w.name === "useEdit");
+    const editWidget = briaNode.widgets.find(w => w.name === "edit");
+    const useColorWidget = briaNode.widgets.find(w => w.name === "useColor");
+    const colorWidget = briaNode.widgets.find(w => w.name === "color");
+    const useLightDirectionWidget = briaNode.widgets.find(w => w.name === "useLightDirection");
+    const lightDirectionWidget = briaNode.widgets.find(w => w.name === "lightDirection");
+    const useLightTypeWidget = briaNode.widgets.find(w => w.name === "useLightType");
+    const lightTypeWidget = briaNode.widgets.find(w => w.name === "lightType");
     
     // Helper function to toggle widget enabled state (exact same pattern)
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -3167,6 +3257,26 @@ function briaProviderSettingsToggleHandler(briaNode) {
     
     if (usePreserveAudioWidget && preserveAudioWidget) {
         toggleWidgetState(usePreserveAudioWidget, preserveAudioWidget, "preserveAudio");
+    }
+    
+    if (useSeasonWidget && seasonWidget) {
+        toggleWidgetState(useSeasonWidget, seasonWidget, "season");
+    }
+    
+    if (useEditWidget && editWidget) {
+        toggleWidgetState(useEditWidget, editWidget, "edit");
+    }
+    
+    if (useColorWidget && colorWidget) {
+        toggleWidgetState(useColorWidget, colorWidget, "color");
+    }
+    
+    if (useLightDirectionWidget && lightDirectionWidget) {
+        toggleWidgetState(useLightDirectionWidget, lightDirectionWidget, "lightDirection");
+    }
+    
+    if (useLightTypeWidget && lightTypeWidget) {
+        toggleWidgetState(useLightTypeWidget, lightTypeWidget, "lightType");
     }
 }
 
@@ -3689,6 +3799,8 @@ export {
     upscalerToggleHandler,
     videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
+    audioInferenceSpeechToggleHandler,
+    audioSettingsToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,

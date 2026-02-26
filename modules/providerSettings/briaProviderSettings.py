@@ -1,13 +1,13 @@
 """
-Runware Bria Image Provider Settings Node
-Provides Bria-specific settings for image generation
+Runware Bria Provider Settings Node
+Provides Bria-specific settings for image/video generation
 """
 
 import torch
 from typing import Optional, Dict, Any
 
 class RunwareBriaProviderSettings:
-    """Runware Bria Image Provider Settings Node"""
+    """Runware Bria Provider Settings Node"""
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -206,7 +206,7 @@ class RunwareBriaProviderSettings:
     RETURN_NAMES = ("providerSettings",)
     FUNCTION = "create_provider_settings"
     CATEGORY = "Runware/Provider Settings"
-    DESCRIPTION = "Configure Bria-specific provider settings for image generation and background replacement including medium type, prompt enhancement, image enhancement, content moderation options, and background replace mode settings."
+    DESCRIPTION = "Configure Bria-specific provider settings for image generation, background replacement, and video operations including medium type, prompt enhancement, content moderation, and background replace mode."
     
     def create_provider_settings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create Bria provider settings"""
@@ -325,11 +325,9 @@ class RunwareBriaProviderSettings:
         if useColor:
             settings["color"] = color
         
-        # Add lightDirection only if useLightDirection is enabled (maps to /relight
+        # Add relight params (Bria API expects camelCase)
         if useLightDirection:
             settings["lightDirection"] = lightDirection
-        
-        # Add lightType only if useLightType is enabled (maps to /relight)
         if useLightType:
             settings["lightType"] = lightType
         
@@ -350,4 +348,3 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "RunwareBriaProviderSettings": "Runware Bria Provider Settings",
 }
-
