@@ -386,8 +386,7 @@ class RunwareAudioInference:
             if "settings" not in genConfig[0]:
                 genConfig[0]["settings"] = {}
             vm = dict(params["voiceModify"])
-            if "soundEffects" in vm:
-                vm["sound_effects"] = vm.pop("soundEffects")
+
             genConfig[0]["settings"]["voiceModify"] = vm
             print(f"[DEBUG] Voice modify merged: {rwUtils.sanitize_for_logging(vm)}")
         

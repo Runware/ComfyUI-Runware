@@ -30,8 +30,8 @@ from .modules.videoModelSearch import videoModelSearch
 from .modules.frameImages import RunwareFrameImages
 from .modules.providerSettings.pixverseProviderSettings import RunwarePixverseProviderSettings
 from .modules.providerSettings.openaiProviderSettings import RunwareOpenAIProviderSettings
-from .modules.providerSettings.bytedanceImageProviderSettings import RunwareBytedanceProviderSettings
-from .modules.providerSettings.briaImageProviderSettings import RunwareBriaProviderSettings
+from .modules.providerSettings.bytedanceProviderSettings import RunwareBytedanceProviderSettings
+from .modules.providerSettings.briaProviderSettings import RunwareBriaProviderSettings
 from .modules.providerSettings.briaProviderMask import RunwareBriaProviderMask
 from .modules.audioInference import RunwareAudioInference
 from .modules.audioInferenceSpeech import RunwareAudioInferenceSpeech
