@@ -144,6 +144,9 @@ class txt2vid:
                 "Accelerator": ("RUNWAREACCELERATOR", {
                     "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
                 }),
+                "settings": ("RUNWAREVIDEOSETTINGS", {
+                    "tooltip": "Connect a Runware Video Inference Settings node to configure draft, audio, and promptUpsampling.",
+                }),
             }
         }
 
@@ -181,6 +184,7 @@ class txt2vid:
         safetyInputs = kwargs.get("safetyInputs", None)
         videoAdvancedFeatureInputs = kwargs.get("videoAdvancedFeatureInputs", None)
         runwareAccelerator = kwargs.get("Accelerator", None)
+        settings = kwargs.get("settings", None)
         useDuration = kwargs.get("useDuration", True)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
@@ -350,6 +354,10 @@ class txt2vid:
         # Add accelerator options if provided
         if runwareAccelerator is not None and isinstance(runwareAccelerator, dict) and len(runwareAccelerator) > 0:
             genConfig[0]["acceleratorOptions"] = runwareAccelerator
+
+        # Add settings if provided (draft, audio, promptUpsampling)
+        if settings is not None and isinstance(settings, dict) and len(settings) > 0:
+            genConfig[0]["settings"] = settings
         
         # Add acceleration if not "none"
         if acceleration and acceleration != "none":

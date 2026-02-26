@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, audioInferenceSpeechToggleHandler, audioSettingsToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, threeDInferenceToggleHandler, threeDInferenceSettingsToggleHandler, threeDInferenceSettingsLatToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, vectorizeModelSearchFilterHandler, vectorizeToggleHandler, useParameterToggleHandler, imageInferenceToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, audioInferenceSpeechToggleHandler, audioSettingsToggleHandler, videoSettingsToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, threeDInferenceToggleHandler, threeDInferenceSettingsToggleHandler, threeDInferenceSettingsLatToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -82,6 +82,8 @@ app.registerExtension({
             audioInferenceSpeechToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOSETTINGS) {
             audioSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.VIDEOSETTINGS) {
+            videoSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.ACCELERATOROPTIONS) {
             acceleratorOptionsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.BYTEDANCEPROVIDERSETTINGS) {
@@ -149,6 +151,9 @@ app.registerExtension({
             videoModelSearchFilterHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOMODELSEARCH) {
             audioModelSearchFilterHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.VECTORIZE) {
+            vectorizeModelSearchFilterHandler(node);
+            vectorizeToggleHandler(node);
         }
 
         for(const nodeWidget of nodeWidgets) {

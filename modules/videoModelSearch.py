@@ -117,6 +117,9 @@ class videoModelSearch:
         "VEED": [
             "veed:fabric@1.0 (VEED Fabric 1.0)",
         ],
+        "Pruna": [
+            "prunaai:p-video@0 (P-Video)",
+        ],
     }
     
     # Model dimensions mapping
@@ -234,6 +237,9 @@ class videoModelSearch:
 
         # VEED Models (preserves input aspect ratio; resolution = shorter side)
         "veed:fabric@1.0": {"width": 1280, "height": 720},
+
+        # Pruna Models (720p)
+        "prunaai:p-video@0": {"width": 1280, "height": 720},
     }
     
     # Model resolutions mapping
@@ -349,10 +355,13 @@ class videoModelSearch:
         # xAI Models
         "xai:grok-imagine@video": "480p",
 
-        # VEED Models 
+        # VEED Models
         "veed:fabric@1.0": "720p",
+
+        # Pruna Models
+        "prunaai:p-video@0": "720p",
     }
-    
+
     MODEL_ARCHITECTURES = [
         "All",
         "KlingAI",
@@ -373,7 +382,8 @@ class videoModelSearch:
         "Hunyuan",
         "Kandinsky",
         "xAI",
-        "VEED"
+        "VEED",
+        "Pruna",
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}

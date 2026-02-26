@@ -55,6 +55,14 @@ class RunwareBytedanceProviderSettings:
                     "tooltip": "Enable draft mode for Bytedance provider",
                     "default": False,
                 }),
+                "useOptimizePromptMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include optimizePromptMode parameter in provider settings",
+                    "default": False,
+                }),
+                "optimizePromptMode": (["standard", "fast"], {
+                    "tooltip": "Prompt optimization mode. standard: higher quality, longer time. fast: faster generation, average quality.",
+                    "default": "standard",
+                }),
             }
         }
     
@@ -72,6 +80,7 @@ class RunwareBytedanceProviderSettings:
         useFastMode = kwargs.get("useFastMode", False)
         useAudio = kwargs.get("useAudio", False)
         useDraft = kwargs.get("useDraft", False)
+        useOptimizePromptMode = kwargs.get("useOptimizePromptMode", False)
         
         # Get value parameters
         cameraFixed = kwargs.get("cameraFixed", False)
@@ -79,6 +88,7 @@ class RunwareBytedanceProviderSettings:
         fastMode = kwargs.get("fastMode", False)
         audio = kwargs.get("audio", False)
         draft = kwargs.get("draft", False)
+        optimizePromptMode = kwargs.get("optimizePromptMode", "standard")
         
         # Build settings dictionary - only include what is enabled
         settings = {}
@@ -102,6 +112,10 @@ class RunwareBytedanceProviderSettings:
         # Add draft only if useDraft is enabled
         if useDraft:
             settings["draft"] = draft
+
+        # Add optimizePromptMode only if useOptimizePromptMode is enabled
+        if useOptimizePromptMode:
+            settings["optimizePromptMode"] = optimizePromptMode
         
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}

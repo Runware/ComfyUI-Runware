@@ -101,6 +101,7 @@ const RUNWARE_NODE_TYPES = {
     REFERENCEVIDEOS: "Runware Reference Videos",
     REFERENCEVOICES: "Runware Reference Voices",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
+    VIDEOSETTINGS: "Runware Video Inference Settings",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
     KLINGMULTIPROMPTSEGMENT: "Runware Kling MultiPrompt Segment",
@@ -427,6 +428,7 @@ const RUNWARE_NODE_PROPS = {
     },
     [RUNWARE_NODE_TYPES.VECTORIZE]: {
         bgColor: DEFAULT_BGCOLOR,
+        liveDimensions: true,
     },
     [RUNWARE_NODE_TYPES.VIDEOBGREMOVAL]: {
         bgColor: DEFAULT_BGCOLOR,
@@ -450,6 +452,9 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.AUDIOSETTINGSVOICEMODIFY]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.ACCELERATOROPTIONS]: {
