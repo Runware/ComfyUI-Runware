@@ -74,6 +74,16 @@ class RunwareSettings:
                     "default": "medium",
                     "tooltip": "Quality of the output image. Only used when 'Use Quality' is enabled.",
                 }),
+                "usePromptExtend": ("BOOLEAN", {
+                    "tooltip": "Enable to include promptExtend (automatic prompt rewriting/expansion) in API request.",
+                    "default": False,
+                }),
+                "promptExtend": ("BOOLEAN", {
+                    "tooltip": "Enables automatic prompt rewriting/expansion to improve quality. Adds 3–5s latency. Disable for detailed prompts or latency-sensitive use cases. Only used when 'Use Prompt Extend' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -93,6 +103,8 @@ class RunwareSettings:
         useLayers = kwargs.get("useLayers", False)
         useTrueCFGScale = kwargs.get("useTrueCFGScale", False)
         useQuality = kwargs.get("useQuality", False)
+        usePromptExtend = kwargs.get("usePromptExtend", True)
+        promptExtend = kwargs.get("promptExtend", True)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -118,6 +130,8 @@ class RunwareSettings:
             settings["true_cfg_scale"] = float(trueCFGScale)
         if useQuality:
             settings["quality"] = quality
+        if usePromptExtend:
+            settings["promptExtend"] = bool(promptExtend)
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}

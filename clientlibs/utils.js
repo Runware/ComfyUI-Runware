@@ -4047,6 +4047,8 @@ function settingsToggleHandler(settingsNode) {
     const trueCFGScaleWidget = settingsNode.widgets.find(w => w.name === "trueCFGScale");
     const useQualityWidget = settingsNode.widgets.find(w => w.name === "useQuality");
     const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
+    const usePromptExtendWidget = settingsNode.widgets.find(w => w.name === "usePromptExtend");
+    const promptExtendWidget = settingsNode.widgets.find(w => w.name === "promptExtend");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -4108,6 +4110,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useQualityWidget && qualityWidget) {
         toggleWidgetState(useQualityWidget, qualityWidget, "quality");
+    }
+    if (usePromptExtendWidget && promptExtendWidget) {
+        toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");
     }
 }
 
