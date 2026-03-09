@@ -200,6 +200,8 @@ class videoModelSearch:
         "lightricks:2@1": {"width": 1920, "height": 1080},
         "lightricks:3@1": {"width": 0, "height": 0},
         "lightricks:ltx@2": {"width": 1024, "height": 1024},
+        "lightricks:ltx@2.3": {"width": 1920, "height": 1080},
+        "lightricks:ltx@2.3-fast": {"width": 1920, "height": 1080},
         
         # Ovi Models
         "runware:190@1": {"width": 0, "height": 0},
@@ -320,6 +322,8 @@ class videoModelSearch:
         "lightricks:2@1": "1080p",
         "lightricks:3@1": None,  # No resolution support
         "lightricks:ltx@2": None,  # No resolution support (fixed 1024x1024)
+        "lightricks:ltx@2.3": "1080p",
+        "lightricks:ltx@2.3-fast": "1080p",
         
         # Ovi Models
         "runware:190@1": None,  # No resolution support
