@@ -4122,7 +4122,7 @@ export {
     imageInferenceToggleHandler,
     imageInferenceAdvancedFeaturesToggleHandler,
     watermarkAdvancedFeatureToggleHandler,
-  regionalPromptingRegionsToggleHandler,
+    regionalPromptingRegionsToggleHandler,
     upscalerToggleHandler,
     videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
