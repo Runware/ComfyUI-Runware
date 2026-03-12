@@ -79,6 +79,8 @@ class videoModelSearch:
             "lightricks:2@1 (LTX Pro)",
             "lightricks:3@1 (LTX-2 Retake)",
             "lightricks:ltx@2 (LTX-2)",
+            "lightricks:ltx@2.3 (LTX 2.3)",
+            "lightricks:ltx@2.3-fast (LTX 2.3 Fast)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",

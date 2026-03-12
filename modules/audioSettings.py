@@ -1,13 +1,14 @@
 """
 Runware Audio Inference Settings Node
-Provides lyrics and guidanceType settings for Runware Audio Inference
+Provides lyrics, guidanceType, languageBoost, turbo, temperature, and textNormalization
+settings for Runware Audio Inference.
 """
 
 from typing import Dict, Any
 
 
 class RunwareAudioSettings:
-    """Runware Audio Inference Settings Node"""
+    """Runware Audio Inference Settings Node (lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization)."""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -82,7 +83,7 @@ class RunwareAudioSettings:
     RETURN_NAMES = ("settings",)
     FUNCTION = "createSettings"
     CATEGORY = "Runware/Audio"
-    DESCRIPTION = "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo) for Runware Audio Inference. Connect to Runware Audio Inference node."
+    DESCRIPTION = "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization) for Runware Audio Inference. Connect to Runware Audio Inference node."
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio settings dict for API"""
