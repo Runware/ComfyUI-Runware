@@ -75,6 +75,7 @@ const RUNWARE_NODE_TYPES = {
     VAE: "Runware VAE Search",
     REFERENCEIMAGES: "Runware Reference Images",
     IMAGEINFERENCEINPUTS: "Runware Image Inference Inputs",
+    IMAGEINFERENCEADVANCEDFEATURES: "Runware Image Inference Advanced Features",
     VIDEOINFERENCE: "Runware Video Inference",
     VIDEOMODELSEARCH: "Runware Video Model Search",
     FRAMEIMAGES: "Runware Frame Images",
@@ -285,6 +286,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.IMAGEINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCEADVANCEDFEATURES]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

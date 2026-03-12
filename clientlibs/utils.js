@@ -3835,6 +3835,42 @@ function videoAdvancedFeatureInputsToggleHandler(advancedFeatureNode) {
     }
 }
 
+function imageInferenceAdvancedFeaturesToggleHandler(advancedFeaturesNode) {
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = advancedFeaturesNode.htmlElements?.widgetsContainer || advancedFeaturesNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                    }
+                }
+            }
+            advancedFeaturesNode.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useWidget, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    }
+    const useLayerDiffuseWidget = advancedFeaturesNode.widgets.find(w => w.name === "useLayerDiffuse");
+    const layerDiffuseWidget = advancedFeaturesNode.widgets.find(w => w.name === "layerDiffuse");
+    if (useLayerDiffuseWidget && layerDiffuseWidget) toggleWidgetState(useLayerDiffuseWidget, layerDiffuseWidget, "layerDiffuse");
+    const useHiresFixWidget = advancedFeaturesNode.widgets.find(w => w.name === "useHiresFix");
+    const hiresFixWidget = advancedFeaturesNode.widgets.find(w => w.name === "hiresFix");
+    if (useHiresFixWidget && hiresFixWidget) toggleWidgetState(useHiresFixWidget, hiresFixWidget, "hiresFix");
+}
+
 function audioInferenceInputsToggleHandler(audioInputsNode) {
     // Find widgets
     const useVideoWidget = audioInputsNode.widgets.find(w => w.name === "useVideo");
@@ -3953,6 +3989,7 @@ export {
     vectorizeToggleHandler,
     useParameterToggleHandler,
     imageInferenceToggleHandler,
+    imageInferenceAdvancedFeaturesToggleHandler,
     upscalerToggleHandler,
     videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
