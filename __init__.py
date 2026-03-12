@@ -26,6 +26,9 @@ from .modules.vaeSearch import vaeSearch
 from .modules.referenceImages import referenceImages
 from .modules.imageInferenceInputs import imageInferenceInputs
 from .modules.imageInferenceAdvancedFeatures import RunwareImageInferenceAdvancedFeatures
+from .modules.imageWatermarkAdvancedFeature import RunwareWatermarkAdvancedFeature
+from .modules.imageRegionalPromptingAdvancedFeature import RunwareRegionalPromptingAdvancedFeature
+from .modules.imageRegionalPromptingAdvancedFeatureRegions import RunwareRegionalPromptingAdvancedFeatureRegions
 from .modules.videoInference import txt2vid
 from .modules.videoModelSearch import videoModelSearch
 from .modules.videoSettings import RunwareVideoSettings
@@ -133,7 +136,10 @@ NODE_CLASS_MAPPINGS = {
     "Runware IPAdapters Combine": ipAdapterCombine,
     "Runware Reference Images": referenceImages,
     "Runware Image Inference Inputs": imageInferenceInputs,
-    "Runware Image Inference Advanced Features": RunwareImageInferenceAdvancedFeatures,
+    "Runware Image  Advanced Feature Input": RunwareImageInferenceAdvancedFeatures,
+    "Runware Watermark Advanced Feature": RunwareWatermarkAdvancedFeature,
+    "Runware Regional Prompting Advanced Feature": RunwareRegionalPromptingAdvancedFeature,
+    "Runware Regional Prompting Advanced Feature Regions": RunwareRegionalPromptingAdvancedFeatureRegions,
     "Runware Video Inference": txt2vid,
     "Runware Video Model Search": videoModelSearch,
     "Runware Frame Images": RunwareFrameImages,

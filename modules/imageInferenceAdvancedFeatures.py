@@ -1,13 +1,8 @@
-"""
-Runware Image Inference Advanced Features Node
-Provides advancedFeatures (layerDiffuse, hiresFix) for Runware Image Inference.
-"""
-
 from typing import Dict, Any
 
 
 class RunwareImageInferenceAdvancedFeatures:
-    """Runware Image Inference Advanced Features Node"""
+    """Runware Image  Advanced Feature Input Node"""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -34,16 +29,26 @@ class RunwareImageInferenceAdvancedFeatures:
                     "label_on": "true",
                     "label_off": "false",
                 }),
-            }
+                "watermark": ("RUNWAREIMAGEWATERMARKADVFEATURE", {
+                    "tooltip": "Connect Runware Watermark Advanced Feature to include watermark configuration in advancedFeatures.watermark.",
+                }),
+                "regionalPrompting": ("RUNWAREREGIONALPROMPTINGADVFEATURE", {
+                    "tooltip": "Connect Runware Regional Prompting Advanced Feature to configure regionalPrompting in advancedFeatures.",
+                }),
+            },
         }
 
     RETURN_TYPES = ("RUNWAREIMAGEINFERENCEADVANCEDFEATURES",)
     RETURN_NAMES = ("advancedFeatures",)
     FUNCTION = "createAdvancedFeatures"
     CATEGORY = "Runware"
-    DESCRIPTION = "Configure advanced features for Runware Image Inference (layerDiffuse for transparency, hiresFix for two-stage high-res generation). Connect to Runware Image Inference advancedFeatures input."
+    DESCRIPTION = (
+        "Configure advanced features for Runware Image Inference: layerDiffuse (transparency), "
+        "hiresFix (two-stage high-res), watermark, and regional prompting. "
+        "Connect to Runware Image Inference advancedFeatures input."
+    )
 
-    def createAdvancedFeatures(self, **kwargs) -> tuple:
+    def createAdvancedFeatures(self, watermark=None, regionalPrompting=None, **kwargs) -> tuple:
         """Build advancedFeatures dict for the API."""
         use_layer_diffuse = kwargs.get("useLayerDiffuse", False)
         layer_diffuse = kwargs.get("layerDiffuse", False)
@@ -57,6 +62,12 @@ class RunwareImageInferenceAdvancedFeatures:
         if use_hires_fix:
             advanced_features["hiresFix"] = bool(hires_fix)
 
+        if isinstance(watermark, dict) and watermark:
+            advanced_features["watermark"] = watermark
+
+        if isinstance(regionalPrompting, dict) and regionalPrompting:
+            advanced_features["regionalPrompting"] = regionalPrompting
+
         return (advanced_features,)
 
 
@@ -65,5 +76,5 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "RunwareImageInferenceAdvancedFeatures": "Runware Image Inference Advanced Features",
+    "RunwareImageInferenceAdvancedFeatures": "Runware Image  Advanced Feature Input",
 }

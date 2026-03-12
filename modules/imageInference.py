@@ -195,7 +195,7 @@ class txt2img:
                     "tooltip": "Connect Runware Image Inference Ultralytics node to configure Ultralytics parameters (maskBlur, maskPadding, confidence, prompts, steps, CFGScale, strength).",
                 }),
                 "advancedFeatures": ("RUNWAREIMAGEINFERENCEADVANCEDFEATURES", {
-                    "tooltip": "Connect Runware Image Inference Advanced Features for layerDiffuse (transparency) and hiresFix (two-stage high-res).",
+                    "tooltip": "Connect Runware Image  Advanced Feature Input for layerDiffuse (transparency) and hiresFix (two-stage high-res).",
                 }),
             }
         }
