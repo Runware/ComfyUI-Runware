@@ -1,19 +1,31 @@
 """
 Runware Audio Inference Settings Node
-Provides lyrics and guidanceType settings for Runware Audio Inference
+Provides lyrics, guidanceType, languageBoost, turbo, temperature, and textNormalization
+settings for Runware Audio Inference.
 """
 
 from typing import Dict, Any
 
 
 class RunwareAudioSettings:
-    """Runware Audio Inference Settings Node"""
+    """Runware Audio Inference Settings Node (lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization)."""
 
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {},
             "optional": {
+                "useTemperature": ("BOOLEAN", {
+                    "tooltip": "Enable to include temperature in audio generation settings",
+                    "default": False,
+                }),
+                "temperature": ("FLOAT", {
+                    "tooltip": "Temperature value for audio generation. Higher values increase diversity, lower values make output more deterministic. Only used when 'Use Temperature' is enabled.",
+                    "default": 1.0,
+                    "min": 0.0,
+                    "max": 2.0,
+                    "step": 0.1,
+                }),
                 "useLyrics": ("BOOLEAN", {
                     "tooltip": "Enable to include lyrics in audio generation settings",
                     "default": False,
@@ -54,6 +66,16 @@ class RunwareAudioSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useTextNormalization": ("BOOLEAN", {
+                    "tooltip": "Enable to include textNormalization (normalize text before synthesis) in audio generation settings",
+                    "default": False,
+                }),
+                "textNormalization": ("BOOLEAN", {
+                    "tooltip": "Normalize text (e.g. numbers, abbreviations) before synthesis to improve pronunciation. Only used when 'Use Text Normalization' is enabled.",
+                    "default": True,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -61,10 +83,12 @@ class RunwareAudioSettings:
     RETURN_NAMES = ("settings",)
     FUNCTION = "createSettings"
     CATEGORY = "Runware/Audio"
-    DESCRIPTION = "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo) for Runware Audio Inference. Connect to Runware Audio Inference node."
+    DESCRIPTION = "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization) for Runware Audio Inference. Connect to Runware Audio Inference node."
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio settings dict for API"""
+        use_temperature = kwargs.get("useTemperature", False)
+        temperature = kwargs.get("temperature", 1.0)
         use_lyrics = kwargs.get("useLyrics", False)
         lyrics = kwargs.get("lyrics", "")
         use_guidance_type = kwargs.get("useGuidanceType", False)
@@ -73,8 +97,13 @@ class RunwareAudioSettings:
         language_boost = kwargs.get("languageBoost", "auto")
         use_turbo = kwargs.get("useTurbo", False)
         turbo = kwargs.get("turbo", False)
+        use_text_normalization = kwargs.get("useTextNormalization", False)
+        text_normalization = kwargs.get("textNormalization", True)
 
         settings: Dict[str, Any] = {}
+
+        if use_temperature:
+            settings["temperature"] = float(temperature)
 
         if use_lyrics and lyrics and lyrics.strip():
             settings["lyrics"] = lyrics.strip()
@@ -87,6 +116,9 @@ class RunwareAudioSettings:
 
         if use_turbo:
             settings["turbo"] = bool(turbo)  # API requires true/false
+
+        if use_text_normalization:
+            settings["textNormalization"] = bool(text_normalization)
 
         return (settings,)
 

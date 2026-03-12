@@ -22,6 +22,8 @@ class videoModelSearch:
             "klingai:kling-video@3-standard (Kling VIDEO 3.0 Standard)",
             "klingai:kling-video@o3-pro (Kling VIDEO O3 Pro)",
             "klingai:kling-video@o3-standard (Kling VIDEO O3 Standard)",
+            "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
+            "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
         "Veo": [
             "google:2@0 (Veo 2.0)",
@@ -79,6 +81,8 @@ class videoModelSearch:
             "lightricks:2@1 (LTX Pro)",
             "lightricks:3@1 (LTX-2 Retake)",
             "lightricks:ltx@2 (LTX-2)",
+            "lightricks:ltx@2.3 (LTX 2.3)",
+            "lightricks:ltx@2.3-fast (LTX 2.3 Fast)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",
@@ -143,6 +147,8 @@ class videoModelSearch:
         "klingai:kling-video@3-standard": {"width": 1920, "height": 1080},
         "klingai:kling-video@o3-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@o3-standard": {"width": 1920, "height": 1080},
+        "klingai:avatar@2.0-standard": {"width": 0, "height": 0},
+        "klingai:avatar@2.0-pro": {"width": 0, "height": 0},
         
         # Veo Models
         "google:2@0": {"width": 1280, "height": 720},
@@ -200,6 +206,8 @@ class videoModelSearch:
         "lightricks:2@1": {"width": 1920, "height": 1080},
         "lightricks:3@1": {"width": 0, "height": 0},
         "lightricks:ltx@2": {"width": 1024, "height": 1024},
+        "lightricks:ltx@2.3": {"width": 1920, "height": 1080},
+        "lightricks:ltx@2.3-fast": {"width": 1920, "height": 1080},
         
         # Ovi Models
         "runware:190@1": {"width": 0, "height": 0},
@@ -263,6 +271,8 @@ class videoModelSearch:
         "klingai:kling-video@3-standard": "1080p",
         "klingai:kling-video@o3-pro": "1080p",
         "klingai:kling-video@o3-standard": "1080p",
+        "klingai:avatar@2.0-standard": None,  # No resolution support
+        "klingai:avatar@2.0-pro": None,  # No resolution support
         
         # Veo Models
         "google:2@0": "720p",
@@ -320,6 +330,8 @@ class videoModelSearch:
         "lightricks:2@1": "1080p",
         "lightricks:3@1": None,  # No resolution support
         "lightricks:ltx@2": None,  # No resolution support (fixed 1024x1024)
+        "lightricks:ltx@2.3": "1080p",
+        "lightricks:ltx@2.3-fast": "1080p",
         
         # Ovi Models
         "runware:190@1": None,  # No resolution support

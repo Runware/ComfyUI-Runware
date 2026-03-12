@@ -20,6 +20,10 @@ class RunwareAudioModelSearch:
         "MiniMax": [
             "minimax:speech@2.8 (MiniMax Speech 2.8)",
         ],
+        "Inworld": [
+            "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
+            "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
+        ],
     }
     
     MODEL_PROVIDERS = [
@@ -29,6 +33,7 @@ class RunwareAudioModelSearch:
         "Mirelo",
         "Ace",
         "MiniMax",
+        "Inworld",
     ]
     
     @classmethod

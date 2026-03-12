@@ -1132,6 +1132,8 @@ function audioInferenceToggleHandler(audioInferenceNode) {
 function audioSettingsToggleHandler(settingsNode) {
     if (!settingsNode?.widgets) return;
 
+    const useTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useTemperature");
+    const temperatureWidget = settingsNode.widgets.find(w => w && w.name === "temperature");
     const useLyricsWidget = settingsNode.widgets.find(w => w && w.name === "useLyrics");
     const lyricsWidget = settingsNode.widgets.find(w => w && w.name === "lyrics");
     const useGuidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "useGuidanceType");
@@ -1140,6 +1142,8 @@ function audioSettingsToggleHandler(settingsNode) {
     const languageBoostWidget = settingsNode.widgets.find(w => w && w.name === "languageBoost");
     const useTurboWidget = settingsNode.widgets.find(w => w && w.name === "useTurbo");
     const turboWidget = settingsNode.widgets.find(w => w && w.name === "turbo");
+    const useTextNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "useTextNormalization");
+    const textNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "textNormalization");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1157,10 +1161,12 @@ function audioSettingsToggleHandler(settingsNode) {
         appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
     }
 
+    if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget, "temperature");
     if (useLyricsWidget && lyricsWidget) toggleWidgetState(useLyricsWidget, lyricsWidget, "lyrics");
     if (useGuidanceTypeWidget && guidanceTypeWidget) toggleWidgetState(useGuidanceTypeWidget, guidanceTypeWidget, "guidanceType");
     if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
     if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
+    if (useTextNormalizationWidget && textNormalizationWidget) toggleWidgetState(useTextNormalizationWidget, textNormalizationWidget, "textNormalization");
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -2317,6 +2323,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Lightricks": [
             "lightricks:2@0 (LTX Fast)", "lightricks:2@1 (LTX Pro)",
             "lightricks:3@1 (LTX-2 Retake)", "lightricks:ltx@2 (LTX-2)",
+            "lightricks:ltx@2.3 (LTX 2.3)", "lightricks:ltx@2.3-fast (LTX 2.3 Fast)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",
@@ -2400,6 +2407,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@1": {"width": 640, "height": 360},
         "pixverse:1@2": {"width": 640, "height": 360},
         "pixverse:1@3": {"width": 640, "height": 360},
+        "pixverse:1@5-fast": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:1@7": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
@@ -2420,6 +2428,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lightricks:2@0": {"width": 1920, "height": 1080},
         "lightricks:2@1": {"width": 1920, "height": 1080},
         "lightricks:3@1": {"width": 0, "height": 0},
+        "lightricks:ltx@2": {"width": 1024, "height": 1024},
+        "lightricks:ltx@2.3": {"width": 1920, "height": 1080},
+        "lightricks:ltx@2.3-fast": {"width": 1920, "height": 1080},
         "runware:190@1": {"width": 0, "height": 0},
         "runway:2@1": {"width": 1280, "height": 720},
         "runway:1@1": {"width": 1280, "height": 720},
@@ -2480,6 +2491,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@1": "360p",
         "pixverse:1@2": "360p",
         "pixverse:1@3": "360p",
+        "pixverse:1@5-fast": "360p",
         "pixverse:1@6": "360p",
         "pixverse:1@7": "360p",
         "pixverse:lipsync@1": "360p",
@@ -2500,6 +2512,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lightricks:2@0": "1080p",
         "lightricks:2@1": "1080p",
         "lightricks:3@1": null,  // No resolution support
+        "lightricks:ltx@2": null,  // No resolution support (fixed 1024x1024)
+        "lightricks:ltx@2.3": "1080p",
+        "lightricks:ltx@2.3-fast": "1080p",
         "runware:190@1": null,  // No resolution support
         "runway:2@1": "720p",
         "runway:1@1": "720p",
@@ -2736,6 +2751,10 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "MiniMax": [
             "minimax:speech@2.8 (MiniMax Speech 2.8)",
+        ],
+        "Inworld": [
+            "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
+            "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
         ],
     };
 
