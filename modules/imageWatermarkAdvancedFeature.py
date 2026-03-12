@@ -98,13 +98,21 @@ class RunwareWatermarkAdvancedFeature:
         has_text = use_text and bool(text)
 
         image_str: str = ""
-        if use_image and raw_image is not None:
+        if use_image:
+            if raw_image is None:
+                raise Exception(
+                    "Watermark 'useImage' is enabled but no IMAGE input was provided. "
+                    "Connect an IMAGE (e.g., from a Load Image node) to the watermark node."
+                )
             # If an IMAGE tensor is connected, convert it to a data URI / UUID.
             try:
                 # convertTensor2IMG handles caching and returns either UUID or data URI.
                 image_str = convertTensor2IMG(raw_image)
-            except Exception:
-                image_str = ""
+            except Exception as e:
+                raise Exception(
+                    f"Failed to convert watermark IMAGE input. "
+                    f"Ensure the connected image is valid. Details: {e}"
+                ) from e
 
         has_image = use_image and bool(image_str)
 

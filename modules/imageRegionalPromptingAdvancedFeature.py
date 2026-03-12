@@ -29,7 +29,7 @@ class RunwareRegionalPromptingAdvancedFeature:
                 }),
                 "baseRatio": ("FLOAT", {
                     "tooltip": "Base prompt attention weight (0.0 - 1.0).",
-                    "default": 0.0,
+                    "default": 0.2,
                     "min": 0.0,
                     "max": 1.0,
                     "step": 0.01,
