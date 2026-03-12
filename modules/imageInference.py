@@ -194,6 +194,9 @@ class txt2img:
                 "ultralytics": ("RUNWAREULTRALYTICSINPUTS", {
                     "tooltip": "Connect Runware Image Inference Ultralytics node to configure Ultralytics parameters (maskBlur, maskPadding, confidence, prompts, steps, CFGScale, strength).",
                 }),
+                "advancedFeatures": ("RUNWAREIMAGEINFERENCEADVANCEDFEATURES", {
+                    "tooltip": "Connect Runware Image  Advanced Feature Input to configure advancedFeatures: layerDiffuse (transparency), hiresFix (two-stage high-res), watermark, and regionalPrompting (per-region prompts and masks).",
+                }),
             }
         }
 
@@ -237,6 +240,7 @@ class txt2img:
         safetyInputs = kwargs.get("safetyInputs", None)
         settings = kwargs.get("settings", None)
         ultralytics = kwargs.get("ultralytics", None)
+        advanced_features = kwargs.get("advancedFeatures", None)
         seedImage = kwargs.get("seedImage", None)
         seedImageStrength = kwargs.get("strength", 0.8)
         maskImage = kwargs.get("maskImage", None)
@@ -401,6 +405,10 @@ class txt2img:
         # Add ultralytics parameters if provided
         if ultralytics is not None and isinstance(ultralytics, dict) and len(ultralytics) > 0:
             genConfig[0]["ultralytics"] = ultralytics
+
+        # Add advancedFeatures if provided (layerDiffuse, hiresFix, etc.)
+        if advanced_features is not None and isinstance(advanced_features, dict) and len(advanced_features) > 0:
+            genConfig[0]["advancedFeatures"] = advanced_features
 
         if (multiInferenceMode):
             return (None, genConfig)

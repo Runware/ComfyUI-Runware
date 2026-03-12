@@ -75,6 +75,7 @@ const RUNWARE_NODE_TYPES = {
     VAE: "Runware VAE Search",
     REFERENCEIMAGES: "Runware Reference Images",
     IMAGEINFERENCEINPUTS: "Runware Image Inference Inputs",
+    IMAGEINFERENCEADVANCEDFEATURES: "Runware Image  Advanced Feature Input",
     VIDEOINFERENCE: "Runware Video Inference",
     VIDEOMODELSEARCH: "Runware Video Model Search",
     FRAMEIMAGES: "Runware Frame Images",
@@ -143,6 +144,9 @@ const RUNWARE_NODE_TYPES = {
     THREEDINFERENCESETTINGSTEXSLAT: "Runware 3D Inference Settings Tex Slat",
     SAVE3D: "Runware Save 3D",
     LOADMESH: "Runware Load Mesh",
+    WATERMARKADVANCEDFEATURE: "Runware Watermark Advanced Feature",
+    REGIONALPROMPTINGADVFEATURE: "Runware Regional Prompting Advanced Feature",
+    REGIONALPROMPTINGADVFEATUREREGIONS: "Runware Regional Prompting Advanced Feature Regions",
 };
 
 const RUNWARE_NODE_PROPS = {
@@ -285,6 +289,22 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.IMAGEINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCEADVANCEDFEATURES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.WATERMARKADVANCEDFEATURE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.REGIONALPROMPTINGADVFEATURE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.REGIONALPROMPTINGADVFEATUREREGIONS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

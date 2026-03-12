@@ -3835,6 +3835,173 @@ function videoAdvancedFeatureInputsToggleHandler(advancedFeatureNode) {
     }
 }
 
+function imageInferenceAdvancedFeaturesToggleHandler(advancedFeaturesNode) {
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+            paramWidget.disabled = !enabled;
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = advancedFeaturesNode.htmlElements?.widgetsContainer || advancedFeaturesNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                    }
+                }
+            }
+            advancedFeaturesNode.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useWidget, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    }
+    const useLayerDiffuseWidget = advancedFeaturesNode.widgets.find(w => w.name === "useLayerDiffuse");
+    const layerDiffuseWidget = advancedFeaturesNode.widgets.find(w => w.name === "layerDiffuse");
+    if (useLayerDiffuseWidget && layerDiffuseWidget) toggleWidgetState(useLayerDiffuseWidget, layerDiffuseWidget, "layerDiffuse");
+    const useHiresFixWidget = advancedFeaturesNode.widgets.find(w => w.name === "useHiresFix");
+    const hiresFixWidget = advancedFeaturesNode.widgets.find(w => w.name === "hiresFix");
+    if (useHiresFixWidget && hiresFixWidget) toggleWidgetState(useHiresFixWidget, hiresFixWidget, "hiresFix");
+}
+
+function watermarkAdvancedFeatureToggleHandler(watermarkNode) {
+    if (!watermarkNode?.widgets) return;
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = watermarkNode.htmlElements?.widgetsContainer || watermarkNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                    }
+                }
+            }
+
+            watermarkNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    const pairs = [
+        ["useText", "text"],
+        ["useImage", "image"],
+        ["useDisplayPosition", "displayPosition"],
+        ["useTiled", "tiled"],
+        ["useOpacity", "opacity"],
+        ["useFontColor", "fontColor"],
+        ["useBgColor", "bgColor"],
+    ];
+
+    for (const [useName, paramName] of pairs) {
+        const useWidget = watermarkNode.widgets.find(w => w.name === useName);
+        const paramWidget = watermarkNode.widgets.find(w => w.name === paramName);
+        if (useWidget && paramWidget) {
+            toggleWidgetState(useWidget, paramWidget, paramName);
+        }
+    }
+}
+
+function regionalPromptingRegionsToggleHandler(regionsNode) {
+    if (!regionsNode?.widgets) return;
+
+    function toggleWidgetState(useWidget, paramWidgets, paramNames) {
+        if (!useWidget || !paramWidgets || paramWidgets.length === 0) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            for (let i = 0; i < paramWidgets.length; i++) {
+                const paramWidget = paramWidgets[i];
+                const paramName = paramNames[i];
+
+                if (!paramWidget) continue;
+
+                if (paramWidget.inputEl) {
+                    paramWidget.inputEl.disabled = !enabled;
+                    paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                    paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                    paramWidget.inputEl.readOnly = !enabled;
+                }
+
+                paramWidget.disabled = !enabled;
+
+                if (!paramWidget.inputEl && paramName) {
+                    const nodeElement = regionsNode.htmlElements?.widgetsContainer || regionsNode.htmlElements;
+                    if (nodeElement) {
+                        const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                        if (input) {
+                            input.disabled = !enabled;
+                            input.style.opacity = enabled ? "1" : "0.5";
+                            input.style.cursor = enabled ? "text" : "not-allowed";
+                            input.readOnly = !enabled;
+                        }
+                    }
+                }
+            }
+
+            regionsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    for (let idx = 1; idx <= 4; idx++) {
+        const useWidget = regionsNode.widgets.find(w => w.name === `useRegion${idx}`);
+        const promptWidget = regionsNode.widgets.find(w => w.name === `region${idx}Prompt`);
+        const x0Widget = regionsNode.widgets.find(w => w.name === `region${idx}_x0`);
+        const y0Widget = regionsNode.widgets.find(w => w.name === `region${idx}_y0`);
+        const x1Widget = regionsNode.widgets.find(w => w.name === `region${idx}_x1`);
+        const y1Widget = regionsNode.widgets.find(w => w.name === `region${idx}_y1`);
+
+        const paramWidgets = [promptWidget, x0Widget, y0Widget, x1Widget, y1Widget];
+        const paramNames = [
+            `region${idx}Prompt`,
+            `region${idx}_x0`,
+            `region${idx}_y0`,
+            `region${idx}_x1`,
+            `region${idx}_y1`,
+        ];
+
+        if (useWidget) {
+            toggleWidgetState(useWidget, paramWidgets, paramNames);
+        }
+    }
+}
+
 function audioInferenceInputsToggleHandler(audioInputsNode) {
     // Find widgets
     const useVideoWidget = audioInputsNode.widgets.find(w => w.name === "useVideo");
@@ -3953,6 +4120,9 @@ export {
     vectorizeToggleHandler,
     useParameterToggleHandler,
     imageInferenceToggleHandler,
+    imageInferenceAdvancedFeaturesToggleHandler,
+    watermarkAdvancedFeatureToggleHandler,
+    regionalPromptingRegionsToggleHandler,
     upscalerToggleHandler,
     videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
