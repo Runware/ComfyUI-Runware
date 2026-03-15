@@ -44,6 +44,32 @@ class RunwareVideoSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useBackgroundColor": ("BOOLEAN", {
+                    "tooltip": "Enable to set background color. Required when background.type = color.",
+                    "default": False,
+                }),
+                "backgroundColor": ("STRING", {
+                    "tooltip": "Hex color code (e.g. #ff0000). Required when background.type = color. Only used when 'Use Background Color' is enabled.",
+                    "default": "",
+                }),
+                "useRemoveBackground": ("BOOLEAN", {
+                    "tooltip": "Enable to remove the avatar background. Video avatars must be trained with matting enabled.",
+                    "default": False,
+                }),
+                "removeBackground": ("BOOLEAN", {
+                    "tooltip": "Remove the avatar background. Only used when 'Use Remove Background' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useExpressiveness": ("BOOLEAN", {
+                    "tooltip": "Enable to set avatar expressiveness level. Applies to photo avatars only.",
+                    "default": False,
+                }),
+                "expressiveness": (["low", "medium", "high"], {
+                    "tooltip": "Avatar expressiveness level. Applies to photo avatars only. Only used when 'Use Expressiveness' is enabled.",
+                    "default": "low",
+                }),
             }
         }
 
@@ -61,6 +87,12 @@ class RunwareVideoSettings:
         audio = kwargs.get("audio", True)
         use_prompt_upsampling = kwargs.get("usePromptUpsampling", True)
         prompt_upsampling = kwargs.get("promptUpsampling", True)
+        use_background_color = kwargs.get("useBackgroundColor", False)
+        background_color = (kwargs.get("backgroundColor") or "").strip()
+        use_remove_background = kwargs.get("useRemoveBackground", False)
+        remove_background = kwargs.get("removeBackground", False)
+        use_expressiveness = kwargs.get("useExpressiveness", False)
+        expressiveness = kwargs.get("expressiveness", "low")
 
         settings: Dict[str, Any] = {}
 
@@ -70,6 +102,12 @@ class RunwareVideoSettings:
             settings["audio"] = bool(audio)
         if use_prompt_upsampling:
             settings["promptUpsampling"] = bool(prompt_upsampling)
+        if use_background_color and background_color:
+            settings["backgroundColor"] = background_color
+        if use_remove_background:
+            settings["removeBackground"] = bool(remove_background)
+        if use_expressiveness:
+            settings["expressiveness"] = expressiveness
 
         return (settings,)
 
