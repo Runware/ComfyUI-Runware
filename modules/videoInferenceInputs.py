@@ -13,6 +13,10 @@ class videoInferenceInputs:
                 "Image": ("IMAGE", {
                     "tooltip": "Portrait image for video generation. This will be the main subject that will speak and move in the generated video."
                 }),
+                "Avatar": ("STRING", {
+                    "default": "",
+                    "tooltip": "HeyGen avatar ID for a photo avatar or video avatar. Mutually exclusive with image_url and image_asset_id.",
+                }),
                 "Frame Images": ("RUNWAREVIDEOINPUTSFRAMEIMAGES", {
                     "tooltip": "Connect the Runware Video Inputs Frame node to provide timeline-constrained frame images."
                 }),
@@ -33,6 +37,9 @@ class videoInferenceInputs:
                 }),
                 "Frame": ("IMAGE", {
                     "tooltip": "Frame image for video generation. Connect a Load Image node to provide the frame image."
+                }),
+                "Background": ("IMAGE", {
+                    "tooltip": "Background image for video generation. Connect a Load Image node to provide the background.",
                 }),
                 "References": ("RUNWAREVIDEOINPUTSREFERENCEIMAGES", {
                     "tooltip": "Connect the Video Inputs References node to provide reference images."
@@ -71,14 +78,19 @@ class videoInferenceInputs:
         video = kwargs.get("Video", None)
         mask = kwargs.get("Mask", None)
         frame = kwargs.get("Frame", None)
+        background = kwargs.get("Background", None)
         frameImages = kwargs.get("Frame Images", None)
         references = kwargs.get("References", None)
         referenceVideos = kwargs.get("Reference Videos", None)
         referenceVoices = kwargs.get("Reference Voices", None)
         draftId = kwargs.get("draftId", "")
         videoId = kwargs.get("videoId", "")
+        avatar = kwargs.get("Avatar", "")
 
         inputs = {}
+
+        if avatar is not None and avatar.strip() != "":
+            inputs["avatar"] = avatar.strip()
 
         if image is not None:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
@@ -111,6 +123,9 @@ class videoInferenceInputs:
 
         if frame is not None:
             inputs["frame"] = rwUtils.convertTensor2IMG(frame)
+
+        if background is not None:
+            inputs["background"] = rwUtils.convertTensor2IMG(background)
 
         if frameImages is not None and len(frameImages) > 0:
             inputs["frameImages"] = frameImages

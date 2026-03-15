@@ -109,6 +109,9 @@ class videoModelSearch:
             "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
             "creatify:aurora@0 (Creatify Aurora Avatar Model API (720p))",
         ],
+        "HeyGen": [
+            "heygen:avatar@4 (HeyGen Avatar IV)",
+        ],
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
@@ -248,6 +251,9 @@ class videoModelSearch:
 
         # Pruna Models (720p)
         "prunaai:p-video@0": {"width": 1280, "height": 720},
+
+        # HeyGen Models (Model ID: heygen-avatar-iv)
+        "heygen:avatar@4": {"width": 1280, "height": 720},
     }
     
     # Model resolutions mapping
@@ -372,6 +378,9 @@ class videoModelSearch:
 
         # Pruna Models
         "prunaai:p-video@0": "720p",
+
+        # HeyGen Models
+        "heygen:avatar@4": "720p",
     }
 
     MODEL_ARCHITECTURES = [
@@ -391,6 +400,7 @@ class videoModelSearch:
         "Sync",
         "Bria",
         "Creatify",
+        "HeyGen",
         "Hunyuan",
         "Kandinsky",
         "xAI",

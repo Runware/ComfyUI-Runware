@@ -102,6 +102,7 @@ const RUNWARE_NODE_TYPES = {
     REFERENCEVIDEOS: "Runware Reference Videos",
     REFERENCEVOICES: "Runware Reference Voices",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
+    VIDEOINFERENCESPEECHINPUT: "Runware Video Inference Speech Input",
     VIDEOSETTINGS: "Runware Video Inference Settings",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
@@ -299,6 +300,9 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.WATERMARKADVANCEDFEATURE]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCESPEECHINPUT]: {
+        bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.REGIONALPROMPTINGADVFEATURE]: {
         bgColor: DEFAULT_BGCOLOR,

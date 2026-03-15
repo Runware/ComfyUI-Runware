@@ -30,6 +30,7 @@ from .modules.imageWatermarkAdvancedFeature import RunwareWatermarkAdvancedFeatu
 from .modules.imageRegionalPromptingAdvancedFeature import RunwareRegionalPromptingAdvancedFeature
 from .modules.imageRegionalPromptingAdvancedFeatureRegions import RunwareRegionalPromptingAdvancedFeatureRegions
 from .modules.videoInference import txt2vid
+from .modules.videoInferenceSpeechInput import RunwareVideoInferenceSpeechInput
 from .modules.videoModelSearch import videoModelSearch
 from .modules.videoSettings import RunwareVideoSettings
 from .modules.frameImages import RunwareFrameImages
@@ -168,6 +169,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Reference Videos": referenceVideos,
     "Runware Reference Voices": referenceVoices,
     "Runware Video Inference Inputs": videoInferenceInputs,
+    "Runware Video Inference Speech Input": RunwareVideoInferenceSpeechInput,
     "Runware Video Inference Settings": RunwareVideoSettings,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,

@@ -125,12 +125,8 @@ class txt2vid:
                 "referenceVideos": ("RUNWAREREFERENCEVIDEOS", {
                     "tooltip": "Connect reference video files for video generation.",
                 }),
-                "speechVoice": ("STRING", {
-                    "tooltip": "Voice for speech synthesis. Specify the voice to use for text-to-speech generation.",
-                }),
-                "speechText": ("STRING", {
-                    "multiline": True,
-                    "tooltip": "Text for speech synthesis. The text that will be converted to speech using the specified voice.",
+                "speech": ("RUNWAREVIDEOINFERENCESPEECHINPUT", {
+                    "tooltip": "Connect a Runware Video Inference Speech Input node to set voice and text for speech synthesis.",
                 }),
                 "inputs": ("RUNWAREVIDEOINFERENCEINPUTS", {
                     "tooltip": "Connect a Runware Video Inference Inputs node to provide custom inputs like image, audio, mask, and parameters for OmniHuman 1.5 and other video models.",
@@ -178,8 +174,7 @@ class txt2vid:
         referenceImages = kwargs.get("referenceImages", None)
         inputAudios = kwargs.get("inputAudios", None)
         referenceVideos = kwargs.get("referenceVideos", None)
-        speechVoice = kwargs.get("speechVoice", None)
-        speechText = kwargs.get("speechText", None)
+        speech = kwargs.get("speech", None)
         inputs = kwargs.get("inputs", None)
         safetyInputs = kwargs.get("safetyInputs", None)
         videoAdvancedFeatureInputs = kwargs.get("videoAdvancedFeatureInputs", None)
@@ -300,14 +295,11 @@ class txt2vid:
                 genConfig[0]["referenceVideos"] = referenceVideos
                 print(f"[Debugging] Reference videos: {rwUtils.sanitize_for_logging(genConfig[0].get('referenceVideos', []))}")
         
-        # Add speech parameters if both voice and text are provided
-        if speechVoice and speechVoice.strip() != "" and speechText and speechText.strip() != "":
-            genConfig[0]["speech"] = {
-                "voice": speechVoice.strip(),
-                "text": speechText.strip()
-            }
-            print(f"[Debugging] Speech parameters: voice='{speechVoice.strip()}', text='{speechText.strip()[:50]}...'")
-        
+        # Add speech parameters if provided from Runware Video Inference Speech Input node
+        if speech is not None and isinstance(speech, dict) and speech:
+            genConfig[0]["speech"] = speech
+            print(f"[Debugging] Speech parameters: {rwUtils.sanitize_for_logging(speech)}")
+
         # Handle inputs - merge custom inputs from Video Inference Inputs node
         if inputs is not None:
             # Merge inputs from video inference inputs node
