@@ -11,11 +11,11 @@ class videoInferenceInputs:
             "required": {},
             "optional": {
                 "Image": ("IMAGE", {
-                    "tooltip": "Portrait image for video generation. This will be the main subject that will speak and move in the generated video."
+                    "tooltip": "Portrait image for video generation (main subject that will speak and move). Mutually exclusive with Avatar: when Avatar is set, Image is ignored."
                 }),
                 "Avatar": ("STRING", {
                     "default": "",
-                    "tooltip": "HeyGen avatar ID for a photo avatar or video avatar. Mutually exclusive with image_url and image_asset_id.",
+                    "tooltip": "HeyGen avatar ID for a photo or video avatar. Mutually exclusive with Image: when set, Image is ignored; use one or the other.",
                 }),
                 "Frame Images": ("RUNWAREVIDEOINPUTSFRAMEIMAGES", {
                     "tooltip": "Connect the Runware Video Inputs Frame node to provide timeline-constrained frame images."
@@ -63,7 +63,10 @@ class videoInferenceInputs:
             }
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Video Inference with OmniHuman 1.5 support, including image, audio, video, and mask inputs."
+    DESCRIPTION = (
+        "Configure custom inputs for Runware Video Inference (image, audio, video, mask, avatar, etc.). "
+        "Avatar and Image are mutually exclusive: if Avatar is set, Image is ignored; provide only one."
+    )
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREVIDEOINFERENCEINPUTS",)
     RETURN_NAMES = ("Video Inference Inputs",)
@@ -89,10 +92,10 @@ class videoInferenceInputs:
 
         inputs = {}
 
-        if avatar is not None and avatar.strip() != "":
+        has_avatar = avatar is not None and avatar.strip() != ""
+        if has_avatar:
             inputs["avatar"] = avatar.strip()
-
-        if image is not None:
+        if image is not None and not has_avatar:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
 
         # Handle audio: can be either a string (legacy), a single dict, or a list of audio inputs

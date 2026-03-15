@@ -69,18 +69,23 @@ class RunwareVideoInferenceSpeechInput:
     FUNCTION = "createSpeech"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure speech synthesis for Runware Video Inference (voice and text). "
-        "Connect to Runware Video Inference speech input. Both voice and text must be set for speech to be included."
+        "Configure speech synthesis for Runware Video Inference. Connect to Runware Video Inference speech input. "
+        "Speech is only sent when both voice and text are enabled and non-empty; otherwise the node outputs nothing. "
+        "Optional fields (speed, pitch, language) are added only when their toggles are on."
     )
 
     def createSpeech(self, **kwargs) -> tuple:
-        """Build speech dict for genConfig[0]['speech']."""
-        
+        """Build speech dict for genConfig[0]['speech']. Only include non-empty values; return None unless both voice and text are present."""
         speech: Dict[str, Any] = {}
-        if kwargs.get("useVoice"):
-            speech["voice"] = kwargs.get("voice")
-        if kwargs.get("useText"):
-            speech["text"] = kwargs.get("text")
+
+        voice = (kwargs.get("voice") or "").strip()
+        if kwargs.get("useVoice") and voice:
+            speech["voice"] = voice
+
+        text = (kwargs.get("text") or "").strip()
+        if kwargs.get("useText") and text:
+            speech["text"] = text
+
         if kwargs.get("useSpeed"):
             speech["speed"] = float(kwargs.get("speed", 1.0))
         if kwargs.get("usePitch"):
@@ -90,7 +95,9 @@ class RunwareVideoInferenceSpeechInput:
             if lang:
                 speech["language"] = lang
 
-        return (speech or None,)
+        if "voice" not in speech or "text" not in speech:
+            return (None,)
+        return (speech,)
 
 
 NODE_CLASS_MAPPINGS = {
