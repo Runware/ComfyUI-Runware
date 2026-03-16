@@ -11,7 +11,11 @@ class videoInferenceInputs:
             "required": {},
             "optional": {
                 "Image": ("IMAGE", {
-                    "tooltip": "Portrait image for video generation. This will be the main subject that will speak and move in the generated video."
+                    "tooltip": "Portrait image for video generation (main subject that will speak and move). Mutually exclusive with Avatar: when Avatar is set, Image is ignored."
+                }),
+                "Avatar": ("STRING", {
+                    "default": "",
+                    "tooltip": "HeyGen avatar ID for a photo or video avatar. Mutually exclusive with Image: when set, Image is ignored; use one or the other.",
                 }),
                 "Frame Images": ("RUNWAREVIDEOINPUTSFRAMEIMAGES", {
                     "tooltip": "Connect the Runware Video Inputs Frame node to provide timeline-constrained frame images."
@@ -33,6 +37,9 @@ class videoInferenceInputs:
                 }),
                 "Frame": ("IMAGE", {
                     "tooltip": "Frame image for video generation. Connect a Load Image node to provide the frame image."
+                }),
+                "Background": ("IMAGE", {
+                    "tooltip": "Background image for video generation. Connect a Load Image node to provide the background.",
                 }),
                 "References": ("RUNWAREVIDEOINPUTSREFERENCEIMAGES", {
                     "tooltip": "Connect the Video Inputs References node to provide reference images."
@@ -56,7 +63,10 @@ class videoInferenceInputs:
             }
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Video Inference with OmniHuman 1.5 support, including image, audio, video, and mask inputs."
+    DESCRIPTION = (
+        "Configure custom inputs for Runware Video Inference (image, audio, video, mask, avatar, etc.). "
+        "Avatar and Image are mutually exclusive: if Avatar is set, Image is ignored; provide only one."
+    )
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREVIDEOINFERENCEINPUTS",)
     RETURN_NAMES = ("Video Inference Inputs",)
@@ -71,16 +81,21 @@ class videoInferenceInputs:
         video = kwargs.get("Video", None)
         mask = kwargs.get("Mask", None)
         frame = kwargs.get("Frame", None)
+        background = kwargs.get("Background", None)
         frameImages = kwargs.get("Frame Images", None)
         references = kwargs.get("References", None)
         referenceVideos = kwargs.get("Reference Videos", None)
         referenceVoices = kwargs.get("Reference Voices", None)
         draftId = kwargs.get("draftId", "")
         videoId = kwargs.get("videoId", "")
+        avatar = kwargs.get("Avatar", "")
 
         inputs = {}
 
-        if image is not None:
+        has_avatar = avatar is not None and avatar.strip() != ""
+        if has_avatar:
+            inputs["avatar"] = avatar.strip()
+        if image is not None and not has_avatar:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
 
         # Handle audio: can be either a string (legacy), a single dict, or a list of audio inputs
@@ -111,6 +126,9 @@ class videoInferenceInputs:
 
         if frame is not None:
             inputs["frame"] = rwUtils.convertTensor2IMG(frame)
+
+        if background is not None:
+            inputs["background"] = rwUtils.convertTensor2IMG(background)
 
         if frameImages is not None and len(frameImages) > 0:
             inputs["frameImages"] = frameImages

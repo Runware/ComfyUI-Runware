@@ -1178,6 +1178,12 @@ function videoSettingsToggleHandler(settingsNode) {
     const audioWidget = settingsNode.widgets.find(w => w && w.name === "audio");
     const usePromptUpsamplingWidget = settingsNode.widgets.find(w => w && w.name === "usePromptUpsampling");
     const promptUpsamplingWidget = settingsNode.widgets.find(w => w && w.name === "promptUpsampling");
+    const useBackgroundColorWidget = settingsNode.widgets.find(w => w && w.name === "useBackgroundColor");
+    const backgroundColorWidget = settingsNode.widgets.find(w => w && w.name === "backgroundColor");
+    const useRemoveBackgroundWidget = settingsNode.widgets.find(w => w && w.name === "useRemoveBackground");
+    const removeBackgroundWidget = settingsNode.widgets.find(w => w && w.name === "removeBackground");
+    const useExpressivenessWidget = settingsNode.widgets.find(w => w && w.name === "useExpressiveness");
+    const expressivenessWidget = settingsNode.widgets.find(w => w && w.name === "expressiveness");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1198,6 +1204,9 @@ function videoSettingsToggleHandler(settingsNode) {
     if (useDraftWidget && draftWidget) toggleWidgetState(useDraftWidget, draftWidget, "draft");
     if (useAudioWidget && audioWidget) toggleWidgetState(useAudioWidget, audioWidget, "audio");
     if (usePromptUpsamplingWidget && promptUpsamplingWidget) toggleWidgetState(usePromptUpsamplingWidget, promptUpsamplingWidget, "promptUpsampling");
+    if (useBackgroundColorWidget && backgroundColorWidget) toggleWidgetState(useBackgroundColorWidget, backgroundColorWidget, "backgroundColor");
+    if (useRemoveBackgroundWidget && removeBackgroundWidget) toggleWidgetState(useRemoveBackgroundWidget, removeBackgroundWidget, "removeBackground");
+    if (useExpressivenessWidget && expressivenessWidget) toggleWidgetState(useExpressivenessWidget, expressivenessWidget, "expressiveness");
 }
 
 function audioInferenceSpeechToggleHandler(speechNode) {
@@ -2350,6 +2359,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "creatify:aurora@fast (Creatify Aurora Avatar Model API (720p))",
             "creatify:aurora@0 (Creatify Aurora Avatar Model API (720p))",
         ],
+        "HeyGen": [
+            "heygen:avatar@4 (HeyGen Avatar IV)",
+        ],
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
         ],
@@ -2449,6 +2461,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "xai:grok-imagine@video": {"width": 480, "height": 480},
         "veed:fabric@1.0": {"width": 1280, "height": 720},
         "prunaai:p-video@0": {"width": 1280, "height": 720},
+        "heygen:avatar@4": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -2533,6 +2546,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "xai:grok-imagine@video": "480p",
         "veed:fabric@1.0": "720p",
         "prunaai:p-video@0": "720p",
+        "heygen:avatar@4": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -3931,6 +3945,64 @@ function watermarkAdvancedFeatureToggleHandler(watermarkNode) {
     }
 }
 
+function videoInferenceSpeechInputToggleHandler(speechInputNode) {
+    if (!speechInputNode?.widgets) return;
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = speechInputNode.htmlElements?.widgetsContainer || speechInputNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                    }
+                }
+            }
+
+            speechInputNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    const pairs = [
+        ["useVoice", "voice"],
+        ["useText", "text"],
+        ["useSpeed", "speed"],
+        ["usePitch", "pitch"],
+        ["useLanguage", "language"],
+    ];
+
+    for (const [useName, paramName] of pairs) {
+        const useWidget = speechInputNode.widgets.find(w => w.name === useName);
+        const paramWidget = speechInputNode.widgets.find(w => w.name === paramName);
+        if (useWidget && paramWidget) {
+            toggleWidgetState(useWidget, paramWidget, paramName);
+        }
+    }
+}
+
 function regionalPromptingRegionsToggleHandler(regionsNode) {
     if (!regionsNode?.widgets) return;
 
@@ -4122,6 +4194,7 @@ export {
     imageInferenceToggleHandler,
     imageInferenceAdvancedFeaturesToggleHandler,
     watermarkAdvancedFeatureToggleHandler,
+    videoInferenceSpeechInputToggleHandler,
     regionalPromptingRegionsToggleHandler,
     upscalerToggleHandler,
     videoUpscalerToggleHandler,
