@@ -28,7 +28,7 @@ class imageInferenceInputs:
                 "default": "",
             })
             optionalInputs[f"Reference Type {i}"] = ("STRING", {
-                "tooltip": f"Optional type for {ordinal} reference, e.g. 'sketch' for illustrious style models. Leave empty to omit.",
+                "tooltip": f"Optional type for {ordinal} reference, e.g. 'sketch' for illustrative style models. Leave empty to omit.",
                 "default": "",
             })
             optionalInputs[f"Reference Strength {i}"] = ("FLOAT", {
@@ -50,7 +50,7 @@ class imageInferenceInputs:
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including reference images (with optional type e.g. 'sketch' for illustrious style models, and strength 0-1 for sketch) that can be passed to the inference node."
+    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including reference images (with optional type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch) that can be passed to the inference node."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREIMAGEINFERENCEINPUTS",)
     RETURN_NAMES = ("Inference Inputs",)
@@ -80,7 +80,7 @@ class imageInferenceInputs:
 
     def _collectReferences(self, kwargs):
         """Collect and convert reference images to list. Each entry may include type (e.g. 'sketch') and strength (0-1, only for sketch)."""
-        referenceSlots = []
+        reference_slots = []
 
         for i in range(1, self.MAX_REFERENCE_IMAGES + 1):
             image = kwargs.get(f"Reference Image {i}", None)
@@ -88,28 +88,28 @@ class imageInferenceInputs:
             ref_type = kwargs.get(f"Reference Type {i}", "")
             strength = kwargs.get(f"Reference Strength {i}", 0.0)
             if image is not None:
-                referenceSlots.append((image, tag, ref_type, strength))
+                reference_slots.append((image, tag, ref_type, strength))
 
-        if not referenceSlots:
+        if not reference_slots:
             return []
 
         has_tags = any(
             isinstance(tag, str) and tag.strip() != ""
-            for _, tag, _, _ in referenceSlots
+            for _, tag, _, _ in reference_slots
         )
         has_type = any(
             isinstance(rt, str) and rt.strip() != ""
-            for _, _, rt, _ in referenceSlots
+            for _, _, rt, _ in reference_slots
         )
 
         if not has_tags and not has_type:
             return [
                 rwUtils.convertTensor2IMG(image)
-                for image, _, _, _ in referenceSlots
+                for image, _, _, _ in reference_slots
             ]
 
         references = []
-        for image, tag, ref_type, strength in referenceSlots:
+        for image, tag, ref_type, strength in reference_slots:
             entry = {"image": rwUtils.convertTensor2IMG(image)}
             if isinstance(tag, str) and tag.strip() != "":
                 entry["tag"] = tag.strip()
