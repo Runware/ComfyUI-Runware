@@ -95,7 +95,7 @@ class RunwareAudioInferenceSpeech:
         tone_str = kwargs.get("tone", "") or ""
 
         speech: Dict[str, Any] = {"text": text}
-        if use_voice and voice:
+        if use_voice:
             speech["voice"] = voice
         if use_speed:
             speech["speed"] = speed
