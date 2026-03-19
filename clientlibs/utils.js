@@ -1212,6 +1212,8 @@ function videoSettingsToggleHandler(settingsNode) {
 function audioInferenceSpeechToggleHandler(speechNode) {
     if (!speechNode?.widgets) return;
 
+    const useVoiceWidget = speechNode.widgets.find(w => w && w.name === "useVoice");
+    const voiceWidget = speechNode.widgets.find(w => w && w.name === "voice");
     const useSpeedWidget = speechNode.widgets.find(w => w && w.name === "useSpeed");
     const speedWidget = speechNode.widgets.find(w => w && w.name === "speed");
     const useVolumeWidget = speechNode.widgets.find(w => w && w.name === "useVolume");
@@ -1244,6 +1246,7 @@ function audioInferenceSpeechToggleHandler(speechNode) {
     if (usePitchWidget && pitchWidget) toggleWidgetState(usePitchWidget, pitchWidget, "pitch");
     if (useEmotionWidget && emotionWidget) toggleWidgetState(useEmotionWidget, emotionWidget, "emotion");
     if (useToneWidget && toneWidget) toggleWidgetState(useToneWidget, toneWidget, "tone");
+    if (useVoiceWidget && voiceWidget) toggleWidgetState(useVoiceWidget, voiceWidget, "voice");
 }
 
 function acceleratorOptionsToggleHandler(acceleratorNode) {
@@ -2762,6 +2765,12 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "Ace": [
             "runware:ace-step@0 (ACE Step v1 3.5B)",
+        ],
+        "Dia": [
+            "runware:dia@v1.0 (Dia 1.6B)",
+        ],
+        "xAI": [
+            "xai:voice@tts (xAI TTS)",
         ],
         "MiniMax": [
             "minimax:speech@2.8 (MiniMax Speech 2.8)",

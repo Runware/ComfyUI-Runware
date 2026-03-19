@@ -26,12 +26,16 @@ class RunwareAudioInferenceSpeech:
                     "default": "Hello, this is a test of the speech synthesis model.",
                     "tooltip": "Text to synthesize as speech (speech.text)",
                 }),
-                "voice": ("STRING", {
-                    "default": "English_Whispering_girl",
-                    "tooltip": "Voice identifier - see System Voice ID List (speech.voice)",
-                }),
             },
             "optional": {
+                "useVoice": ("BOOLEAN", {
+                    "default": False,
+                    "tooltip": "Enable to include voice in speech synthesis (speech.voice).",
+                }),
+                "voice": ("STRING", {
+                    "default": "",
+                    "tooltip": "Voice identifier.",
+                }),
                 "useSpeed": ("BOOLEAN", {"default": True, "tooltip": "Include speed (speech.speed)"}),
                 "speed": ("FLOAT", {
                     "default": 1.0,
@@ -78,6 +82,7 @@ class RunwareAudioInferenceSpeech:
         """Build the speech object for the API (connect to Runware Audio Inference 'speech' input)."""
         text = (kwargs.get("text") or "").strip()
         voice = (kwargs.get("voice") or "").strip()
+        use_voice = kwargs.get("useVoice", False)
         use_speed = kwargs.get("useSpeed", True)
         speed = float(kwargs.get("speed", 1.0))
         use_volume = kwargs.get("useVolume", True)
@@ -89,7 +94,9 @@ class RunwareAudioInferenceSpeech:
         use_tone = kwargs.get("useTone", False)
         tone_str = kwargs.get("tone", "") or ""
 
-        speech: Dict[str, Any] = {"text": text, "voice": voice}
+        speech: Dict[str, Any] = {"text": text}
+        if use_voice and voice:
+            speech["voice"] = voice
         if use_speed:
             speech["speed"] = speed
         if use_volume:
@@ -103,6 +110,8 @@ class RunwareAudioInferenceSpeech:
             if tone_lines:
                 speech["tone"] = tone_lines
 
+        if not text:
+            return ({},)
         return (speech,)
 
 

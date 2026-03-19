@@ -24,7 +24,7 @@ class videoInferenceInputs:
                     "tooltip": "Connect the mediaUUID output from Runware Media Upload node with audio file. This audio will be synchronized with the generated video. (Legacy: single audio string)"
                 }),
                 "Audio Inputs": ("RUNWAREAUDIOINPUT", {
-                    "tooltip": "Connect Runware Video Audio Input node or Runware Audio Inputs Combine node to provide audio inputs with reference IDs."
+                    "tooltip": "Connect Runware Video Audio Input node(s) to provide audio inputs with reference IDs."
                 }),
                 "Speech Inputs": ("RUNWARESPEECHINPUT", {
                     "tooltip": "Connect Runware Video Speech Input node or Runware Speech Inputs Combine node to provide TTS speech inputs with reference IDs."
