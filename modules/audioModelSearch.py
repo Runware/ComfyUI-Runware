@@ -17,6 +17,12 @@ class RunwareAudioModelSearch:
         "Ace": [
             "runware:ace-step@0 (ACE Step v1 3.5B)",
         ],
+        "Dia": [
+            "runware:dia@v1.0 (Dia 1.6B)",
+        ],
+        "xAI": [
+            "xai:voice@tts (xAI TTS)",
+        ],
         "MiniMax": [
             "minimax:speech@2.8 (MiniMax Speech 2.8)",
         ],
@@ -32,6 +38,8 @@ class RunwareAudioModelSearch:
         "KlingAI",
         "Mirelo",
         "Ace",
+        "Dia",
+        "xAI",
         "MiniMax",
         "Inworld",
     ]

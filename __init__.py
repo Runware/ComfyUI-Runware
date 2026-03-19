@@ -53,7 +53,6 @@ from .modules.providerSettings.viduProviderSettings import RunwareViduProviderSe
 from .modules.mediaUpload import runwareMediaUpload
 from .modules.inputAudios import inputAudios
 from .modules.audioInput import RunwareAudioInput
-from .modules.audioInputCombine import RunwareAudioInputCombine
 from .modules.speechInput import RunwareSpeechInput
 from .modules.speechInputCombine import RunwareSpeechInputCombine
 from .modules.referenceVideos import referenceVideos
@@ -163,7 +162,6 @@ NODE_CLASS_MAPPINGS = {
     "Runware Media Upload": runwareMediaUpload,
     "Runware Input Audios": inputAudios,
     "Runware Video Audio Input": RunwareAudioInput,
-    "Runware Audio Inputs Combine": RunwareAudioInputCombine,
     "Runware Video Speech Input": RunwareSpeechInput,
     "Runware Speech Inputs Combine": RunwareSpeechInputCombine,
     "Runware Reference Videos": referenceVideos,
