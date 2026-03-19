@@ -95,7 +95,7 @@ class videoInferenceInputs:
         has_avatar = avatar is not None and avatar.strip() != ""
         if has_avatar:
             inputs["avatar"] = avatar.strip()
-        if image is not None and not has_avatar:
+        if image is not None:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
 
         # Handle audio: can be either a string (legacy), a single dict, or a list of audio inputs

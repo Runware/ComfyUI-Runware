@@ -111,6 +111,7 @@ class videoModelSearch:
         ],
         "HeyGen": [
             "heygen:avatar@4 (HeyGen Avatar IV)",
+            "heygen:video-agent@0 (HeyGen Video Agent)",
         ],
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
@@ -254,6 +255,7 @@ class videoModelSearch:
 
         # HeyGen Models (Model ID: heygen-avatar-iv)
         "heygen:avatar@4": {"width": 1280, "height": 720},
+        "heygen:video-agent@0": {"width": 1280, "height": 720},
     }
     
     # Model resolutions mapping
@@ -381,6 +383,7 @@ class videoModelSearch:
 
         # HeyGen Models
         "heygen:avatar@4": "720p",
+        "heygen:video-agent@0": "720p",
     }
 
     MODEL_ARCHITECTURES = [
