@@ -27,6 +27,17 @@ class imageInferenceInputs:
                 "tooltip": f"Optional tag describing {ordinal.capitalize()} Reference Image. Leave empty to omit.",
                 "default": "",
             })
+            optionalInputs[f"Reference Type {i}"] = ("STRING", {
+                "tooltip": f"Optional type for {ordinal} reference, e.g. 'sketch' for illustrative style models. Leave empty to omit.",
+                "default": "",
+            })
+            optionalInputs[f"Reference Strength {i}"] = ("FLOAT", {
+                "tooltip": f"Strength (0-1) for sketch reference. Only used when Reference Type is 'sketch'.",
+                "default": 0.0,
+                "min": 0.0,
+                "max": 1.0,
+                "step": 0.1,
+            })
         
         for i in range(1, cls.MAX_SUPER_RESOLUTION_REFERENCE_IMAGES + 1):
             ordinal = rwUtils.getOrdinal(i)
@@ -39,7 +50,7 @@ class imageInferenceInputs:
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including reference images that can be passed to the inference node."
+    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including reference images (with optional type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch) that can be passed to the inference node."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREIMAGEINFERENCEINPUTS",)
     RETURN_NAMES = ("Inference Inputs",)
@@ -68,37 +79,44 @@ class imageInferenceInputs:
         return (inputs,)
 
     def _collectReferences(self, kwargs):
-        """Collect and convert reference images to list"""
-        referencePairs = []
-        
-        # Collect all reference image and tag pairs
+        """Collect and convert reference images to list. Each entry may include type (e.g. 'sketch') and strength (0-1, only for sketch)."""
+        reference_slots = []
+
         for i in range(1, self.MAX_REFERENCE_IMAGES + 1):
             image = kwargs.get(f"Reference Image {i}", None)
             tag = kwargs.get(f"Reference Tag {i}", "")
+            ref_type = kwargs.get(f"Reference Type {i}", "")
+            strength = kwargs.get(f"Reference Strength {i}", 0.0)
             if image is not None:
-                referencePairs.append((image, tag))
-        
-        if not referencePairs:
+                reference_slots.append((image, tag, ref_type, strength))
+
+        if not reference_slots:
             return []
-        
-        # Determine if any tag is provided
-        hasTags = any(
+
+        has_tags = any(
             isinstance(tag, str) and tag.strip() != ""
-            for _, tag in referencePairs
+            for _, tag, _, _ in reference_slots
+        )
+        has_type = any(
+            isinstance(rt, str) and rt.strip() != ""
+            for _, _, rt, _ in reference_slots
         )
 
-        if not hasTags:
-            # Use legacy behavior: simple list of images
+        if not has_tags and not has_type:
             return [
                 rwUtils.convertTensor2IMG(image)
-                for image, _ in referencePairs
+                for image, _, _, _ in reference_slots
             ]
 
         references = []
-        for image, tag in referencePairs:
+        for image, tag, ref_type, strength in reference_slots:
             entry = {"image": rwUtils.convertTensor2IMG(image)}
             if isinstance(tag, str) and tag.strip() != "":
                 entry["tag"] = tag.strip()
+            if isinstance(ref_type, str) and ref_type.strip() != "":
+                entry["type"] = ref_type.strip()
+                if ref_type.strip().lower() == "sketch":
+                    entry["strength"] = max(0.0, min(1.0, float(strength)))
             references.append(entry)
 
         return references
