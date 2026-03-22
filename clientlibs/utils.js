@@ -2364,6 +2364,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "HeyGen": [
             "heygen:avatar@4 (HeyGen Avatar IV)",
+            "heygen:video-agent@0 (HeyGen Video Agent)",
         ],
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
@@ -2465,6 +2466,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "veed:fabric@1.0": {"width": 1280, "height": 720},
         "prunaai:p-video@0": {"width": 1280, "height": 720},
         "heygen:avatar@4": {"width": 1280, "height": 720},
+        "heygen:video-agent@0": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -2550,6 +2552,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "veed:fabric@1.0": "720p",
         "prunaai:p-video@0": "720p",
         "heygen:avatar@4": "720p",
+        "heygen:video-agent@0": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
