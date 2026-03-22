@@ -133,7 +133,7 @@ class RunwareAudioInference:
             },
             "optional": {
                 "inputs": ("RUNWAREAUDIOINFERENCEINPUTS", {
-                    "tooltip": "Custom inputs for audio generation (e.g., video URL for audio extraction)"
+                    "tooltip": "Custom inputs: optional source audio URL/mediaUUID (inputs.audio), video(s) for extraction, etc."
                 }),
                 "settings": ("RUNWAREAUDIOSETTINGS", {
                     "tooltip": "Connect Runware Audio Inference Settings for lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization."
