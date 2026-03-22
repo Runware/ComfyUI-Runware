@@ -10,6 +10,14 @@ class audioInferenceInputs:
     @classmethod
     def INPUT_TYPES(cls):
         optionalInputs = {
+            "useAudio": ("BOOLEAN", {
+                "tooltip": "Enable to include a single audio input in the API request (inputs.audio). URL, data URI, or mediaUUID from Runware Media Upload.",
+                "default": False,
+            }),
+            "Audio": ("STRING", {
+                "tooltip": "Audio URL, base64/data URI, or mediaUUID for conditioning, cover, or inpaint workflows. Only used when 'Use Audio' is enabled.",
+                "default": "",
+            }),
             "useVideo": ("BOOLEAN", {
                 "tooltip": "Enable to include single video input in API request.",
                 "default": False,
@@ -37,7 +45,7 @@ class audioInferenceInputs:
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Audio Inference, including single or multiple video inputs for audio extraction or generation."
+    DESCRIPTION = "Configure custom inputs for Runware Audio Inference: optional source audio, single or multiple video inputs for extraction or generation."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREAUDIOINFERENCEINPUTS",)
     RETURN_NAMES = ("Audio Inference Inputs",)
@@ -45,11 +53,17 @@ class audioInferenceInputs:
 
     def createInputs(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio inference inputs from provided parameters"""
+        useAudio = kwargs.get("useAudio", False)
+        audio = kwargs.get("Audio", None)
         useVideo = kwargs.get("useVideo", False)
         video = kwargs.get("Video", None)
         useVideos = kwargs.get("useVideos", False)
         
         inputs = {}
+        
+        # Handle single audio (inputs.audio)
+        if useAudio and audio is not None and str(audio).strip() != "":
+            inputs["audio"] = str(audio).strip()
         
         # Handle single video (inputs.video)
         if useVideo and video is not None and video.strip() != "":

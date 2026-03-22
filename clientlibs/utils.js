@@ -747,6 +747,18 @@ function useParameterToggleHandler(node) {
     // Prevent double registration
     if (node._useParameterToggleHandlerRegistered) return;
     node._useParameterToggleHandlerRegistered = true;
+
+    // ComfyUI may use "boolean", "BOOLEAN", "toggle", etc. for BOOL inputs
+    function widgetTypeLower(w) {
+        return String(w && w.type != null ? w.type : "").toLowerCase();
+    }
+    function isBoolLikeWidget(w) {
+        const t = widgetTypeLower(w);
+        return t === "boolean" || t === "toggle";
+    }
+    function isComboLikeWidget(w) {
+        return widgetTypeLower(w) === "combo";
+    }
     
     // Define explicit mappings: "useParameterName" -> ["parameter1", "parameter2", ...]
     const parameterMappings = {
@@ -800,6 +812,21 @@ function useParameterToggleHandler(node) {
     
     // Node-specific overrides for parameters that have different names in different nodes
     // Format: nodeClass -> { "useParam": ["param1", "param2"] }
+    const audioSettingsUseParamMap = {
+        "useTemperature": ["temperature"],
+        "useLyrics": ["lyrics"],
+        "useGuidanceType": ["guidanceType"],
+        "useLanguageBoost": ["languageBoost"],
+        "useTurbo": ["turbo"],
+        "useTextNormalization": ["textNormalization"],
+        "useBpm": ["bpm"],
+        "useKeyScale": ["keyScale"],
+        "useTimeSignature": ["timeSignature"],
+        "useVocalLanguage": ["vocalLanguage"],
+        "useCoverConditioningScale": ["coverConditioningScale"],
+        "useRepaintingStart": ["repaintingStart"],
+        "useRepaintingEnd": ["repaintingEnd"],
+    };
     const nodeSpecificMappings = {
         // Upscaler uses CFGScale (capital C) instead of cfgScale
         [RUNWARE_NODE_TYPES.UPSCALER]: {
@@ -809,6 +836,9 @@ function useParameterToggleHandler(node) {
         [RUNWARE_NODE_TYPES.AUDIOINFERENCE]: {
             "useCFGScale": ["CFGScale"],
         },
+        // Runware Audio Inference Settings (display name and NODE_CLASS key for different ComfyUI builds)
+        [RUNWARE_NODE_TYPES.AUDIOSETTINGS]: audioSettingsUseParamMap,
+        "RunwareAudioSettings": audioSettingsUseParamMap,
     };
     
     // Wait for widgets to be ready
@@ -825,8 +855,8 @@ function useParameterToggleHandler(node) {
         node.widgets.forEach(widget => {
             if (!widget || !widget.name) return;
             
-            const isUseWidget = widget.name.startsWith("use") && (widget.type === "BOOLEAN" || widget.type === "COMBO");
-            const isMaskMargin = widget.name === "Mask Margin" && widget.type === "BOOLEAN";
+            const isUseWidget = widget.name.startsWith("use") && (isBoolLikeWidget(widget) || isComboLikeWidget(widget) || typeof widget.value === "boolean");
+            const isMaskMargin = widget.name === "Mask Margin" && (isBoolLikeWidget(widget) || typeof widget.value === "boolean");
             
             if (!isUseWidget && !isMaskMargin) return;
             
@@ -878,40 +908,17 @@ function useParameterToggleHandler(node) {
             const { useWidget, paramWidgets } = pair;
             
             function toggleEnabled() {
-                // Determine if enabled based on widget type
+                // Determine if enabled based on widget type (ComfyUI types are often lowercase)
                 let enabled = false;
-                if (useWidget.type === "BOOLEAN") {
+                if (isBoolLikeWidget(useWidget) || typeof useWidget.value === "boolean") {
                     enabled = useWidget.value === true;
-                } else if (useWidget.type === "COMBO") {
+                } else if (isComboLikeWidget(useWidget)) {
                     enabled = useWidget.value === "enable" || useWidget.value === "Enable";
                 }
                 
-                // Apply to each parameter widget (exactly like toggleDimensionsEnabled does)
+                // Apply to each parameter widget (uses toggleWidgetEnabled for combo options.element + DOM fallbacks)
                 paramWidgets.forEach(paramWidget => {
-                    if (paramWidget.inputEl) {
-                        paramWidget.inputEl.disabled = !enabled;
-                        paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
-                        paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
-                        paramWidget.inputEl.readOnly = !enabled;
-                    }
-                    paramWidget.disabled = !enabled;
-                    
-                    // Fallback: try to find inputs via DOM if inputEl is not available
-                    if (!paramWidget.inputEl) {
-                        const nodeElement = node.htmlElements?.widgetsContainer || node.htmlElements;
-                        if (nodeElement) {
-                            const input = nodeElement.querySelector(`input[name="${paramWidget.name}"], textarea[name="${paramWidget.name}"], select[name="${paramWidget.name}"]`);
-                            if (input) {
-                                input.disabled = !enabled;
-                                input.style.opacity = enabled ? "1" : "0.5";
-                                input.style.cursor = enabled ? "text" : "not-allowed";
-                                input.readOnly = !enabled;
-                                if (input.tagName === "SELECT") {
-                                    input.style.pointerEvents = enabled ? "auto" : "none";
-                                }
-                            }
-                        }
-                    }
+                    toggleWidgetEnabled(paramWidget, enabled, node);
                 });
                 
                 node.setDirtyCanvas(true);
@@ -1127,46 +1134,6 @@ function audioInferenceToggleHandler(audioInferenceNode) {
     if (useChannelsWidget && channelsWidget) {
         toggleWidgetState(useChannelsWidget, channelsWidget, "channels");
     }
-}
-
-function audioSettingsToggleHandler(settingsNode) {
-    if (!settingsNode?.widgets) return;
-
-    const useTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useTemperature");
-    const temperatureWidget = settingsNode.widgets.find(w => w && w.name === "temperature");
-    const useLyricsWidget = settingsNode.widgets.find(w => w && w.name === "useLyrics");
-    const lyricsWidget = settingsNode.widgets.find(w => w && w.name === "lyrics");
-    const useGuidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "useGuidanceType");
-    const guidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "guidanceType");
-    const useLanguageBoostWidget = settingsNode.widgets.find(w => w && w.name === "useLanguageBoost");
-    const languageBoostWidget = settingsNode.widgets.find(w => w && w.name === "languageBoost");
-    const useTurboWidget = settingsNode.widgets.find(w => w && w.name === "useTurbo");
-    const turboWidget = settingsNode.widgets.find(w => w && w.name === "turbo");
-    const useTextNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "useTextNormalization");
-    const textNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "textNormalization");
-
-    function toggleWidgetState(useWidget, paramWidget, paramName) {
-        if (!useWidget || !paramWidget) return;
-        function applyState() {
-            const enabled = useWidget.value === true;
-            toggleWidgetEnabled(paramWidget, enabled, settingsNode);
-            if (paramWidget.options && paramWidget.options.element) {
-                paramWidget.options.element.disabled = !enabled;
-                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
-                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
-            }
-            settingsNode.setDirtyCanvas(true);
-        }
-        setTimeout(applyState, 100);
-        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
-    }
-
-    if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget, "temperature");
-    if (useLyricsWidget && lyricsWidget) toggleWidgetState(useLyricsWidget, lyricsWidget, "lyrics");
-    if (useGuidanceTypeWidget && guidanceTypeWidget) toggleWidgetState(useGuidanceTypeWidget, guidanceTypeWidget, "guidanceType");
-    if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
-    if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
-    if (useTextNormalizationWidget && textNormalizationWidget) toggleWidgetState(useTextNormalizationWidget, textNormalizationWidget, "textNormalization");
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -2768,6 +2735,8 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "Ace": [
             "runware:ace-step@0 (ACE Step v1 3.5B)",
+            "runware:ace-step@v1.5-base (ACE-Step v1.5 Base)",
+            "runware:ace-step@v1.5-turbo (ACE-Step v1.5 Turbo)",
         ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
@@ -4088,6 +4057,8 @@ function regionalPromptingRegionsToggleHandler(regionsNode) {
 
 function audioInferenceInputsToggleHandler(audioInputsNode) {
     // Find widgets
+    const useAudioWidget = audioInputsNode.widgets.find(w => w.name === "useAudio");
+    const audioWidget = audioInputsNode.widgets.find(w => w.name === "Audio");
     const useVideoWidget = audioInputsNode.widgets.find(w => w.name === "useVideo");
     const videoWidget = audioInputsNode.widgets.find(w => w.name === "Video");
     const useVideosWidget = audioInputsNode.widgets.find(w => w.name === "useVideos");
@@ -4132,6 +4103,11 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
         
         // Initial call to set initial state
         setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler for single audio
+    if (useAudioWidget && audioWidget) {
+        toggleWidgetState(useAudioWidget, audioWidget, "Audio");
     }
     
     // Set up toggle handler for single video
@@ -4212,7 +4188,6 @@ export {
     videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
     audioInferenceSpeechToggleHandler,
-    audioSettingsToggleHandler,
     videoSettingsToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
