@@ -4246,12 +4246,14 @@ export {
 
 function googleProviderSettingsToggleHandler(googleNode) {
     // Find all "use" parameter widgets for Google Provider Settings
-    const useGenerateAudioWidget = googleNode.widgets.find(w => w.name === "useGenerateAudio");
-    const generateAudioWidget = googleNode.widgets.find(w => w.name === "generateAudio");
-    const useEnhancePromptWidget = googleNode.widgets.find(w => w.name === "useEnhancePrompt");
-    const enhancePromptWidget = googleNode.widgets.find(w => w.name === "enhancePrompt");
-    const useSearchWidget = googleNode.widgets.find(w => w.name === "useSearch");
-    const searchWidget = googleNode.widgets.find(w => w.name === "search");
+    const useGenerateAudioWidget = googleNode.widgets.find(w => w && w.name === "useGenerateAudio");
+    const generateAudioWidget = googleNode.widgets.find(w => w && w.name === "generateAudio");
+    const useEnhancePromptWidget = googleNode.widgets.find(w => w && w.name === "useEnhancePrompt");
+    const enhancePromptWidget = googleNode.widgets.find(w => w && w.name === "enhancePrompt");
+    const useSearchWidget = googleNode.widgets.find(w => w && w.name === "useSearch");
+    const searchWidget = googleNode.widgets.find(w => w && w.name === "search");
+    const useResizeModeWidget = googleNode.widgets.find(w => w && w.name === "useResizeMode");
+    const resizeModeWidget = googleNode.widgets.find(w => w && w.name === "resizeMode");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -4304,6 +4306,9 @@ function googleProviderSettingsToggleHandler(googleNode) {
     }
     if (useSearchWidget && searchWidget) {
         toggleWidgetState(useSearchWidget, searchWidget, "search");
+    }
+    if (useResizeModeWidget && resizeModeWidget) {
+        toggleWidgetState(useResizeModeWidget, resizeModeWidget, "resizeMode");
     }
 }
 
