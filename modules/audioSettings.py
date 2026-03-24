@@ -209,11 +209,11 @@ class RunwareAudioSettings:
         if use_bpm:
             settings["bpm"] = int(bpm)
 
-        if use_key_scale:
-            settings["keyScale"] = key_scale if key_scale is not None else ""
+        if use_key_scale and str(key_scale).strip():
+            settings["keyScale"] = str(key_scale).strip()
 
         if use_time_signature and str(time_signature).strip():
-            settings["timeSignature"] = time_signature
+            settings["timeSignature"] = str(time_signature).strip()
 
         if use_vocal_language:
             settings["vocalLanguage"] = vocal_language
