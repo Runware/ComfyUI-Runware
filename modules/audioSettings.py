@@ -112,11 +112,11 @@ class RunwareAudioSettings:
                     "default": "",
                 }),
                 "useVocalLanguage": ("BOOLEAN", {
-                    "tooltip": "Enable to include vocalLanguage (ISO 639-1) for vocal generation.",
+                    "tooltip": "Enable to include vocalLanguage (language code) for vocal generation. See dropdown for available codes.",
                     "default": False,
                 }),
                 "vocalLanguage": (_VOCAL_LANGUAGE_CODES, {
-                    "tooltip": "ISO 639-1 language code for vocals. Use 'unknown' for instrumental or automatic detection. Only used when 'Use Vocal Language' is enabled.",
+                    "tooltip": "Language code for vocals. Supports values from the dropdown list (including 'yue', 'zh', and 'unknown'). Use 'unknown' for instrumental or automatic detection. Only used when 'Use Vocal Language' is enabled.",
                     "default": "en",
                 }),
                 "useCoverConditioningScale": ("BOOLEAN", {
@@ -212,7 +212,7 @@ class RunwareAudioSettings:
         if use_key_scale:
             settings["keyScale"] = key_scale if key_scale is not None else ""
 
-        if use_time_signature:
+        if use_time_signature and str(time_signature).strip():
             settings["timeSignature"] = time_signature
 
         if use_vocal_language:

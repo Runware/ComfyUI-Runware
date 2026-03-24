@@ -4109,11 +4109,11 @@ function regionalPromptingRegionsToggleHandler(regionsNode) {
 
 function audioInferenceInputsToggleHandler(audioInputsNode) {
     // Find widgets
-    const useAudioWidget = audioInputsNode.widgets.find(w => w.name === "useAudio");
-    const audioWidget = audioInputsNode.widgets.find(w => w.name === "Audio");
-    const useVideoWidget = audioInputsNode.widgets.find(w => w.name === "useVideo");
-    const videoWidget = audioInputsNode.widgets.find(w => w.name === "Video");
-    const useVideosWidget = audioInputsNode.widgets.find(w => w.name === "useVideos");
+    const useAudioWidget = audioInputsNode.widgets.find(w => w && w.name === "useAudio");
+    const audioWidget = audioInputsNode.widgets.find(w => w && w.name === "Audio");
+    const useVideoWidget = audioInputsNode.widgets.find(w => w && w.name === "useVideo");
+    const videoWidget = audioInputsNode.widgets.find(w => w && w.name === "Video");
+    const useVideosWidget = audioInputsNode.widgets.find(w => w && w.name === "useVideos");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -4173,7 +4173,7 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
             const enabled = useVideosWidget.value === true;
             
             for (let i = 1; i <= 4; i++) {
-                const videoWidget = audioInputsNode.widgets.find(w => w.name === `Video${i}`);
+                const videoWidget = audioInputsNode.widgets.find(w => w && w.name === `Video${i}`);
                 if (videoWidget) {
                     if (videoWidget.inputEl) {
                         videoWidget.inputEl.disabled = !enabled;
