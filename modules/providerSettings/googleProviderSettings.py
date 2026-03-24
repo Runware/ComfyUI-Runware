@@ -44,6 +44,14 @@ class RunwareGoogleProviderSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useResizeMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include resizeMode in providerSettings.google (image resize behavior).",
+                    "default": False,
+                }),
+                "resizeMode": (["crop", "pad"], {
+                    "tooltip": "Value for providerSettings.google.resizeMode. Must be 'crop' or 'pad'. Only used when 'Use Resize Mode' is enabled.",
+                    "default": "crop",
+                }),
             }
         }
 
@@ -51,7 +59,7 @@ class RunwareGoogleProviderSettings:
     RETURN_NAMES = ("Provider Settings",)
     FUNCTION = "createProviderSettings"
     CATEGORY = "Runware/Provider Settings"
-    DESCRIPTION = "Configure Google-specific provider settings for image/video generation including audio generation, prompt enhancement, and search."
+    DESCRIPTION = "Configure Google-specific provider settings for image/video generation including audio generation, prompt enhancement, search, and resizeMode (crop/pad)."
 
     def createProviderSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create Google provider settings"""
@@ -60,11 +68,13 @@ class RunwareGoogleProviderSettings:
         useGenerateAudio = kwargs.get("useGenerateAudio", False)
         useEnhancePrompt = kwargs.get("useEnhancePrompt", False)
         useSearch = kwargs.get("useSearch", False)
+        useResizeMode = kwargs.get("useResizeMode", False)
 
         # Get value parameters
         generateAudio = kwargs.get("generateAudio", False)
         enhancePrompt = kwargs.get("enhancePrompt", False)
         search = kwargs.get("search", False)
+        resizeMode = kwargs.get("resizeMode", "crop")
 
         # Build settings dictionary - only include what is enabled
         googleSettings: Dict[str, Any] = {}
@@ -76,6 +86,9 @@ class RunwareGoogleProviderSettings:
             googleSettings["enhancePrompt"] = enhancePrompt
         if useSearch:
             googleSettings["search"] = search
+        if useResizeMode:
+            mode = str(resizeMode).strip().lower() if resizeMode is not None else "crop"
+            googleSettings["resizeMode"] = mode if mode in ("crop", "pad") else "crop"
 
         # Clean up None values
         googleSettings = {k: v for k, v in googleSettings.items() if v is not None}
