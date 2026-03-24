@@ -1144,6 +1144,20 @@ function audioSettingsToggleHandler(settingsNode) {
     const turboWidget = settingsNode.widgets.find(w => w && w.name === "turbo");
     const useTextNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "useTextNormalization");
     const textNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "textNormalization");
+    const useBpmWidget = settingsNode.widgets.find(w => w && w.name === "useBpm");
+    const bpmWidget = settingsNode.widgets.find(w => w && w.name === "bpm");
+    const useKeyScaleWidget = settingsNode.widgets.find(w => w && w.name === "useKeyScale");
+    const keyScaleWidget = settingsNode.widgets.find(w => w && w.name === "keyScale");
+    const useTimeSignatureWidget = settingsNode.widgets.find(w => w && w.name === "useTimeSignature");
+    const timeSignatureWidget = settingsNode.widgets.find(w => w && w.name === "timeSignature");
+    const useVocalLanguageWidget = settingsNode.widgets.find(w => w && w.name === "useVocalLanguage");
+    const vocalLanguageWidget = settingsNode.widgets.find(w => w && w.name === "vocalLanguage");
+    const useCoverConditioningScaleWidget = settingsNode.widgets.find(w => w && w.name === "useCoverConditioningScale");
+    const coverConditioningScaleWidget = settingsNode.widgets.find(w => w && w.name === "coverConditioningScale");
+    const useRepaintingStartWidget = settingsNode.widgets.find(w => w && w.name === "useRepaintingStart");
+    const repaintingStartWidget = settingsNode.widgets.find(w => w && w.name === "repaintingStart");
+    const useRepaintingEndWidget = settingsNode.widgets.find(w => w && w.name === "useRepaintingEnd");
+    const repaintingEndWidget = settingsNode.widgets.find(w => w && w.name === "repaintingEnd");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1167,6 +1181,13 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
     if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
     if (useTextNormalizationWidget && textNormalizationWidget) toggleWidgetState(useTextNormalizationWidget, textNormalizationWidget, "textNormalization");
+    if (useBpmWidget && bpmWidget) toggleWidgetState(useBpmWidget, bpmWidget, "bpm");
+    if (useKeyScaleWidget && keyScaleWidget) toggleWidgetState(useKeyScaleWidget, keyScaleWidget, "keyScale");
+    if (useTimeSignatureWidget && timeSignatureWidget) toggleWidgetState(useTimeSignatureWidget, timeSignatureWidget, "timeSignature");
+    if (useVocalLanguageWidget && vocalLanguageWidget) toggleWidgetState(useVocalLanguageWidget, vocalLanguageWidget, "vocalLanguage");
+    if (useCoverConditioningScaleWidget && coverConditioningScaleWidget) toggleWidgetState(useCoverConditioningScaleWidget, coverConditioningScaleWidget, "coverConditioningScale");
+    if (useRepaintingStartWidget && repaintingStartWidget) toggleWidgetState(useRepaintingStartWidget, repaintingStartWidget, "repaintingStart");
+    if (useRepaintingEndWidget && repaintingEndWidget) toggleWidgetState(useRepaintingEndWidget, repaintingEndWidget, "repaintingEnd");
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -4088,6 +4109,8 @@ function regionalPromptingRegionsToggleHandler(regionsNode) {
 
 function audioInferenceInputsToggleHandler(audioInputsNode) {
     // Find widgets
+    const useAudioWidget = audioInputsNode.widgets.find(w => w.name === "useAudio");
+    const audioWidget = audioInputsNode.widgets.find(w => w.name === "Audio");
     const useVideoWidget = audioInputsNode.widgets.find(w => w.name === "useVideo");
     const videoWidget = audioInputsNode.widgets.find(w => w.name === "Video");
     const useVideosWidget = audioInputsNode.widgets.find(w => w.name === "useVideos");
@@ -4132,6 +4155,11 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
         
         // Initial call to set initial state
         setTimeout(toggleEnabled, 100);
+    }
+    
+    // Set up toggle handler for single audio
+    if (useAudioWidget && audioWidget) {
+        toggleWidgetState(useAudioWidget, audioWidget, "Audio");
     }
     
     // Set up toggle handler for single video
