@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, vectorizeModelSearchFilterHandler, vectorizeToggleHandler, useParameterToggleHandler, imageInferenceToggleHandler, imageInferenceAdvancedFeaturesToggleHandler, watermarkAdvancedFeatureToggleHandler, videoInferenceSpeechInputToggleHandler, regionalPromptingRegionsToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, audioInferenceSpeechToggleHandler, audioSettingsToggleHandler, videoSettingsToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, threeDInferenceToggleHandler, threeDInferenceSettingsToggleHandler, threeDInferenceSettingsLatToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, saveTextHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, textModelSearchFilterHandler, vectorizeModelSearchFilterHandler, vectorizeToggleHandler, useParameterToggleHandler, imageInferenceToggleHandler, imageInferenceAdvancedFeaturesToggleHandler, watermarkAdvancedFeatureToggleHandler, videoInferenceSpeechInputToggleHandler, regionalPromptingRegionsToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, audioInferenceSpeechToggleHandler, audioSettingsToggleHandler, textInferenceSettingsToggleHandler, videoSettingsToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, threeDInferenceToggleHandler, threeDInferenceSettingsToggleHandler, threeDInferenceSettingsLatToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -9,6 +9,7 @@ app.registerExtension({
     async setup() {
         api.addEventListener('runwareError', handleCustomErrors);
         api.addEventListener('runwareImageCaption', captionNodeHandler);
+        api.addEventListener('runwareSaveText', saveTextHandler);
         api.addEventListener('runwareMediaUUID', mediaUUIDHandler);
         api.addEventListener('runwareSave3DFilepath', save3DFilepathHandler);
         api.addEventListener('runwareVideoTranscription', videoTranscriptionHandler);
@@ -90,6 +91,8 @@ app.registerExtension({
             audioInferenceSpeechToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOSETTINGS) {
             audioSettingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.TEXTINFERENCESETTINGS) {
+            textInferenceSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.VIDEOSETTINGS) {
             videoSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.ACCELERATOROPTIONS) {
@@ -159,6 +162,8 @@ app.registerExtension({
             videoModelSearchFilterHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOMODELSEARCH) {
             audioModelSearchFilterHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.TEXTMODELSEARCH) {
+            textModelSearchFilterHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.VECTORIZE) {
             vectorizeModelSearchFilterHandler(node);
             vectorizeToggleHandler(node);

@@ -318,6 +318,19 @@ def sendImageCaption(captionText, nodeID):
         },
     )
 
+
+def sendSaveText(text, nodeID):
+    """Push text into Runware Save Text node's textarea (ComfyUI does not mirror linked STRING inputs visually)."""
+    PromptServer.instance.send_sync(
+        "runwareSaveText",
+        {
+            "success": True,
+            "text": text if text is not None else "",
+            "nodeID": nodeID,
+            "widgetName": "text",
+        },
+    )
+
 def sendVideoTranscription(transcriptionText, nodeID):
     PromptServer.instance.send_sync(
         "runwareVideoTranscription",
@@ -698,7 +711,7 @@ def convertVideoB64List(videoDataObject, width=None, height=None):
     return videos
 
 def pollVideoResult(taskUUID):
-    """Poll for video generation result using task UUID with getResponse"""
+    """Poll async task result with taskType getResponse (video, audio, text inference, etc.)."""
     global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
     
     pollConfig = [
@@ -740,3 +753,7 @@ def pollVideoResult(taskUUID):
     except Exception as e:
         print(f"[Debugging] Poll request failed: {str(e)}")
         return None
+
+
+# Alias: getResponse is the generic async poll for any task type.
+pollGetResponse = pollVideoResult

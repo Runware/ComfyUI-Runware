@@ -113,6 +113,28 @@ function captionNodeHandler(msgEvent) {
     return false;
 }
 
+function saveTextHandler(msgEvent) {
+    const data = msgEvent.detail;
+    const displayText = data.text;
+    const nodeID = parseInt(data.nodeID, 10);
+    if (!data.success || Number.isNaN(nodeID)) return false;
+    const node = app.graph.getNodeById(nodeID);
+    if (node === null || node === undefined) return false;
+    const widgetName = data.widgetName || "text";
+    const textWidget = node.widgets.find((w) => w.name === widgetName);
+    if (textWidget) {
+        if (textWidget.value !== undefined) {
+            textWidget.value = displayText;
+        }
+        if (textWidget.inputEl) {
+            textWidget.inputEl.value = displayText;
+            textWidget.inputEl.dispatchEvent(new Event("input", { bubbles: true }));
+            textWidget.inputEl.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+    }
+    return false;
+}
+
 function videoTranscriptionHandler(msgEvent) {
     const transcriptionData = msgEvent.detail;
     const transcriptionText = transcriptionData.transcriptionText;
@@ -1167,6 +1189,43 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
     if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
     if (useTextNormalizationWidget && textNormalizationWidget) toggleWidgetState(useTextNormalizationWidget, textNormalizationWidget, "textNormalization");
+}
+
+function textInferenceSettingsToggleHandler(settingsNode) {
+    if (!settingsNode?.widgets) return;
+
+    const useSystemPromptWidget = settingsNode.widgets.find(w => w && w.name === "useSystemPrompt");
+    const systemWidget = settingsNode.widgets.find(w => w && w.name === "system");
+    const useMaxTokensWidget = settingsNode.widgets.find(w => w && w.name === "useMaxTokens");
+    const maxTokensWidget = settingsNode.widgets.find(w => w && w.name === "maxTokens");
+    const useTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useTemperature");
+    const temperatureWidget = settingsNode.widgets.find(w => w && w.name === "temperature");
+    const useTopPWidget = settingsNode.widgets.find(w => w && w.name === "useTopP");
+    const topPWidget = settingsNode.widgets.find(w => w && w.name === "topP");
+    const useTopKWidget = settingsNode.widgets.find(w => w && w.name === "useTopK");
+    const topKWidget = settingsNode.widgets.find(w => w && w.name === "topK");
+
+    function toggleWidgetState(useWidget, paramWidget) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, settingsNode);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            settingsNode.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useSystemPromptWidget && systemWidget) toggleWidgetState(useSystemPromptWidget, systemWidget);
+    if (useMaxTokensWidget && maxTokensWidget) toggleWidgetState(useMaxTokensWidget, maxTokensWidget);
+    if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget);
+    if (useTopPWidget && topPWidget) toggleWidgetState(useTopPWidget, topPWidget);
+    if (useTopKWidget && topKWidget) toggleWidgetState(useTopKWidget, topKWidget);
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -2748,6 +2807,46 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
     updateDimensions();
 }
 
+function textModelSearchFilterHandler(textModelSearchNode) {
+    const modelProviderWidget = textModelSearchNode.widgets.find(w => w.name === "Model Provider");
+    const textListWidget = textModelSearchNode.widgets.find(w => w.name === "TextList");
+
+    if (!modelProviderWidget || !textListWidget) return;
+
+    const TEXT_MODELS = {
+        "MiniMax": [
+            "minimax:m2.7@0 (MiniMax-M2.7)",
+            "minimax:m2.7@highspeed (MiniMax-M2.7 Highspeed)",
+            "minimax:m2.5@0 (MiniMax-M2.5)",
+        ],
+    };
+
+    function filterModelList() {
+        const selectedProvider = modelProviderWidget.value;
+        let filteredModels = [];
+
+        if (selectedProvider === "All") {
+            Object.values(TEXT_MODELS).forEach(models => filteredModels.push(...models));
+        } else if (TEXT_MODELS[selectedProvider]) {
+            filteredModels = TEXT_MODELS[selectedProvider];
+        }
+
+        if (filteredModels.length > 0) {
+            const currentValue = textListWidget.value;
+            textListWidget.options.values = filteredModels;
+
+            if (!filteredModels.includes(currentValue)) {
+                textListWidget.value = filteredModels[0];
+            }
+
+            textModelSearchNode.setDirtyCanvas(true);
+        }
+    }
+
+    appendWidgetCB(modelProviderWidget, filterModelList);
+    filterModelList();
+}
+
 function audioModelSearchFilterHandler(audioModelSearchNode) {
     const modelProviderWidget = audioModelSearchNode.widgets.find(w => w.name === "Model Provider");
     const audioListWidget = audioModelSearchNode.widgets.find(w => w.name === "AudioList");
@@ -4193,6 +4292,7 @@ export {
     mediaUUIDHandler,
     save3DFilepathHandler,
     captionNodeHandler,
+    saveTextHandler,
     videoTranscriptionHandler,
     videoOutputsHandler,
     handleCustomErrors,
@@ -4200,6 +4300,7 @@ export {
     videoInferenceDimensionsHandler,
     videoModelSearchFilterHandler,
     audioModelSearchFilterHandler,
+    textModelSearchFilterHandler,
     vectorizeModelSearchFilterHandler,
     vectorizeToggleHandler,
     useParameterToggleHandler,
@@ -4213,6 +4314,7 @@ export {
     audioInferenceToggleHandler,
     audioInferenceSpeechToggleHandler,
     audioSettingsToggleHandler,
+    textInferenceSettingsToggleHandler,
     videoSettingsToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
