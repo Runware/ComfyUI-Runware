@@ -222,13 +222,13 @@ class RunwareAudioSettings:
             settings["vocalLanguage"] = vocal_language
 
         if use_cover_conditioning_scale:
-            settings["coverConditioningScale"] = round(float(cover_conditioning_scale), 2)
+            settings["coverConditioningScale"] = float(cover_conditioning_scale)
 
         if use_repainting_start:
-            settings["repaintingStart"] = round(float(repainting_start), 2)
+            settings["repaintingStart"] = float(repainting_start)
 
         if use_repainting_end:
-            settings["repaintingEnd"] = round(float(repainting_end), 2)
+            settings["repaintingEnd"] = float(repainting_end)
 
         return (settings,)
 

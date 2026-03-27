@@ -8,6 +8,9 @@ const TIMEOUT_RANGE = { min: 5, default: 90,  max: 99 };
 const OUTPUT_QUALITY_RANGE = { min: 20, default: 95, max: 99 };
 const CACHE_SIZE_RANGE = { min: 30, default: 150, max: 4096 };
 
+/** Must match `audioInferenceInputs.MAX_VIDEOS` in modules/audioInferenceInputs.py */
+const AUDIO_INFERENCE_INPUTS_MAX_VIDEOS = 4;
+
 let openDialog = false;
 let lastTimeout = false;
 let lastOutputFormat = false;
@@ -4171,12 +4174,23 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
         toggleWidgetState(useVideoWidget, videoWidget, "Video");
     }
     
-    // Set up toggle handlers for multiple videos (Video1, Video2, Video3, Video4)
+    // Set up toggle handlers for multiple videos (Video1 … VideoN; N from widgets, fallback to AUDIO_INFERENCE_INPUTS_MAX_VIDEOS)
     if (useVideosWidget) {
+        function getAudioInferenceVideoSlotCount() {
+            let max = 0;
+            for (const w of audioInputsNode.widgets) {
+                if (!w?.name) continue;
+                const m = /^Video(\d+)$/.exec(w.name);
+                if (m) max = Math.max(max, parseInt(m[1], 10));
+            }
+            return max > 0 ? max : AUDIO_INFERENCE_INPUTS_MAX_VIDEOS;
+        }
+
         function toggleVideosEnabled() {
             const enabled = useVideosWidget.value === true;
-            
-            for (let i = 1; i <= 4; i++) {
+            const slotCount = getAudioInferenceVideoSlotCount();
+
+            for (let i = 1; i <= slotCount; i++) {
                 const videoWidget = audioInputsNode.widgets.find(w => w && w.name === `Video${i}`);
                 if (videoWidget) {
                     if (videoWidget.inputEl) {
