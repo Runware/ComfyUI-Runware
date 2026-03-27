@@ -8,6 +8,9 @@ const TIMEOUT_RANGE = { min: 5, default: 90,  max: 99 };
 const OUTPUT_QUALITY_RANGE = { min: 20, default: 95, max: 99 };
 const CACHE_SIZE_RANGE = { min: 30, default: 150, max: 4096 };
 
+/** Must match `audioInferenceInputs.MAX_VIDEOS` in modules/audioInferenceInputs.py */
+const AUDIO_INFERENCE_INPUTS_MAX_VIDEOS = 4;
+
 let openDialog = false;
 let lastTimeout = false;
 let lastOutputFormat = false;
@@ -1173,6 +1176,20 @@ function audioSettingsToggleHandler(settingsNode) {
     const turboWidget = settingsNode.widgets.find(w => w && w.name === "turbo");
     const useTextNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "useTextNormalization");
     const textNormalizationWidget = settingsNode.widgets.find(w => w && w.name === "textNormalization");
+    const useBpmWidget = settingsNode.widgets.find(w => w && w.name === "useBpm");
+    const bpmWidget = settingsNode.widgets.find(w => w && w.name === "bpm");
+    const useKeyScaleWidget = settingsNode.widgets.find(w => w && w.name === "useKeyScale");
+    const keyScaleWidget = settingsNode.widgets.find(w => w && w.name === "keyScale");
+    const useTimeSignatureWidget = settingsNode.widgets.find(w => w && w.name === "useTimeSignature");
+    const timeSignatureWidget = settingsNode.widgets.find(w => w && w.name === "timeSignature");
+    const useVocalLanguageWidget = settingsNode.widgets.find(w => w && w.name === "useVocalLanguage");
+    const vocalLanguageWidget = settingsNode.widgets.find(w => w && w.name === "vocalLanguage");
+    const useCoverConditioningScaleWidget = settingsNode.widgets.find(w => w && w.name === "useCoverConditioningScale");
+    const coverConditioningScaleWidget = settingsNode.widgets.find(w => w && w.name === "coverConditioningScale");
+    const useRepaintingStartWidget = settingsNode.widgets.find(w => w && w.name === "useRepaintingStart");
+    const repaintingStartWidget = settingsNode.widgets.find(w => w && w.name === "repaintingStart");
+    const useRepaintingEndWidget = settingsNode.widgets.find(w => w && w.name === "useRepaintingEnd");
+    const repaintingEndWidget = settingsNode.widgets.find(w => w && w.name === "repaintingEnd");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1196,6 +1213,13 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
     if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
     if (useTextNormalizationWidget && textNormalizationWidget) toggleWidgetState(useTextNormalizationWidget, textNormalizationWidget, "textNormalization");
+    if (useBpmWidget && bpmWidget) toggleWidgetState(useBpmWidget, bpmWidget, "bpm");
+    if (useKeyScaleWidget && keyScaleWidget) toggleWidgetState(useKeyScaleWidget, keyScaleWidget, "keyScale");
+    if (useTimeSignatureWidget && timeSignatureWidget) toggleWidgetState(useTimeSignatureWidget, timeSignatureWidget, "timeSignature");
+    if (useVocalLanguageWidget && vocalLanguageWidget) toggleWidgetState(useVocalLanguageWidget, vocalLanguageWidget, "vocalLanguage");
+    if (useCoverConditioningScaleWidget && coverConditioningScaleWidget) toggleWidgetState(useCoverConditioningScaleWidget, coverConditioningScaleWidget, "coverConditioningScale");
+    if (useRepaintingStartWidget && repaintingStartWidget) toggleWidgetState(useRepaintingStartWidget, repaintingStartWidget, "repaintingStart");
+    if (useRepaintingEndWidget && repaintingEndWidget) toggleWidgetState(useRepaintingEndWidget, repaintingEndWidget, "repaintingEnd");
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -2797,6 +2821,8 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "Ace": [
             "runware:ace-step@0 (ACE Step v1 3.5B)",
+            "runware:ace-step@v1.5-base (ACE-Step v1.5 Base)",
+            "runware:ace-step@v1.5-turbo (ACE-Step v1.5 Turbo)",
         ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
@@ -4116,10 +4142,14 @@ function regionalPromptingRegionsToggleHandler(regionsNode) {
 }
 
 function audioInferenceInputsToggleHandler(audioInputsNode) {
+    if (!audioInputsNode?.widgets) return;
+
     // Find widgets
-    const useVideoWidget = audioInputsNode.widgets.find(w => w.name === "useVideo");
-    const videoWidget = audioInputsNode.widgets.find(w => w.name === "Video");
-    const useVideosWidget = audioInputsNode.widgets.find(w => w.name === "useVideos");
+    const useAudioWidget = audioInputsNode.widgets.find(w => w && w.name === "useAudio");
+    const audioWidget = audioInputsNode.widgets.find(w => w && w.name === "Audio");
+    const useVideoWidget = audioInputsNode.widgets.find(w => w && w.name === "useVideo");
+    const videoWidget = audioInputsNode.widgets.find(w => w && w.name === "Video");
+    const useVideosWidget = audioInputsNode.widgets.find(w => w && w.name === "useVideos");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -4163,18 +4193,34 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
         setTimeout(toggleEnabled, 100);
     }
     
+    // Set up toggle handler for single audio
+    if (useAudioWidget && audioWidget) {
+        toggleWidgetState(useAudioWidget, audioWidget, "Audio");
+    }
+    
     // Set up toggle handler for single video
     if (useVideoWidget && videoWidget) {
         toggleWidgetState(useVideoWidget, videoWidget, "Video");
     }
     
-    // Set up toggle handlers for multiple videos (Video1, Video2, Video3, Video4)
+    // Set up toggle handlers for multiple videos (Video1 … VideoN; N from widgets, fallback to AUDIO_INFERENCE_INPUTS_MAX_VIDEOS)
     if (useVideosWidget) {
+        function getAudioInferenceVideoSlotCount() {
+            let max = 0;
+            for (const w of audioInputsNode.widgets) {
+                if (!w?.name) continue;
+                const m = /^Video(\d+)$/.exec(w.name);
+                if (m) max = Math.max(max, parseInt(m[1], 10));
+            }
+            return max > 0 ? max : AUDIO_INFERENCE_INPUTS_MAX_VIDEOS;
+        }
+
         function toggleVideosEnabled() {
             const enabled = useVideosWidget.value === true;
-            
-            for (let i = 1; i <= 4; i++) {
-                const videoWidget = audioInputsNode.widgets.find(w => w.name === `Video${i}`);
+            const slotCount = getAudioInferenceVideoSlotCount();
+
+            for (let i = 1; i <= slotCount; i++) {
+                const videoWidget = audioInputsNode.widgets.find(w => w && w.name === `Video${i}`);
                 if (videoWidget) {
                     if (videoWidget.inputEl) {
                         videoWidget.inputEl.disabled = !enabled;
