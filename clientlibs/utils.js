@@ -4110,6 +4110,8 @@ function regionalPromptingRegionsToggleHandler(regionsNode) {
 }
 
 function audioInferenceInputsToggleHandler(audioInputsNode) {
+    if (!audioInputsNode?.widgets) return;
+
     // Find widgets
     const useAudioWidget = audioInputsNode.widgets.find(w => w && w.name === "useAudio");
     const audioWidget = audioInputsNode.widgets.find(w => w && w.name === "Audio");
