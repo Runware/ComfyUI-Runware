@@ -726,21 +726,50 @@ function videoUpscalerToggleHandler(videoUpscalerNode) {
 
     const useUpscaleFactorWidget = videoUpscalerNode.widgets.find(w => w && w.name === "useUpscaleFactor");
     const upscaleFactorWidget = videoUpscalerNode.widgets.find(w => w && w.name === "upscaleFactor");
-
-    if (!useUpscaleFactorWidget || !upscaleFactorWidget) return;
+    const useFpsWidget = videoUpscalerNode.widgets.find(w => w && w.name === "useFps");
+    const fpsWidget = videoUpscalerNode.widgets.find(w => w && w.name === "fps");
+    const useDimensionWidget = videoUpscalerNode.widgets.find(w => w && w.name === "useDimension");
+    const widthWidget = videoUpscalerNode.widgets.find(w => w && w.name === "width");
+    const heightWidget = videoUpscalerNode.widgets.find(w => w && w.name === "height");
 
     function applyToggleState() {
-        const enabled = useUpscaleFactorWidget.value === true;
-        toggleWidgetEnabled(upscaleFactorWidget, enabled, videoUpscalerNode);
+        if (useUpscaleFactorWidget && upscaleFactorWidget) {
+            const enabled = useUpscaleFactorWidget.value === true;
+            toggleWidgetEnabled(upscaleFactorWidget, enabled, videoUpscalerNode);
+        }
+
+        if (useFpsWidget && fpsWidget) {
+            const enabled = useFpsWidget.value === true;
+            toggleWidgetEnabled(fpsWidget, enabled, videoUpscalerNode);
+        }
+
+        if (useDimensionWidget && widthWidget && heightWidget) {
+            const enabled = useDimensionWidget.value === "custom";
+            toggleWidgetEnabled(widthWidget, enabled, videoUpscalerNode);
+            toggleWidgetEnabled(heightWidget, enabled, videoUpscalerNode);
+        }
+
         videoUpscalerNode.setDirtyCanvas(true);
     }
 
     // Initialize state once widgets are rendered
     setTimeout(applyToggleState, 100);
 
-    appendWidgetCB(useUpscaleFactorWidget, () => {
-        setTimeout(applyToggleState, 50);
-    });
+    if (useUpscaleFactorWidget) {
+        appendWidgetCB(useUpscaleFactorWidget, () => {
+            setTimeout(applyToggleState, 50);
+        });
+    }
+    if (useFpsWidget) {
+        appendWidgetCB(useFpsWidget, () => {
+            setTimeout(applyToggleState, 50);
+        });
+    }
+    if (useDimensionWidget) {
+        appendWidgetCB(useDimensionWidget, () => {
+            setTimeout(applyToggleState, 50);
+        });
+    }
 }
 
 function useParameterToggleHandler(node) {
