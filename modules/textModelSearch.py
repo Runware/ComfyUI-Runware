@@ -29,7 +29,7 @@ class RunwareTextModelSearch:
                     "default": "MiniMax",
                 }),
                 "TextList": (all_models, {
-                    "tooltip": "Choose a model from the filtered list (AIR code is taken before the first space).",
+                    "tooltip": "Choose a model from the filtered list (AIR code is taken from text before ' (').",
                     "default": default_model,
                 }),
                 "Use Search Value": ("BOOLEAN", {
