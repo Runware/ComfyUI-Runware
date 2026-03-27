@@ -147,15 +147,30 @@ class videoUpscaler:
             
             # Extract task UUID for polling
             taskUUID = genConfig[0]["taskUUID"]
+            max_poll_seconds = 2400  # 40 minutes
+            started_at = rwUtils.time.time()
             
             # Poll for video completion
             while True:
+                if rwUtils.time.time() - started_at > max_poll_seconds:
+                    raise TimeoutError(
+                        f"Video upscale timed out after {max_poll_seconds} seconds. "
+                        f"Task UUID: {taskUUID}"
+                    )
+
                 # Check for interrupt before each poll
                 comfy.model_management.throw_exception_if_processing_interrupted()
                 
                 # Poll for video result
                 pollResult = rwUtils.pollVideoResult(taskUUID)
                 print(f"[Debugging] Poll result: {pollResult}")
+
+                if not isinstance(pollResult, dict):
+                    # Keep polling if transport layer returned empty/invalid payload.
+                    for _ in range(10):
+                        comfy.model_management.throw_exception_if_processing_interrupted()
+                        rwUtils.time.sleep(0.1)
+                    continue
                 
                 # Check for errors first
                 if pollResult and "errors" in pollResult and len(pollResult["errors"]) > 0:
@@ -172,11 +187,22 @@ class videoUpscaler:
                         
                         if status == "success":
                             if "mediaURL" in video_data or "videoURL" in video_data or "videoBase64Data" in video_data:
-                                videos = rwUtils.convertVideoB64List(pollResult, 1920, 1080)
+                                out_width = width if useDimension == "custom" else video_data.get("width", 1920)
+                                out_height = height if useDimension == "custom" else video_data.get("height", 1080)
+                                videos = rwUtils.convertVideoB64List(pollResult, out_width, out_height)
                                 # SaveVideo expects a single video object, not a tuple
                                 return (videos[0],) if len(videos) > 0 else (None,)
+                            raise Exception(
+                                "Video upscale returned success without mediaURL/videoURL/videoBase64Data. "
+                                f"Response: {rwUtils.safe_json_dumps(video_data, indent=2)}"
+                            )
+                        if status in ("failed", "error", "cancelled", "canceled"):
+                            raise Exception(
+                                "Video upscale failed with terminal status "
+                                f"'{status}'. Response: {rwUtils.safe_json_dumps(video_data, indent=2)}"
+                            )
                         
-                        # If status is "processing", continue polling
+                        # If status is "processing" (or unknown transient), continue polling
                 
                 # Check for interrupt before waiting
                 comfy.model_management.throw_exception_if_processing_interrupted()
