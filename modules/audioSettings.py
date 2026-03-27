@@ -107,9 +107,12 @@ class RunwareAudioSettings:
                     "tooltip": "Enable to include timeSignature (beats per measure). If disabled, the model decides automatically.",
                     "default": False,
                 }),
-                "timeSignature": (["", "2", "3", "4", "6"], {
-                    "tooltip": "Time signature: '2' duple, '3' waltz, '4' common time, '6' compound duple. Empty = model decides. Most pop uses '4'. Only used when 'Use Time Signature' is enabled.",
-                    "default": "",
+                "timeSignature": ("INT", {
+                    "default": 4,
+                    "min": 1,
+                    "max": 32,
+                    "step": 1,
+                    "tooltip": "Time signature as integer beats per bar (e.g. 2, 3, 4, 6). Only used when 'Use Time Signature' is enabled.",
                 }),
                 "useVocalLanguage": ("BOOLEAN", {
                     "tooltip": "Enable to include vocalLanguage (language code) for vocal generation. See dropdown for available codes.",
@@ -176,7 +179,7 @@ class RunwareAudioSettings:
         use_key_scale = kwargs.get("useKeyScale", False)
         key_scale = kwargs.get("keyScale", "")
         use_time_signature = kwargs.get("useTimeSignature", False)
-        time_signature = kwargs.get("timeSignature", "")
+        time_signature = kwargs.get("timeSignature", 4)
         use_vocal_language = kwargs.get("useVocalLanguage", False)
         vocal_language = kwargs.get("vocalLanguage", "en")
         use_cover_conditioning_scale = kwargs.get("useCoverConditioningScale", False)
@@ -212,8 +215,8 @@ class RunwareAudioSettings:
         if use_key_scale and str(key_scale).strip():
             settings["keyScale"] = str(key_scale).strip()
 
-        if use_time_signature and str(time_signature).strip():
-            settings["timeSignature"] = str(time_signature).strip()
+        if use_time_signature:
+            settings["timeSignature"] = int(time_signature)
 
         if use_vocal_language:
             settings["vocalLanguage"] = vocal_language

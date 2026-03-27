@@ -2789,6 +2789,8 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "Ace": [
             "runware:ace-step@0 (ACE Step v1 3.5B)",
+            "runware:ace-step@v1.5-base (ACE-Step v1.5 Base)",
+            "runware:ace-step@v1.5-turbo (ACE-Step v1.5 Turbo)",
         ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
