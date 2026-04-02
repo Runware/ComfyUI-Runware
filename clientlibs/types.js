@@ -82,6 +82,11 @@ const RUNWARE_NODE_TYPES = {
     AUDIOINFERENCE: "Runware Audio Inference",
     AUDIOINFERENCESPEECH: "Runware Audio Inference Speech",
     AUDIOMODELSEARCH: "Runware Audio Model Search",
+    TEXTMODELSEARCH: "Runware Text Model Search",
+    TEXTINFERENCE: "Runware Text Inference",
+    TEXTINFERENCEMESSAGES: "Runware Text Inference Messages",
+    TEXTINFERENCEMESSAGE: "Runware Text Inference Message",
+    TEXTINFERENCESETTINGS: "Runware Text Inference Settings",
     AUDIOSECTIONS: "Runware Audio Sections",
     AUDIOINFERENCEINPUTS: "Runware Audio Inference Inputs",
     AUDIOSETTINGS: "Runware Audio Inference Settings",
@@ -136,6 +141,7 @@ const RUNWARE_NODE_TYPES = {
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
     WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
     SAVEIMAGE: "Runware Save Image",
+    SAVETEXT: "Runware Save Text",
     VIDEOINFERENCEOUTPUTS: "Runware Video Inference Outputs",
     THREEDINFERENCE: "Runware 3D Inference",
     THREEDINFERENCEINPUTS: "Runware 3D Inference Inputs",
@@ -284,6 +290,25 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.AUDIOMODELSEARCH]: {
         bgColor: DEFAULT_BGCOLOR,
         liveSearch: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTMODELSEARCH]: {
+        bgColor: DEFAULT_BGCOLOR,
+        liveSearch: false,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCE]: {
+        bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCEMESSAGES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCEMESSAGE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCESETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.AUDIOSECTIONS]: {
         bgColor: DEFAULT_BGCOLOR,
@@ -510,6 +535,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.SAVEIMAGE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.SAVETEXT]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

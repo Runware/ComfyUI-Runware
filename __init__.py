@@ -42,6 +42,11 @@ from .modules.providerSettings.briaProviderMask import RunwareBriaProviderMask
 from .modules.audioInference import RunwareAudioInference
 from .modules.audioInferenceSpeech import RunwareAudioInferenceSpeech
 from .modules.audioModelSearch import RunwareAudioModelSearch
+from .modules.textModelSearch import RunwareTextModelSearch
+from .modules.textInferenceMessages import RunwareTextInferenceMessages
+from .modules.textInferenceMessage import RunwareTextInferenceMessage
+from .modules.textInference import RunwareTextInference
+from .modules.textInferenceSettings import RunwareTextInferenceSettings
 from .modules.audioSections import RunwareAudioSections
 from .modules.audioInferenceInputs import audioInferenceInputs
 from .modules.audioSettings import RunwareAudioSettings
@@ -96,6 +101,7 @@ from .modules.threeDInferenceSettingsSparseStructure import Runware3DInferenceSe
 from .modules.threeDInferenceSettingsShapeSlat import Runware3DInferenceSettingsShapeSlat
 from .modules.threeDInferenceSettingsTexSlat import Runware3DInferenceSettingsTexSlat
 from .modules.save3D import RunwareSave3D
+from .modules.saveText import RunwareSaveText
 from .modules.loadMesh import RunwareLoadMesh
 
 RUNWARE_COMFYUI_VERSION = "1.4.0 Beta"
@@ -151,6 +157,11 @@ NODE_CLASS_MAPPINGS = {
     "Runware Audio Inference": RunwareAudioInference,
     "Runware Audio Inference Speech": RunwareAudioInferenceSpeech,
     "Runware Audio Model Search": RunwareAudioModelSearch,
+    "Runware Text Model Search": RunwareTextModelSearch,
+    "Runware Text Inference Messages": RunwareTextInferenceMessages,
+    "Runware Text Inference Message": RunwareTextInferenceMessage,
+    "Runware Text Inference": RunwareTextInference,
+    "Runware Text Inference Settings": RunwareTextInferenceSettings,
     "Runware Audio Sections": RunwareAudioSections,
     "Runware Audio Inference Inputs": audioInferenceInputs,
     "Runware Audio Inference Settings": RunwareAudioSettings,
@@ -207,6 +218,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware 3D Inference Settings Shape Slat": Runware3DInferenceSettingsShapeSlat,
     "Runware 3D Inference Settings Tex Slat": Runware3DInferenceSettingsTexSlat,
     "Runware Save 3D": RunwareSave3D,
+    "Runware Save Text": RunwareSaveText,
     "Runware Load Mesh": RunwareLoadMesh,
 }
 
@@ -218,6 +230,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Multi Inference": "Runware Multi Inference [BETA]",
     "Runware Video Model Search": "Runware Video Model",
     "Runware Audio Model Search": "Runware Audio Model",
+    "Runware Text Model Search": "Runware Text Model",
     "Runware Video Transcription": "Runware Video Caption",
 }
 
