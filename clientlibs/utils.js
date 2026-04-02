@@ -987,6 +987,8 @@ function useParameterToggleHandler(node) {
 
 function upscalerToggleHandler(upscalerNode) {
     // Find all "use" parameter widgets for Upscaler
+    const useUpscaleFactorWidget = upscalerNode.widgets.find(w => w.name === "useUpscaleFactor");
+    const upscaleFactorWidget = upscalerNode.widgets.find(w => w.name === "upscaleFactor");
     const useStepsWidget = upscalerNode.widgets.find(w => w.name === "useSteps");
     const stepsWidget = upscalerNode.widgets.find(w => w.name === "steps");
     const useSeedWidget = upscalerNode.widgets.find(w => w.name === "useSeed");
@@ -1054,6 +1056,10 @@ function upscalerToggleHandler(upscalerNode) {
     }
     
     // Set up all toggle handlers
+    if (useUpscaleFactorWidget && upscaleFactorWidget) {
+        toggleWidgetState(useUpscaleFactorWidget, [upscaleFactorWidget], ["upscaleFactor"]);
+    }
+
     if (useStepsWidget && stepsWidget) {
         toggleWidgetState(useStepsWidget, [stepsWidget], ["steps"]);
     }
@@ -1080,6 +1086,63 @@ function upscalerToggleHandler(upscalerNode) {
     
     if (useLatentParamsWidget && clipSkipWidget) {
         toggleWidgetState(useLatentParamsWidget, [clipSkipWidget], ["clipSkip"]);
+    }
+
+    const useTargetMegapixelsWidget = upscalerNode.widgets.find(w => w.name === "useTargetMegapixels");
+    const targetMegapixelsWidget = upscalerNode.widgets.find(w => w.name === "targetMegapixels");
+    if (useTargetMegapixelsWidget && targetMegapixelsWidget) {
+        toggleWidgetState(useTargetMegapixelsWidget, [targetMegapixelsWidget], ["targetMegapixels"]);
+    }
+}
+
+function imageUpscalerSettingsToggleHandler(settingsNode) {
+    const useEnhanceDetailsWidget = settingsNode.widgets.find(w => w.name === "useEnhanceDetails");
+    const enhanceDetailsWidget = settingsNode.widgets.find(w => w.name === "enhanceDetails");
+    const useRealismWidget = settingsNode.widgets.find(w => w.name === "useRealism");
+    const realismWidget = settingsNode.widgets.find(w => w.name === "realism");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "pointer" : "not-allowed";
+            }
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = settingsNode.htmlElements?.widgetsContainer || settingsNode.htmlElements;
+                if (nodeElement && paramName) {
+                    const input = nodeElement.querySelector(
+                        `input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`
+                    );
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "pointer" : "not-allowed";
+                    }
+                }
+            }
+
+            settingsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useEnhanceDetailsWidget && enhanceDetailsWidget) {
+        toggleWidgetState(useEnhanceDetailsWidget, enhanceDetailsWidget, "enhanceDetails");
+    }
+    if (useRealismWidget && realismWidget) {
+        toggleWidgetState(useRealismWidget, realismWidget, "realism");
     }
 }
 
@@ -4394,6 +4457,7 @@ export {
     videoInferenceSpeechInputToggleHandler,
     regionalPromptingRegionsToggleHandler,
     upscalerToggleHandler,
+    imageUpscalerSettingsToggleHandler,
     videoUpscalerToggleHandler,
     audioInferenceToggleHandler,
     audioInferenceSpeechToggleHandler,
@@ -4422,6 +4486,7 @@ export {
     syncProviderSettingsToggleHandler,
     syncSegmentToggleHandler,
     settingsToggleHandler,
+    imageInferenceSettingsColorPaletteToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
     briaProviderMaskToggleHandler,
@@ -4514,6 +4579,12 @@ function settingsToggleHandler(settingsNode) {
     const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
     const usePromptExtendWidget = settingsNode.widgets.find(w => w.name === "usePromptExtend");
     const promptExtendWidget = settingsNode.widgets.find(w => w.name === "promptExtend");
+    const useEditRegionsWidget = settingsNode.widgets.find(w => w.name === "useEditRegions");
+    const editRegionsWidget = settingsNode.widgets.find(w => w.name === "editRegions");
+    const useThinkingWidget = settingsNode.widgets.find(w => w.name === "useThinking");
+    const thinkingWidget = settingsNode.widgets.find(w => w.name === "thinking");
+    const useSequentialWidget = settingsNode.widgets.find(w => w.name === "useSequential");
+    const sequentialWidget = settingsNode.widgets.find(w => w.name === "sequential");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -4578,6 +4649,65 @@ function settingsToggleHandler(settingsNode) {
     }
     if (usePromptExtendWidget && promptExtendWidget) {
         toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");
+    }
+    if (useEditRegionsWidget && editRegionsWidget) {
+        toggleWidgetState(useEditRegionsWidget, editRegionsWidget, "editRegions");
+    }
+    if (useThinkingWidget && thinkingWidget) {
+        toggleWidgetState(useThinkingWidget, thinkingWidget, "thinking");
+    }
+    if (useSequentialWidget && sequentialWidget) {
+        toggleWidgetState(useSequentialWidget, sequentialWidget, "sequential");
+    }
+}
+
+function imageInferenceSettingsColorPaletteToggleHandler(paletteNode) {
+    function applyParamState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        const enabled = useWidget.value === true;
+        if (paramWidget.inputEl) {
+            paramWidget.inputEl.disabled = !enabled;
+            paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+            paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+            paramWidget.inputEl.readOnly = !enabled;
+        }
+        paramWidget.disabled = !enabled;
+        if (!paramWidget.inputEl) {
+            const nodeElement = paletteNode.htmlElements?.widgetsContainer || paletteNode.htmlElements;
+            if (nodeElement) {
+                const input = nodeElement.querySelector(
+                    `input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`
+                );
+                if (input) {
+                    input.disabled = !enabled;
+                    input.style.opacity = enabled ? "1" : "0.5";
+                    input.style.cursor = enabled ? "text" : "not-allowed";
+                    input.readOnly = !enabled;
+                }
+            }
+        }
+    }
+
+    function bindSlot(i) {
+        const useW = paletteNode.widgets.find((w) => w.name === `use_${i}`);
+        const hexW = paletteNode.widgets.find((w) => w.name === `hex_${i}`);
+        const ratioW = paletteNode.widgets.find((w) => w.name === `ratio_${i}`);
+        if (!useW || !hexW || !ratioW) return;
+
+        function toggleSlot() {
+            applyParamState(useW, hexW, `hex_${i}`);
+            applyParamState(useW, ratioW, `ratio_${i}`);
+            paletteNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useW, () => {
+            setTimeout(toggleSlot, 50);
+        });
+        setTimeout(toggleSlot, 100);
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        bindSlot(i);
     }
 }
 

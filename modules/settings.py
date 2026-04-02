@@ -1,13 +1,15 @@
 """
-Runware Settings Node
-Provides general settings for image generation including temperature, systemPrompt, and topP
+Runware Image Inference Settings (registered as Runware Settings for workflow compatibility).
+Provides settings for image generation including temperature, systemPrompt, topP,
+editRegions, thinking, sequential, and colorPalette (from Runware Image Inference Settings Color Palette).
 """
 
-from typing import Optional, Dict, Any
+import json
+from typing import Any, Dict, List, Optional
 
 
 class RunwareSettings:
-    """Runware Settings Node"""
+    """Runware Image Inference Settings node (display name); API registration key remains Runware Settings."""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -84,6 +86,37 @@ class RunwareSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useEditRegions": ("BOOLEAN", {
+                    "tooltip": "Enable to include editRegions in settings (per-input-image bounding boxes for edit flows).",
+                    "default": False,
+                }),
+                "editRegions": ("STRING", {
+                    "multiline": True,
+                    "tooltip": "JSON array: one entry per input image; each entry is a list of boxes [x1,y1,x2,y2]. Example: [[[0,0,12,12],[25,25,100,100]],[],[[10,10,50,50]]]",
+                    "default": "",
+                }),
+                "useThinking": ("BOOLEAN", {
+                    "tooltip": "Enable to include thinking (string) in settings.",
+                    "default": False,
+                }),
+                "thinking": ("STRING", {
+                    "multiline": True,
+                    "tooltip": "Thinking / reasoning string passed in settings. Only used when 'Use Thinking' is enabled.",
+                    "default": "",
+                }),
+                "useSequential": ("BOOLEAN", {
+                    "tooltip": "Enable to include sequential (boolean) in settings.",
+                    "default": False,
+                }),
+                "sequential": ("BOOLEAN", {
+                    "tooltip": "Sequential / image-set mode flag. Only used when 'Use Sequential' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "colorPalette": ("RUNWAREIMAGEINFERENCECOLORPALETTE", {
+                    "tooltip": "Connect Runware Image Inference Color Palette. When the palette node outputs at least one swatch, it is merged into settings.colorPalette.",
+                }),
             }
         }
 
@@ -91,7 +124,10 @@ class RunwareSettings:
     RETURN_NAMES = ("Settings",)
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
-    DESCRIPTION = "Configure general settings for image generation including temperature, system prompt, and top-p sampling."
+    DESCRIPTION = (
+        "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, "
+        "promptExtend, editRegions (JSON), thinking, sequential, and optional colorPalette from the Color Palette node."
+    )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create settings configuration"""
@@ -105,6 +141,9 @@ class RunwareSettings:
         useQuality = kwargs.get("useQuality", False)
         usePromptExtend = kwargs.get("usePromptExtend", True)
         promptExtend = kwargs.get("promptExtend", True)
+        useEditRegions = kwargs.get("useEditRegions", False)
+        useThinking = kwargs.get("useThinking", False)
+        useSequential = kwargs.get("useSequential", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -133,18 +172,31 @@ class RunwareSettings:
         if usePromptExtend:
             settings["promptExtend"] = bool(promptExtend)
 
+        if useEditRegions:
+            raw_er = (kwargs.get("editRegions") or "").strip()
+            if raw_er:
+                try:
+                    parsed = json.loads(raw_er)
+                except json.JSONDecodeError as e:
+                    raise ValueError(f"editRegions must be valid JSON: {e}") from e
+                if not isinstance(parsed, list):
+                    raise ValueError("editRegions JSON must be an array (one element per input image).")
+                settings["editRegions"] = parsed
+
+        if useThinking:
+            th = (kwargs.get("thinking") or "").strip()
+            if th:
+                settings["thinking"] = th
+
+        if useSequential:
+            settings["sequential"] = bool(kwargs.get("sequential", False))
+
+        palette: Optional[List[Dict[str, Any]]] = kwargs.get("colorPalette")
+        if palette is not None and isinstance(palette, list) and len(palette) > 0:
+            settings["colorPalette"] = palette
+
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
 
         return (settings,)
-
-
-# Node class mappings
-NODE_CLASS_MAPPINGS = {
-    "RunwareSettings": RunwareSettings,
-}
-
-NODE_DISPLAY_NAME_MAPPINGS = {
-    "RunwareSettings": "Runware Settings",
-}
 

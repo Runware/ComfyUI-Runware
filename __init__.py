@@ -3,6 +3,7 @@ from .modules.outpaintSettings import outpaintSettings
 from .modules.bgremoval import bgremoval
 from .modules.photoMaker import photoMaker
 from .modules.upscaler import upscaler
+from .modules.imageUpscalerSettings import RunwareImageUpscalerSettings
 from .modules.modelSearch import modelSearch
 from .modules.bridges import mainRoute
 from .modules.controlNet import controlNet
@@ -90,6 +91,7 @@ from .modules.videoInputsReferences import videoInputsReferences
 from .modules.videoInputsFrame import RunwareVideoInputsFrameImages
 from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
+from .modules.imageInferenceSettingsColorPalette import RunwareImageInferenceSettingsColorPalette
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 from .modules.saveImage import RunwareSaveImage
@@ -121,6 +123,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Background Removal": bgremoval,
     "Runware PhotoMaker V2": photoMaker,
     "Runware Image Upscaler": upscaler,
+    "Runware Image Upscaler Settings": RunwareImageUpscalerSettings,
     "Runware Model Search": modelSearch,
     "Runware Kontext Inference": runwareKontext,
     "Runware Imagen Inference": runwareImagen,
@@ -207,6 +210,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inputs Frame Images": RunwareVideoInputsFrameImages,
     "Runware Safety Inputs": safetyInputs,
     "Runware Settings": RunwareSettings,
+    "Runware Image Inference Settings Color Palette": RunwareImageInferenceSettingsColorPalette,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
     "Runware Save Image": RunwareSaveImage,
@@ -223,6 +227,7 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "Runware Settings": "Runware Image Inference Settings",
     "Runware Model Search": "Runware Model",
     "Runware Lora Search": "Runware Lora",
     "Runware Embedding Search": "Runware Embedding",
@@ -231,6 +236,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Video Model Search": "Runware Video Model",
     "Runware Audio Model Search": "Runware Audio Model",
     "Runware Text Model Search": "Runware Text Model",
+    "Runware Image Inference Settings Color Palette": "Runware Image Inference Color Palette",
     "Runware Video Transcription": "Runware Video Caption",
 }
 
