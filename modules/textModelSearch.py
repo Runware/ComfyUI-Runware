@@ -7,11 +7,22 @@ class RunwareTextModelSearch:
             "minimax:m2.7@highspeed (MiniMax-M2.7 Highspeed)",
             "minimax:m2.5@0 (MiniMax-M2.5)",
         ],
+        "OpenAI": [
+            "openai:gpt@5.4 (GPT-5.4)",
+            "openai:gpt@5.4-pro (GPT-5.4 Pro)",
+            "openai:gpt@5.4-mini (GPT-5.4 Mini)",
+            "openai:gpt@5.4-nano (GPT-5.4 Nano)",
+        ],
+        "Google": [
+            "google:gemini@3-flash (Gemini 3 Flash)",
+        ],
     }
 
     MODEL_PROVIDERS = [
         "All",
+        "Google",
         "MiniMax",
+        "OpenAI",
     ]
 
     @classmethod

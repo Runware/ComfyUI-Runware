@@ -84,6 +84,7 @@ class RunwareTextInference:
             "deliveryMethod": "sync",
             "messages": messages,
             "includeCost": True,
+            "includeUsage": True,
         }
 
         if text_settings is not None and isinstance(text_settings, dict) and len(text_settings) > 0:
