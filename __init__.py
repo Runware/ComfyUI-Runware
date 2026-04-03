@@ -64,6 +64,10 @@ from .modules.speechInputCombine import RunwareSpeechInputCombine
 from .modules.referenceVideos import referenceVideos
 from .modules.referenceVoices import referenceVoices
 from .modules.videoInferenceInputs import videoInferenceInputs
+from .modules.videoInferenceElements import (
+    RunwareVideoInferenceElements,
+    RunwareVideoInferenceElementsCombine,
+)
 from .modules.providerSettings.lightricksProviderSettings import RunwareLightricksProviderSettings
 from .modules.providerSettings.minimaxProviderSettings import RunwareMiniMaxProviderSettings
 from .modules.providerSettings.klingProviderSettings import RunwareKlingProviderSettings
@@ -181,6 +185,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware Reference Videos": referenceVideos,
     "Runware Reference Voices": referenceVoices,
     "Runware Video Inference Inputs": videoInferenceInputs,
+    "Runware Video Inference Elements": RunwareVideoInferenceElements,
+    "Runware Video Inference Elements Combine": RunwareVideoInferenceElementsCombine,
     "Runware Video Inference Speech Input": RunwareVideoInferenceSpeechInput,
     "Runware Video Inference Settings": RunwareVideoSettings,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,

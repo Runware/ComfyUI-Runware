@@ -60,6 +60,9 @@ class videoInferenceInputs:
                     "multiline": False,
                     "tooltip": "Video ID from a previous generation. Used when extending or editing an existing OpenAI Sora video",
                 }),
+                "Elements": ("RUNWAREVIDEOINFERENCEELEMENTS", {
+                    "tooltip": "Connect Runware Video Inference Elements (one element) or Runware Video Inference Elements Combine (several) for inputs.elements (Kling, etc.).",
+                }),
             }
         }
 
@@ -89,6 +92,7 @@ class videoInferenceInputs:
         draftId = kwargs.get("draftId", "")
         videoId = kwargs.get("videoId", "")
         avatar = kwargs.get("Avatar", "")
+        elements_list = kwargs.get("Elements", None)
 
         inputs = {}
 
@@ -147,5 +151,13 @@ class videoInferenceInputs:
 
         if videoId is not None and videoId.strip() != "":
             inputs["videoId"] = videoId.strip()
+
+        if elements_list is not None and isinstance(elements_list, list):
+            merged_elements = [
+                e for e in elements_list
+                if isinstance(e, dict) and len(e) > 0
+            ]
+            if merged_elements:
+                inputs["elements"] = merged_elements
 
         return (inputs,)

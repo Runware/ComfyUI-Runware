@@ -14,6 +14,7 @@ from .utils.runwareUtils import (
     sanitize_for_logging,
     safe_json_dumps,
     sendMediaUUID,
+    convertVideoInputToDataUri,
 )
 
 
@@ -106,19 +107,9 @@ class RunwareMediaUpload:
     def _convertVideoToBase64(self, videoTensor):
         """Convert video file to base64 data URI"""
         print(f"[Debug] VideoFromFile object detected")
-        
-        videoFile = self._getVideoFilePath(videoTensor)
-        videoPath = self._extractVideoPath(videoFile)
-        
-        print(f"[Debug] Processing video file: {videoPath}")
-        
-        with open(videoPath, 'rb') as f:
-            videoBytes = f.read()
-        
-        mimeType = self._getMimeType(videoPath)
-        videoBase64 = base64.b64encode(videoBytes).decode('utf-8')
-        
-        return f"data:{mimeType};base64,{videoBase64}"
+        out = convertVideoInputToDataUri(videoTensor)
+        print(f"[Debug] Processing video file (data URI length {len(out) if out else 0})")
+        return out
 
     def _getVideoFilePath(self, videoTensor):
         """Extract video file path from VideoFromFile object"""
