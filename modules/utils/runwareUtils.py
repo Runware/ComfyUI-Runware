@@ -516,36 +516,6 @@ def convertTensor2IMG(tensorImage):
         return imgDataUri
 
 
-def convertVideoInputToDataUri(video_tensor):
-    """Convert ComfyUI VIDEO (file-backed, e.g. Load Video) to data:<mime>;base64,... for API payloads."""
-    if video_tensor is None:
-        return None
-    video_file = getattr(video_tensor, "_VideoFromFile__file", None)
-    if video_file is None:
-        for attr in ("video_path", "path", "file_path", "filename", "_file"):
-            if hasattr(video_tensor, attr):
-                video_file = getattr(video_tensor, attr)
-                break
-    if video_file is None:
-        raise ValueError(
-            "Could not resolve video file from VIDEO input. Connect a Load Video (file) output."
-        )
-    path = video_file.name if hasattr(video_file, "name") else video_file
-    if not isinstance(path, str):
-        raise ValueError(f"Unexpected video file type: {type(video_file)}")
-    with open(path, "rb") as f:
-        video_bytes = f.read()
-    ext = os.path.splitext(path.lower())[1]
-    mime = {
-        ".mp4": "video/mp4",
-        ".avi": "video/avi",
-        ".mov": "video/quicktime",
-        ".webm": "video/webm",
-    }.get(ext, "video/mp4")
-    b64 = base64.b64encode(video_bytes).decode("utf-8")
-    return f"data:{mime};base64,{b64}"
-
-
 def convertTensor2IMGBase64Only(tensorImage):
     """Convert tensor to base64 data URI without caching - for frame images"""
     imageNP = (tensorImage.squeeze().numpy() * 255).astype(np.uint8)

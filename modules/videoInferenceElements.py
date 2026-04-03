@@ -50,7 +50,7 @@ def _build_element_dict(
     description: str,
     frontalImage: Any,
     refer_images: List[Any],
-    refer_videos: List[Any],
+    refer_videos: List[str],
     voice: str,
     tags: str,
 ) -> Dict[str, Any]:
@@ -70,9 +70,8 @@ def _build_element_dict(
     imgs = [x for x in refer_images if x is not None]
     if imgs:
         el["images"] = imgs
-    vids = [x for x in refer_videos if x is not None]
-    if vids:
-        el["videos"] = vids
+    if refer_videos:
+        el["videos"] = refer_videos
     voices = _split_lines_or_csv(voice)
     if voices:
         el["voice"] = voices
@@ -116,8 +115,12 @@ class RunwareVideoInferenceElements:
                 "tooltip": f"Optional reference image {i} for image_refer (up to {_REF_IMAGE_SLOTS}).",
             })
         for i in range(1, _REF_VIDEO_SLOTS + 1):
-            optional[f"videos_{i}"] = ("VIDEO", {
-                "tooltip": f"Optional reference video {i} for video_refer (file-backed VIDEO, e.g. Load Video).",
+            optional[f"videos_{i}"] = ("STRING", {
+                "default": "",
+                "tooltip": (
+                    f"Optional reference video {i}: public URL or mediaUUID from Runware Media Upload "
+                    f"(upload a video first, then paste the UUID here)."
+                ),
             })
         return {"required": {}, "optional": optional}
 
@@ -143,11 +146,11 @@ class RunwareVideoInferenceElements:
             if slot is not None:
                 refer_images.append(rwUtils.convertTensor2IMG(slot))
 
-        refer_videos: List[Any] = []
+        refer_videos: List[str] = []
         for i in range(1, _REF_VIDEO_SLOTS + 1):
-            slot = kwargs.get(f"videos_{i}")
-            if slot is not None:
-                refer_videos.append(rwUtils.convertVideoInputToDataUri(slot))
+            raw = kwargs.get(f"videos_{i}")
+            if raw is not None and str(raw).strip() != "":
+                refer_videos.append(str(raw).strip())
 
         el = _build_element_dict(
             str(kwargs.get("id") or ""),
