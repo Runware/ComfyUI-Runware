@@ -61,6 +61,7 @@ const RUNWARE_NODE_TYPES = {
     CONTROLNET: "Runware ControlNet",
     BGREMOVAL: "Runware Background Removal",
     UPSCALER: "Runware Image Upscaler",
+    IMAGEUPSCALERSETTINGS: "Runware Image Upscaler Settings",
     REFINER: "Runware Refiner",
     LORACOMBINE: "Runware Lora Combine",
     CONTROLNETCOMBINE: "Runware ControlNet Combine",
@@ -138,6 +139,7 @@ const RUNWARE_NODE_TYPES = {
     MINIMAXPROVIDERSETTINGS: "Runware MiniMax Provider Settings",
     SAFETYINPUTS: "Runware Safety Inputs",
     SETTINGS: "Runware Settings",
+    IMAGEINFERENCESETTINGSCOLORPALETTE: "Runware Image Inference Settings Color Palette",
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
     WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
     SAVEIMAGE: "Runware Save Image",
@@ -228,6 +230,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.UPSCALER]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEUPSCALERSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
@@ -523,6 +529,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.SETTINGS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCESETTINGSCOLORPALETTE]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

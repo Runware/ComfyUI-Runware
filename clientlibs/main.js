@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, saveTextHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, textModelSearchFilterHandler, vectorizeModelSearchFilterHandler, vectorizeToggleHandler, useParameterToggleHandler, imageInferenceToggleHandler, imageInferenceAdvancedFeaturesToggleHandler, watermarkAdvancedFeatureToggleHandler, videoInferenceSpeechInputToggleHandler, regionalPromptingRegionsToggleHandler, upscalerToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, audioInferenceSpeechToggleHandler, audioSettingsToggleHandler, textInferenceSettingsToggleHandler, videoSettingsToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, threeDInferenceToggleHandler, threeDInferenceSettingsToggleHandler, threeDInferenceSettingsLatToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
+import { promptEnhanceHandler, syncDimensionsNodeHandler, searchNodeHandler, APIKeyHandler, captionNodeHandler, saveTextHandler, mediaUUIDHandler, save3DFilepathHandler, videoTranscriptionHandler, videoOutputsHandler, handleCustomErrors, videoInferenceDimensionsHandler, videoModelSearchFilterHandler, audioModelSearchFilterHandler, textModelSearchFilterHandler, vectorizeModelSearchFilterHandler, vectorizeToggleHandler, useParameterToggleHandler, imageInferenceToggleHandler, imageInferenceAdvancedFeaturesToggleHandler, watermarkAdvancedFeatureToggleHandler, videoInferenceSpeechInputToggleHandler, regionalPromptingRegionsToggleHandler, upscalerToggleHandler, imageUpscalerSettingsToggleHandler, videoUpscalerToggleHandler, audioInferenceToggleHandler, audioInferenceSpeechToggleHandler, audioSettingsToggleHandler, textInferenceSettingsToggleHandler, videoSettingsToggleHandler, acceleratorOptionsToggleHandler, bytedanceProviderSettingsToggleHandler, xaiProviderSettingsToggleHandler, viduProviderSettingsToggleHandler, sourcefulProviderSettingsToggleHandler, sourcefulProviderSettingsFontsToggleHandler, threeDInferenceToggleHandler, threeDInferenceSettingsToggleHandler, threeDInferenceSettingsLatToggleHandler, ultralyticsProviderSettingsToggleHandler, openaiProviderSettingsToggleHandler, lightricksProviderSettingsToggleHandler, klingProviderSettingsToggleHandler, lumaProviderSettingsToggleHandler, briaProviderSettingsToggleHandler, pixverseProviderSettingsToggleHandler, alibabaProviderSettingsToggleHandler, mireloProviderSettingsToggleHandler, googleProviderSettingsToggleHandler, syncProviderSettingsToggleHandler, syncSegmentToggleHandler, settingsToggleHandler, safetyInputsToggleHandler, imageInferenceSettingsColorPaletteToggleHandler, audioInputToggleHandler, speechInputToggleHandler, briaProviderMaskToggleHandler, wanAnimateAdvancedFeatureSettingsToggleHandler, videoAdvancedFeatureInputsToggleHandler, audioInferenceInputsToggleHandler } from "./utils.js";
 import { RUNWARE_NODE_TYPES, RUNWARE_NODE_PROPS, SEARCH_TERMS } from "./types.js";
 
 const nodeInitList = [];
@@ -75,6 +75,8 @@ app.registerExtension({
             videoInferenceDimensionsHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.UPSCALER) {
             upscalerToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.IMAGEUPSCALERSETTINGS) {
+            imageUpscalerSettingsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.VIDEOUPSCALER) {
             videoUpscalerToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOINFERENCE) {
@@ -133,6 +135,10 @@ app.registerExtension({
             sourcefulProviderSettingsFontsToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.SETTINGS) {
             settingsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.SAFETYINPUTS) {
+            safetyInputsToggleHandler(node);
+        } else if(nodeClass === RUNWARE_NODE_TYPES.IMAGEINFERENCESETTINGSCOLORPALETTE) {
+            imageInferenceSettingsColorPaletteToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.AUDIOINPUT) {
             audioInputToggleHandler(node);
         } else if(nodeClass === RUNWARE_NODE_TYPES.SPEECHINPUT) {

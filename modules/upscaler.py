@@ -8,9 +8,28 @@ class upscaler:
                 "Image": ("IMAGE", {
                         "tooltip": "Specifies the input image to be upscaled."
                 }),
+                "useUpscaleFactor": ("BOOLEAN", {
+                    "tooltip": "Include upscaleFactor in the upscale request.",
+                    "default": True,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
                 "upscaleFactor": ("INT", {
-                    "tooltip": "Each level will increase the size of the image by the corresponding factor.",
+                    "tooltip": "Each level will increase the size of the image by the corresponding factor. Only used when 'Use Upscale Factor' is enabled.",
                     "default": 2,
+                    "min": 1,
+                    "max": 8,
+                    "step": 1,
+                }),
+                "useTargetMegapixels": ("BOOLEAN", {
+                    "tooltip": "Enable targetMegapixels (root-level) on the upscale request.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "targetMegapixels": ("INT", {
+                    "tooltip": "Target resolution in megapixels (1–8). Only used when 'Use Target Megapixels' is enabled.",
+                    "default": 4,
                     "min": 1,
                     "max": 8,
                     "step": 1,
@@ -114,13 +133,16 @@ class upscaler:
                     "max": 2,
                 }),
                 "safetyInputs": ("RUNWARESAFETYINPUTS", {
-                    "tooltip": "Connect Runware Safety Inputs node to configure safety and content moderation settings.",
+                    "tooltip": "Connect Runware Safety Inputs node to include safety settings in the upscale request.",
                 }),
                 "Accelerator": ("RUNWAREACCELERATOR", {
                     "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
                 }),
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Connect a Runware Provider Settings node to configure provider-specific parameters.",
+                }),
+                "imageUpscalerSettings": ("RUNWAREIMAGEUPSCALERSETTINGS", {
+                    "tooltip": "Connect Runware Image Upscaler Settings for settings.enhanceDetails and settings.realism.",
                 }),
             },
         }
@@ -133,8 +155,8 @@ class upscaler:
 
     def upscale(self, **kwargs):
         image = kwargs.get("Image")
-        upscaleFactor = int(kwargs.get("upscaleFactor", 2))
-        
+        useUpscaleFactor = kwargs.get("useUpscaleFactor", True)
+
         # Get toggle parameters
         useSteps = kwargs.get("useSteps", False)
         useSeed = kwargs.get("useSeed", False)
@@ -160,21 +182,28 @@ class upscaler:
         safetyInputs = kwargs.get("safetyInputs", None)
         runwareAccelerator = kwargs.get("Accelerator", None)
         providerSettings = kwargs.get("providerSettings", None)
+        imageUpscalerSettingsBundle = kwargs.get("imageUpscalerSettings", None)
+        useTargetMegapixels = kwargs.get("useTargetMegapixels", False)
 
         # Build the base configuration
         genConfig = {
             "taskType": "imageUpscale",
             "taskUUID": rwUtils.genRandUUID(),
             "inputImage": rwUtils.convertTensor2IMG(image),
-            "upscaleFactor": int(upscaleFactor),
             "outputFormat": rwUtils.OUTPUT_FORMAT,
             "outputQuality": rwUtils.OUTPUT_QUALITY,
             "outputType": "URL",
         }
+
+        if useUpscaleFactor:
+            genConfig["upscaleFactor"] = int(kwargs.get("upscaleFactor", 2))
         
         # Add model if specified
         if model:
             genConfig["model"] = model
+
+        if useTargetMegapixels:
+            genConfig["targetMegapixels"] = int(kwargs.get("targetMegapixels", 4))
         
         # Add common parameters at top level - only add if their toggle is enabled
         if useSteps:
@@ -206,11 +235,19 @@ class upscaler:
         # Latent upscaler specific parameters
         if useLatentParams:
             settings["clipSkip"] = clipSkip
+
+        if (
+            imageUpscalerSettingsBundle is not None
+            and isinstance(imageUpscalerSettingsBundle, dict)
+            and "settings" in imageUpscalerSettingsBundle
+            and isinstance(imageUpscalerSettingsBundle["settings"], dict)
+        ):
+            settings.update(imageUpscalerSettingsBundle["settings"])
             
         # Add settings to config if any settings were specified
         if settings:
             genConfig["settings"] = settings
-        
+
         # Add safety inputs if provided
         if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
             genConfig["safety"] = safetyInputs

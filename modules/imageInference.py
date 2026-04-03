@@ -189,7 +189,7 @@ class txt2img:
                     "tooltip": "Connect Runware Safety Inputs node to configure safety and content moderation settings.",
                 }),
                 "settings": ("RUNWARESETTINGS", {
-                    "tooltip": "Connect Runware Settings node to configure temperature, systemPrompt, and topP parameters.",
+                    "tooltip": "Connect Runware Image Inference Settings for temperature, systemPrompt, topP, layers, quality, promptExtend, editRegions (JSON), thinking, sequential, colorPalette (via Color Palette node), etc.",
                 }),
                 "ultralytics": ("RUNWAREULTRALYTICSINPUTS", {
                     "tooltip": "Connect Runware Image Inference Ultralytics node to configure Ultralytics parameters (maskBlur, maskPadding, confidence, prompts, steps, CFGScale, strength).",
