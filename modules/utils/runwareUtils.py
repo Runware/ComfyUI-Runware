@@ -516,7 +516,6 @@ def convertTensor2IMG(tensorImage):
         return imgDataUri
 
 
-
 def convertTensor2IMGBase64Only(tensorImage):
     """Convert tensor to base64 data URI without caching - for frame images"""
     imageNP = (tensorImage.squeeze().numpy() * 255).astype(np.uint8)

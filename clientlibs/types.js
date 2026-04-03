@@ -108,6 +108,8 @@ const RUNWARE_NODE_TYPES = {
     REFERENCEVIDEOS: "Runware Reference Videos",
     REFERENCEVOICES: "Runware Reference Voices",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
+    VIDEOINFERENCEELEMENTS: "Runware Video Inference Elements",
+    VIDEOINFERENCEELEMENTSCOMBINE: "Runware Video Inference Elements Combine",
     VIDEOINFERENCESPEECHINPUT: "Runware Video Inference Speech Input",
     VIDEOSETTINGS: "Runware Video Inference Settings",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
@@ -404,6 +406,14 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.VIDEOINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCEELEMENTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCEELEMENTSCOMBINE]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
