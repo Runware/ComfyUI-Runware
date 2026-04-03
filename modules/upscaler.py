@@ -132,6 +132,9 @@ class upscaler:
                     "min": 0,
                     "max": 2,
                 }),
+                "safetyInputs": ("RUNWARESAFETYINPUTS", {
+                    "tooltip": "Deprecated compatibility socket. Accepted for old workflows but ignored by this node.",
+                }),
                 "Accelerator": ("RUNWAREACCELERATOR", {
                     "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
                 }),
@@ -176,6 +179,7 @@ class upscaler:
         colorFix = kwargs.get("colorFix", False)
         tileDiffusion = kwargs.get("tileDiffusion", False)
         clipSkip = kwargs.get("clipSkip", 0)
+        safetyInputs = kwargs.get("safetyInputs", None)
         runwareAccelerator = kwargs.get("Accelerator", None)
         providerSettings = kwargs.get("providerSettings", None)
         imageUpscalerSettingsBundle = kwargs.get("imageUpscalerSettings", None)
@@ -243,6 +247,10 @@ class upscaler:
         # Add settings to config if any settings were specified
         if settings:
             genConfig["settings"] = settings
+
+        # Add safety inputs if provided
+        if safetyInputs is not None and isinstance(safetyInputs, dict) and len(safetyInputs) > 0:
+            genConfig["safety"] = safetyInputs
         
         # Add accelerator options if provided
         if runwareAccelerator is not None and isinstance(runwareAccelerator, dict) and len(runwareAccelerator) > 0:

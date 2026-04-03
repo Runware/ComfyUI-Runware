@@ -4486,6 +4486,7 @@ export {
     syncProviderSettingsToggleHandler,
     syncSegmentToggleHandler,
     settingsToggleHandler,
+    safetyInputsToggleHandler,
     imageInferenceSettingsColorPaletteToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
@@ -4658,6 +4659,71 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useSequentialWidget && sequentialWidget) {
         toggleWidgetState(useSequentialWidget, sequentialWidget, "sequential");
+    }
+}
+
+function safetyInputsToggleHandler(safetyNode) {
+    const useModeWidget = safetyNode.widgets.find(w => w.name === "useMode");
+    const modeWidget = safetyNode.widgets.find(w => w.name === "mode");
+    const useToleranceWidget = safetyNode.widgets.find(w => w.name === "useTolerance");
+    const toleranceWidget = safetyNode.widgets.find(w => w.name === "tolerance");
+    const useCheckInputsWidget = safetyNode.widgets.find(w => w.name === "useCheckInputs");
+    const checkInputsWidget = safetyNode.widgets.find(w => w.name === "checkInputs");
+    const useCheckContentWidget = safetyNode.widgets.find(w => w.name === "useCheckContent");
+    const checkContentWidget = safetyNode.widgets.find(w => w.name === "checkContent");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = safetyNode.htmlElements?.widgetsContainer || safetyNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
+            safetyNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useModeWidget && modeWidget) {
+        toggleWidgetState(useModeWidget, modeWidget, "mode");
+    }
+    if (useToleranceWidget && toleranceWidget) {
+        toggleWidgetState(useToleranceWidget, toleranceWidget, "tolerance");
+    }
+    if (useCheckInputsWidget && checkInputsWidget) {
+        toggleWidgetState(useCheckInputsWidget, checkInputsWidget, "checkInputs");
+    }
+    if (useCheckContentWidget && checkContentWidget) {
+        toggleWidgetState(useCheckContentWidget, checkContentWidget, "checkContent");
     }
 }
 
