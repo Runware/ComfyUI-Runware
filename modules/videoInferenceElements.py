@@ -134,7 +134,7 @@ class RunwareVideoInferenceElements:
         "or use Runware Video Inference Elements Combine for multiple elements."
     )
 
-    def build_element(self, **kwargs) -> Tuple[List[Dict[str, Any]]]:
+    def build_element(self, **kwargs) -> Tuple[List[Dict[str, Any]],]:
         frontal_image = kwargs.get("frontalImage", None)
         frontal_image_value = None
         if frontal_image is not None:
@@ -202,7 +202,7 @@ class RunwareVideoInferenceElementsCombine:
         "Connect the result to Runware Video Inference Inputs → Elements."
     )
 
-    def combine(self, **kwargs) -> Tuple[List[Dict[str, Any]]]:
+    def combine(self, **kwargs) -> Tuple[List[Dict[str, Any]],]:
         out: List[Dict[str, Any]] = []
         for i in range(1, 5):
             key = f"Elements {i}"
