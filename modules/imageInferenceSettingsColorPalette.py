@@ -6,13 +6,6 @@ Builds settings.colorPalette: list of { "hex": "#...", "ratio": "NN.NN%" } for R
 from typing import Any, Dict, List, Tuple
 
 
-def _normalize_hex(raw: str) -> str:
-    h = raw.strip()
-    if not h:
-        return ""
-    return h if h.startswith("#") else f"#{h}"
-
-
 class RunwareImageInferenceSettingsColorPalette:
     """Up to 8 hex/ratio pairs; each slot is included only when use_{i} is enabled."""
 
@@ -52,8 +45,8 @@ class RunwareImageInferenceSettingsColorPalette:
         for i in range(1, self._SLOTS + 1):
             if not kwargs.get(f"use_{i}", False):
                 continue
-            hx = _normalize_hex(str(kwargs.get(f"hex_{i}") or ""))
-            if not hx or hx == "#":
+            hx = str(kwargs.get(f"hex_{i}") or "").strip()
+            if not hx:
                 raise ValueError(
                     f"use_{i} is enabled but hex_{i} is empty or invalid. "
                     "Provide a hex color (e.g. #C2D1E6) or disable this swatch."

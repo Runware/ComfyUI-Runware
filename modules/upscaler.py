@@ -133,7 +133,7 @@ class upscaler:
                     "max": 2,
                 }),
                 "safetyInputs": ("RUNWARESAFETYINPUTS", {
-                    "tooltip": "Deprecated compatibility socket. Accepted for old workflows but ignored by this node.",
+                    "tooltip": "Connect Runware Safety Inputs node to include safety settings in the upscale request.",
                 }),
                 "Accelerator": ("RUNWAREACCELERATOR", {
                     "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
