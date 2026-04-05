@@ -28,7 +28,7 @@ class RunwareVideoInferenceSpeechInput:
                 }),
                 "text": ("STRING", {
                     "multiline": True,
-                    "tooltip": "Text script for the avatar to speak. Requires voice. Mutually exclusive with audio-driven input. Only used when 'Use Text' is enabled.",
+                    "tooltip": "Text script for the avatar to speak. Use with voice, or text-only when voice is described via settings.voiceDescription on Runware Video Inference Settings. Only used when 'Use Text' is enabled.",
                     "default": "",
                 }),
                 "useSpeed": ("BOOLEAN", {
@@ -69,13 +69,15 @@ class RunwareVideoInferenceSpeechInput:
     FUNCTION = "createSpeech"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure speech synthesis for Runware Video Inference. Connect to Runware Video Inference speech input. "
-        "Speech is only sent when both voice and text are enabled and non-empty; otherwise the node outputs nothing. "
+        "Configure speech synthesis for Runware Video Inference. Connect to Runware Video Inference → speech, "
+        "or to Video Inference Inputs → Speech Inputs. "
+        "Outputs speech when at least one of voice or text is included (non-empty with its toggle); "
+        "text-only is valid when voice is supplied via settings.voiceDescription. "
         "Optional fields (speed, pitch, language) are added only when their toggles are on."
     )
 
     def createSpeech(self, **kwargs) -> tuple:
-        """Build speech dict for genConfig[0]['speech']. Only include non-empty values; return None unless both voice and text are present."""
+        """Build speech for inputs.speech or top-level speech. Returns None if neither voice nor text is set."""
         speech: Dict[str, Any] = {}
 
         voice = (kwargs.get("voice") or "").strip()
@@ -95,7 +97,7 @@ class RunwareVideoInferenceSpeechInput:
             if lang:
                 speech["language"] = lang
 
-        if "voice" not in speech or "text" not in speech:
+        if "voice" not in speech and "text" not in speech:
             return (None,)
         return (speech,)
 

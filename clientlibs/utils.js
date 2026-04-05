@@ -1359,6 +1359,8 @@ function videoSettingsToggleHandler(settingsNode) {
     const removeBackgroundWidget = settingsNode.widgets.find(w => w && w.name === "removeBackground");
     const useExpressivenessWidget = settingsNode.widgets.find(w => w && w.name === "useExpressiveness");
     const expressivenessWidget = settingsNode.widgets.find(w => w && w.name === "expressiveness");
+    const useVoiceDescriptionWidget = settingsNode.widgets.find(w => w && w.name === "useVoiceDescription");
+    const voiceDescriptionWidget = settingsNode.widgets.find(w => w && w.name === "voiceDescription");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1382,6 +1384,7 @@ function videoSettingsToggleHandler(settingsNode) {
     if (useBackgroundColorWidget && backgroundColorWidget) toggleWidgetState(useBackgroundColorWidget, backgroundColorWidget, "backgroundColor");
     if (useRemoveBackgroundWidget && removeBackgroundWidget) toggleWidgetState(useRemoveBackgroundWidget, removeBackgroundWidget, "removeBackground");
     if (useExpressivenessWidget && expressivenessWidget) toggleWidgetState(useExpressivenessWidget, expressivenessWidget, "expressiveness");
+    if (useVoiceDescriptionWidget && voiceDescriptionWidget) toggleWidgetState(useVoiceDescriptionWidget, voiceDescriptionWidget, "voiceDescription");
 }
 
 function audioInferenceSpeechToggleHandler(speechNode) {

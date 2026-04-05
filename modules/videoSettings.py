@@ -1,6 +1,6 @@
 """
 Runware Video Inference Settings Node
-Provides settings (draft, audio, promptUpsampling) for Runware Video Inference.
+Provides settings (draft, audio, promptUpsampling, voiceDescription, etc.) for Runware Video Inference.
 """
 
 from typing import Dict, Any
@@ -70,6 +70,15 @@ class RunwareVideoSettings:
                     "tooltip": "Avatar expressiveness level. Applies to photo avatars only. Only used when 'Use Expressiveness' is enabled.",
                     "default": "low",
                 }),
+                "useVoiceDescription": ("BOOLEAN", {
+                    "tooltip": "Enable to include voiceDescription in video inference settings.",
+                    "default": False,
+                }),
+                "voiceDescription": ("STRING", {
+                    "default": "",
+                    "multiline": True,
+                    "tooltip": "Voice description text (max 10000 characters). Not supported when inputs.audio is given.",
+                }),
             }
         }
 
@@ -77,7 +86,10 @@ class RunwareVideoSettings:
     RETURN_NAMES = ("settings",)
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
-    DESCRIPTION = "Configure video inference settings (draft, audio, promptUpsampling) for Runware Video Inference. Connect to Runware Video Inference node."
+    DESCRIPTION = (
+        "Configure video inference settings (draft, audio, promptUpsampling, voiceDescription, etc.) for Runware Video Inference. "
+        "Connect to Runware Video Inference node."
+    )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create settings dict for Video Inference API"""
@@ -93,6 +105,8 @@ class RunwareVideoSettings:
         remove_background = kwargs.get("removeBackground", False)
         use_expressiveness = kwargs.get("useExpressiveness", False)
         expressiveness = kwargs.get("expressiveness", "low")
+        use_voice_description = kwargs.get("useVoiceDescription", False)
+        voice_description = (kwargs.get("voiceDescription") or "").strip()
 
         settings: Dict[str, Any] = {}
 
@@ -108,6 +122,8 @@ class RunwareVideoSettings:
             settings["removeBackground"] = bool(remove_background)
         if use_expressiveness:
             settings["expressiveness"] = expressiveness
+        if use_voice_description and voice_description:
+            settings["voiceDescription"] = voice_description
 
         return (settings,)
 
