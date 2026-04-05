@@ -1,6 +1,6 @@
 """
 Runware Video Inference Speech Input Node.
-Provides voice and text for speech synthesis; connect to Runware Video Inference speech input.
+Provides voice and text for speech synthesis; connect only to Runware Video Inference → speech (not Video Inference Inputs → Speech Inputs; that socket expects RUNWARESPEECHINPUT).
 """
 
 from typing import Any, Dict, Tuple
@@ -69,15 +69,16 @@ class RunwareVideoInferenceSpeechInput:
     FUNCTION = "createSpeech"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure speech synthesis for Runware Video Inference. Connect to Runware Video Inference → speech, "
-        "or to Video Inference Inputs → Speech Inputs. "
+        "Configure speech synthesis for Runware Video Inference. Connect the output to Runware Video Inference → speech "
+        "(top-level task speech). For speech inside inputs (e.g. inputs.speech), use Runware Video Speech Input "
+        "(RUNWARESPEECHINPUT) into Video Inference Inputs → Speech Inputs. "
         "Outputs speech when at least one of voice or text is included (non-empty with its toggle); "
         "text-only is valid when voice is supplied via settings.voiceDescription. "
         "Optional fields (speed, pitch, language) are added only when their toggles are on."
     )
 
     def createSpeech(self, **kwargs) -> tuple:
-        """Build speech for inputs.speech or top-level speech. Returns None if neither voice nor text is set."""
+        """Build speech dict for the Runware Video Inference speech connection (top-level task speech). Returns None if neither voice nor text is set."""
         speech: Dict[str, Any] = {}
 
         voice = (kwargs.get("voice") or "").strip()

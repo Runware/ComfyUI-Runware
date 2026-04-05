@@ -73,7 +73,7 @@ class videoModelSearch:
             "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
             "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
-            "alibaba:wan@2.7 (Wan2.7)",
+            "alibaba:wan@2.7 (Wan 2.7)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)",
