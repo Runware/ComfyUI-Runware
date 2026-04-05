@@ -1361,6 +1361,12 @@ function videoSettingsToggleHandler(settingsNode) {
     const expressivenessWidget = settingsNode.widgets.find(w => w && w.name === "expressiveness");
     const useVoiceDescriptionWidget = settingsNode.widgets.find(w => w && w.name === "useVoiceDescription");
     const voiceDescriptionWidget = settingsNode.widgets.find(w => w && w.name === "voiceDescription");
+    const useStyleWidget = settingsNode.widgets.find(w => w && w.name === "useStyle");
+    const styleWidget = settingsNode.widgets.find(w => w && w.name === "style");
+    const useThinkingWidget = settingsNode.widgets.find(w => w && w.name === "useThinking");
+    const thinkingWidget = settingsNode.widgets.find(w => w && w.name === "thinking");
+    const useMultiClipWidget = settingsNode.widgets.find(w => w && w.name === "useMultiClip");
+    const multiClipWidget = settingsNode.widgets.find(w => w && w.name === "multiClip");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1385,6 +1391,9 @@ function videoSettingsToggleHandler(settingsNode) {
     if (useRemoveBackgroundWidget && removeBackgroundWidget) toggleWidgetState(useRemoveBackgroundWidget, removeBackgroundWidget, "removeBackground");
     if (useExpressivenessWidget && expressivenessWidget) toggleWidgetState(useExpressivenessWidget, expressivenessWidget, "expressiveness");
     if (useVoiceDescriptionWidget && voiceDescriptionWidget) toggleWidgetState(useVoiceDescriptionWidget, voiceDescriptionWidget, "voiceDescription");
+    if (useStyleWidget && styleWidget) toggleWidgetState(useStyleWidget, styleWidget, "style");
+    if (useThinkingWidget && thinkingWidget) toggleWidgetState(useThinkingWidget, thinkingWidget, "thinking");
+    if (useMultiClipWidget && multiClipWidget) toggleWidgetState(useMultiClipWidget, multiClipWidget, "multiClip");
 }
 
 function audioInferenceSpeechToggleHandler(speechNode) {
@@ -2492,7 +2501,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "PixVerse": [
             "pixverse:1@1 (PixVerse v3.5)", "pixverse:1@2 (PixVerse v4)",
-            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:1@7 (PixVerse v5.6)", "pixverse:lipsync@1 (PixVerse LipSync)",
+            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:1@7 (PixVerse v5.6)", "pixverse:1@8 (PixVerse v6)", "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
@@ -2604,6 +2613,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@5-fast": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:1@7": {"width": 640, "height": 360},
+        "pixverse:1@8": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         "vidu:1@0": {"width": 1920, "height": 1080},
         "vidu:1@1": {"width": 1920, "height": 1080},
@@ -2690,6 +2700,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@5-fast": "360p",
         "pixverse:1@6": "360p",
         "pixverse:1@7": "360p",
+        "pixverse:1@8": "360p",
         "pixverse:lipsync@1": "360p",
         "vidu:1@0": "1080p",
         "vidu:1@1": "1080p",

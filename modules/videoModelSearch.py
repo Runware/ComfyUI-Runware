@@ -54,6 +54,7 @@ class videoModelSearch:
             "pixverse:1@5-fast (PixVerse v5 Fast)",
             "pixverse:1@6 (PixVerse v5.5)",
             "pixverse:1@7 (PixVerse v5.6)",
+            "pixverse:1@8 (PixVerse v6)",
             "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
@@ -183,6 +184,7 @@ class videoModelSearch:
         "pixverse:1@5-fast": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:1@7": {"width": 640, "height": 360},
+        "pixverse:1@8": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         
         # Vidu Models
@@ -311,6 +313,7 @@ class videoModelSearch:
         "pixverse:1@5-fast": "360p",
         "pixverse:1@6": "360p",
         "pixverse:1@7": "360p",
+        "pixverse:1@8": "360p",
         "pixverse:lipsync@1": "360p",
         
         # Vidu Models

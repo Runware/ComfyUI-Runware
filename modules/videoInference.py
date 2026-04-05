@@ -141,7 +141,7 @@ class txt2vid:
                     "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
                 }),
                 "settings": ("RUNWAREVIDEOSETTINGS", {
-                    "tooltip": "Connect a Runware Video Inference Settings node to configure draft, audio, promptUpsampling, voiceDescription, etc.",
+                    "tooltip": "Connect a Runware Video Inference Settings node to configure draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, etc.",
                 }),
             }
         }
