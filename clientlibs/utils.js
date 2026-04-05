@@ -1359,6 +1359,18 @@ function videoSettingsToggleHandler(settingsNode) {
     const removeBackgroundWidget = settingsNode.widgets.find(w => w && w.name === "removeBackground");
     const useExpressivenessWidget = settingsNode.widgets.find(w => w && w.name === "useExpressiveness");
     const expressivenessWidget = settingsNode.widgets.find(w => w && w.name === "expressiveness");
+    const useVoiceDescriptionWidget = settingsNode.widgets.find(w => w && w.name === "useVoiceDescription");
+    const voiceDescriptionWidget = settingsNode.widgets.find(w => w && w.name === "voiceDescription");
+    const useStyleWidget = settingsNode.widgets.find(w => w && w.name === "useStyle");
+    const styleWidget = settingsNode.widgets.find(w => w && w.name === "style");
+    const useThinkingWidget = settingsNode.widgets.find(w => w && w.name === "useThinking");
+    const thinkingWidget = settingsNode.widgets.find(w => w && w.name === "thinking");
+    const useMultiClipWidget = settingsNode.widgets.find(w => w && w.name === "useMultiClip");
+    const multiClipWidget = settingsNode.widgets.find(w => w && w.name === "multiClip");
+    const useShotTypeWidget = settingsNode.widgets.find(w => w && w.name === "useShotType");
+    const shotTypeWidget = settingsNode.widgets.find(w => w && w.name === "shotType");
+    const usePromptExtendWidget = settingsNode.widgets.find(w => w && w.name === "usePromptExtend");
+    const promptExtendWidget = settingsNode.widgets.find(w => w && w.name === "promptExtend");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1382,6 +1394,12 @@ function videoSettingsToggleHandler(settingsNode) {
     if (useBackgroundColorWidget && backgroundColorWidget) toggleWidgetState(useBackgroundColorWidget, backgroundColorWidget, "backgroundColor");
     if (useRemoveBackgroundWidget && removeBackgroundWidget) toggleWidgetState(useRemoveBackgroundWidget, removeBackgroundWidget, "removeBackground");
     if (useExpressivenessWidget && expressivenessWidget) toggleWidgetState(useExpressivenessWidget, expressivenessWidget, "expressiveness");
+    if (useVoiceDescriptionWidget && voiceDescriptionWidget) toggleWidgetState(useVoiceDescriptionWidget, voiceDescriptionWidget, "voiceDescription");
+    if (useStyleWidget && styleWidget) toggleWidgetState(useStyleWidget, styleWidget, "style");
+    if (useThinkingWidget && thinkingWidget) toggleWidgetState(useThinkingWidget, thinkingWidget, "thinking");
+    if (useMultiClipWidget && multiClipWidget) toggleWidgetState(useMultiClipWidget, multiClipWidget, "multiClip");
+    if (useShotTypeWidget && shotTypeWidget) toggleWidgetState(useShotTypeWidget, shotTypeWidget, "shotType");
+    if (usePromptExtendWidget && promptExtendWidget) toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");
 }
 
 function audioInferenceSpeechToggleHandler(speechNode) {
@@ -2476,6 +2494,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Veo": [
             "google:2@0 (Veo 2.0)", "google:3@0 (Veo 3.0)", "google:3@1 (Veo 3.0 Fast)",
             "google:3@2 (Veo 3.1)", "google:3@3 (Veo 3.1 Fast)",
+            "google:veo@3.1-lite (Veo 3.1 Lite)",
         ],
         "Bytedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)", "bytedance:1@1 (Seedance 1.0 Lite)",
@@ -2489,7 +2508,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         ],
         "PixVerse": [
             "pixverse:1@1 (PixVerse v3.5)", "pixverse:1@2 (PixVerse v4)",
-            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:1@7 (PixVerse v5.6)", "pixverse:lipsync@1 (PixVerse LipSync)",
+            "pixverse:1@3 (PixVerse v4.5)", "pixverse:1@5-fast (PixVerse v5 Fast)", "pixverse:1@6 (PixVerse v5.5)", "pixverse:1@7 (PixVerse v5.6)", "pixverse:1@8 (PixVerse v6)", "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
             "vidu:1@0 (Vidu Q1 Classic)", "vidu:1@1 (Vidu Q1)",
@@ -2503,6 +2522,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
             "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
+            "alibaba:wan@2.7 (Wan 2.7)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)", "openai:3@0 (OpenAI Sora 3.0)",
@@ -2584,6 +2604,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "google:3@1": {"width": 1280, "height": 720},
         "google:3@2": {"width": 1280, "height": 720},
         "google:3@3": {"width": 1280, "height": 720},
+        "google:veo@3.1-lite": {"width": 1280, "height": 720},
         "bytedance:2@1": {"width": 864, "height": 480},
         "bytedance:1@1": {"width": 864, "height": 480},
         "bytedance:5@1": {"width": 1024, "height": 1024},
@@ -2601,6 +2622,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@5-fast": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:1@7": {"width": 640, "height": 360},
+        "pixverse:1@8": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         "vidu:1@0": {"width": 1920, "height": 1080},
         "vidu:1@1": {"width": 1920, "height": 1080},
@@ -2614,6 +2636,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@8": {"width": 1104, "height": 832},
         "alibaba:wan@2.6": {"width": 1280, "height": 720},
         "alibaba:wan@2.6-flash": {"width": 1280, "height": 720},
+        "alibaba:wan@2.7": {"width": 1280, "height": 720},
         "openai:3@1": {"width": 1280, "height": 720},
         "openai:3@0": {"width": 1280, "height": 720},
         "lightricks:2@0": {"width": 1920, "height": 1080},
@@ -2670,6 +2693,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "google:3@1": "720p",
         "google:3@2": "720p",
         "google:3@3": "720p",
+        "google:veo@3.1-lite": "720p",
         "bytedance:2@1": "480p",
         "bytedance:1@1": "480p",
         "bytedance:5@1": null,  // No resolution support
@@ -2687,6 +2711,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "pixverse:1@5-fast": "360p",
         "pixverse:1@6": "360p",
         "pixverse:1@7": "360p",
+        "pixverse:1@8": "360p",
         "pixverse:lipsync@1": "360p",
         "vidu:1@0": "1080p",
         "vidu:1@1": "1080p",
@@ -2700,6 +2725,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "runware:200@8": "720p",
         "alibaba:wan@2.6": "720p",
         "alibaba:wan@2.6-flash": "720p",
+        "alibaba:wan@2.7": "720p",
         "openai:3@1": "720p",
         "openai:3@0": "720p",
         "lightricks:2@0": "1080p",

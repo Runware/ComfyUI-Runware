@@ -1,6 +1,6 @@
 """
 Runware Video Inference Settings Node
-Provides settings (draft, audio, promptUpsampling) for Runware Video Inference.
+Provides settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, etc.) for Runware Video Inference.
 """
 
 from typing import Dict, Any
@@ -70,6 +70,59 @@ class RunwareVideoSettings:
                     "tooltip": "Avatar expressiveness level. Applies to photo avatars only. Only used when 'Use Expressiveness' is enabled.",
                     "default": "low",
                 }),
+                "useVoiceDescription": ("BOOLEAN", {
+                    "tooltip": "Enable to include voiceDescription in video inference settings.",
+                    "default": False,
+                }),
+                "voiceDescription": ("STRING", {
+                    "default": "",
+                    "multiline": True,
+                    "tooltip": "Voice description text (max 10000 characters). Not supported when inputs.audio is given.",
+                }),
+                "useStyle": ("BOOLEAN", {
+                    "tooltip": "Enable to include style (visual style of the video) in video inference settings.",
+                    "default": False,
+                }),
+                "style": (["anime", "3d_animation", "clay", "comic", "cyberpunk"], {
+                    "tooltip": "Visual style of the video. Only used when 'Use Style' is enabled.",
+                    "default": "anime",
+                }),
+                "useThinking": ("BOOLEAN", {
+                    "tooltip": "Enable to include thinking in video inference settings.",
+                    "default": False,
+                }),
+                "thinking": (["enabled", "disabled", "auto"], {
+                    "tooltip": "Thinking mode. Only used when 'Use Thinking' is enabled.",
+                    "default": "auto",
+                }),
+                "useMultiClip": ("BOOLEAN", {
+                    "tooltip": "Enable to include multiClip (multi-clip generation with dynamic camera changes; transition endpoint).",
+                    "default": False,
+                }),
+                "multiClip": ("BOOLEAN", {
+                    "tooltip": "Multi-clip generation with dynamic camera changes. Available on transition endpoint. Only used when 'Use Multi Clip' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useShotType": ("BOOLEAN", {
+                    "tooltip": "Enable to include shotType in video inference settings.",
+                    "default": False,
+                }),
+                "shotType": (["single", "multi"], {
+                    "tooltip": "Shot type: single (one continuous shot) or multi (multiple switching shots). Parameter priority: shot_type > prompt. Only used when 'Use Shot Type' is enabled.",
+                    "default": "single",
+                }),
+                "usePromptExtend": ("BOOLEAN", {
+                    "tooltip": "Enable to include promptExtend in video inference settings.",
+                    "default": False,
+                }),
+                "promptExtend": ("BOOLEAN", {
+                    "tooltip": "Prompt extend flag. Only used when 'Use Prompt Extend' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             }
         }
 
@@ -77,7 +130,10 @@ class RunwareVideoSettings:
     RETURN_NAMES = ("settings",)
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
-    DESCRIPTION = "Configure video inference settings (draft, audio, promptUpsampling) for Runware Video Inference. Connect to Runware Video Inference node."
+    DESCRIPTION = (
+        "Configure video inference settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, etc.) for Runware Video Inference. "
+        "Connect to Runware Video Inference node."
+    )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create settings dict for Video Inference API"""
@@ -93,6 +149,18 @@ class RunwareVideoSettings:
         remove_background = kwargs.get("removeBackground", False)
         use_expressiveness = kwargs.get("useExpressiveness", False)
         expressiveness = kwargs.get("expressiveness", "low")
+        use_voice_description = kwargs.get("useVoiceDescription", False)
+        voice_description = (kwargs.get("voiceDescription") or "").strip()
+        use_style = kwargs.get("useStyle", False)
+        style = kwargs.get("style", "anime")
+        use_thinking = kwargs.get("useThinking", False)
+        thinking = kwargs.get("thinking", "auto")
+        use_multi_clip = kwargs.get("useMultiClip", False)
+        multi_clip = kwargs.get("multiClip", False)
+        use_shot_type = kwargs.get("useShotType", False)
+        shot_type = kwargs.get("shotType", "single")
+        use_prompt_extend = kwargs.get("usePromptExtend", False)
+        prompt_extend = kwargs.get("promptExtend", False)
 
         settings: Dict[str, Any] = {}
 
@@ -108,6 +176,18 @@ class RunwareVideoSettings:
             settings["removeBackground"] = bool(remove_background)
         if use_expressiveness:
             settings["expressiveness"] = expressiveness
+        if use_voice_description and voice_description:
+            settings["voiceDescription"] = voice_description
+        if use_style:
+            settings["style"] = style
+        if use_thinking:
+            settings["thinking"] = thinking
+        if use_multi_clip:
+            settings["multiClip"] = bool(multi_clip)
+        if use_shot_type:
+            settings["shotType"] = shot_type
+        if use_prompt_extend:
+            settings["promptExtend"] = bool(prompt_extend)
 
         return (settings,)
 

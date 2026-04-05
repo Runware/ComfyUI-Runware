@@ -31,6 +31,7 @@ class videoModelSearch:
             "google:3@1 (Veo 3.0 Fast)",
             "google:3@2 (Veo 3.1)",
             "google:3@3 (Veo 3.1 Fast)",
+            "google:veo@3.1-lite (Veo 3.1 Lite)",
         ],
         "Bytedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)",
@@ -54,6 +55,7 @@ class videoModelSearch:
             "pixverse:1@5-fast (PixVerse v5 Fast)",
             "pixverse:1@6 (PixVerse v5.5)",
             "pixverse:1@7 (PixVerse v5.6)",
+            "pixverse:1@8 (PixVerse v6)",
             "pixverse:lipsync@1 (PixVerse LipSync)",
         ],
         "Vidu": [
@@ -71,6 +73,7 @@ class videoModelSearch:
             "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
             "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
+            "alibaba:wan@2.7 (Wan 2.7)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)",
@@ -160,6 +163,7 @@ class videoModelSearch:
         "google:3@1": {"width": 1280, "height": 720},
         "google:3@2": {"width": 1280, "height": 720},
         "google:3@3": {"width": 1280, "height": 720},
+        "google:veo@3.1-lite": {"width": 1280, "height": 720},
         
         # Bytedance Models
         "bytedance:2@1": {"width": 864, "height": 480},
@@ -183,6 +187,7 @@ class videoModelSearch:
         "pixverse:1@5-fast": {"width": 640, "height": 360},
         "pixverse:1@6": {"width": 640, "height": 360},
         "pixverse:1@7": {"width": 640, "height": 360},
+        "pixverse:1@8": {"width": 640, "height": 360},
         "pixverse:lipsync@1": {"width": 640, "height": 360},
         
         # Vidu Models
@@ -200,6 +205,7 @@ class videoModelSearch:
         "runware:200@8": {"width": 1104, "height": 832},
         "alibaba:wan@2.6": {"width": 1280, "height": 720},
         "alibaba:wan@2.6-flash": {"width": 1280, "height": 720},
+        "alibaba:wan@2.7": {"width": 1280, "height": 720},
         
         # OpenAI Models
         "openai:3@1": {"width": 1280, "height": 720},
@@ -288,6 +294,7 @@ class videoModelSearch:
         "google:3@1": "720p",
         "google:3@2": "720p",
         "google:3@3": "720p",
+        "google:veo@3.1-lite": "720p",
         
         # Bytedance Models
         "bytedance:2@1": "480p",
@@ -311,6 +318,7 @@ class videoModelSearch:
         "pixverse:1@5-fast": "360p",
         "pixverse:1@6": "360p",
         "pixverse:1@7": "360p",
+        "pixverse:1@8": "360p",
         "pixverse:lipsync@1": "360p",
         
         # Vidu Models
@@ -328,6 +336,7 @@ class videoModelSearch:
         "runware:200@8": "720p",
         "alibaba:wan@2.6": "720p",
         "alibaba:wan@2.6-flash": "720p",
+        "alibaba:wan@2.7": "720p",
         
         # OpenAI Models
         "openai:3@1": "720p",

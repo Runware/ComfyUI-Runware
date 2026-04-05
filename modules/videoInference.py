@@ -141,7 +141,7 @@ class txt2vid:
                     "tooltip": "Connect a Runware Accelerator Options Node to configure caching and acceleration settings.",
                 }),
                 "settings": ("RUNWAREVIDEOSETTINGS", {
-                    "tooltip": "Connect a Runware Video Inference Settings node to configure draft, audio, and promptUpsampling.",
+                    "tooltip": "Connect a Runware Video Inference Settings node to configure draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, etc.",
                 }),
             }
         }
@@ -347,7 +347,7 @@ class txt2vid:
         if runwareAccelerator is not None and isinstance(runwareAccelerator, dict) and len(runwareAccelerator) > 0:
             genConfig[0]["acceleratorOptions"] = runwareAccelerator
 
-        # Add settings if provided (draft, audio, promptUpsampling)
+        # Add settings if provided (draft, audio, promptUpsampling, voiceDescription, ...)
         if settings is not None and isinstance(settings, dict) and len(settings) > 0:
             genConfig[0]["settings"] = settings
         
