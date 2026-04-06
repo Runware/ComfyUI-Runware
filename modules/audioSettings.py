@@ -2,7 +2,7 @@
 Runware Audio Inference Settings Node
 Provides lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization,
 bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart,
-and repaintingEnd for Runware Audio Inference.
+repaintingEnd, xVectorOnly, maxNewTokens, transcript, and more for Runware Audio Inference.
 """
 
 from typing import Dict, Any
@@ -151,6 +151,36 @@ class RunwareAudioSettings:
                     "default": 0.0,
                     "step": 0.01,
                 }),
+                "useXVectorOnly": ("BOOLEAN", {
+                    "tooltip": "Enable to include xVectorOnly in audio generation settings.",
+                    "default": False,
+                }),
+                "xVectorOnly": ("BOOLEAN", {
+                    "tooltip": "true = speaker embedding only (no transcript needed, lower similarity). false = ICL mode (needs ref_text, higher quality). Only used when 'Use X Vector Only' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useMaxNewTokens": ("BOOLEAN", {
+                    "tooltip": "Enable to include maxNewTokens (audio output token cap) in audio generation settings.",
+                    "default": False,
+                }),
+                "maxNewTokens": ("INT", {
+                    "tooltip": "Audio output token cap. Higher = longer audio, but risk of generation hangs. Applies to all variants. Only used when 'Use Max New Tokens' is enabled.",
+                    "default": 4096,
+                    "min": 1,
+                    "max": 262144,
+                    "step": 1,
+                }),
+                "useTranscript": ("BOOLEAN", {
+                    "tooltip": "Enable to include transcript (reference audio transcript) in audio generation settings.",
+                    "default": False,
+                }),
+                "transcript": ("STRING", {
+                    "multiline": True,
+                    "default": "",
+                    "tooltip": "Transcript of the reference audio. Required for ICL mode; omit or leave empty for x-vector-only mode. Base variant only. Only used when 'Use Transcript' is enabled.",
+                }),
             }
         }
 
@@ -158,7 +188,11 @@ class RunwareAudioSettings:
     RETURN_NAMES = ("settings",)
     FUNCTION = "createSettings"
     CATEGORY = "Runware/Audio"
-    DESCRIPTION = "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization, bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd) for Runware Audio Inference. Connect to Runware Audio Inference node."
+    DESCRIPTION = (
+        "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization, "
+        "bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd, "
+        "xVectorOnly, maxNewTokens, transcript, etc.) for Runware Audio Inference. Connect to Runware Audio Inference node."
+    )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio settings dict for API"""
@@ -188,6 +222,12 @@ class RunwareAudioSettings:
         repainting_start = kwargs.get("repaintingStart", 0.0)
         use_repainting_end = kwargs.get("useRepaintingEnd", False)
         repainting_end = kwargs.get("repaintingEnd", 0.0)
+        use_x_vector_only = kwargs.get("useXVectorOnly", False)
+        x_vector_only = kwargs.get("xVectorOnly", False)
+        use_max_new_tokens = kwargs.get("useMaxNewTokens", False)
+        max_new_tokens = kwargs.get("maxNewTokens", 4096)
+        use_transcript = kwargs.get("useTranscript", False)
+        transcript = kwargs.get("transcript", "") or ""
 
         settings: Dict[str, Any] = {}
 
@@ -229,6 +269,15 @@ class RunwareAudioSettings:
 
         if use_repainting_end:
             settings["repaintingEnd"] = float(repainting_end)
+
+        if use_x_vector_only:
+            settings["xVectorOnly"] = bool(x_vector_only)
+
+        if use_max_new_tokens:
+            settings["maxNewTokens"] = int(max_new_tokens)
+
+        if use_transcript and transcript.strip():
+            settings["transcript"] = transcript.strip()
 
         return (settings,)
 

@@ -14,6 +14,20 @@ class RunwareAudioInferenceSpeech:
         "calm", "fluent", "whisper",
     ]
 
+    SPEECH_LANGUAGES = [
+        "Auto",
+        "Chinese",
+        "English",
+        "Japanese",
+        "Korean",
+        "German",
+        "French",
+        "Russian",
+        "Portuguese",
+        "Spanish",
+        "Italian",
+    ]
+
     def __init__(self):
         pass
 
@@ -69,6 +83,14 @@ class RunwareAudioInferenceSpeech:
                     "placeholder": "omg/oh my god\nother/other expansion",
                     "tooltip": "Pronunciation dictionary, one mapping per line (e.g. omg/oh my god)",
                 }),
+                "useLanguage": ("BOOLEAN", {
+                    "default": False,
+                    "tooltip": "Enable to include language (speech.language).",
+                }),
+                "language": (cls.SPEECH_LANGUAGES, {
+                    "default": "Auto",
+                    "tooltip": "Language of the input text. Options: Auto, Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, Italian. Applies to all variants. Only used when 'Use Language' is enabled.",
+                }),
             }
         }
 
@@ -76,7 +98,10 @@ class RunwareAudioInferenceSpeech:
     RETURN_NAMES = ("speech",)
     FUNCTION = "createSpeech"
     CATEGORY = "Runware/Audio"
-    DESCRIPTION = "Build speech parameters for Runware Audio Inference. Connect output to the 'speech' input of Runware Audio Inference."
+    DESCRIPTION = (
+        "Build speech parameters for Runware Audio Inference (text, voice, speed, volume, pitch, emotion, tone, language, etc.). "
+        "Connect output to the 'speech' input of Runware Audio Inference."
+    )
 
     def createSpeech(self, **kwargs) -> tuple:
         """Build the speech object for the API (connect to Runware Audio Inference 'speech' input)."""
@@ -93,6 +118,8 @@ class RunwareAudioInferenceSpeech:
         emotion = kwargs.get("emotion", "calm")
         use_tone = kwargs.get("useTone", False)
         tone_str = kwargs.get("tone", "") or ""
+        use_language = kwargs.get("useLanguage", False)
+        language = kwargs.get("language", "Auto")
 
         speech: Dict[str, Any] = {"text": text}
         if use_voice:
@@ -109,6 +136,8 @@ class RunwareAudioInferenceSpeech:
             tone_lines = [s.strip() for s in tone_str.replace(",", "\n").split("\n") if s.strip()]
             if tone_lines:
                 speech["tone"] = tone_lines
+        if use_language:
+            speech["language"] = language
 
         if not text:
             return ({},)

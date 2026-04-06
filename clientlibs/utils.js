@@ -1275,6 +1275,12 @@ function audioSettingsToggleHandler(settingsNode) {
     const repaintingStartWidget = settingsNode.widgets.find(w => w && w.name === "repaintingStart");
     const useRepaintingEndWidget = settingsNode.widgets.find(w => w && w.name === "useRepaintingEnd");
     const repaintingEndWidget = settingsNode.widgets.find(w => w && w.name === "repaintingEnd");
+    const useXVectorOnlyWidget = settingsNode.widgets.find(w => w && w.name === "useXVectorOnly");
+    const xVectorOnlyWidget = settingsNode.widgets.find(w => w && w.name === "xVectorOnly");
+    const useMaxNewTokensWidget = settingsNode.widgets.find(w => w && w.name === "useMaxNewTokens");
+    const maxNewTokensWidget = settingsNode.widgets.find(w => w && w.name === "maxNewTokens");
+    const useTranscriptWidget = settingsNode.widgets.find(w => w && w.name === "useTranscript");
+    const transcriptWidget = settingsNode.widgets.find(w => w && w.name === "transcript");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1305,6 +1311,9 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useCoverConditioningScaleWidget && coverConditioningScaleWidget) toggleWidgetState(useCoverConditioningScaleWidget, coverConditioningScaleWidget, "coverConditioningScale");
     if (useRepaintingStartWidget && repaintingStartWidget) toggleWidgetState(useRepaintingStartWidget, repaintingStartWidget, "repaintingStart");
     if (useRepaintingEndWidget && repaintingEndWidget) toggleWidgetState(useRepaintingEndWidget, repaintingEndWidget, "repaintingEnd");
+    if (useXVectorOnlyWidget && xVectorOnlyWidget) toggleWidgetState(useXVectorOnlyWidget, xVectorOnlyWidget, "xVectorOnly");
+    if (useMaxNewTokensWidget && maxNewTokensWidget) toggleWidgetState(useMaxNewTokensWidget, maxNewTokensWidget, "maxNewTokens");
+    if (useTranscriptWidget && transcriptWidget) toggleWidgetState(useTranscriptWidget, transcriptWidget, "transcript");
 }
 
 function textInferenceSettingsToggleHandler(settingsNode) {
@@ -1417,6 +1426,8 @@ function audioInferenceSpeechToggleHandler(speechNode) {
     const emotionWidget = speechNode.widgets.find(w => w && w.name === "emotion");
     const useToneWidget = speechNode.widgets.find(w => w && w.name === "useTone");
     const toneWidget = speechNode.widgets.find(w => w && w.name === "tone");
+    const useLanguageWidget = speechNode.widgets.find(w => w && w.name === "useLanguage");
+    const languageWidget = speechNode.widgets.find(w => w && w.name === "language");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1439,6 +1450,7 @@ function audioInferenceSpeechToggleHandler(speechNode) {
     if (usePitchWidget && pitchWidget) toggleWidgetState(usePitchWidget, pitchWidget, "pitch");
     if (useEmotionWidget && emotionWidget) toggleWidgetState(useEmotionWidget, emotionWidget, "emotion");
     if (useToneWidget && toneWidget) toggleWidgetState(useToneWidget, toneWidget, "tone");
+    if (useLanguageWidget && languageWidget) toggleWidgetState(useLanguageWidget, languageWidget, "language");
     if (useVoiceWidget && voiceWidget) toggleWidgetState(useVoiceWidget, voiceWidget, "voice");
 }
 
@@ -3020,6 +3032,11 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
             "runware:ace-step@0 (ACE Step v1 3.5B)",
             "runware:ace-step@v1.5-base (ACE-Step v1.5 Base)",
             "runware:ace-step@v1.5-turbo (ACE-Step v1.5 Turbo)",
+        ],
+        "Alibaba": [
+            "alibaba:qwen@3-tts-1.7b-voicedesign (Qwen3 TTS 1.7B Voice Design)",
+            "alibaba:qwen@3-tts-1.7b-customvoice (Qwen3 TTS 1.7B Custom Voice)",
+            "alibaba:qwen@3-tts-1.7b-base (Qwen3 TTS 1.7B Base)",
         ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
