@@ -19,6 +19,11 @@ class RunwareAudioModelSearch:
             "runware:ace-step@v1.5-base (ACE-Step v1.5 Base)",
             "runware:ace-step@v1.5-turbo (ACE-Step v1.5 Turbo)",
         ],
+        "Alibaba": [
+            "alibaba:qwen@3-tts-1.7b-voicedesign (Qwen3 TTS 1.7B Voice Design)",
+            "alibaba:qwen@3-tts-1.7b-customvoice (Qwen3 TTS 1.7B Custom Voice)",
+            "alibaba:qwen@3-tts-1.7b-base (Qwen3 TTS 1.7B Base)",
+        ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
         ],
@@ -40,6 +45,7 @@ class RunwareAudioModelSearch:
         "KlingAI",
         "Mirelo",
         "Ace",
+        "Alibaba",
         "Dia",
         "xAI",
         "MiniMax",
