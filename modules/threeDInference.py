@@ -9,6 +9,7 @@ class threeDInference:
     THREED_MODELS = {
         "Meta SAM 3D": "meta:sam@3d",
         "TRELLIS.2": "microsoft:trellis-2@4b",
+        "Tripo 3D v3.1": "tripo:v3.1@0",
     }
 
     # Output formats
@@ -54,7 +55,7 @@ class threeDInference:
                     "tooltip": "Connect a Runware 3D Inference Inputs node to provide image and mask inputs.",
                 }),
                 "settings": ("RUNWARE3DINFERENCESETTINGS", {
-                    "tooltip": "Connect Runware 3D Inference Settings node for textureSize, decimationTarget, remesh, resolution, sparseStructure, shapeSlat, texSlat.",
+                    "tooltip": "Connect Runware 3D Inference Settings for textureSize, decimation, remesh, resolution, imageAutoFix, faceLimit, texture, pbr, quad, Tripo options, sparseStructure, shapeSlat, texSlat, etc.",
                 }),
             },
         }
