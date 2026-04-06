@@ -156,7 +156,7 @@ class RunwareAudioSettings:
                     "default": False,
                 }),
                 "xVectorOnly": ("BOOLEAN", {
-                    "tooltip": "true = speaker embedding only (no transcript needed, lower similarity). false = ICL mode (needs ref_text, higher quality). Only used when 'Use X Vector Only' is enabled.",
+                    "tooltip": "true = speaker embedding only (no transcript needed, lower similarity). false = ICL mode (needs transcript, higher quality). Only used when 'Use X Vector Only' is enabled.",
                     "default": False,
                     "label_on": "true",
                     "label_off": "false",
