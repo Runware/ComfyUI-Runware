@@ -59,7 +59,7 @@ class threeDInference:
                     "tooltip": "Connect Runware 3D Inference Inputs for image, mask, meshFile, images (array from images_1…4), etc.",
                 }),
                 "settings": ("RUNWARE3DINFERENCESETTINGS", {
-                    "tooltip": "Connect Runware 3D Inference Settings for textureSize, decimation, remesh, resolution, imageAutoFix, faceLimit, texture, pbr, quad, Tripo options, sparseStructure, shapeSlat, texSlat, etc.",
+                    "tooltip": "Connect Runware 3D Inference Settings for textureSize, decimationTarget, remesh, resolution, imageAutoFix, faceLimit, texture, pbr, quad, Tripo options, sparseStructure, shapeSlat, texSlat, etc.",
                 }),
             },
         }

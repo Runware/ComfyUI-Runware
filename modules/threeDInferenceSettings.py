@@ -144,7 +144,7 @@ class Runware3DInferenceSettings:
                     "default": False,
                 }),
                 "quad": ("BOOLEAN", {
-                    "tooltip": "Quad mesh output; forces FBX. If quad=true and faceLimit unset, default faceLimit is 10000. Only used when 'Use Quad' is enabled.",
+                    "tooltip": "Enable quad mesh output. If quad=true and faceLimit is unset, default faceLimit is 10000. Only used when 'Use Quad' is enabled.",
                     "default": False,
                     "label_on": "true",
                     "label_off": "false",
@@ -212,7 +212,7 @@ class Runware3DInferenceSettings:
     FUNCTION = "create"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure Runware 3D Inference settings: textureSize, decimation, remesh, resolution, imageAutoFix, faceLimit, "
+        "Configure Runware 3D Inference settings: textureSize, decimationTarget, remesh, resolution, imageAutoFix, faceLimit, "
         "texture, pbr, textureSeed, textureAlignment, textureQuality, autoSize, orientation, quad, compress, "
         "smartLowPoly, generateParts, exportUv, geometryQuality, and lat configs."
     )
