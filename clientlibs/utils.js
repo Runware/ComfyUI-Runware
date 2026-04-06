@@ -1925,8 +1925,26 @@ function sourcefulProviderSettingsFontsToggleHandler(fontsNode) {
 }
 
 function threeDInferenceToggleHandler(node) {
+    const useSeedWidget = node.widgets.find(w => w && w.name === "useSeed");
+    const seedWidget = node.widgets.find(w => w && w.name === "seed");
     const useOutputQualityWidget = node.widgets.find(w => w.name === "useOutputQuality");
     const outputQualityWidget = node.widgets.find(w => w.name === "outputQuality");
+
+    if (useSeedWidget && seedWidget) {
+        function toggleSeed() {
+            const enabled = useSeedWidget.value === true;
+            toggleWidgetEnabled(seedWidget, enabled, node);
+            if (seedWidget.options && seedWidget.options.element) {
+                seedWidget.options.element.disabled = !enabled;
+                seedWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                seedWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            node.setDirtyCanvas(true);
+        }
+        setTimeout(toggleSeed, 100);
+        appendWidgetCB(useSeedWidget, () => setTimeout(toggleSeed, 50));
+    }
+
     if (!useOutputQualityWidget || !outputQualityWidget) return;
     function toggleEnabled() {
         const enabled = useOutputQualityWidget.value === true;
