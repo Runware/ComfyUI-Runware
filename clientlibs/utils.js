@@ -1251,6 +1251,12 @@ function audioSettingsToggleHandler(settingsNode) {
 
     const useTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useTemperature");
     const temperatureWidget = settingsNode.widgets.find(w => w && w.name === "temperature");
+    const useAudioTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useAudioTemperature");
+    const audioTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "audioTemperature");
+    const useTopKWidget = settingsNode.widgets.find(w => w && w.name === "useTopK");
+    const topKWidget = settingsNode.widgets.find(w => w && w.name === "topK");
+    const useIncludePrefixWidget = settingsNode.widgets.find(w => w && w.name === "useIncludePrefix");
+    const includePrefixWidget = settingsNode.widgets.find(w => w && w.name === "includePrefix");
     const useLyricsWidget = settingsNode.widgets.find(w => w && w.name === "useLyrics");
     const lyricsWidget = settingsNode.widgets.find(w => w && w.name === "lyrics");
     const useGuidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "useGuidanceType");
@@ -1299,6 +1305,9 @@ function audioSettingsToggleHandler(settingsNode) {
     }
 
     if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget, "temperature");
+    if (useAudioTemperatureWidget && audioTemperatureWidget) toggleWidgetState(useAudioTemperatureWidget, audioTemperatureWidget, "audioTemperature");
+    if (useTopKWidget && topKWidget) toggleWidgetState(useTopKWidget, topKWidget, "topK");
+    if (useIncludePrefixWidget && includePrefixWidget) toggleWidgetState(useIncludePrefixWidget, includePrefixWidget, "includePrefix");
     if (useLyricsWidget && lyricsWidget) toggleWidgetState(useLyricsWidget, lyricsWidget, "lyrics");
     if (useGuidanceTypeWidget && guidanceTypeWidget) toggleWidgetState(useGuidanceTypeWidget, guidanceTypeWidget, "guidanceType");
     if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
@@ -3040,6 +3049,7 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
+            "runware:dia2@2b (Dia2 2B)",
         ],
         "xAI": [
             "xai:voice@tts (xAI TTS)",

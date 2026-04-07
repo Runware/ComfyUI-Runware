@@ -136,7 +136,7 @@ class RunwareAudioInference:
                     "tooltip": "Custom inputs for audio generation (e.g., video URL for audio extraction)"
                 }),
                 "settings": ("RUNWAREAUDIOSETTINGS", {
-                    "tooltip": "Connect Runware Audio Inference Settings for lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization, xVectorOnly, maxNewTokens, transcript, etc."
+                    "tooltip": "Connect Runware Audio Inference Settings for includePrefix, topK, temperature, audioTemperature, lyrics, guidanceType, languageBoost, turbo, textNormalization, xVectorOnly, maxNewTokens, transcript, etc."
                 }),
                 "speech": ("RUNWARESPEECH", {
                     "tooltip": "Connect Runware Audio Inference Speech for speech synthesis (e.g. Minimax)"
