@@ -143,6 +143,13 @@ class txt2img:
                     "tooltip": "Applies optimized acceleration presets that automatically configure multiple generation parameters for the best speed and quality balance. This parameter serves as an abstraction layer that intelligently adjusts acceleratorOptions, steps, scheduler, and other underlying settings.\n\nAvailable values:\n- none: No acceleration applied, uses default parameter values.\n- low: Minimal acceleration with optimized settings for lowest quality loss.\n- medium: Balanced acceleration preset with moderate speed improvements.\n- high: Maximum acceleration with caching and aggressive optimizations for fastest generation.",
                     "default": "none",
                 }),
+                "outputQuality": ("INT", {
+                    "tooltip": "Output quality passed to the API request (0-100).",
+                    "default": rwUtils.OUTPUT_QUALITY,
+                    "min": 0,
+                    "max": 100,
+                    "step": 1,
+                }),
 
             },
             "optional": {
@@ -261,6 +268,7 @@ class txt2img:
         dimensions = kwargs.get("dimensions", "Square (512x512)")
         outputFormat = kwargs.get("outputFormat", rwUtils.getOutputFormat())
         batchSize = kwargs.get("batchSize", 1)
+        outputQuality = kwargs.get("outputQuality", rwUtils.OUTPUT_QUALITY)
         acceleration = kwargs.get("acceleration", "none")
         useResolution = kwargs.get("useResolution", False)
         resolution = kwargs.get("resolution", "1k")
@@ -275,7 +283,7 @@ class txt2img:
                 "model": runwareModel,
                 "outputType": "URL",
                 "outputFormat": outputFormat,
-                "outputQuality": rwUtils.OUTPUT_QUALITY,
+                "outputQuality": int(outputQuality),
                 "numberResults": batchSize,
                 "deliveryMethod": "async",
             }
