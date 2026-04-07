@@ -187,9 +187,6 @@ class RunwareVideoInferenceElementsCombine:
                 "Elements 3": ("RUNWAREVIDEOINFERENCEELEMENTS", {
                     "tooltip": "Optional third Runware Video Inference Elements node.",
                 }),
-                "Elements 4": ("RUNWAREVIDEOINFERENCEELEMENTS", {
-                    "tooltip": "Optional fourth Runware Video Inference Elements node.",
-                }),
             },
         }
 
@@ -198,13 +195,13 @@ class RunwareVideoInferenceElementsCombine:
     FUNCTION = "combine"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Combine up to four Runware Video Inference Elements outputs into inputs.elements. "
+        "Combine up to three Runware Video Inference Elements outputs into inputs.elements. "
         "Connect the result to Runware Video Inference Inputs → Elements."
     )
 
     def combine(self, **kwargs) -> Tuple[List[Dict[str, Any]],]:
         out: List[Dict[str, Any]] = []
-        for i in range(1, 5):
+        for i in range(1, 4):
             key = f"Elements {i}"
             chunk = kwargs.get(key)
             if chunk is not None and isinstance(chunk, list):

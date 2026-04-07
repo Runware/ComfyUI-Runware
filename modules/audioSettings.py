@@ -28,11 +28,43 @@ class RunwareAudioSettings:
                     "default": False,
                 }),
                 "temperature": ("FLOAT", {
-                    "tooltip": "Temperature value for audio generation. Higher values increase diversity, lower values make output more deterministic. Only used when 'Use Temperature' is enabled.",
-                    "default": 1.0,
+                    "tooltip": "Sampling temperature for text token generation. Lower values produce more coherent, predictable speech content. Higher values increase variety but risk artifacts. Set 0 for greedy decoding. Only used when 'Use Temperature' is enabled.",
+                    "default": 0.6,
                     "min": 0.0,
-                    "max": 2.0,
+                    "max": 5.0,
                     "step": 0.1,
+                }),
+                "useAudioTemperature": ("BOOLEAN", {
+                    "tooltip": "Enable to include audioTemperature in audio generation settings",
+                    "default": False,
+                }),
+                "audioTemperature": ("FLOAT", {
+                    "tooltip": "Sampling temperature for audio token generation. Lower values produce cleaner, more stable audio. Higher values add expressiveness but may introduce noise. Set 0 for greedy decoding. Only used when 'Use Audio Temperature' is enabled.",
+                    "default": 0.8,
+                    "min": 0.0,
+                    "max": 5.0,
+                    "step": 0.1,
+                }),
+                "useTopK": ("BOOLEAN", {
+                    "tooltip": "Enable to include topK token sampling in audio generation settings",
+                    "default": False,
+                }),
+                "topK": ("INT", {
+                    "tooltip": "Top-K candidates for both text and audio token sampling. Limits sampling to the K most likely next tokens at each step. Only used when 'Use Top K' is enabled.",
+                    "default": 50,
+                    "min": 1,
+                    "max": 500,
+                    "step": 1,
+                }),
+                "useIncludePrefix": ("BOOLEAN", {
+                    "tooltip": "Enable to include includePrefix in audio generation settings",
+                    "default": False,
+                }),
+                "includePrefix": ("BOOLEAN", {
+                    "tooltip": "When voice cloning, keep prefix audio in output (true) or trim to new speech (false). Only relevant when compatible prefix/reference audio is provided. Only used when 'Use Include Prefix' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
                 }),
                 "useLyrics": ("BOOLEAN", {
                     "tooltip": "Enable to include lyrics in audio generation settings",
@@ -197,7 +229,13 @@ class RunwareAudioSettings:
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio settings dict for API"""
         use_temperature = kwargs.get("useTemperature", False)
-        temperature = kwargs.get("temperature", 1.0)
+        temperature = kwargs.get("temperature", 0.6)
+        use_audio_temperature = kwargs.get("useAudioTemperature", False)
+        audio_temperature = kwargs.get("audioTemperature", 0.8)
+        use_top_k = kwargs.get("useTopK", False)
+        top_k = kwargs.get("topK", 50)
+        use_include_prefix = kwargs.get("useIncludePrefix", False)
+        include_prefix = kwargs.get("includePrefix", False)
         use_lyrics = kwargs.get("useLyrics", False)
         lyrics = kwargs.get("lyrics", "")
         use_guidance_type = kwargs.get("useGuidanceType", False)
@@ -233,6 +271,12 @@ class RunwareAudioSettings:
 
         if use_temperature:
             settings["temperature"] = float(temperature)
+        if use_audio_temperature:
+            settings["audioTemperature"] = float(audio_temperature)
+        if use_top_k:
+            settings["topK"] = int(top_k)
+        if use_include_prefix:
+            settings["includePrefix"] = bool(include_prefix)
 
         if use_lyrics and lyrics and lyrics.strip():
             settings["lyrics"] = lyrics.strip()

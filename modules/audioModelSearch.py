@@ -26,6 +26,7 @@ class RunwareAudioModelSearch:
         ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
+            "runware:dia2@2b (Dia2 2B)",
         ],
         "xAI": [
             "xai:voice@tts (xAI TTS)",
