@@ -61,7 +61,7 @@ class RunwareAudioSettings:
                     "default": False,
                 }),
                 "includePrefix": ("BOOLEAN", {
-                    "tooltip": "When voice cloning, keep prefix audio in output (true) or trim to new speech (false). Requires at least prefix_audio_speaker_1 input. Only used when 'Use Include Prefix' is enabled.",
+                    "tooltip": "When voice cloning, keep prefix audio in output (true) or trim to new speech (false). Only relevant when compatible prefix/reference audio is provided. Only used when 'Use Include Prefix' is enabled.",
                     "default": False,
                     "label_on": "true",
                     "label_off": "false",
@@ -229,7 +229,7 @@ class RunwareAudioSettings:
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
         """Create audio settings dict for API"""
         use_temperature = kwargs.get("useTemperature", False)
-        temperature = kwargs.get("temperature", 1.0)
+        temperature = kwargs.get("temperature", 0.6)
         use_audio_temperature = kwargs.get("useAudioTemperature", False)
         audio_temperature = kwargs.get("audioTemperature", 0.8)
         use_top_k = kwargs.get("useTopK", False)
