@@ -6,6 +6,7 @@ class audioInferenceInputs:
     """Audio Inference Inputs node for configuring audio generation inputs"""
     
     MAX_VIDEOS = 4
+    MAX_AUDIOS = 4
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -40,12 +41,24 @@ class audioInferenceInputs:
                 "default": "",
             })
         
+        # Multiple audios last so the UI groups useAudios with Audio1…Audio4 (ComfyUI order = dict insertion order)
+        optionalInputs["useAudios"] = ("BOOLEAN", {
+            "tooltip": "Enable to include multiple audio inputs in API request (inputs.audios array).",
+            "default": False,
+        })
+        for i in range(1, cls.MAX_AUDIOS + 1):
+            ordinal = rwUtils.getOrdinal(i)
+            optionalInputs[f"Audio{i}"] = ("STRING", {
+                "tooltip": f"Audio URL or mediaUUID for the {ordinal} audio. Only used when 'Use Audios' is enabled.",
+                "default": "",
+            })
+        
         return {
             "required": {},
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Audio Inference, including optional audio URL/mediaUUID, and single or multiple video inputs for audio extraction or generation."
+    DESCRIPTION = "Configure custom inputs for Runware Audio Inference, including optional single or multiple audio URL/mediaUUID (inputs.audio or inputs.audios), and single or multiple video inputs for audio extraction or generation."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREAUDIOINFERENCEINPUTS",)
     RETURN_NAMES = ("Audio Inference Inputs",)
@@ -55,6 +68,7 @@ class audioInferenceInputs:
         """Create audio inference inputs from provided parameters"""
         useAudio = kwargs.get("useAudio", False)
         audio = kwargs.get("Audio", None)
+        useAudios = kwargs.get("useAudios", False)
         useVideo = kwargs.get("useVideo", False)
         video = kwargs.get("Video", None)
         useVideos = kwargs.get("useVideos", False)
@@ -64,6 +78,18 @@ class audioInferenceInputs:
         # Handle single audio (inputs.audio)
         if useAudio and audio is not None and audio.strip() != "":
             inputs["audio"] = audio.strip()
+
+        # Handle multiple audios (inputs.audios as array)
+        if useAudios:
+            audioList = []
+            for i in range(1, self.MAX_AUDIOS + 1):
+                audioKey = f"Audio{i}"
+                audioUrl = kwargs.get(audioKey)
+                if audioUrl and audioUrl.strip() != "":
+                    audioList.append(audioUrl.strip())
+
+            if len(audioList) > 0:
+                inputs["audios"] = audioList
 
         # Handle single video (inputs.video)
         if useVideo and video is not None and video.strip() != "":
