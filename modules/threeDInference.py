@@ -9,6 +9,7 @@ class threeDInference:
     THREED_MODELS = {
         "Meta SAM 3D": "meta:sam@3d",
         "TRELLIS.2": "microsoft:trellis-2@4b",
+        "Tripo 3D v3.1": "tripo:v3.1@0",
     }
 
     # Output formats
@@ -27,8 +28,12 @@ class threeDInference:
                     "placeholder": "Describe the 3D object you want to generate...",
                     "tooltip": "A text prompt describing the 3D object to generate."
                 }),
+                "useSeed": ("BOOLEAN", {
+                    "tooltip": "Include seed in the API request. Turn off if the model should not receive a seed.",
+                    "default": True,
+                }),
                 "seed": ("INT", {
-                    "tooltip": "Seed for reproducibility. Use the same seed to get the same result.",
+                    "tooltip": "Seed for reproducibility. Only sent when 'Use Seed' is on.",
                     "default": 1,
                     "min": 1,
                     "max": 2147483647,
@@ -51,10 +56,10 @@ class threeDInference:
                     "step": 1,
                 }),
                 "inputs": ("RUNWARE3DINFERENCEINPUTS", {
-                    "tooltip": "Connect a Runware 3D Inference Inputs node to provide image and mask inputs.",
+                    "tooltip": "Connect Runware 3D Inference Inputs for image, mask, meshFile, images (array from images_1…4), etc.",
                 }),
                 "settings": ("RUNWARE3DINFERENCESETTINGS", {
-                    "tooltip": "Connect Runware 3D Inference Settings node for textureSize, decimationTarget, remesh, resolution, sparseStructure, shapeSlat, texSlat.",
+                    "tooltip": "Connect Runware 3D Inference Settings for textureSize, decimationTarget, remesh, resolution, imageAutoFix, faceLimit, texture, pbr, quad, Tripo options, sparseStructure, shapeSlat, texSlat, etc.",
                 }),
             },
         }
@@ -70,6 +75,7 @@ class threeDInference:
         modelName = kwargs.get("Model", "Meta SAM 3D")
         positivePrompt = kwargs.get("positivePrompt", "")
         seed = kwargs.get("seed", 1)
+        use_seed = kwargs.get("useSeed", True)
         outputFormat = kwargs.get("outputFormat", "GLB")
         use_output_quality = kwargs.get("useOutputQuality", False)
         output_quality = kwargs.get("outputQuality", 95)
@@ -97,8 +103,8 @@ class threeDInference:
         if positivePrompt and positivePrompt.strip() != "":
             genConfig[0]["positivePrompt"] = positivePrompt.strip()
 
-        # Add seed
-        genConfig[0]["seed"] = seed
+        if use_seed:
+            genConfig[0]["seed"] = seed
 
         if use_output_quality:
             genConfig[0]["outputQuality"] = int(output_quality)
