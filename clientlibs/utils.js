@@ -10,6 +10,8 @@ const CACHE_SIZE_RANGE = { min: 30, default: 150, max: 4096 };
 
 /** Must match `audioInferenceInputs.MAX_VIDEOS` in modules/audioInferenceInputs.py */
 const AUDIO_INFERENCE_INPUTS_MAX_VIDEOS = 4;
+/** Must match `audioInferenceInputs.MAX_AUDIOS` in modules/audioInferenceInputs.py */
+const AUDIO_INFERENCE_INPUTS_MAX_AUDIOS = 4;
 
 let openDialog = false;
 let lastTimeout = false;
@@ -4407,6 +4409,7 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
     const useVideoWidget = audioInputsNode.widgets.find(w => w && w.name === "useVideo");
     const videoWidget = audioInputsNode.widgets.find(w => w && w.name === "Video");
     const useVideosWidget = audioInputsNode.widgets.find(w => w && w.name === "useVideos");
+    const useAudiosWidget = audioInputsNode.widgets.find(w => w && w.name === "useAudios");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -4460,6 +4463,59 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
         toggleWidgetState(useVideoWidget, videoWidget, "Video");
     }
     
+    // Set up toggle handlers for multiple audios (Audio1 … AudioN; N from widgets, fallback to AUDIO_INFERENCE_INPUTS_MAX_AUDIOS)
+    if (useAudiosWidget) {
+        function getAudioInferenceAudioSlotCount() {
+            let max = 0;
+            for (const w of audioInputsNode.widgets) {
+                if (!w?.name) continue;
+                const m = /^Audio(\d+)$/.exec(w.name);
+                if (m) max = Math.max(max, parseInt(m[1], 10));
+            }
+            return max > 0 ? max : AUDIO_INFERENCE_INPUTS_MAX_AUDIOS;
+        }
+
+        function toggleAudiosEnabled() {
+            const enabled = useAudiosWidget.value === true;
+            const slotCount = getAudioInferenceAudioSlotCount();
+
+            for (let i = 1; i <= slotCount; i++) {
+                const audioSlotWidget = audioInputsNode.widgets.find(w => w && w.name === `Audio${i}`);
+                if (audioSlotWidget) {
+                    if (audioSlotWidget.inputEl) {
+                        audioSlotWidget.inputEl.disabled = !enabled;
+                        audioSlotWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                        audioSlotWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                        audioSlotWidget.inputEl.readOnly = !enabled;
+                    }
+
+                    audioSlotWidget.disabled = !enabled;
+
+                    if (!audioSlotWidget.inputEl) {
+                        const nodeElement = audioInputsNode.htmlElements?.widgetsContainer || audioInputsNode.htmlElements;
+                        if (nodeElement) {
+                            const input = nodeElement.querySelector(`input[name="Audio${i}"], textarea[name="Audio${i}"], select[name="Audio${i}"]`);
+                            if (input) {
+                                input.disabled = !enabled;
+                                input.style.opacity = enabled ? "1" : "0.5";
+                                input.style.cursor = enabled ? "text" : "not-allowed";
+                                input.readOnly = !enabled;
+                            }
+                        }
+                    }
+                }
+            }
+
+            audioInputsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useAudiosWidget, () => {
+            setTimeout(toggleAudiosEnabled, 50);
+        });
+
+        setTimeout(toggleAudiosEnabled, 100);
+    }
+
     // Set up toggle handlers for multiple videos (Video1 … VideoN; N from widgets, fallback to AUDIO_INFERENCE_INPUTS_MAX_VIDEOS)
     if (useVideosWidget) {
         function getAudioInferenceVideoSlotCount() {
