@@ -1,7 +1,8 @@
 """
 Runware 3D Inference Settings Node
 Main settings for 3D inference: textureSize, decimationTarget, remesh, resolution,
-imageAutoFix, faceLimit, texture, pbr, Tripo mesh/texture options, and sub-configs
+imageAutoFix, faceLimit, texture, pbr, Tripo mesh/texture options, material/quality,
+polyCount, taPose, boundingBox, meshMode, addons, hdTexture, and sub-configs
 sparseStructure, shapeSlat, texSlat from connected nodes.
 """
 
@@ -195,6 +196,89 @@ class Runware3DInferenceSettings:
                     "tooltip": "standard: balanced (default). detailed: maximum detail (ultra mode). Only used when 'Use Geometry Quality' is enabled.",
                     "default": "standard",
                 }),
+                "useOriginalAlpha": ("BOOLEAN", {
+                    "tooltip": "Enable to include useOriginalAlpha in settings.",
+                    "default": False,
+                }),
+                "originalAlpha": ("BOOLEAN", {
+                    "tooltip": "If true, use the original transparency channel while processing the image. Only used when 'Use Original Alpha' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useMaterial": ("BOOLEAN", {
+                    "tooltip": "Enable to include material in settings.",
+                    "default": False,
+                }),
+                "material": (["PBR", "Shaded", "All"], {
+                    "tooltip": "Material type. PBR: physically based textures. Shaded: base color with baked lighting. All: return both. Only used when 'Use Material' is enabled.",
+                    "default": "PBR",
+                }),
+                "useQuality": ("BOOLEAN", {
+                    "tooltip": "Enable to include quality in settings.",
+                    "default": False,
+                }),
+                "quality": (["high", "medium", "low", "extra-low"], {
+                    "tooltip": "Generation quality. For Raw defaults to high; for Quad defaults to medium. Ignored when polyCount is used.",
+                    "default": "medium",
+                }),
+                "usePolyCount": ("BOOLEAN", {
+                    "tooltip": "Enable to include polyCount in settings.",
+                    "default": False,
+                }),
+                "polyCount": ("FLOAT", {
+                    "tooltip": "Advanced face-count control. Raw: 500-1000000 (default 500000). Quad: 1000-200000 (default 18000). Overrides quality.",
+                    "default": 18000.0,
+                    "min": 500.0,
+                    "max": 1000000.0,
+                    "step": 100.0,
+                }),
+                "useTaPose": ("BOOLEAN", {
+                    "tooltip": "Enable to include taPose in settings.",
+                    "default": False,
+                }),
+                "taPose": ("BOOLEAN", {
+                    "tooltip": "When true, human-like models are generated in T/A pose. Only used when 'Use Ta Pose' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useBoundingBox": ("BOOLEAN", {
+                    "tooltip": "Enable to include boundingBox in settings.",
+                    "default": False,
+                }),
+                "boundingBox": ("STRING", {
+                    "multiline": False,
+                    "tooltip": "Comma-separated integers in fixed order y,z,x (width,height,length), e.g. 2,3,4. Only used when 'Use Bounding Box' is enabled.",
+                    "default": "",
+                }),
+                "useMeshMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include meshMode in settings.",
+                    "default": False,
+                }),
+                "meshMode": (["Raw", "Quad"], {
+                    "tooltip": "Raw: triangular faces. Quad: quadrilateral faces. If Raw, addons is forced to []. Only used when 'Use Mesh Mode' is enabled.",
+                    "default": "Quad",
+                }),
+                "useAddons": ("BOOLEAN", {
+                    "tooltip": "Enable to include addons in settings.",
+                    "default": False,
+                }),
+                "addons": ("STRING", {
+                    "multiline": False,
+                    "tooltip": "Comma-separated addon values, e.g. HighPack. Leave empty for []. Only used when 'Use Addons' is enabled.",
+                    "default": "",
+                }),
+                "useHdTexture": ("BOOLEAN", {
+                    "tooltip": "Enable to include hdTexture in settings.",
+                    "default": False,
+                }),
+                "hdTexture": ("BOOLEAN", {
+                    "tooltip": "If true, provides high-quality texture output. Only used when 'Use Hd Texture' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
                 "sparseStructure": ("RUNWARE3DINFERENCESETTINGSLAT", {
                     "tooltip": "Connect Runware 3D Inference Settings Sparse Structure node.",
                 }),
@@ -214,7 +298,8 @@ class Runware3DInferenceSettings:
     DESCRIPTION = (
         "Configure Runware 3D Inference settings: textureSize, decimationTarget, remesh, resolution, imageAutoFix, faceLimit, "
         "texture, pbr, textureSeed, textureAlignment, textureQuality, autoSize, orientation, quad, compress, "
-        "smartLowPoly, generateParts, exportUv, geometryQuality, and lat configs."
+        "smartLowPoly, generateParts, exportUv, geometryQuality, useOriginalAlpha, material, quality, polyCount, "
+        "taPose, boundingBox, meshMode, addons, hdTexture, and lat configs."
     )
 
     def create(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -259,6 +344,38 @@ class Runware3DInferenceSettings:
             settings["exportUv"] = bool(kwargs.get("exportUv", True))
         if kwargs.get("useGeometryQuality", False):
             settings["geometryQuality"] = kwargs.get("geometryQuality", "standard")
+        if kwargs.get("useOriginalAlpha", False):
+            settings["useOriginalAlpha"] = bool(kwargs.get("originalAlpha", False))
+        if kwargs.get("useMaterial", False):
+            settings["material"] = kwargs.get("material", "PBR")
+        if kwargs.get("useQuality", False):
+            settings["quality"] = kwargs.get("quality", "medium")
+        if kwargs.get("usePolyCount", False):
+            settings["polyCount"] = float(kwargs.get("polyCount", 18000.0))
+        if kwargs.get("useTaPose", False):
+            settings["taPose"] = bool(kwargs.get("taPose", False))
+        if kwargs.get("useBoundingBox", False):
+            raw_bounding_box = (kwargs.get("boundingBox") or "").strip()
+            if raw_bounding_box:
+                parts = [part.strip() for part in raw_bounding_box.split(",") if part.strip()]
+                if len(parts) != 3:
+                    raise ValueError("boundingBox must contain exactly 3 comma-separated integers in y,z,x order.")
+                try:
+                    settings["boundingBox"] = [int(parts[0]), int(parts[1]), int(parts[2])]
+                except ValueError as exc:
+                    raise ValueError("boundingBox values must be integers (y,z,x).") from exc
+        if kwargs.get("useMeshMode", False):
+            settings["meshMode"] = kwargs.get("meshMode", "Quad")
+        if kwargs.get("useAddons", False):
+            raw_addons = (kwargs.get("addons") or "").strip()
+            addons = [addon.strip() for addon in raw_addons.split(",") if addon.strip()] if raw_addons else []
+            settings["addons"] = addons
+        if kwargs.get("useHdTexture", False):
+            settings["hdTexture"] = bool(kwargs.get("hdTexture", False))
+
+        # API requirement: Raw mesh mode fixes addons to an empty list.
+        if settings.get("meshMode") == "Raw":
+            settings["addons"] = []
 
         sparse = kwargs.get("sparseStructure", None)
         if sparse is not None and isinstance(sparse, dict) and len(sparse) > 0:
