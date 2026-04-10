@@ -105,14 +105,6 @@ class RunwareSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
-                "useThinkingLevel": ("BOOLEAN", {
-                    "tooltip": "Enable to include thinkingLevel (string) in settings.",
-                    "default": False,
-                }),
-                "thinkingLevel": (["high", "medium", "low"], {
-                    "default": "high",
-                    "tooltip": "Reasoning level for visual understanding. Only used when 'Use Thinking Level' is enabled.",
-                }),
                 "useSequential": ("BOOLEAN", {
                     "tooltip": "Enable to include sequential (boolean) in settings.",
                     "default": False,
@@ -125,6 +117,14 @@ class RunwareSettings:
                 }),
                 "colorPalette": ("RUNWAREIMAGEINFERENCECOLORPALETTE", {
                     "tooltip": "Connect Runware Image Inference Color Palette. When the palette node outputs at least one swatch, it is merged into settings.colorPalette.",
+                }),
+                "useThinkingLevel": ("BOOLEAN", {
+                    "tooltip": "Enable to include thinkingLevel (string) in settings.",
+                    "default": False,
+                }),
+                "thinkingLevel": (["high", "medium", "low"], {
+                    "default": "high",
+                    "tooltip": "Reasoning level for visual understanding. Only used when 'Use Thinking Level' is enabled.",
                 }),
             }
         }
