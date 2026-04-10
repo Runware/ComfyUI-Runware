@@ -4726,6 +4726,8 @@ function settingsToggleHandler(settingsNode) {
     const editRegionsWidget = settingsNode.widgets.find(w => w.name === "editRegions");
     const useThinkingWidget = settingsNode.widgets.find(w => w.name === "useThinking");
     const thinkingWidget = settingsNode.widgets.find(w => w.name === "thinking");
+    const useThinkingLevelWidget = settingsNode.widgets.find(w => w.name === "useThinkingLevel");
+    const thinkingLevelWidget = settingsNode.widgets.find(w => w.name === "thinkingLevel");
     const useSequentialWidget = settingsNode.widgets.find(w => w.name === "useSequential");
     const sequentialWidget = settingsNode.widgets.find(w => w.name === "sequential");
     
@@ -4798,6 +4800,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useThinkingWidget && thinkingWidget) {
         toggleWidgetState(useThinkingWidget, thinkingWidget, "thinking");
+    }
+    if (useThinkingLevelWidget && thinkingLevelWidget) {
+        toggleWidgetState(useThinkingLevelWidget, thinkingLevelWidget, "thinkingLevel");
     }
     if (useSequentialWidget && sequentialWidget) {
         toggleWidgetState(useSequentialWidget, sequentialWidget, "sequential");

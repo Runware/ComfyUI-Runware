@@ -1,7 +1,7 @@
 """
 Runware Image Inference Settings (registered as Runware Settings for workflow compatibility).
 Provides settings for image generation including temperature, systemPrompt, topP,
-editRegions, thinking, sequential, and colorPalette (from Runware Image Inference Settings Color Palette).
+editRegions, thinking (boolean), thinkingLevel (high/medium/low), sequential, and colorPalette (from Runware Image Inference Settings Color Palette).
 """
 
 import json
@@ -96,13 +96,14 @@ class RunwareSettings:
                     "default": "",
                 }),
                 "useThinking": ("BOOLEAN", {
-                    "tooltip": "Enable to include thinking (string) in settings.",
+                    "tooltip": "Enable to include thinking (boolean) in settings.",
                     "default": False,
                 }),
-                "thinking": ("STRING", {
-                    "multiline": True,
-                    "tooltip": "Thinking / reasoning string passed in settings. Only used when 'Use Thinking' is enabled.",
-                    "default": "",
+                "thinking": ("BOOLEAN", {
+                    "tooltip": "Thinking / reasoning flag passed in settings. Only used when 'Use Thinking' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
                 }),
                 "useSequential": ("BOOLEAN", {
                     "tooltip": "Enable to include sequential (boolean) in settings.",
@@ -117,6 +118,14 @@ class RunwareSettings:
                 "colorPalette": ("RUNWAREIMAGEINFERENCECOLORPALETTE", {
                     "tooltip": "Connect Runware Image Inference Color Palette. When the palette node outputs at least one swatch, it is merged into settings.colorPalette.",
                 }),
+                "useThinkingLevel": ("BOOLEAN", {
+                    "tooltip": "Enable to include thinkingLevel (string) in settings.",
+                    "default": False,
+                }),
+                "thinkingLevel": (["high", "medium", "low"], {
+                    "default": "high",
+                    "tooltip": "Reasoning level for visual understanding. Only used when 'Use Thinking Level' is enabled.",
+                }),
             }
         }
 
@@ -126,7 +135,7 @@ class RunwareSettings:
     CATEGORY = "Runware"
     DESCRIPTION = (
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, "
-        "promptExtend, editRegions (JSON), thinking, sequential, and optional colorPalette from the Color Palette node."
+        "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, and optional colorPalette from the Color Palette node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -143,6 +152,7 @@ class RunwareSettings:
         promptExtend = kwargs.get("promptExtend", False)
         useEditRegions = kwargs.get("useEditRegions", False)
         useThinking = kwargs.get("useThinking", False)
+        useThinkingLevel = kwargs.get("useThinkingLevel", False)
         useSequential = kwargs.get("useSequential", False)
 
         # Get value parameters
@@ -184,9 +194,10 @@ class RunwareSettings:
                 settings["editRegions"] = parsed
 
         if useThinking:
-            th = (kwargs.get("thinking") or "").strip()
-            if th:
-                settings["thinking"] = th
+            settings["thinking"] = bool(kwargs.get("thinking", False))
+
+        if useThinkingLevel:
+            settings["thinkingLevel"] = str(kwargs.get("thinkingLevel", "high"))
 
         if useSequential:
             settings["sequential"] = bool(kwargs.get("sequential", False))
