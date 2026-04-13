@@ -197,7 +197,7 @@ class Runware3DInferenceSettings:
                     "default": "standard",
                 }),
                 "useOriginalAlpha": ("BOOLEAN", {
-                    "tooltip": "Enable to include useOriginalAlpha in settings.",
+                    "tooltip": "Enable to include originalAlpha in settings.",
                     "default": False,
                 }),
                 "originalAlpha": ("BOOLEAN", {
@@ -298,7 +298,7 @@ class Runware3DInferenceSettings:
     DESCRIPTION = (
         "Configure Runware 3D Inference settings: textureSize, decimationTarget, remesh, resolution, imageAutoFix, faceLimit, "
         "texture, pbr, textureSeed, textureAlignment, textureQuality, autoSize, orientation, quad, compress, "
-        "smartLowPoly, generateParts, exportUv, geometryQuality, useOriginalAlpha, material, quality, polyCount, "
+        "smartLowPoly, generateParts, exportUv, geometryQuality, originalAlpha, material, quality, polyCount, "
         "taPose, boundingBox, meshMode, addons, hdTexture, and lat configs."
     )
 
@@ -345,7 +345,7 @@ class Runware3DInferenceSettings:
         if kwargs.get("useGeometryQuality", False):
             settings["geometryQuality"] = kwargs.get("geometryQuality", "standard")
         if kwargs.get("useOriginalAlpha", False):
-            settings["useOriginalAlpha"] = bool(kwargs.get("originalAlpha", False))
+            settings["originalAlpha"] = bool(kwargs.get("originalAlpha", False))
         if kwargs.get("useMaterial", False):
             settings["material"] = kwargs.get("material", "PBR")
         if kwargs.get("useQuality", False):
