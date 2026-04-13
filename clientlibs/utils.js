@@ -1987,6 +1987,15 @@ function threeDInferenceSettingsToggleHandler(node) {
         ["useGenerateParts", "generateParts"],
         ["useExportUv", "exportUv"],
         ["useGeometryQuality", "geometryQuality"],
+        ["useOriginalAlpha", "originalAlpha"],
+        ["useMaterial", "material"],
+        ["useQuality", "quality"],
+        ["usePolyCount", "polyCount"],
+        ["useTaPose", "taPose"],
+        ["useBoundingBox", "boundingBox"],
+        ["useMeshMode", "meshMode"],
+        ["useAddons", "addons"],
+        ["useHdTexture", "hdTexture"],
     ];
     pairs.forEach(([useName, paramName]) => {
         const useW = node.widgets.find(w => w.name === useName);
