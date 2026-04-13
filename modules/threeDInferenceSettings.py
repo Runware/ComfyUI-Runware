@@ -257,7 +257,7 @@ class Runware3DInferenceSettings:
                     "default": False,
                 }),
                 "meshMode": (["Raw", "Quad"], {
-                    "tooltip": "Raw: triangular faces. Quad: quadrilateral faces. If Raw, addons is forced to []. Only used when 'Use Mesh Mode' is enabled.",
+                    "tooltip": "Raw: triangular faces. Quad: quadrilateral faces. Only used when 'Use Mesh Mode' is enabled.",
                     "default": "Quad",
                 }),
                 "useAddons": ("BOOLEAN", {
@@ -266,7 +266,7 @@ class Runware3DInferenceSettings:
                 }),
                 "addons": ("STRING", {
                     "multiline": False,
-                    "tooltip": "Comma-separated addon values, e.g. HighPack. Leave empty for []. Only used when 'Use Addons' is enabled.",
+                    "tooltip": "Comma-separated addon values, e.g. HighPack. Leave empty to skip addons. Only used when 'Use Addons' is enabled.",
                     "default": "",
                 }),
                 "useHdTexture": ("BOOLEAN", {
@@ -369,13 +369,10 @@ class Runware3DInferenceSettings:
         if kwargs.get("useAddons", False):
             raw_addons = (kwargs.get("addons") or "").strip()
             addons = [addon.strip() for addon in raw_addons.split(",") if addon.strip()] if raw_addons else []
-            settings["addons"] = addons
+            if addons:
+                settings["addons"] = addons
         if kwargs.get("useHdTexture", False):
             settings["hdTexture"] = bool(kwargs.get("hdTexture", False))
-
-        # API requirement: Raw mesh mode fixes addons to an empty list.
-        if settings.get("meshMode") == "Raw":
-            settings["addons"] = []
 
         sparse = kwargs.get("sparseStructure", None)
         if sparse is not None and isinstance(sparse, dict) and len(sparse) > 0:
