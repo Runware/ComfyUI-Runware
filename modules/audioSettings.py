@@ -1,6 +1,6 @@
 """
 Runware Audio Inference Settings Node
-Provides lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization,
+Provides lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization,
 bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart,
 repaintingEnd, xVectorOnly, maxNewTokens, transcript, and more for Runware Audio Inference.
 """
@@ -213,6 +213,26 @@ class RunwareAudioSettings:
                     "default": "",
                     "tooltip": "Transcript of the reference audio. Required for ICL mode; omit or leave empty for x-vector-only mode. Base variant only. Only used when 'Use Transcript' is enabled.",
                 }),
+                "useInstrumental": ("BOOLEAN", {
+                    "tooltip": "Enable to include instrumental in audio generation settings.",
+                    "default": False,
+                }),
+                "instrumental": ("BOOLEAN", {
+                    "tooltip": "When true, generates instrumental audio. For Music 2.6, this mode rejects settings.lyrics and settings.lyricsOptimizer, and positivePrompt becomes required.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useLyricsOptimizer": ("BOOLEAN", {
+                    "tooltip": "Enable to include lyricsOptimizer in audio generation settings.",
+                    "default": False,
+                }),
+                "lyricsOptimizer": ("BOOLEAN", {
+                    "tooltip": "Provider-side lyric generation from prompt when lyrics is empty/omitted. Supported for non-instrumental Music 2.6 requests only; rejected when instrumental=true.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -221,7 +241,7 @@ class RunwareAudioSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware/Audio"
     DESCRIPTION = (
-        "Configure audio generation settings (lyrics, guidanceType, languageBoost, turbo, temperature, textNormalization, "
+        "Configure audio generation settings (lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization, "
         "bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd, "
         "xVectorOnly, maxNewTokens, transcript, etc.) for Runware Audio Inference. Connect to Runware Audio Inference node."
     )
@@ -238,6 +258,10 @@ class RunwareAudioSettings:
         include_prefix = kwargs.get("includePrefix", False)
         use_lyrics = kwargs.get("useLyrics", False)
         lyrics = kwargs.get("lyrics", "")
+        use_instrumental = kwargs.get("useInstrumental", False)
+        instrumental = kwargs.get("instrumental", False)
+        use_lyrics_optimizer = kwargs.get("useLyricsOptimizer", False)
+        lyrics_optimizer = kwargs.get("lyricsOptimizer", False)
         use_guidance_type = kwargs.get("useGuidanceType", False)
         guidance_type = kwargs.get("guidanceType", "apg")
         use_language_boost = kwargs.get("useLanguageBoost", False)
@@ -280,6 +304,10 @@ class RunwareAudioSettings:
 
         if use_lyrics and lyrics and lyrics.strip():
             settings["lyrics"] = lyrics.strip()
+        if use_instrumental:
+            settings["instrumental"] = bool(instrumental)
+        if use_lyrics_optimizer:
+            settings["lyricsOptimizer"] = bool(lyrics_optimizer)
 
         if use_guidance_type:
             settings["guidanceType"] = guidance_type

@@ -1261,6 +1261,10 @@ function audioSettingsToggleHandler(settingsNode) {
     const includePrefixWidget = settingsNode.widgets.find(w => w && w.name === "includePrefix");
     const useLyricsWidget = settingsNode.widgets.find(w => w && w.name === "useLyrics");
     const lyricsWidget = settingsNode.widgets.find(w => w && w.name === "lyrics");
+    const useInstrumentalWidget = settingsNode.widgets.find(w => w && w.name === "useInstrumental");
+    const instrumentalWidget = settingsNode.widgets.find(w => w && w.name === "instrumental");
+    const useLyricsOptimizerWidget = settingsNode.widgets.find(w => w && w.name === "useLyricsOptimizer");
+    const lyricsOptimizerWidget = settingsNode.widgets.find(w => w && w.name === "lyricsOptimizer");
     const useGuidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "useGuidanceType");
     const guidanceTypeWidget = settingsNode.widgets.find(w => w && w.name === "guidanceType");
     const useLanguageBoostWidget = settingsNode.widgets.find(w => w && w.name === "useLanguageBoost");
@@ -1311,6 +1315,8 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useTopKWidget && topKWidget) toggleWidgetState(useTopKWidget, topKWidget, "topK");
     if (useIncludePrefixWidget && includePrefixWidget) toggleWidgetState(useIncludePrefixWidget, includePrefixWidget, "includePrefix");
     if (useLyricsWidget && lyricsWidget) toggleWidgetState(useLyricsWidget, lyricsWidget, "lyrics");
+    if (useInstrumentalWidget && instrumentalWidget) toggleWidgetState(useInstrumentalWidget, instrumentalWidget, "instrumental");
+    if (useLyricsOptimizerWidget && lyricsOptimizerWidget) toggleWidgetState(useLyricsOptimizerWidget, lyricsOptimizerWidget, "lyricsOptimizer");
     if (useGuidanceTypeWidget && guidanceTypeWidget) toggleWidgetState(useGuidanceTypeWidget, guidanceTypeWidget, "guidanceType");
     if (useLanguageBoostWidget && languageBoostWidget) toggleWidgetState(useLanguageBoostWidget, languageBoostWidget, "languageBoost");
     if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
@@ -3100,6 +3106,8 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         ],
         "MiniMax": [
             "minimax:speech@2.8 (MiniMax Speech 2.8)",
+            "minimax:music@cover (MiniMax Music Cover)",
+            "minimax:music@2.6 (MiniMax Music 2.6)",
         ],
         "Inworld": [
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
