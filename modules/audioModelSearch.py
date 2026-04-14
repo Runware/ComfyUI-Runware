@@ -33,6 +33,8 @@ class RunwareAudioModelSearch:
         ],
         "MiniMax": [
             "minimax:speech@2.8 (MiniMax Speech 2.8)",
+            "minimax:music@cover (MiniMax Music Cover)",
+            "minimax:music@2.6 (MiniMax Music 2.6)",
         ],
         "Inworld": [
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
