@@ -112,6 +112,10 @@ const RUNWARE_NODE_TYPES = {
     VIDEOINFERENCEELEMENTSCOMBINE: "Runware Video Inference Elements Combine",
     VIDEOINFERENCESPEECHINPUT: "Runware Video Inference Speech Input",
     VIDEOSETTINGS: "Runware Video Inference Settings",
+    VIDEOINFERENCESETTINGSTTS: "Runware Video Inference Settings TTS",
+    VIDEOINFERENCESETTINGSACTIVESPEAKERDETECTION: "Runware Video Inference Settings Active Speaker Detection",
+    VIDEOINFERENCESETTINGSACTIVESPEAKERBOUNDINGBOXES: "Runware Video Inference Settings Active Speaker Bounding Boxes",
+    VIDEOINFERENCESETTINGSSEGMENTS: "Runware Video Inference Settings Segments",
     LIGHTRICKSPROVIDERSETTINGS: "Runware Lightricks Provider Settings",
     KLINGPROVIDERSETTINGS: "Runware KlingAI Provider Settings",
     KLINGMULTIPROMPTSEGMENT: "Runware Kling MultiPrompt Segment",
@@ -521,6 +525,22 @@ const RUNWARE_NODE_PROPS = {
     },
     [RUNWARE_NODE_TYPES.VIDEOSETTINGS]: {
         bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCESETTINGSTTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCESETTINGSACTIVESPEAKERDETECTION]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCESETTINGSACTIVESPEAKERBOUNDINGBOXES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCESETTINGSSEGMENTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.ACCELERATOROPTIONS]: {
         bgColor: DEFAULT_BGCOLOR,
