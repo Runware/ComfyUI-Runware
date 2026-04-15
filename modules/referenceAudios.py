@@ -10,15 +10,19 @@ class referenceAudios:
             "required": {},
             "optional": {
                 "Audio1": ("STRING", {
+                    "default": "",
                     "tooltip": "MediaUUID for the first reference audio from Runware Media Upload node.",
                 }),
                 "Audio2": ("STRING", {
+                    "default": "",
                     "tooltip": "MediaUUID for the second reference audio from Runware Media Upload node.",
                 }),
                 "Audio3": ("STRING", {
+                    "default": "",
                     "tooltip": "MediaUUID for the third reference audio from Runware Media Upload node.",
                 }),
                 "Audio4": ("STRING", {
+                    "default": "",
                     "tooltip": "MediaUUID for the fourth reference audio from Runware Media Upload node.",
                 }),
             }

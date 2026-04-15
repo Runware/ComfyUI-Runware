@@ -89,7 +89,7 @@ class videoInferenceInputs:
         frame = kwargs.get("Frame", None)
         background = kwargs.get("Background", None)
         frameImages = kwargs.get("Frame Images", None)
-        references = kwargs.get("References Images", None)
+        references = kwargs.get("References Images", kwargs.get("References", None))
         referenceVideos = kwargs.get("Reference Videos", None)
         referenceAudios = kwargs.get("Reference Audios", None)
         referenceVoices = kwargs.get("Reference Voices", None)
