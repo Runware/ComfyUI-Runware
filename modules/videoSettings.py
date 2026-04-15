@@ -26,21 +26,21 @@ class RunwareVideoSettings:
                 }),
                 "useAudio": ("BOOLEAN", {
                     "tooltip": "Enable to include audio (save video with audio) in video inference settings.",
-                    "default": True,
+                    "default": False,
                 }),
                 "audio": ("BOOLEAN", {
                     "tooltip": "Save the video with audio. Only used when 'Use Audio' is enabled.",
-                    "default": True,
+                    "default": False,
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
                 "usePromptUpsampling": ("BOOLEAN", {
                     "tooltip": "Enable to include promptUpsampling (enhance prompt automatically) in video inference settings.",
-                    "default": True,
+                    "default": False,
                 }),
                 "promptUpsampling": ("BOOLEAN", {
                     "tooltip": "Enhance prompt automatically for better results. Only used when 'Use Prompt Upsampling' is enabled.",
-                    "default": True,
+                    "default": False,
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
@@ -139,10 +139,10 @@ class RunwareVideoSettings:
         """Create settings dict for Video Inference API"""
         use_draft = kwargs.get("useDraft", False)
         draft = kwargs.get("draft", False)
-        use_audio = kwargs.get("useAudio", True)
-        audio = kwargs.get("audio", True)
-        use_prompt_upsampling = kwargs.get("usePromptUpsampling", True)
-        prompt_upsampling = kwargs.get("promptUpsampling", True)
+        use_audio = kwargs.get("useAudio", False)
+        audio = kwargs.get("audio", False)
+        use_prompt_upsampling = kwargs.get("usePromptUpsampling", False)
+        prompt_upsampling = kwargs.get("promptUpsampling", False)
         use_background_color = kwargs.get("useBackgroundColor", False)
         background_color = (kwargs.get("backgroundColor") or "").strip()
         use_remove_background = kwargs.get("useRemoveBackground", False)

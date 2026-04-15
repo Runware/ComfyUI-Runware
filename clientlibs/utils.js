@@ -2571,6 +2571,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "bytedance:2@1 (Seedance 1.0 Pro)", "bytedance:1@1 (Seedance 1.0 Lite)",
             "bytedance:5@1 (OmniHuman 1)", "bytedance:5@2 (OmniHuman 1.5)",
             "bytedance:seedance@1.5-pro (Seedance 1.5 Pro)",
+            "bytedance:seedance@2.0-fast (Seedance 2.0 Fast)",
+            "bytedance:seedance@2.0 (Seedance 2.0)",
         ],
         "MiniMax": [
             "minimax:1@1 (MiniMax 01 Base)", "minimax:2@1 (MiniMax 01 Director)",
@@ -2681,6 +2683,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:5@1": {"width": 1024, "height": 1024},
         "bytedance:5@2": {"width": 1024, "height": 1024},
         "bytedance:seedance@1.5-pro": {"width": 864, "height": 496},
+        "bytedance:seedance@2.0-fast": {"width": 864, "height": 496},
+        "bytedance:seedance@2.0": {"width": 864, "height": 496},
         "minimax:1@1": {"width": 1366, "height": 768},
         "minimax:2@1": {"width": 1366, "height": 768},
         "minimax:2@3": {"width": 1366, "height": 768},
@@ -2770,6 +2774,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:5@1": null,  // No resolution support
         "bytedance:5@2": null,  // No resolution support
         "bytedance:seedance@1.5-pro": "480p",
+        "bytedance:seedance@2.0-fast": "480p",
+        "bytedance:seedance@2.0": "480p",
         "minimax:1@1": "768p",
         "minimax:2@1": "768p",
         "minimax:2@3": "768p",
