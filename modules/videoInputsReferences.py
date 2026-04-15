@@ -63,5 +63,5 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "RunwareVideoInputsReferences": "Runware Video Inputs Reference Images",
+    "RunwareVideoInputsReferences": "Runware Video Inference Inputs Reference Images",
 }
