@@ -183,6 +183,10 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Audio Input": RunwareAudioInput,
     "Runware Video Speech Input": RunwareSpeechInput,
     "Runware Speech Inputs Combine": RunwareSpeechInputCombine,
+    # Backward-compatible aliases for existing workflows
+    "Runware Reference Videos": referenceVideos,
+    "Runware Reference Voices": referenceVoices,
+    "Runware Video Inputs References": videoInputsReferences,
     "Runware Video Inference Inputs Reference Videos": referenceVideos,
     "Runware Video Inference Inputs Reference Voices": referenceVoices,
     "Runware Video Inference Inputs Reference Audios": referenceAudios,

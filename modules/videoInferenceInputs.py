@@ -42,16 +42,16 @@ class videoInferenceInputs:
                     "tooltip": "Background image for video generation. Connect a Load Image node to provide the background.",
                 }),
                 "References Images": ("RUNWAREVIDEOINPUTSREFERENCEIMAGES", {
-                    "tooltip": "Connect the Video Inputs References node to provide reference images."
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Images node to provide reference images."
                 }),
                 "Reference Videos": ("RUNWAREREFERENCEVIDEOS", {
-                    "tooltip": "Connect the Reference Videos node to provide reference video mediaUUIDs."
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Videos node to provide reference video mediaUUIDs."
                 }),
                 "Reference Audios": ("RUNWAREINPUTAUDIOS", {
                     "tooltip": "Connect the Runware Video Inference Inputs Reference Audios node to provide reference audio mediaUUIDs."
                 }),
                 "Reference Voices": ("RUNWAREREFERENCEVOICES", {
-                    "tooltip": "Connect the Reference Voices node to provide reference voice URLs or mediaUUIDs."
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Voices node to provide reference voice URLs or mediaUUIDs."
                 }),
                 "draftId": ("STRING", {
                     "default": "",

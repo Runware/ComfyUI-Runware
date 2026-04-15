@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 class videoInputsReferences:
     """Video Inputs References node for configuring reference images with types"""
     
-    MAX_REFERENCES = 4
+    MAX_REFERENCES = 10
     
     @classmethod
     def INPUT_TYPES(cls):

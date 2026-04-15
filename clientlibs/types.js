@@ -106,8 +106,11 @@ const RUNWARE_NODE_TYPES = {
     AUDIOINPUT: "Runware Video Audio Input",
     SPEECHINPUT: "Runware Video Speech Input",
     REFERENCEVIDEOS: "Runware Video Inference Inputs Reference Videos",
+    REFERENCEVIDEOS_LEGACY: "Runware Reference Videos",
     REFERENCEVOICES: "Runware Video Inference Inputs Reference Voices",
+    REFERENCEVOICES_LEGACY: "Runware Reference Voices",
     REFERENCEAUDIOS: "Runware Video Inference Inputs Reference Audios",
+    VIDEOINPUTSREFERENCES_LEGACY: "Runware Video Inputs References",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
     VIDEOINFERENCEELEMENTS: "Runware Video Inference Elements",
     VIDEOINFERENCEELEMENTSCOMBINE: "Runware Video Inference Elements Combine",
@@ -402,7 +405,15 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.REFERENCEVIDEOS_LEGACY]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.REFERENCEVOICES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.REFERENCEVOICES_LEGACY]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
@@ -507,6 +518,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.VIDEOINPUTSREFERENCES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINPUTSREFERENCES_LEGACY]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
