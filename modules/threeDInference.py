@@ -15,7 +15,7 @@ class threeDInference:
     }
 
     # Output formats
-    OUTPUT_FORMATS = ["GLB", "PLY"]
+    OUTPUT_FORMATS = ["GLB", "PLY", "FBX"]
 
     @classmethod
     def INPUT_TYPES(cls):

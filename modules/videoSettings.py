@@ -26,21 +26,21 @@ class RunwareVideoSettings:
                 }),
                 "useAudio": ("BOOLEAN", {
                     "tooltip": "Enable to include audio (save video with audio) in video inference settings.",
-                    "default": True,
+                    "default": False,
                 }),
                 "audio": ("BOOLEAN", {
                     "tooltip": "Save the video with audio. Only used when 'Use Audio' is enabled.",
-                    "default": True,
+                    "default": False,
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
                 "usePromptUpsampling": ("BOOLEAN", {
                     "tooltip": "Enable to include promptUpsampling (enhance prompt automatically) in video inference settings.",
-                    "default": True,
+                    "default": False,
                 }),
                 "promptUpsampling": ("BOOLEAN", {
                     "tooltip": "Enhance prompt automatically for better results. Only used when 'Use Prompt Upsampling' is enabled.",
-                    "default": True,
+                    "default": False,
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
