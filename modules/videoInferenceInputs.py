@@ -41,14 +41,14 @@ class videoInferenceInputs:
                 "Background": ("IMAGE", {
                     "tooltip": "Background image for video generation. Connect a Load Image node to provide the background.",
                 }),
-                "References": ("RUNWAREVIDEOINPUTSREFERENCEIMAGES", {
-                    "tooltip": "Connect the Video Inputs References node to provide reference images."
+                "References Images": ("RUNWAREVIDEOINPUTSREFERENCEIMAGES", {
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Images node to provide reference images."
                 }),
                 "Reference Videos": ("RUNWAREREFERENCEVIDEOS", {
-                    "tooltip": "Connect the Reference Videos node to provide reference video mediaUUIDs."
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Videos node to provide reference video mediaUUIDs."
                 }),
                 "Reference Voices": ("RUNWAREREFERENCEVOICES", {
-                    "tooltip": "Connect the Reference Voices node to provide reference voice URLs or mediaUUIDs."
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Voices node to provide reference voice URLs or mediaUUIDs."
                 }),
                 "draftId": ("STRING", {
                     "default": "",
@@ -62,6 +62,9 @@ class videoInferenceInputs:
                 }),
                 "Elements": ("RUNWAREVIDEOINFERENCEELEMENTS", {
                     "tooltip": "Connect Runware Video Inference Elements (one element) or Runware Video Inference Elements Combine (several) for inputs.elements (Kling, etc.).",
+                }),
+                "Reference Audios": ("RUNWAREINPUTAUDIOS", {
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Audios node to provide reference audio mediaUUIDs."
                 }),
             }
         }
@@ -86,8 +89,9 @@ class videoInferenceInputs:
         frame = kwargs.get("Frame", None)
         background = kwargs.get("Background", None)
         frameImages = kwargs.get("Frame Images", None)
-        references = kwargs.get("References", None)
+        references = kwargs.get("References Images", kwargs.get("References", None))
         referenceVideos = kwargs.get("Reference Videos", None)
+        referenceAudios = kwargs.get("Reference Audios", None)
         referenceVoices = kwargs.get("Reference Voices", None)
         draftId = kwargs.get("draftId", "")
         videoId = kwargs.get("videoId", "")
@@ -142,6 +146,9 @@ class videoInferenceInputs:
 
         if referenceVideos is not None and len(referenceVideos) > 0:
             inputs["referenceVideos"] = referenceVideos
+
+        if referenceAudios is not None and len(referenceAudios) > 0:
+            inputs["referenceAudios"] = referenceAudios
 
         if referenceVoices is not None and len(referenceVoices) > 0:
             inputs["referenceVoices"] = referenceVoices
