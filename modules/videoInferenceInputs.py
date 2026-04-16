@@ -47,9 +47,6 @@ class videoInferenceInputs:
                 "Reference Videos": ("RUNWAREREFERENCEVIDEOS", {
                     "tooltip": "Connect the Runware Video Inference Inputs Reference Videos node to provide reference video mediaUUIDs."
                 }),
-                "Reference Audios": ("RUNWAREINPUTAUDIOS", {
-                    "tooltip": "Connect the Runware Video Inference Inputs Reference Audios node to provide reference audio mediaUUIDs."
-                }),
                 "Reference Voices": ("RUNWAREREFERENCEVOICES", {
                     "tooltip": "Connect the Runware Video Inference Inputs Reference Voices node to provide reference voice URLs or mediaUUIDs."
                 }),
@@ -65,6 +62,9 @@ class videoInferenceInputs:
                 }),
                 "Elements": ("RUNWAREVIDEOINFERENCEELEMENTS", {
                     "tooltip": "Connect Runware Video Inference Elements (one element) or Runware Video Inference Elements Combine (several) for inputs.elements (Kling, etc.).",
+                }),
+                "Reference Audios": ("RUNWAREINPUTAUDIOS", {
+                    "tooltip": "Connect the Runware Video Inference Inputs Reference Audios node to provide reference audio mediaUUIDs."
                 }),
             }
         }
