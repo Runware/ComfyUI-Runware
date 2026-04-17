@@ -1337,7 +1337,7 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     if (!settingsNode?.widgets) return;
 
     const useSystemPromptWidget = settingsNode.widgets.find(w => w && w.name === "useSystemPrompt");
-    const systemWidget = settingsNode.widgets.find(w => w && (w.name === "systemPrompt" || w.name === "system"));
+    const systemWidget = settingsNode.widgets.find(w => w && w.name === "system");
     const useMaxTokensWidget = settingsNode.widgets.find(w => w && w.name === "useMaxTokens");
     const maxTokensWidget = settingsNode.widgets.find(w => w && w.name === "maxTokens");
     const useTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useTemperature");
@@ -1346,16 +1346,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     const topPWidget = settingsNode.widgets.find(w => w && w.name === "topP");
     const useTopKWidget = settingsNode.widgets.find(w => w && w.name === "useTopK");
     const topKWidget = settingsNode.widgets.find(w => w && w.name === "topK");
-    const useStopSequencesWidget = settingsNode.widgets.find(w => w && w.name === "useStopSequences");
-    const stopSequencesWidget = settingsNode.widgets.find(w => w && w.name === "stopSequences");
-    const usePresencePenaltyWidget = settingsNode.widgets.find(w => w && w.name === "usePresencePenalty");
-    const presencePenaltyWidget = settingsNode.widgets.find(w => w && w.name === "presencePenalty");
-    const useFrequencyPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "useFrequencyPenalty");
-    const frequencyPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "frequencyPenalty");
-    const useToolsWidget = settingsNode.widgets.find(w => w && w.name === "useTools");
-    const toolsWidget = settingsNode.widgets.find(w => w && w.name === "tools");
-    const useToolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "useToolChoice");
-    const toolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "toolChoice");
 
     function toggleWidgetState(useWidget, paramWidget) {
         if (!useWidget || !paramWidget) return;
@@ -1378,11 +1368,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget);
     if (useTopPWidget && topPWidget) toggleWidgetState(useTopPWidget, topPWidget);
     if (useTopKWidget && topKWidget) toggleWidgetState(useTopKWidget, topKWidget);
-    if (useStopSequencesWidget && stopSequencesWidget) toggleWidgetState(useStopSequencesWidget, stopSequencesWidget);
-    if (usePresencePenaltyWidget && presencePenaltyWidget) toggleWidgetState(usePresencePenaltyWidget, presencePenaltyWidget);
-    if (useFrequencyPenaltyWidget && frequencyPenaltyWidget) toggleWidgetState(useFrequencyPenaltyWidget, frequencyPenaltyWidget);
-    if (useToolsWidget && toolsWidget) toggleWidgetState(useToolsWidget, toolsWidget);
-    if (useToolChoiceWidget && toolChoiceWidget) toggleWidgetState(useToolChoiceWidget, toolChoiceWidget);
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -3061,9 +3046,6 @@ function textModelSearchFilterHandler(textModelSearchNode) {
         ],
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",
-        ],
-        "Zai": [
-            "zai-glm-5-1 (ZAI GLM 5.1)",
         ],
     };
 
