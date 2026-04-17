@@ -69,6 +69,11 @@ class RunwareTextInferenceSettings:
                     "step": 1,
                     "tooltip": f"Top-k sampling (1–{cls._MAX_TOP_K}).",
                 }),
+                # Keep this in the original slot to avoid shifting legacy widgets_values.
+                "thinkingLevel": (["none", "low", "medium", "high"], {
+                    "default": "none",
+                    "tooltip": "Extended reasoning level: none, low, medium, high.",
+                }),
                 "useStopSequences": ("BOOLEAN", {
                     "default": False,
                     "tooltip": "Include stopSequences in settings.",
@@ -117,10 +122,6 @@ class RunwareTextInferenceSettings:
                     "multiline": True,
                     "default": "{}",
                     "tooltip": "JSON object for toolChoice.",
-                }),
-                "thinkingLevel": (["none", "low", "medium", "high"], {
-                    "default": "none",
-                    "tooltip": "Extended reasoning level: none, low, medium, high.",
                 }),
             },
         }
@@ -181,6 +182,19 @@ class RunwareTextInferenceSettings:
                 )
         return items
 
+    @staticmethod
+    def _normalize_thinking_level(raw: Any) -> str:
+        value = str(raw or "none").strip().lower()
+        # Backward compatibility with older workflows.
+        aliases = {
+            "off": "none",
+            "minimal": "low",
+        }
+        value = aliases.get(value, value)
+        if value not in ("none", "low", "medium", "high"):
+            return "none"
+        return value
+
     def create_settings(self, **kwargs) -> Tuple[Dict[str, Any], ...]:
         out: Dict[str, Any] = {}
 
@@ -224,7 +238,7 @@ class RunwareTextInferenceSettings:
             if parsed_choice:
                 out["toolChoice"] = parsed_choice
 
-        tl = kwargs.get("thinkingLevel", "none")
+        tl = self._normalize_thinking_level(kwargs.get("thinkingLevel", "none"))
         if tl != "none":
             out["thinkingLevel"] = tl
 
