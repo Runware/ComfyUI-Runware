@@ -16,6 +16,9 @@ class RunwareTextModelSearch:
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",
         ],
+        "Zai": [
+            "zai-glm-5-1 (ZAI GLM 5.1)",
+        ],
     }
 
     MODEL_PROVIDERS = [
@@ -23,6 +26,7 @@ class RunwareTextModelSearch:
         "Google",
         "MiniMax",
         "OpenAI",
+        "Zai",
     ]
 
     @classmethod
