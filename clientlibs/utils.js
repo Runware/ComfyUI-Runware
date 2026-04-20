@@ -3137,6 +3137,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
             "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
         ],
+        "Google": [
+            "google:gemini@3.1-flash-tts (Gemini 3.1 Flash TTS)",
+        ],
     };
 
     function filterModelList() {
@@ -4614,6 +4617,64 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
     }
 }
 
+function audioInferenceSpeechVoicesToggleHandler(voicesNode) {
+    if (!voicesNode?.widgets) return;
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = voicesNode.htmlElements?.widgetsContainer || voicesNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
+            voicesNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        const useVoiceWidget = voicesNode.widgets.find((w) => w && w.name === `useVoice${i}`);
+        const speakerWidget = voicesNode.widgets.find((w) => w && w.name === `speaker${i}`);
+        const voiceWidget = voicesNode.widgets.find((w) => w && w.name === `voice${i}`);
+
+        if (useVoiceWidget && speakerWidget) {
+            toggleWidgetState(useVoiceWidget, speakerWidget, `speaker${i}`);
+        }
+        if (useVoiceWidget && voiceWidget) {
+            toggleWidgetState(useVoiceWidget, voiceWidget, `voice${i}`);
+        }
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -4677,6 +4738,7 @@ export {
     wanAnimateAdvancedFeatureSettingsToggleHandler,
     videoAdvancedFeatureInputsToggleHandler,
     audioInferenceInputsToggleHandler,
+    audioInferenceSpeechVoicesToggleHandler,
 };
 
 function googleProviderSettingsToggleHandler(googleNode) {
