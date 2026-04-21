@@ -40,6 +40,9 @@ class RunwareAudioModelSearch:
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
             "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
         ],
+        "Google": [
+            "google:gemini@3.1-flash-tts (Gemini 3.1 Flash TTS)",
+        ],
     }
     
     MODEL_PROVIDERS = [
@@ -53,6 +56,7 @@ class RunwareAudioModelSearch:
         "xAI",
         "MiniMax",
         "Inworld",
+        "Google",
     ]
     
     @classmethod

@@ -42,6 +42,7 @@ from .modules.providerSettings.briaProviderSettings import RunwareBriaProviderSe
 from .modules.providerSettings.briaProviderMask import RunwareBriaProviderMask
 from .modules.audioInference import RunwareAudioInference
 from .modules.audioInferenceSpeech import RunwareAudioInferenceSpeech
+from .modules.audioInferenceSpeechVoices import RunwareAudioInferenceSpeechVoices
 from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.textModelSearch import RunwareTextModelSearch
 from .modules.textInferenceMessages import RunwareTextInferenceMessages
@@ -164,6 +165,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Bria Provider Mask": RunwareBriaProviderMask,
     "Runware Audio Inference": RunwareAudioInference,
     "Runware Audio Inference Speech": RunwareAudioInferenceSpeech,
+    "Runware Audio Inference Speech Voices": RunwareAudioInferenceSpeechVoices,
     "Runware Audio Model Search": RunwareAudioModelSearch,
     "Runware Text Model Search": RunwareTextModelSearch,
     "Runware Text Inference Messages": RunwareTextInferenceMessages,

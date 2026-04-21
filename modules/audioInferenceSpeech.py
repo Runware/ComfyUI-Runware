@@ -14,20 +14,6 @@ class RunwareAudioInferenceSpeech:
         "calm", "fluent", "whisper",
     ]
 
-    SPEECH_LANGUAGES = [
-        "Auto",
-        "Chinese",
-        "English",
-        "Japanese",
-        "Korean",
-        "German",
-        "French",
-        "Russian",
-        "Portuguese",
-        "Spanish",
-        "Italian",
-    ]
-
     def __init__(self):
         pass
 
@@ -50,7 +36,7 @@ class RunwareAudioInferenceSpeech:
                     "default": "",
                     "tooltip": "Voice identifier.",
                 }),
-                "useSpeed": ("BOOLEAN", {"default": True, "tooltip": "Include speed (speech.speed)"}),
+                "useSpeed": ("BOOLEAN", {"default": False, "tooltip": "Include speed (speech.speed)"}),
                 "speed": ("FLOAT", {
                     "default": 1.0,
                     "min": 0.5,
@@ -58,7 +44,7 @@ class RunwareAudioInferenceSpeech:
                     "step": 0.01,
                     "tooltip": "Speech rate multiplier (speech.speed)",
                 }),
-                "useVolume": ("BOOLEAN", {"default": True, "tooltip": "Include volume (speech.volume)"}),
+                "useVolume": ("BOOLEAN", {"default": False, "tooltip": "Include volume (speech.volume)"}),
                 "volume": ("FLOAT", {
                     "default": 1.0,
                     "min": 1.0,
@@ -87,9 +73,12 @@ class RunwareAudioInferenceSpeech:
                     "default": False,
                     "tooltip": "Enable to include language (speech.language).",
                 }),
-                "language": (cls.SPEECH_LANGUAGES, {
+                "language": ("STRING", {
                     "default": "Auto",
-                    "tooltip": "Language of the input text. Options: Auto, Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, Italian. Applies to all variants. Only used when 'Use Language' is enabled.",
+                    "tooltip": "Language of the input text (for example: en-US). Applies to all variants. Only used when 'Use Language' is enabled.",
+                }),
+                "voices": ("RUNWAREAUDIOINFERENCESPEECHVOICES", {
+                    "tooltip": "Optional multi-speaker voices array (speech.voices[]). If provided, it takes precedence over speech.voice.",
                 }),
             }
         }
@@ -108,9 +97,9 @@ class RunwareAudioInferenceSpeech:
         text = (kwargs.get("text") or "").strip()
         voice = (kwargs.get("voice") or "").strip()
         use_voice = kwargs.get("useVoice", False)
-        use_speed = kwargs.get("useSpeed", True)
+        use_speed = kwargs.get("useSpeed", False)
         speed = float(kwargs.get("speed", 1.0))
-        use_volume = kwargs.get("useVolume", True)
+        use_volume = kwargs.get("useVolume", False)
         volume = float(kwargs.get("volume", 1.0))
         use_pitch = kwargs.get("usePitch", False)
         pitch = float(kwargs.get("pitch", 0.0))
@@ -119,10 +108,13 @@ class RunwareAudioInferenceSpeech:
         use_tone = kwargs.get("useTone", False)
         tone_str = kwargs.get("tone", "") or ""
         use_language = kwargs.get("useLanguage", False)
-        language = kwargs.get("language", "Auto")
+        language = (kwargs.get("language") or "Auto").strip()
+        voices = kwargs.get("voices")
 
         speech: Dict[str, Any] = {"text": text}
-        if use_voice:
+        if isinstance(voices, list) and len(voices) > 0:
+            speech["voices"] = voices
+        elif use_voice:
             speech["voice"] = voice
         if use_speed:
             speech["speed"] = speed

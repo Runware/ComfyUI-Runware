@@ -82,6 +82,7 @@ const RUNWARE_NODE_TYPES = {
     FRAMEIMAGES: "Runware Frame Images",
     AUDIOINFERENCE: "Runware Audio Inference",
     AUDIOINFERENCESPEECH: "Runware Audio Inference Speech",
+    AUDIOINFERENCESPEECHVOICES: "Runware Audio Inference Speech Voices",
     AUDIOMODELSEARCH: "Runware Audio Model Search",
     TEXTMODELSEARCH: "Runware Text Model Search",
     TEXTINFERENCE: "Runware Text Inference",
@@ -298,6 +299,10 @@ const RUNWARE_NODE_PROPS = {
     },
     [RUNWARE_NODE_TYPES.AUDIOINFERENCESPEECH]: {
         bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOINFERENCESPEECHVOICES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.AUDIOMODELSEARCH]: {
         bgColor: DEFAULT_BGCOLOR,
