@@ -4,7 +4,7 @@ Builds speech.voices[] for multi-speaker audio inference speech payloads.
 """
 
 import re
-from typing import Any, Dict, List
+from typing import Dict, List
 
 
 class RunwareAudioInferenceSpeechVoices:
@@ -18,7 +18,7 @@ class RunwareAudioInferenceSpeechVoices:
         optional_inputs = {}
         for i in range(1, cls.MAX_VOICES + 1):
             optional_inputs[f"useVoice{i}"] = ("BOOLEAN", {
-                "default": i == 1,
+                "default": False,
                 "tooltip": f"Enable to include speaker/voice pair #{i} in speech.voices.",
             })
             optional_inputs[f"speaker{i}"] = ("STRING", {
@@ -44,12 +44,12 @@ class RunwareAudioInferenceSpeechVoices:
         "Each item contains speaker (unique alphanumeric alias) and voice name."
     )
 
-    def createVoices(self, **kwargs) -> tuple[List[Dict[str, str]]]:
-        voices: List[Dict[str, str]] = []
+    def createVoices(self, **kwargs) -> tuple[list[dict[str, str]],]:
+        voices: list[dict[str, str]] = []
         seen_speakers = set()
 
         for i in range(1, self.MAX_VOICES + 1):
-            use_voice = bool(kwargs.get(f"useVoice{i}", i == 1))
+            use_voice = bool(kwargs.get(f"useVoice{i}", False))
             if not use_voice:
                 continue
 
