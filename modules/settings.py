@@ -126,6 +126,14 @@ class RunwareSettings:
                     "default": "high",
                     "tooltip": "Reasoning level for visual understanding. Only used when 'Use Thinking Level' is enabled.",
                 }),
+                "useBackground": ("BOOLEAN", {
+                    "tooltip": "Enable to include background style in API request",
+                    "default": False,
+                }),
+                "background": (["auto", "transparent", "opaque"], {
+                    "default": "auto",
+                    "tooltip": "Background style for the generated image. Only used when 'Use Background' is enabled.",
+                }),
             }
         }
 
@@ -134,7 +142,7 @@ class RunwareSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, "
+        "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, and optional colorPalette from the Color Palette node."
     )
 
@@ -148,6 +156,7 @@ class RunwareSettings:
         useLayers = kwargs.get("useLayers", False)
         useTrueCFGScale = kwargs.get("useTrueCFGScale", False)
         useQuality = kwargs.get("useQuality", False)
+        useBackground = kwargs.get("useBackground", False)
         usePromptExtend = kwargs.get("usePromptExtend", False)
         promptExtend = kwargs.get("promptExtend", False)
         useEditRegions = kwargs.get("useEditRegions", False)
@@ -162,6 +171,7 @@ class RunwareSettings:
         layers = kwargs.get("layers")
         trueCFGScale = kwargs.get("trueCFGScale")
         quality = kwargs.get("quality", "medium")
+        background = kwargs.get("background", "auto")
 
         # Build settings dictionary - only include what is enabled
         settings: Dict[str, Any] = {}
@@ -179,6 +189,8 @@ class RunwareSettings:
             settings["true_cfg_scale"] = float(trueCFGScale)
         if useQuality:
             settings["quality"] = quality
+        if useBackground:
+            settings["background"] = background
         if usePromptExtend:
             settings["promptExtend"] = bool(promptExtend)
 
