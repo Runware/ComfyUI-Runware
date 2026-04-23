@@ -1,7 +1,9 @@
 """
 Runware Image Inference Settings (registered as Runware Settings for workflow compatibility).
-Provides settings for image generation including temperature, systemPrompt, topP,
-editRegions, thinking (boolean), thinkingLevel (high/medium/low), sequential, and colorPalette (from Runware Image Inference Settings Color Palette).
+Provides settings for image generation including temperature, systemPrompt, topP, layers,
+quality, background, promptExtend, editRegions, thinking (boolean),
+thinkingLevel (high/medium/low), sequential, and colorPalette
+(from Runware Image Inference Settings Color Palette).
 """
 
 import json
