@@ -4823,6 +4823,8 @@ function settingsToggleHandler(settingsNode) {
     const trueCFGScaleWidget = settingsNode.widgets.find(w => w.name === "trueCFGScale");
     const useQualityWidget = settingsNode.widgets.find(w => w.name === "useQuality");
     const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
+    const useBackgroundWidget = settingsNode.widgets.find(w => w.name === "useBackground");
+    const backgroundWidget = settingsNode.widgets.find(w => w.name === "background");
     const usePromptExtendWidget = settingsNode.widgets.find(w => w.name === "usePromptExtend");
     const promptExtendWidget = settingsNode.widgets.find(w => w.name === "promptExtend");
     const useEditRegionsWidget = settingsNode.widgets.find(w => w.name === "useEditRegions");
@@ -4894,6 +4896,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useQualityWidget && qualityWidget) {
         toggleWidgetState(useQualityWidget, qualityWidget, "quality");
+    }
+    if (useBackgroundWidget && backgroundWidget) {
+        toggleWidgetState(useBackgroundWidget, backgroundWidget, "background");
     }
     if (usePromptExtendWidget && promptExtendWidget) {
         toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");
