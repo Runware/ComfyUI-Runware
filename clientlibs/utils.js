@@ -1585,12 +1585,29 @@ function videoInferenceSettingsSegmentsToggleHandler(node) {
         const cropStart = byName(`segment${idx}AudioStartTime`);
         const cropEnd = byName(`segment${idx}AudioEndTime`);
 
+        function toggleCropTimeWidget(paramWidget) {
+            if (!useSegment || !useCrop || !paramWidget) return;
+            function applyState() {
+                const enabled = useSegment.value === true && useCrop.value === true;
+                toggleWidgetEnabled(paramWidget, enabled, node);
+                if (paramWidget.options && paramWidget.options.element) {
+                    paramWidget.options.element.disabled = !enabled;
+                    paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                    paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+                }
+                node.setDirtyCanvas(true);
+            }
+            setTimeout(applyState, 100);
+            appendWidgetCB(useSegment, () => setTimeout(applyState, 50));
+            appendWidgetCB(useCrop, () => setTimeout(applyState, 50));
+        }
+
         if (useSegment && start) togglePair(useSegment, start, `segment${idx}StartTime`);
         if (useSegment && end) togglePair(useSegment, end, `segment${idx}EndTime`);
         if (useSegment && audio) togglePair(useSegment, audio, `segment${idx}Audio`);
         if (useSegment && useCrop) togglePair(useSegment, useCrop, `useSegment${idx}AudioCrop`);
-        if (useCrop && cropStart) togglePair(useCrop, cropStart, `segment${idx}AudioStartTime`);
-        if (useCrop && cropEnd) togglePair(useCrop, cropEnd, `segment${idx}AudioEndTime`);
+        if (cropStart) toggleCropTimeWidget(cropStart);
+        if (cropEnd) toggleCropTimeWidget(cropEnd);
     }
 
     wireSegment(1);
