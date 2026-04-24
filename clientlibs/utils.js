@@ -2190,6 +2190,17 @@ function threeDInferenceSettingsToggleHandler(node) {
         ["useMeshMode", "meshMode"],
         ["useAddons", "addons"],
         ["useHdTexture", "hdTexture"],
+        ["useMeshType", "meshType"],
+        ["useTopology", "topology"],
+        ["useDecimation", "decimation"],
+        ["useSymmetry", "symmetry"],
+        ["usePose", "pose"],
+        ["useImageEnhancement", "imageEnhancement"],
+        ["useRemoveLighting", "removeLighting"],
+        ["useOrigin", "origin"],
+        ["useModeration", "moderation"],
+        ["useSavePreRemeshedModel", "savePreRemeshedModel"],
+        ["useTexturePrompt", "texturePrompt"],
     ];
     pairs.forEach(([useName, paramName]) => {
         const useW = node.widgets.find(w => w.name === useName);

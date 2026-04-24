@@ -12,6 +12,7 @@ class threeDInference:
         "Tripo 3D v3.1": "tripo:v3.1@0",
         "Rodin Gen-1": "hyper3d:rodin@gen-1",
         "Rodin Gen-2": "hyper3d:rodin@gen-2",
+        "Meshy 6": "meshy:meshy@6",
     }
 
     # Output formats
