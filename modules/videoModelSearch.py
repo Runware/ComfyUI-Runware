@@ -23,6 +23,7 @@ class videoModelSearch:
             "klingai:kling-video@3-4k (Kling VIDEO 3.0 4K)",
             "klingai:kling-video@o3-pro (Kling VIDEO O3 Pro)",
             "klingai:kling-video@o3-standard (Kling VIDEO O3 Standard)",
+            "klingai:kling-video@o3-4k (Kling VIDEO O3 4K)",
             "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
             "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
@@ -162,6 +163,7 @@ class videoModelSearch:
         "klingai:kling-video@3-4k": {"width": 3840, "height": 2160},
         "klingai:kling-video@o3-pro": {"width": 1920, "height": 1080},
         "klingai:kling-video@o3-standard": {"width": 1920, "height": 1080},
+        "klingai:kling-video@o3-4k": {"width": 3840, "height": 2160},
         "klingai:avatar@2.0-standard": {"width": 0, "height": 0},
         "klingai:avatar@2.0-pro": {"width": 0, "height": 0},
         
@@ -300,6 +302,7 @@ class videoModelSearch:
         "klingai:kling-video@3-4k": None,  # No 4K option in current resolution dropdown
         "klingai:kling-video@o3-pro": "1080p",
         "klingai:kling-video@o3-standard": "1080p",
+        "klingai:kling-video@o3-4k": None,  # No 4K option in current resolution dropdown
         "klingai:avatar@2.0-standard": None,  # No resolution support
         "klingai:avatar@2.0-pro": None,  # No resolution support
         
