@@ -134,6 +134,9 @@ class videoModelSearch:
         "Pruna": [
             "prunaai:p-video@0 (P-Video)",
         ],
+        "SkyReels": [
+            "skywork:skyreels@v4 (SkyReels V4)",
+        ],
     }
     
     # Model dimensions mapping
@@ -268,6 +271,9 @@ class videoModelSearch:
         # HeyGen Models (Model ID: heygen-avatar-iv)
         "heygen:avatar@4": {"width": 1280, "height": 720},
         "heygen:video-agent@0": {"width": 1280, "height": 720},
+
+        # SkyReels Models
+        "skywork:skyreels@v4": {"width": 1280, "height": 720},
     }
     
     # Model resolutions mapping
@@ -402,6 +408,9 @@ class videoModelSearch:
         # HeyGen Models
         "heygen:avatar@4": "720p",
         "heygen:video-agent@0": "720p",
+
+        # SkyReels Models
+        "skywork:skyreels@v4": "720p",
     }
 
     MODEL_ARCHITECTURES = [
@@ -427,6 +436,7 @@ class videoModelSearch:
         "xAI",
         "VEED",
         "Pruna",
+        "SkyReels",
     ]
     
     DEFAULT_DIMENSIONS = {"width": 1024, "height": 576}

@@ -98,6 +98,7 @@ from .modules.vectorize import vectorize
 from .modules.videoBgRemoval import videoBgRemoval
 from .modules.videoUpscaler import videoUpscaler
 from .modules.videoInputsReferences import videoInputsReferences
+from .modules.videoInputsReferenceImagesMultipleImagesConnector import RunwareVideoInputsReferenceImagesMultipleImagesConnector
 from .modules.videoInputsFrame import RunwareVideoInputsFrameImages
 from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
@@ -229,6 +230,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,
     "Runware Video Inference Inputs Reference Images": videoInputsReferences,
+    "Runware Video Inference Inputs Reference Images Multiple Images Connector": RunwareVideoInputsReferenceImagesMultipleImagesConnector,
     "Runware Video Inputs Frame Images": RunwareVideoInputsFrameImages,
     "Runware Safety Inputs": safetyInputs,
     "Runware Settings": RunwareSettings,
@@ -260,6 +262,15 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Text Model Search": "Runware Text Model",
     "Runware Image Inference Settings Color Palette": "Runware Image Inference Color Palette",
     "Runware Video Transcription": "Runware Video Caption",
+    "Runware Video Inputs References": "Runware Video Inference Inputs Reference Images",
+    "Runware Video Inference Inputs Reference Images": "Runware Video Inference Inputs Reference Images",
+    "Runware Reference Voices": "Runware Video Inference Inputs Reference Voices",
+    "Runware Video Inference Inputs Reference Voices": "Runware Video Inference Inputs Reference Voices",
+    "Runware Reference Videos": "Runware Video Inference Inputs Reference Videos",
+    "Runware Video Inference Inputs Reference Videos": "Runware Video Inference Inputs Reference Videos",
+    "Runware Reference Audios": "Runware Video Inference Inputs Reference Audios",
+    "Runware Video Inference Inputs Reference Audios": "Runware Video Inference Inputs Reference Audios",
+    "Runware Video Inference Inputs Reference Images Multiple Images Connector": "Runware Video Inference Inputs Reference Images Multiple Images Connector",
 }
 
 WEB_DIRECTORY = "./clientlibs"
