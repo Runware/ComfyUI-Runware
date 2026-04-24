@@ -260,6 +260,14 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Text Model Search": "Runware Text Model",
     "Runware Image Inference Settings Color Palette": "Runware Image Inference Color Palette",
     "Runware Video Transcription": "Runware Video Caption",
+    "Runware Video Inputs References": "Runware Video Inference Inputs Reference Images",
+    "Runware Video Inference Inputs Reference Images": "Runware Video Inference Inputs Reference Images",
+    "Runware Reference Voices": "Runware Video Inference Inputs Reference Voices",
+    "Runware Video Inference Inputs Reference Voices": "Runware Video Inference Inputs Reference Voices",
+    "Runware Reference Videos": "Runware Video Inference Inputs Reference Videos",
+    "Runware Video Inference Inputs Reference Videos": "Runware Video Inference Inputs Reference Videos",
+    "Runware Reference Audios": "Runware Video Inference Inputs Reference Audios",
+    "Runware Video Inference Inputs Reference Audios": "Runware Video Inference Inputs Reference Audios",
 }
 
 WEB_DIRECTORY = "./clientlibs"

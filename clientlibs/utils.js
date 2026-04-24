@@ -2838,6 +2838,9 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "Pruna": [
             "prunaai:p-video@0 (P-Video)",
         ],
+        "SkyReels": [
+            "skywork:skyreels@v4 (SkyReels V4)",
+        ],
     };
 
     const MODEL_DIMENSIONS = {
@@ -2930,6 +2933,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "prunaai:p-video@0": {"width": 1280, "height": 720},
         "heygen:avatar@4": {"width": 1280, "height": 720},
         "heygen:video-agent@0": {"width": 1280, "height": 720},
+        "skywork:skyreels@v4": {"width": 1280, "height": 720},
     };
 
     const MODEL_RESOLUTIONS = {
@@ -3022,6 +3026,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "prunaai:p-video@0": "720p",
         "heygen:avatar@4": "720p",
         "heygen:video-agent@0": "720p",
+        "skywork:skyreels@v4": "720p",
     };
 
     const DEFAULT_DIMENSIONS = {"width": 1024, "height": 576};
@@ -4851,6 +4856,74 @@ function audioInferenceSpeechVoicesToggleHandler(voicesNode) {
     }
 }
 
+function referenceVideosToggleHandler(referenceVideosNode) {
+    if (!referenceVideosNode?.widgets) return;
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = referenceVideosNode.htmlElements?.widgetsContainer || referenceVideosNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
+            referenceVideosNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        const useVideoWidget = referenceVideosNode.widgets.find((w) => w && w.name === `useVideo${i}`);
+        const videoWidget = referenceVideosNode.widgets.find((w) => w && w.name === `Video${i}`);
+        const tagWidget = referenceVideosNode.widgets.find((w) => w && w.name === `Tag${i}`);
+        const typeWidget = referenceVideosNode.widgets.find((w) => w && w.name === `Type${i}`);
+
+        if (useVideoWidget && videoWidget) {
+            toggleWidgetState(useVideoWidget, videoWidget, `Video${i}`);
+        }
+        if (useVideoWidget && tagWidget) {
+            toggleWidgetState(useVideoWidget, tagWidget, `Tag${i}`);
+        }
+        if (useVideoWidget && typeWidget) {
+            toggleWidgetState(useVideoWidget, typeWidget, `Type${i}`);
+        }
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -4919,6 +4992,7 @@ export {
     videoAdvancedFeatureInputsToggleHandler,
     audioInferenceInputsToggleHandler,
     audioInferenceSpeechVoicesToggleHandler,
+    referenceVideosToggleHandler,
 };
 
 function googleProviderSettingsToggleHandler(googleNode) {
