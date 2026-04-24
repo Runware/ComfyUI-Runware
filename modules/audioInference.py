@@ -78,7 +78,7 @@ class RunwareAudioInference:
                     "default": "URL",
                     "tooltip": "Output type for the generated audio"
                 }),
-                "outputFormat": (["MP3", "MP4"], {
+                "outputFormat": (["MP3", "MP4", "WAV", "FLAC", "OGG"], {
                     "default": "MP3",
                     "tooltip": "Format of the output audio"
                 }),

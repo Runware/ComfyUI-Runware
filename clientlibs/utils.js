@@ -1337,7 +1337,7 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     if (!settingsNode?.widgets) return;
 
     const useSystemPromptWidget = settingsNode.widgets.find(w => w && w.name === "useSystemPrompt");
-    const systemWidget = settingsNode.widgets.find(w => w && w.name === "system");
+    const systemWidget = settingsNode.widgets.find(w => w && (w.name === "systemPrompt" || w.name === "system"));
     const useMaxTokensWidget = settingsNode.widgets.find(w => w && w.name === "useMaxTokens");
     const maxTokensWidget = settingsNode.widgets.find(w => w && w.name === "maxTokens");
     const useTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useTemperature");
@@ -1346,6 +1346,16 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     const topPWidget = settingsNode.widgets.find(w => w && w.name === "topP");
     const useTopKWidget = settingsNode.widgets.find(w => w && w.name === "useTopK");
     const topKWidget = settingsNode.widgets.find(w => w && w.name === "topK");
+    const useStopSequencesWidget = settingsNode.widgets.find(w => w && w.name === "useStopSequences");
+    const stopSequencesWidget = settingsNode.widgets.find(w => w && w.name === "stopSequences");
+    const usePresencePenaltyWidget = settingsNode.widgets.find(w => w && w.name === "usePresencePenalty");
+    const presencePenaltyWidget = settingsNode.widgets.find(w => w && w.name === "presencePenalty");
+    const useFrequencyPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "useFrequencyPenalty");
+    const frequencyPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "frequencyPenalty");
+    const useToolsWidget = settingsNode.widgets.find(w => w && w.name === "useTools");
+    const toolsWidget = settingsNode.widgets.find(w => w && w.name === "tools");
+    const useToolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "useToolChoice");
+    const toolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "toolChoice");
 
     function toggleWidgetState(useWidget, paramWidget) {
         if (!useWidget || !paramWidget) return;
@@ -1368,6 +1378,11 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget);
     if (useTopPWidget && topPWidget) toggleWidgetState(useTopPWidget, topPWidget);
     if (useTopKWidget && topKWidget) toggleWidgetState(useTopKWidget, topKWidget);
+    if (useStopSequencesWidget && stopSequencesWidget) toggleWidgetState(useStopSequencesWidget, stopSequencesWidget);
+    if (usePresencePenaltyWidget && presencePenaltyWidget) toggleWidgetState(usePresencePenaltyWidget, presencePenaltyWidget);
+    if (useFrequencyPenaltyWidget && frequencyPenaltyWidget) toggleWidgetState(useFrequencyPenaltyWidget, frequencyPenaltyWidget);
+    if (useToolsWidget && toolsWidget) toggleWidgetState(useToolsWidget, toolsWidget);
+    if (useToolChoiceWidget && toolChoiceWidget) toggleWidgetState(useToolChoiceWidget, toolChoiceWidget);
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -2727,6 +2742,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "bytedance:2@1 (Seedance 1.0 Pro)", "bytedance:1@1 (Seedance 1.0 Lite)",
             "bytedance:5@1 (OmniHuman 1)", "bytedance:5@2 (OmniHuman 1.5)",
             "bytedance:seedance@1.5-pro (Seedance 1.5 Pro)",
+            "bytedance:seedance@2.0-fast (Seedance 2.0 Fast)",
+            "bytedance:seedance@2.0 (Seedance 2.0)",
         ],
         "MiniMax": [
             "minimax:1@1 (MiniMax 01 Base)", "minimax:2@1 (MiniMax 01 Director)",
@@ -2838,6 +2855,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:5@1": {"width": 1024, "height": 1024},
         "bytedance:5@2": {"width": 1024, "height": 1024},
         "bytedance:seedance@1.5-pro": {"width": 864, "height": 496},
+        "bytedance:seedance@2.0-fast": {"width": 864, "height": 496},
+        "bytedance:seedance@2.0": {"width": 864, "height": 496},
         "minimax:1@1": {"width": 1366, "height": 768},
         "minimax:2@1": {"width": 1366, "height": 768},
         "minimax:2@3": {"width": 1366, "height": 768},
@@ -2928,6 +2947,8 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:5@1": null,  // No resolution support
         "bytedance:5@2": null,  // No resolution support
         "bytedance:seedance@1.5-pro": "480p",
+        "bytedance:seedance@2.0-fast": "480p",
+        "bytedance:seedance@2.0": "480p",
         "minimax:1@1": "768p",
         "minimax:2@1": "768p",
         "minimax:2@3": "768p",
@@ -3200,6 +3221,9 @@ function textModelSearchFilterHandler(textModelSearchNode) {
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",
         ],
+        "Zai": [
+            "zai-glm-5-1 (ZAI GLM 5.1)",
+        ],
     };
 
     function filterModelList() {
@@ -3271,6 +3295,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         "Inworld": [
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
             "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
+        ],
+        "Google": [
+            "google:gemini@3.1-flash-tts (Gemini 3.1 Flash TTS)",
         ],
     };
 
@@ -4749,6 +4776,64 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
     }
 }
 
+function audioInferenceSpeechVoicesToggleHandler(voicesNode) {
+    if (!voicesNode?.widgets) return;
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = voicesNode.htmlElements?.widgetsContainer || voicesNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
+            voicesNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        const useVoiceWidget = voicesNode.widgets.find((w) => w && w.name === `useVoice${i}`);
+        const speakerWidget = voicesNode.widgets.find((w) => w && w.name === `speaker${i}`);
+        const voiceWidget = voicesNode.widgets.find((w) => w && w.name === `voice${i}`);
+
+        if (useVoiceWidget && speakerWidget) {
+            toggleWidgetState(useVoiceWidget, speakerWidget, `speaker${i}`);
+        }
+        if (useVoiceWidget && voiceWidget) {
+            toggleWidgetState(useVoiceWidget, voiceWidget, `voice${i}`);
+        }
+    }
+}
+
 export {
     notifyUser,
     promptEnhanceHandler,
@@ -4816,6 +4901,7 @@ export {
     wanAnimateAdvancedFeatureSettingsToggleHandler,
     videoAdvancedFeatureInputsToggleHandler,
     audioInferenceInputsToggleHandler,
+    audioInferenceSpeechVoicesToggleHandler,
 };
 
 function googleProviderSettingsToggleHandler(googleNode) {
@@ -4900,6 +4986,8 @@ function settingsToggleHandler(settingsNode) {
     const trueCFGScaleWidget = settingsNode.widgets.find(w => w.name === "trueCFGScale");
     const useQualityWidget = settingsNode.widgets.find(w => w.name === "useQuality");
     const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
+    const useBackgroundWidget = settingsNode.widgets.find(w => w.name === "useBackground");
+    const backgroundWidget = settingsNode.widgets.find(w => w.name === "background");
     const usePromptExtendWidget = settingsNode.widgets.find(w => w.name === "usePromptExtend");
     const promptExtendWidget = settingsNode.widgets.find(w => w.name === "promptExtend");
     const useEditRegionsWidget = settingsNode.widgets.find(w => w.name === "useEditRegions");
@@ -4971,6 +5059,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useQualityWidget && qualityWidget) {
         toggleWidgetState(useQualityWidget, qualityWidget, "quality");
+    }
+    if (useBackgroundWidget && backgroundWidget) {
+        toggleWidgetState(useBackgroundWidget, backgroundWidget, "background");
     }
     if (usePromptExtendWidget && promptExtendWidget) {
         toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");

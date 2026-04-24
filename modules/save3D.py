@@ -35,7 +35,7 @@ class RunwareSave3D:
     FUNCTION = "save_3d"
     OUTPUT_NODE = True
     CATEGORY = "Runware"
-    DESCRIPTION = "Save 3D model files (GLB/PLY) from Runware 3D Inference to the output folder."
+    DESCRIPTION = "Save 3D model files (GLB/PLY/FBX) from Runware 3D Inference to the output folder."
 
     def save_3d(self, filenamePrefix="ComfyUI", **kwargs):
         """Save 3D file from URL"""
@@ -55,8 +55,8 @@ class RunwareSave3D:
         url_without_params = file_url.split('?')[0]
         extension = url_without_params.split('.')[-1].lower()
 
-        if extension not in ["glb", "ply"]:
-            raise Exception(f"Unsupported 3D file extension '{extension}' from URL. Expected .glb or .ply.")
+        if extension not in ["glb", "ply", "fbx"]:
+            raise Exception(f"Unsupported 3D file extension '{extension}' from URL. Expected .glb, .ply, or .fbx.")
 
         # Sanitize filenamePrefix to prevent path traversal or arbitrary subdir creation
         prefix_basename = os.path.basename(

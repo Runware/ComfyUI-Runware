@@ -46,6 +46,7 @@ from .modules.providerSettings.briaProviderSettings import RunwareBriaProviderSe
 from .modules.providerSettings.briaProviderMask import RunwareBriaProviderMask
 from .modules.audioInference import RunwareAudioInference
 from .modules.audioInferenceSpeech import RunwareAudioInferenceSpeech
+from .modules.audioInferenceSpeechVoices import RunwareAudioInferenceSpeechVoices
 from .modules.audioModelSearch import RunwareAudioModelSearch
 from .modules.textModelSearch import RunwareTextModelSearch
 from .modules.textInferenceMessages import RunwareTextInferenceMessages
@@ -67,6 +68,7 @@ from .modules.speechInput import RunwareSpeechInput
 from .modules.speechInputCombine import RunwareSpeechInputCombine
 from .modules.referenceVideos import referenceVideos
 from .modules.referenceVoices import referenceVoices
+from .modules.referenceAudios import referenceAudios
 from .modules.videoInferenceInputs import videoInferenceInputs
 from .modules.videoInferenceElements import (
     RunwareVideoInferenceElements,
@@ -167,6 +169,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Bria Provider Mask": RunwareBriaProviderMask,
     "Runware Audio Inference": RunwareAudioInference,
     "Runware Audio Inference Speech": RunwareAudioInferenceSpeech,
+    "Runware Audio Inference Speech Voices": RunwareAudioInferenceSpeechVoices,
     "Runware Audio Model Search": RunwareAudioModelSearch,
     "Runware Text Model Search": RunwareTextModelSearch,
     "Runware Text Inference Messages": RunwareTextInferenceMessages,
@@ -186,8 +189,13 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Audio Input": RunwareAudioInput,
     "Runware Video Speech Input": RunwareSpeechInput,
     "Runware Speech Inputs Combine": RunwareSpeechInputCombine,
+    # Backward-compatible aliases for existing workflows
     "Runware Reference Videos": referenceVideos,
     "Runware Reference Voices": referenceVoices,
+    "Runware Video Inputs References": videoInputsReferences,
+    "Runware Video Inference Inputs Reference Videos": referenceVideos,
+    "Runware Video Inference Inputs Reference Voices": referenceVoices,
+    "Runware Video Inference Inputs Reference Audios": referenceAudios,
     "Runware Video Inference Inputs": videoInferenceInputs,
     "Runware Video Inference Elements": RunwareVideoInferenceElements,
     "Runware Video Inference Elements Combine": RunwareVideoInferenceElementsCombine,
@@ -220,7 +228,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Vectorize": vectorize,
     "Runware Video Background Removal": videoBgRemoval,
     "Runware Video Upscaler": videoUpscaler,
-    "Runware Video Inputs References": videoInputsReferences,
+    "Runware Video Inference Inputs Reference Images": videoInputsReferences,
     "Runware Video Inputs Frame Images": RunwareVideoInputsFrameImages,
     "Runware Safety Inputs": safetyInputs,
     "Runware Settings": RunwareSettings,

@@ -82,6 +82,7 @@ const RUNWARE_NODE_TYPES = {
     FRAMEIMAGES: "Runware Frame Images",
     AUDIOINFERENCE: "Runware Audio Inference",
     AUDIOINFERENCESPEECH: "Runware Audio Inference Speech",
+    AUDIOINFERENCESPEECHVOICES: "Runware Audio Inference Speech Voices",
     AUDIOMODELSEARCH: "Runware Audio Model Search",
     TEXTMODELSEARCH: "Runware Text Model Search",
     TEXTINFERENCE: "Runware Text Inference",
@@ -105,8 +106,12 @@ const RUNWARE_NODE_TYPES = {
     INPUTAUDIOS: "Runware Input Audios",
     AUDIOINPUT: "Runware Video Audio Input",
     SPEECHINPUT: "Runware Video Speech Input",
-    REFERENCEVIDEOS: "Runware Reference Videos",
-    REFERENCEVOICES: "Runware Reference Voices",
+    REFERENCEVIDEOS: "Runware Video Inference Inputs Reference Videos",
+    REFERENCEVIDEOS_LEGACY: "Runware Reference Videos",
+    REFERENCEVOICES: "Runware Video Inference Inputs Reference Voices",
+    REFERENCEVOICES_LEGACY: "Runware Reference Voices",
+    REFERENCEAUDIOS: "Runware Video Inference Inputs Reference Audios",
+    VIDEOINPUTSREFERENCES_LEGACY: "Runware Video Inputs References",
     VIDEOINFERENCEINPUTS: "Runware Video Inference Inputs",
     VIDEOINFERENCEELEMENTS: "Runware Video Inference Elements",
     VIDEOINFERENCEELEMENTSCOMBINE: "Runware Video Inference Elements Combine",
@@ -138,7 +143,7 @@ const RUNWARE_NODE_TYPES = {
     VECTORIZE: "Runware Vectorize",
     VIDEOBGREMOVAL: "Runware Video Background Removal",
     VIDEOUPSCALER: "Runware Video Upscaler",
-    VIDEOINPUTSREFERENCES: "Runware Video Inputs References",
+    VIDEOINPUTSREFERENCES: "Runware Video Inference Inputs Reference Images",
     VIDEOINPUTSFRAMEIMAGES: "Runware Video Inputs Frame Images",
     ACCELERATOROPTIONS: "Runware Accelerator Options",
     VIDEOTRANSCRIPTION: "Runware Video Transcription",
@@ -299,6 +304,10 @@ const RUNWARE_NODE_PROPS = {
     [RUNWARE_NODE_TYPES.AUDIOINFERENCESPEECH]: {
         bgColor: DEFAULT_BGCOLOR,
     },
+    [RUNWARE_NODE_TYPES.AUDIOINFERENCESPEECHVOICES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.AUDIOMODELSEARCH]: {
         bgColor: DEFAULT_BGCOLOR,
         liveSearch: true,
@@ -405,7 +414,19 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
+    [RUNWARE_NODE_TYPES.REFERENCEVIDEOS_LEGACY]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
     [RUNWARE_NODE_TYPES.REFERENCEVOICES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.REFERENCEVOICES_LEGACY]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.REFERENCEAUDIOS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
@@ -506,6 +527,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
     },
     [RUNWARE_NODE_TYPES.VIDEOINPUTSREFERENCES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINPUTSREFERENCES_LEGACY]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
