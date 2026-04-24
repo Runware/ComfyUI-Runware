@@ -279,6 +279,106 @@ class Runware3DInferenceSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useMeshType": ("BOOLEAN", {
+                    "tooltip": "Enable to include meshType in settings.",
+                    "default": False,
+                }),
+                "meshType": (["standard", "lowpoly"], {
+                    "tooltip": "Mesh type: standard or lowpoly. Only used when 'Use Mesh Type' is enabled.",
+                    "default": "standard",
+                }),
+                "useTopology": ("BOOLEAN", {
+                    "tooltip": "Enable to include topology in settings.",
+                    "default": False,
+                }),
+                "topology": (["triangle", "quad"], {
+                    "tooltip": "Mesh topology mode. Only used when 'Use Topology' is enabled.",
+                    "default": "triangle",
+                }),
+                "useDecimation": ("BOOLEAN", {
+                    "tooltip": "Enable to include decimation in settings.",
+                    "default": False,
+                }),
+                "decimation": ("INT", {
+                    "tooltip": "Adaptive decimation level (1=ultra, 2=high, 3=medium, 4=low). Only used when enabled.",
+                    "default": 2,
+                    "min": 1,
+                    "max": 4,
+                    "step": 1,
+                }),
+                "useSymmetry": ("BOOLEAN", {
+                    "tooltip": "Enable to include symmetry in settings.",
+                    "default": False,
+                }),
+                "symmetry": (["auto", "on", "off"], {
+                    "tooltip": "Symmetry behavior for generation. Only used when 'Use Symmetry' is enabled.",
+                    "default": "auto",
+                }),
+                "usePose": ("BOOLEAN", {
+                    "tooltip": "Enable to include pose in settings.",
+                    "default": False,
+                }),
+                "pose": (["none", "a-pose", "t-pose"], {
+                    "tooltip": "Pose preset for generated model. Use 'none' for no pose preset.",
+                    "default": "none",
+                }),
+                "useImageEnhancement": ("BOOLEAN", {
+                    "tooltip": "Enable to include imageEnhancement in settings.",
+                    "default": False,
+                }),
+                "imageEnhancement": ("BOOLEAN", {
+                    "tooltip": "Optimize input image for improved 3D results. Only used when enabled.",
+                    "default": True,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useRemoveLighting": ("BOOLEAN", {
+                    "tooltip": "Enable to include removeLighting in settings.",
+                    "default": False,
+                }),
+                "removeLighting": ("BOOLEAN", {
+                    "tooltip": "Remove baked lighting from texture output. Only used when enabled.",
+                    "default": True,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useOrigin": ("BOOLEAN", {
+                    "tooltip": "Enable to include origin in settings.",
+                    "default": False,
+                }),
+                "origin": (["bottom", "center"], {
+                    "tooltip": "Origin point position used with autoSize. Only used when 'Use Origin' is enabled.",
+                    "default": "bottom",
+                }),
+                "useModeration": ("BOOLEAN", {
+                    "tooltip": "Enable to include moderation in settings.",
+                    "default": False,
+                }),
+                "moderation": ("BOOLEAN", {
+                    "tooltip": "Enable moderation checks before generation. Only used when enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useSavePreRemeshedModel": ("BOOLEAN", {
+                    "tooltip": "Enable to include savePreRemeshedModel in settings.",
+                    "default": False,
+                }),
+                "savePreRemeshedModel": ("BOOLEAN", {
+                    "tooltip": "Store extra GLB before remesh completion. Only used when enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useTexturePrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include texturePrompt in settings.",
+                    "default": False,
+                }),
+                "texturePrompt": ("STRING", {
+                    "multiline": True,
+                    "tooltip": "Additional text prompt to guide texture generation. Only used when enabled.",
+                    "default": "",
+                }),
                 "sparseStructure": ("RUNWARE3DINFERENCESETTINGSLAT", {
                     "tooltip": "Connect Runware 3D Inference Settings Sparse Structure node.",
                 }),
@@ -373,6 +473,31 @@ class Runware3DInferenceSettings:
                 settings["addons"] = addons
         if kwargs.get("useHdTexture", False):
             settings["hdTexture"] = bool(kwargs.get("hdTexture", False))
+        if kwargs.get("useMeshType", False):
+            settings["meshType"] = kwargs.get("meshType", "standard")
+        if kwargs.get("useTopology", False):
+            settings["topology"] = kwargs.get("topology", "triangle")
+        if kwargs.get("useDecimation", False):
+            settings["decimation"] = int(kwargs.get("decimation", 2))
+        if kwargs.get("useSymmetry", False):
+            settings["symmetry"] = kwargs.get("symmetry", "auto")
+        if kwargs.get("usePose", False):
+            pose_value = kwargs.get("pose", "none")
+            settings["pose"] = "" if pose_value == "none" else pose_value
+        if kwargs.get("useImageEnhancement", False):
+            settings["imageEnhancement"] = bool(kwargs.get("imageEnhancement", True))
+        if kwargs.get("useRemoveLighting", False):
+            settings["removeLighting"] = bool(kwargs.get("removeLighting", True))
+        if kwargs.get("useOrigin", False):
+            settings["origin"] = kwargs.get("origin", "bottom")
+        if kwargs.get("useModeration", False):
+            settings["moderation"] = bool(kwargs.get("moderation", False))
+        if kwargs.get("useSavePreRemeshedModel", False):
+            settings["savePreRemeshedModel"] = bool(kwargs.get("savePreRemeshedModel", False))
+        if kwargs.get("useTexturePrompt", False):
+            texture_prompt = (kwargs.get("texturePrompt") or "").strip()
+            if texture_prompt:
+                settings["texturePrompt"] = texture_prompt
 
         sparse = kwargs.get("sparseStructure", None)
         if sparse is not None and isinstance(sparse, dict) and len(sparse) > 0:
