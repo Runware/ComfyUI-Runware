@@ -1412,6 +1412,16 @@ function videoSettingsToggleHandler(settingsNode) {
     const shotTypeWidget = settingsNode.widgets.find(w => w && w.name === "shotType");
     const usePromptExtendWidget = settingsNode.widgets.find(w => w && w.name === "usePromptExtend");
     const promptExtendWidget = settingsNode.widgets.find(w => w && w.name === "promptExtend");
+    const useSyncModeWidget = settingsNode.widgets.find(w => w && w.name === "useSyncMode");
+    const syncModeWidget = settingsNode.widgets.find(w => w && w.name === "syncMode");
+    const useModeWidget = settingsNode.widgets.find(w => w && w.name === "useMode");
+    const modeWidget = settingsNode.widgets.find(w => w && w.name === "mode");
+    const useEmotionWidget = settingsNode.widgets.find(w => w && w.name === "useEmotion");
+    const emotionWidget = settingsNode.widgets.find(w => w && w.name === "emotion");
+    const useTemperatureWidget = settingsNode.widgets.find(w => w && w.name === "useTemperature");
+    const temperatureWidget = settingsNode.widgets.find(w => w && w.name === "temperature");
+    const useOcclusionDetectionWidget = settingsNode.widgets.find(w => w && w.name === "useOcclusionDetection");
+    const occlusionDetectionWidget = settingsNode.widgets.find(w => w && w.name === "occlusionDetection");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1441,6 +1451,169 @@ function videoSettingsToggleHandler(settingsNode) {
     if (useMultiClipWidget && multiClipWidget) toggleWidgetState(useMultiClipWidget, multiClipWidget, "multiClip");
     if (useShotTypeWidget && shotTypeWidget) toggleWidgetState(useShotTypeWidget, shotTypeWidget, "shotType");
     if (usePromptExtendWidget && promptExtendWidget) toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");
+    if (useSyncModeWidget && syncModeWidget) toggleWidgetState(useSyncModeWidget, syncModeWidget, "syncMode");
+    if (useModeWidget && modeWidget) toggleWidgetState(useModeWidget, modeWidget, "mode");
+    if (useEmotionWidget && emotionWidget) toggleWidgetState(useEmotionWidget, emotionWidget, "emotion");
+    if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget, "temperature");
+    if (useOcclusionDetectionWidget && occlusionDetectionWidget) toggleWidgetState(useOcclusionDetectionWidget, occlusionDetectionWidget, "occlusionDetection");
+}
+
+function videoInferenceSettingsTtsToggleHandler(node) {
+    if (!node?.widgets) return;
+
+    const useStabilityWidget = node.widgets.find(w => w && w.name === "useStability");
+    const stabilityWidget = node.widgets.find(w => w && w.name === "stability");
+    const useSimilarityBoostWidget = node.widgets.find(w => w && w.name === "useSimilarityBoost");
+    const similarityBoostWidget = node.widgets.find(w => w && w.name === "similarityBoost");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, node);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            node.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useStabilityWidget && stabilityWidget) toggleWidgetState(useStabilityWidget, stabilityWidget, "stability");
+    if (useSimilarityBoostWidget && similarityBoostWidget) toggleWidgetState(useSimilarityBoostWidget, similarityBoostWidget, "similarityBoost");
+}
+
+function videoInferenceSettingsActiveSpeakerDetectionToggleHandler(node) {
+    if (!node?.widgets) return;
+
+    const useAutoDetectWidget = node.widgets.find(w => w && w.name === "useAutoDetect");
+    const autoDetectWidget = node.widgets.find(w => w && w.name === "autoDetect");
+    const useFrameNumberWidget = node.widgets.find(w => w && w.name === "useFrameNumber");
+    const frameNumberWidget = node.widgets.find(w => w && w.name === "frameNumber");
+    const useCoordinatesWidget = node.widgets.find(w => w && w.name === "useCoordinates");
+    const coordinateXWidget = node.widgets.find(w => w && w.name === "coordinateX");
+    const coordinateYWidget = node.widgets.find(w => w && w.name === "coordinateY");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, node);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            node.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useAutoDetectWidget && autoDetectWidget) toggleWidgetState(useAutoDetectWidget, autoDetectWidget, "autoDetect");
+    if (useFrameNumberWidget && frameNumberWidget) toggleWidgetState(useFrameNumberWidget, frameNumberWidget, "frameNumber");
+    if (useCoordinatesWidget && coordinateXWidget) toggleWidgetState(useCoordinatesWidget, coordinateXWidget, "coordinateX");
+    if (useCoordinatesWidget && coordinateYWidget) toggleWidgetState(useCoordinatesWidget, coordinateYWidget, "coordinateY");
+}
+
+function videoInferenceSettingsActiveSpeakerBoundingBoxesToggleHandler(node) {
+    if (!node?.widgets) return;
+
+    const useBox1Widget = node.widgets.find(w => w && w.name === "useBox1");
+    const box1Widget = node.widgets.find(w => w && w.name === "box1");
+    const useBox2Widget = node.widgets.find(w => w && w.name === "useBox2");
+    const box2Widget = node.widgets.find(w => w && w.name === "box2");
+    const useBox3Widget = node.widgets.find(w => w && w.name === "useBox3");
+    const box3Widget = node.widgets.find(w => w && w.name === "box3");
+    const useBox4Widget = node.widgets.find(w => w && w.name === "useBox4");
+    const box4Widget = node.widgets.find(w => w && w.name === "box4");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, node);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            node.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useBox1Widget && box1Widget) toggleWidgetState(useBox1Widget, box1Widget, "box1");
+    if (useBox2Widget && box2Widget) toggleWidgetState(useBox2Widget, box2Widget, "box2");
+    if (useBox3Widget && box3Widget) toggleWidgetState(useBox3Widget, box3Widget, "box3");
+    if (useBox4Widget && box4Widget) toggleWidgetState(useBox4Widget, box4Widget, "box4");
+}
+
+function videoInferenceSettingsSegmentsToggleHandler(node) {
+    if (!node?.widgets) return;
+
+    function byName(name) {
+        return node.widgets.find(w => w && w.name === name);
+    }
+
+    function togglePair(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, node);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            node.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    function wireSegment(idx) {
+        const useSegment = byName(`useSegment${idx}`);
+        const start = byName(`segment${idx}StartTime`);
+        const end = byName(`segment${idx}EndTime`);
+        const audio = byName(`segment${idx}Audio`);
+        const useCrop = byName(`useSegment${idx}AudioCrop`);
+        const cropStart = byName(`segment${idx}AudioStartTime`);
+        const cropEnd = byName(`segment${idx}AudioEndTime`);
+
+        function toggleCropTimeWidget(paramWidget) {
+            if (!useSegment || !useCrop || !paramWidget) return;
+            function applyState() {
+                const enabled = useSegment.value === true && useCrop.value === true;
+                toggleWidgetEnabled(paramWidget, enabled, node);
+                if (paramWidget.options && paramWidget.options.element) {
+                    paramWidget.options.element.disabled = !enabled;
+                    paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                    paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+                }
+                node.setDirtyCanvas(true);
+            }
+            setTimeout(applyState, 100);
+            appendWidgetCB(useSegment, () => setTimeout(applyState, 50));
+            appendWidgetCB(useCrop, () => setTimeout(applyState, 50));
+        }
+
+        if (useSegment && start) togglePair(useSegment, start, `segment${idx}StartTime`);
+        if (useSegment && end) togglePair(useSegment, end, `segment${idx}EndTime`);
+        if (useSegment && audio) togglePair(useSegment, audio, `segment${idx}Audio`);
+        if (useSegment && useCrop) togglePair(useSegment, useCrop, `useSegment${idx}AudioCrop`);
+        if (cropStart) toggleCropTimeWidget(cropStart);
+        if (cropEnd) toggleCropTimeWidget(cropEnd);
+    }
+
+    wireSegment(1);
+    wireSegment(2);
+    wireSegment(3);
+    wireSegment(4);
 }
 
 function audioInferenceSpeechToggleHandler(speechNode) {
@@ -2637,6 +2810,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "sync:lipsync-2@1 (Sync LipSync 2)",
             "sync:lipsync-2-pro@1 (Sync LipSync 2 Pro)",
             "sync:react-1@1 (Sync React-1)",
+            "sync:3@0 (Sync 3)",
         ],
         "Bria": [
             "bria:60@1 (Bria Video Eraser)",
@@ -2745,6 +2919,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2@1": {"width": 0, "height": 0},
         "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
         "sync:react-1@1": {"width": 0, "height": 0},
+        "sync:3@0": {"width": 1280, "height": 720},
         "bria:60@1": {"width": 1280, "height": 720},
         "creatify:aurora@fast": {"width": 1280, "height": 720},
         "creatify:aurora@0": {"width": 1280, "height": 720},
@@ -2836,6 +3011,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "sync:lipsync-2@1": "720p",
         "sync:lipsync-2-pro@1": "720p",
         "sync:react-1@1": "720p",
+        "sync:3@0": "720p",
         "bria:60@1": "720p",
         "creatify:aurora@fast": "720p",
         "creatify:aurora@0": "720p",
@@ -4708,6 +4884,10 @@ export {
     audioSettingsToggleHandler,
     textInferenceSettingsToggleHandler,
     videoSettingsToggleHandler,
+    videoInferenceSettingsTtsToggleHandler,
+    videoInferenceSettingsActiveSpeakerDetectionToggleHandler,
+    videoInferenceSettingsActiveSpeakerBoundingBoxesToggleHandler,
+    videoInferenceSettingsSegmentsToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,

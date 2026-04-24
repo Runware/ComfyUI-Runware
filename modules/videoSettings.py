@@ -1,6 +1,6 @@
 """
 Runware Video Inference Settings Node
-Provides settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, etc.) for Runware Video Inference.
+Provides settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
 """
 
 from typing import Dict, Any
@@ -123,6 +123,60 @@ class RunwareVideoSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useSyncMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include syncMode in video inference settings.",
+                    "default": False,
+                }),
+                "syncMode": (["bounce", "cut_off", "silence", "remap"], {
+                    "tooltip": "Controls how mismatched audio/video lengths are handled. Default provider behavior is usually cropping to shorter duration. Only used when 'Use Sync Mode' is enabled.",
+                    "default": "cut_off",
+                }),
+                "tts": ("RUNWAREVIDEOINFERENCESETTINGSTTS", {
+                    "tooltip": "Connect Runware Video Inference Settings TTS for settings.tts (stability, similarityBoost). Sync / ElevenLabs-style optional tuning.",
+                }),
+                "activeSpeakerDetection": ("RUNWAREVIDEOINFERENCESETTINGSACTIVESPEAKERDETECTION", {
+                    "tooltip": "Connect Runware Video Inference Settings Active Speaker Detection for settings.activeSpeakerDetection (autoDetect, frameNumber, coordinates).",
+                }),
+                "useMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include mode in video inference settings.",
+                    "default": False,
+                }),
+                "mode": (["lips", "face", "head"], {
+                    "tooltip": "Sync processing mode. Only used when 'Use Mode' is enabled.",
+                    "default": "lips",
+                }),
+                "useEmotion": ("BOOLEAN", {
+                    "tooltip": "Enable to include emotion in video inference settings.",
+                    "default": False,
+                }),
+                "emotion": (["happy", "sad", "angry", "disgusted", "surprised", "neutral"], {
+                    "tooltip": "Target emotion for generation. Only used when 'Use Emotion' is enabled.",
+                    "default": "neutral",
+                }),
+                "useTemperature": ("BOOLEAN", {
+                    "tooltip": "Enable to include temperature in video inference settings.",
+                    "default": False,
+                }),
+                "temperature": ("FLOAT", {
+                    "tooltip": "Sampling temperature. Only used when 'Use Temperature' is enabled.",
+                    "default": 0.7,
+                    "min": 0.0,
+                    "max": 5.0,
+                    "step": 0.01,
+                }),
+                "useOcclusionDetection": ("BOOLEAN", {
+                    "tooltip": "Enable to include occlusionDetection in video inference settings.",
+                    "default": False,
+                }),
+                "occlusionDetection": ("BOOLEAN", {
+                    "tooltip": "Enable occlusion detection. Only used when 'Use Occlusion Detection' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "segments": ("RUNWAREVIDEOINFERENCESETTINGSSEGMENTS", {
+                    "tooltip": "Connect Runware Video Inference Settings Segments for settings.segments[] (startTime, endTime, audio, audioStartTime, audioEndTime).",
+                }),
             }
         }
 
@@ -131,7 +185,7 @@ class RunwareVideoSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure video inference settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, etc.) for Runware Video Inference. "
+        "Configure video inference settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
         "Connect to Runware Video Inference node."
     )
 
@@ -161,6 +215,19 @@ class RunwareVideoSettings:
         shot_type = kwargs.get("shotType", "single")
         use_prompt_extend = kwargs.get("usePromptExtend", False)
         prompt_extend = kwargs.get("promptExtend", False)
+        use_sync_mode = kwargs.get("useSyncMode", False)
+        sync_mode = kwargs.get("syncMode", "cut_off")
+        tts_cfg = kwargs.get("tts", None)
+        active_speaker_cfg = kwargs.get("activeSpeakerDetection", None)
+        use_mode = kwargs.get("useMode", False)
+        mode = kwargs.get("mode", "lips")
+        use_emotion = kwargs.get("useEmotion", False)
+        emotion = kwargs.get("emotion", "neutral")
+        use_temperature = kwargs.get("useTemperature", False)
+        temperature = kwargs.get("temperature", 0.7)
+        use_occlusion_detection = kwargs.get("useOcclusionDetection", False)
+        occlusion_detection = kwargs.get("occlusionDetection", False)
+        segments_cfg = kwargs.get("segments", None)
 
         settings: Dict[str, Any] = {}
 
@@ -188,6 +255,23 @@ class RunwareVideoSettings:
             settings["shotType"] = shot_type
         if use_prompt_extend:
             settings["promptExtend"] = bool(prompt_extend)
+        if use_sync_mode:
+            settings["syncMode"] = sync_mode
+        if use_mode:
+            settings["mode"] = mode
+        if use_emotion:
+            settings["emotion"] = emotion
+        if use_temperature:
+            settings["temperature"] = float(temperature)
+        if use_occlusion_detection:
+            settings["occlusionDetection"] = bool(occlusion_detection)
+
+        if tts_cfg is not None and isinstance(tts_cfg, dict) and len(tts_cfg) > 0:
+            settings["tts"] = tts_cfg
+        if active_speaker_cfg is not None and isinstance(active_speaker_cfg, dict) and len(active_speaker_cfg) > 0:
+            settings["activeSpeakerDetection"] = active_speaker_cfg
+        if segments_cfg is not None and isinstance(segments_cfg, list) and len(segments_cfg) > 0:
+            settings["segments"] = segments_cfg
 
         return (settings,)
 

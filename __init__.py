@@ -34,6 +34,10 @@ from .modules.videoInference import txt2vid
 from .modules.videoInferenceSpeechInput import RunwareVideoInferenceSpeechInput
 from .modules.videoModelSearch import videoModelSearch
 from .modules.videoSettings import RunwareVideoSettings
+from .modules.videoInferenceSettingsTts import RunwareVideoInferenceSettingsTts
+from .modules.videoInferenceSettingsActiveSpeakerDetection import RunwareVideoInferenceSettingsActiveSpeakerDetection
+from .modules.videoInferenceSettingsActiveSpeakerBoundingBoxes import RunwareVideoInferenceSettingsActiveSpeakerBoundingBoxes
+from .modules.videoInferenceSettingsSegments import RunwareVideoInferenceSettingsSegments
 from .modules.frameImages import RunwareFrameImages
 from .modules.providerSettings.pixverseProviderSettings import RunwarePixverseProviderSettings
 from .modules.providerSettings.openaiProviderSettings import RunwareOpenAIProviderSettings
@@ -197,6 +201,10 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inference Elements Combine": RunwareVideoInferenceElementsCombine,
     "Runware Video Inference Speech Input": RunwareVideoInferenceSpeechInput,
     "Runware Video Inference Settings": RunwareVideoSettings,
+    "Runware Video Inference Settings TTS": RunwareVideoInferenceSettingsTts,
+    "Runware Video Inference Settings Active Speaker Detection": RunwareVideoInferenceSettingsActiveSpeakerDetection,
+    "Runware Video Inference Settings Active Speaker Bounding Boxes": RunwareVideoInferenceSettingsActiveSpeakerBoundingBoxes,
+    "Runware Video Inference Settings Segments": RunwareVideoInferenceSettingsSegments,
     "Runware Lightricks Provider Settings": RunwareLightricksProviderSettings,
     "Runware MiniMax Provider Settings": RunwareMiniMaxProviderSettings,
     "Runware Luma Provider Settings": RunwareLumaProviderSettings,
