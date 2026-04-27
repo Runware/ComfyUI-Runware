@@ -3156,12 +3156,13 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
 
     function filterModelList() {
         const selectedArch = modelArchWidget.value;
+        const selectedArchNormalized = selectedArch === "Wan" ? "Alibaba" : selectedArch;
         let filteredModels = [];
 
-        if (selectedArch === "All") {
+        if (selectedArchNormalized === "All") {
             Object.values(VIDEO_MODELS).forEach(models => filteredModels.push(...models));
-        } else if (VIDEO_MODELS[selectedArch]) {
-            filteredModels = VIDEO_MODELS[selectedArch];
+        } else if (VIDEO_MODELS[selectedArchNormalized]) {
+            filteredModels = VIDEO_MODELS[selectedArchNormalized];
         }
 
         if (filteredModels.length > 0) {

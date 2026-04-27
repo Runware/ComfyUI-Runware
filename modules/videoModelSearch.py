@@ -430,6 +430,7 @@ class videoModelSearch:
         "MiniMax",
         "PixVerse",
         "Vidu",
+        "Wan",  # Backward-compatible alias for existing workflows
         "Alibaba",
         "OpenAI",
         "Lightricks",
