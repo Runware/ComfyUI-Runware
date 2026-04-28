@@ -40,8 +40,8 @@ class videoInputsReferences:
         }
 
     DESCRIPTION = (
-        "Configure up to 4 reference image entries for video inference inputs. "
-        "For each slot, provide either ImageN (single image) or ImagesN (connector output), not both."
+        "Configure up to 10 reference image entries for video inference inputs. "
+        "For slots 1-4, provide either ImageN (single image) or ImagesN (connector output), not both."
     )
     FUNCTION = "createReferences"
     RETURN_TYPES = ("RUNWAREVIDEOINPUTSREFERENCEIMAGES",)

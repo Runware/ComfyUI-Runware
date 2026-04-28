@@ -5,12 +5,11 @@ import comfy.model_management
 
 class txt2vid:
     @staticmethod
-    def _format_reference_images(referenceImages):
+    def _format_reference_images(referenceImages, model):
         """
-        Shape referenceImages by payload style:
-        - If any entry uses `images` (Images1..N style), return grouped objects
-          [{type, tag, images, audio?}]
-        - Otherwise return flat list[str] (legacy behavior)
+        Shape referenceImages based on model requirements:
+        - skywork:skyreels@v4 -> grouped objects [{type, tag, images, audio?}]
+        - others -> flat list[str] (legacy behavior)
         """
         if referenceImages is None:
             return []
@@ -18,12 +17,9 @@ class txt2vid:
         if not isinstance(referenceImages, list):
             referenceImages = [referenceImages]
 
-        has_grouped_images = any(
-            isinstance(ref, dict) and isinstance(ref.get("images"), list) and len(ref.get("images")) > 0
-            for ref in referenceImages
-        )
+        is_skyreels = isinstance(model, str) and model.strip().lower() == "skywork:skyreels@v4"
 
-        if has_grouped_images:
+        if is_skyreels:
             grouped = []
             for idx, ref in enumerate(referenceImages, start=1):
                 images = []
@@ -361,7 +357,7 @@ class txt2vid:
             print(f"[Debugging] Frame images array: {rwUtils.sanitize_for_logging(frameImages)}")
         # Add referenceImages if provided from Runware Reference Images node
         if referenceImages is not None and len(referenceImages) > 0:
-            formattedReferenceImages = self._format_reference_images(referenceImages)
+            formattedReferenceImages = self._format_reference_images(referenceImages, model)
             if len(formattedReferenceImages) > 0:
                 genConfig[0]["referenceImages"] = formattedReferenceImages
                 print(f"[Debugging] Reference images array: {rwUtils.sanitize_for_logging(formattedReferenceImages)}")
@@ -393,9 +389,11 @@ class txt2vid:
             
             # Merge each input from inputs (only actual input data, not provider settings)
             for key, value in inputs.items():
-                # Normalize referenceImages so non-SkyReels models keep legacy string[] payload
+                # Normalize referenceImages:
+                # - skyreels -> grouped objects
+                # - others -> flat string[] payload
                 if key == "referenceImages":
-                    formatted_input_refs = self._format_reference_images(value)
+                    formatted_input_refs = self._format_reference_images(value, model)
                     if len(formatted_input_refs) > 0:
                         genConfig[0]["inputs"][key] = formatted_input_refs
                     continue
