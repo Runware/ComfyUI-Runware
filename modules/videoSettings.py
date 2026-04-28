@@ -174,6 +174,17 @@ class RunwareVideoSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useKeyframeId": ("BOOLEAN", {
+                    "tooltip": "Enable to include settings.keyframe.keyframe_id in video inference settings.",
+                    "default": False,
+                }),
+                "keyframeId": ("INT", {
+                    "tooltip": "Keyframe ID for settings.keyframe.keyframe_id. Only used when 'Use Keyframe ID' is enabled.",
+                    "default": 0,
+                    "min": 0,
+                    "max": 2147483647,
+                    "step": 1,
+                }),
                 "segments": ("RUNWAREVIDEOINFERENCESETTINGSSEGMENTS", {
                     "tooltip": "Connect Runware Video Inference Settings Segments for settings.segments[] (startTime, endTime, audio, audioStartTime, audioEndTime).",
                 }),
@@ -227,6 +238,8 @@ class RunwareVideoSettings:
         temperature = kwargs.get("temperature", 0.7)
         use_occlusion_detection = kwargs.get("useOcclusionDetection", False)
         occlusion_detection = kwargs.get("occlusionDetection", False)
+        use_keyframe_id = kwargs.get("useKeyframeId", False)
+        keyframe_id = kwargs.get("keyframeId", 0)
         segments_cfg = kwargs.get("segments", None)
 
         settings: Dict[str, Any] = {}
@@ -265,6 +278,8 @@ class RunwareVideoSettings:
             settings["temperature"] = float(temperature)
         if use_occlusion_detection:
             settings["occlusionDetection"] = bool(occlusion_detection)
+        if use_keyframe_id:
+            settings["keyframe"] = {"keyframe_id": int(keyframe_id)}
 
         if tts_cfg is not None and isinstance(tts_cfg, dict) and len(tts_cfg) > 0:
             settings["tts"] = tts_cfg
