@@ -279,7 +279,7 @@ class RunwareVideoSettings:
         if use_occlusion_detection:
             settings["occlusionDetection"] = bool(occlusion_detection)
         if use_keyframe_id:
-            settings["keyframe"] = {"keyframe_id": int(keyframe_id)}
+            settings["keyframe"] = int(keyframe_id)
 
         if tts_cfg is not None and isinstance(tts_cfg, dict) and len(tts_cfg) > 0:
             settings["tts"] = tts_cfg
