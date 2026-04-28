@@ -2790,13 +2790,14 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "vidu:4@1 (Vidu Q3)",
             "vidu:4@2 (Vidu Q3 Turbo)",
         ],
-        "Wan": [
+        "Alibaba": [
             "runware:200@1 (Wan 2.1 1.3B)", "runware:200@2 (Wan 2.1 14B)",
             "runware:200@6 (Wan 2.2)",
             "runware:200@8 (Wan 2.2 A14B Animate)",
             "alibaba:wan@2.6 (Wan 2.6)",
             "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
             "alibaba:wan@2.7 (Wan 2.7)",
+            "alibaba:happyhorse@1.0 (Alibaba Happy Horse 1.0)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)", "openai:3@0 (OpenAI Sora 3.0)",
@@ -2919,6 +2920,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "alibaba:wan@2.6": {"width": 1280, "height": 720},
         "alibaba:wan@2.6-flash": {"width": 1280, "height": 720},
         "alibaba:wan@2.7": {"width": 1280, "height": 720},
+        "alibaba:happyhorse@1.0": {"width": 1280, "height": 720},
         "openai:3@1": {"width": 1280, "height": 720},
         "openai:3@0": {"width": 1280, "height": 720},
         "lightricks:2@0": {"width": 1920, "height": 1080},
@@ -3014,6 +3016,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "alibaba:wan@2.6": "720p",
         "alibaba:wan@2.6-flash": "720p",
         "alibaba:wan@2.7": "720p",
+        "alibaba:happyhorse@1.0": "720p",
         "openai:3@1": "720p",
         "openai:3@0": "720p",
         "lightricks:2@0": "1080p",
@@ -3153,12 +3156,13 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
 
     function filterModelList() {
         const selectedArch = modelArchWidget.value;
+        const selectedArchNormalized = selectedArch === "Wan" ? "Alibaba" : selectedArch;
         let filteredModels = [];
 
-        if (selectedArch === "All") {
+        if (selectedArchNormalized === "All") {
             Object.values(VIDEO_MODELS).forEach(models => filteredModels.push(...models));
-        } else if (VIDEO_MODELS[selectedArch]) {
-            filteredModels = VIDEO_MODELS[selectedArch];
+        } else if (VIDEO_MODELS[selectedArchNormalized]) {
+            filteredModels = VIDEO_MODELS[selectedArchNormalized];
         }
 
         if (filteredModels.length > 0) {
