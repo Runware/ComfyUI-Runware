@@ -14,10 +14,7 @@ class videoInputsReferences:
         for i in range(1, cls.MAX_REFERENCES + 1):
             ordinal = rwUtils.getOrdinal(i)
             optionalInputs[f"Image{i}"] = ("IMAGE", {
-                "tooltip": f"{ordinal.capitalize()} single reference image (mutually exclusive with Images{i}).",
-            })
-            optionalInputs[f"Images{i}"] = ("RUNWAREVIDEOINPUTSREFERENCEMULTIIMAGES", {
-                "tooltip": f"{ordinal.capitalize()} reference image group from the Multiple Images Connector (mutually exclusive with Image{i}).",
+                "tooltip": f"{ordinal.capitalize()} reference image.",
             })
             optionalInputs[f"Tag{i}"] = ("STRING", {
                 "tooltip": f"Optional tag for the {ordinal} reference (e.g., @image{i}, @Actor-1).",
@@ -38,8 +35,8 @@ class videoInputsReferences:
         }
 
     DESCRIPTION = (
-        "Configure multiple reference image entries for video inference inputs. "
-        "For each slot, provide either ImageN (single image) or ImagesN (connector output), not both."
+        "Configure multiple reference images for video inference inputs. "
+        "Use ImageN slots (Image1..Image10)."
     )
     FUNCTION = "createReferences"
     RETURN_TYPES = ("RUNWAREVIDEOINPUTSREFERENCEIMAGES",)
@@ -52,39 +49,26 @@ class videoInputsReferences:
         
         for i in range(1, self.MAX_REFERENCES + 1):
             imageKey = f"Image{i}"
-            imagesKey = f"Images{i}"
             tagKey = f"Tag{i}"
             typeKey = f"Type{i}"
             audioKey = f"Audio{i}"
             
             image = kwargs.get(imageKey)
-            images = kwargs.get(imagesKey)
             refTag = (kwargs.get(tagKey) or "").strip()
             refType = kwargs.get(typeKey, "")
             refAudio = (kwargs.get(audioKey) or "").strip()
-
-            has_image = image is not None
-            has_images = isinstance(images, list) and len(images) > 0
-            if has_image and has_images:
-                raise ValueError(
-                    f"Reference {i}: use either {imageKey} or {imagesKey}, not both."
-                )
             
-            if has_image or has_images:
-                reference = self._createReference(image, images, refTag, refType, refAudio)
+            if image is not None:
+                reference = self._createReference(image, refTag, refType, refAudio)
                 references.append(reference)
         
         return (references,)
 
-    def _createReference(self, image, images, refTag: str, refType: str, refAudio: str):
+    def _createReference(self, image, refTag: str, refType: str, refAudio: str):
         """Create reference entry."""
-        entry: Dict[str, Any] = {}
-        if image is not None:
-            entry["image"] = rwUtils.convertTensor2IMG(image)
-        elif isinstance(images, list) and len(images) > 0:
-            entry["images"] = images
-        else:
-            return entry
+        entry: Dict[str, Any] = {
+            "image": rwUtils.convertTensor2IMG(image)
+        }
 
         if refTag:
             entry["tag"] = refTag

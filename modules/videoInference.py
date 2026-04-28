@@ -4,6 +4,85 @@ import comfy.model_management
 
 
 class txt2vid:
+    @staticmethod
+    def _format_reference_images(referenceImages, model):
+        """
+        Shape referenceImages per model requirements:
+        - skywork:skyreels@v4 -> list of groups: {type, tag, images, audio?}
+        - others -> flat list[str] (legacy behavior)
+        """
+        if referenceImages is None:
+            return []
+
+        if not isinstance(referenceImages, list):
+            referenceImages = [referenceImages]
+
+        is_skyreels = model == "skywork:skyreels@v4"
+
+        if is_skyreels:
+            grouped = []
+            for idx, ref in enumerate(referenceImages, start=1):
+                images = []
+                ref_type = "image"
+                ref_tag = f"@image{idx}"
+                ref_audio = ""
+
+                if isinstance(ref, str):
+                    if ref.strip():
+                        images = [ref.strip()]
+                elif isinstance(ref, dict):
+                    ref_type = (str(ref.get("type", "image")).strip() or "image")
+                    raw_tag = str(ref.get("tag", "")).strip()
+                    ref_tag = raw_tag if raw_tag else ref_tag
+                    if not ref_tag.startswith("@"):
+                        ref_tag = f"@{ref_tag}"
+
+                    raw_audio = ref.get("audio", "")
+                    if isinstance(raw_audio, str) and raw_audio.strip():
+                        ref_audio = raw_audio.strip()
+
+                    image_value = ref.get("image")
+                    if isinstance(image_value, str) and image_value.strip():
+                        images.append(image_value.strip())
+
+                    image_group = ref.get("images")
+                    if isinstance(image_group, list):
+                        for item in image_group:
+                            if isinstance(item, str) and item.strip():
+                                images.append(item.strip())
+
+                if not images:
+                    continue
+
+                group = {
+                    "type": ref_type,
+                    "tag": ref_tag,
+                    "images": images[:5],  # provider limit: max 5
+                }
+                if ref_audio:
+                    group["audio"] = ref_audio
+                grouped.append(group)
+
+            return grouped
+
+        # Legacy/default path: flatten to list of image strings
+        flattened = []
+        for ref in referenceImages:
+            if isinstance(ref, str):
+                if ref.strip():
+                    flattened.append(ref.strip())
+            elif isinstance(ref, dict):
+                image_value = ref.get("image")
+                if isinstance(image_value, str) and image_value.strip():
+                    flattened.append(image_value.strip())
+
+                image_group = ref.get("images")
+                if isinstance(image_group, list):
+                    for item in image_group:
+                        if isinstance(item, str) and item.strip():
+                            flattened.append(item.strip())
+        return flattened
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -278,8 +357,10 @@ class txt2vid:
             print(f"[Debugging] Frame images array: {rwUtils.sanitize_for_logging(frameImages)}")
         # Add referenceImages if provided from Runware Reference Images node
         if referenceImages is not None and len(referenceImages) > 0:
-            genConfig[0]["referenceImages"] = referenceImages
-            print(f"[Debugging] Reference images array: {rwUtils.sanitize_for_logging(referenceImages)}")
+            formattedReferenceImages = self._format_reference_images(referenceImages, model)
+            if len(formattedReferenceImages) > 0:
+                genConfig[0]["referenceImages"] = formattedReferenceImages
+                print(f"[Debugging] Reference images array: {rwUtils.sanitize_for_logging(formattedReferenceImages)}")
         # Add inputAudios if provided
         if inputAudios is not None and len(inputAudios) > 0:
             genConfig[0]["inputAudios"] = inputAudios
@@ -308,6 +389,12 @@ class txt2vid:
             
             # Merge each input from inputs (only actual input data, not provider settings)
             for key, value in inputs.items():
+                # Normalize referenceImages so non-SkyReels models keep legacy string[] payload
+                if key == "referenceImages":
+                    formatted_input_refs = self._format_reference_images(value, model)
+                    if len(formatted_input_refs) > 0:
+                        genConfig[0]["inputs"][key] = formatted_input_refs
+                    continue
                 genConfig[0]["inputs"][key] = value
             
             print(f"[Debugging] Video inference inputs merged: {rwUtils.sanitize_for_logging(inputs)}")
