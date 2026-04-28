@@ -6,6 +6,7 @@ class videoInputsReferences:
     """Video Inputs References node for configuring reference images with types"""
     
     MAX_REFERENCES = 10
+    MAX_GROUPED_REFERENCES = 4
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -16,21 +17,22 @@ class videoInputsReferences:
             optionalInputs[f"Image{i}"] = ("IMAGE", {
                 "tooltip": f"{ordinal.capitalize()} single reference image (mutually exclusive with Images{i}).",
             })
-            optionalInputs[f"Images{i}"] = ("RUNWAREVIDEOINPUTSREFERENCEMULTIIMAGES", {
-                "tooltip": f"{ordinal.capitalize()} reference image group from the Multiple Images Connector (mutually exclusive with Image{i}).",
-            })
-            optionalInputs[f"Tag{i}"] = ("STRING", {
-                "tooltip": f"Optional tag for the {ordinal} reference (e.g., @image{i}, @Actor-1).",
-                "default": "",
-            })
-            optionalInputs[f"Type{i}"] = ("STRING", {
-                "tooltip": f"Type for the {ordinal} reference (e.g., image or grid). Leave empty to omit.",
-                "default": "",
-            })
-            optionalInputs[f"Audio{i}"] = ("STRING", {
-                "tooltip": f"Optional audio URL/mediaUUID for the {ordinal} reference.",
-                "default": "",
-            })
+            if i <= cls.MAX_GROUPED_REFERENCES:
+                optionalInputs[f"Images{i}"] = ("RUNWAREVIDEOINPUTSREFERENCEMULTIIMAGES", {
+                    "tooltip": f"{ordinal.capitalize()} reference image group from the Multiple Images Connector (mutually exclusive with Image{i}).",
+                })
+                optionalInputs[f"Tag{i}"] = ("STRING", {
+                    "tooltip": f"Optional tag for the {ordinal} reference (e.g., @image{i}, @Actor-1).",
+                    "default": "",
+                })
+                optionalInputs[f"Type{i}"] = ("STRING", {
+                    "tooltip": f"Type for the {ordinal} reference (e.g., image or grid). Leave empty to omit.",
+                    "default": "",
+                })
+                optionalInputs[f"Audio{i}"] = ("STRING", {
+                    "tooltip": f"Optional audio URL/mediaUUID for the {ordinal} reference.",
+                    "default": "",
+                })
         
         return {
             "required": {},
@@ -38,8 +40,8 @@ class videoInputsReferences:
         }
 
     DESCRIPTION = (
-        "Configure multiple reference image entries for video inference inputs. "
-        "For each slot, provide either ImageN (single image) or ImagesN (connector output), not both."
+        "Configure up to 10 reference image entries for video inference inputs. "
+        "For slots 1-4, provide either ImageN (single image) or ImagesN (connector output), not both."
     )
     FUNCTION = "createReferences"
     RETURN_TYPES = ("RUNWAREVIDEOINPUTSREFERENCEIMAGES",)
@@ -62,7 +64,7 @@ class videoInputsReferences:
             refTag = (kwargs.get(tagKey) or "").strip()
             refType = kwargs.get(typeKey, "")
             refAudio = (kwargs.get(audioKey) or "").strip()
-
+            
             has_image = image is not None
             has_images = isinstance(images, list) and len(images) > 0
             if has_image and has_images:
