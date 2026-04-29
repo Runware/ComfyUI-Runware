@@ -1,6 +1,6 @@
 from .utils import runwareUtils as rwUtils
 
-_IMAGE_SLOTS = 4
+_IMAGE_SLOTS = 8
 
 
 class threeDInferenceInputs:
@@ -30,7 +30,7 @@ class threeDInferenceInputs:
         }
 
     DESCRIPTION = (
-        "Configure custom inputs for Runware 3D Inference: image, mask, meshFile, and images_1…images_4 "
+        "Configure custom inputs for Runware 3D Inference: image, mask, meshFile, and images_1…images_8 "
         "(merged into inputs.images as an array)."
     )
     FUNCTION = "createInputs"

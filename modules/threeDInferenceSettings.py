@@ -388,6 +388,43 @@ class Runware3DInferenceSettings:
                 "texSlat": ("RUNWARE3DINFERENCESETTINGSLAT", {
                     "tooltip": "Connect Runware 3D Inference Settings Tex Slat node.",
                 }),
+                "useFaceCount": ("BOOLEAN", {
+                    "tooltip": "Enable to include faceCount in settings (Tencent Hunyuan Pro).",
+                    "default": False,
+                }),
+                "faceCount": ("INT", {
+                    "tooltip": "Target number of mesh faces for Hunyuan Pro (3000-1500000).",
+                    "default": 500000,
+                    "min": 3000,
+                    "max": 1500000,
+                    "step": 1000,
+                }),
+                "useGenerateType": ("BOOLEAN", {
+                    "tooltip": "Enable to include generateType in settings (Tencent Hunyuan Pro).",
+                    "default": False,
+                }),
+                "generateType": (["Normal", "Geometry"], {
+                    "tooltip": "Hunyuan Pro generation mode: Normal or Geometry.",
+                    "default": "Normal",
+                }),
+                "usePolygonType": ("BOOLEAN", {
+                    "tooltip": "Enable to include polygonType in settings (Tencent Hunyuan Pro).",
+                    "default": False,
+                }),
+                "polygonType": (["triangle", "quadrilateral"], {
+                    "tooltip": "Polygon type for low-poly style output. For Hunyuan 3.1, lowpoly mode is not supported by provider.",
+                    "default": "triangle",
+                }),
+                "useGeometryOnly": ("BOOLEAN", {
+                    "tooltip": "Enable to include geometryOnly in settings (Tencent Hunyuan Rapid).",
+                    "default": False,
+                }),
+                "geometryOnly": ("BOOLEAN", {
+                    "tooltip": "Rapid-only: texture-free white model generation.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -422,6 +459,14 @@ class Runware3DInferenceSettings:
             settings["texture"] = bool(kwargs.get("texture", True))
         if kwargs.get("usePbr", False):
             settings["pbr"] = bool(kwargs.get("pbr", True))
+        if kwargs.get("useFaceCount", False):
+            settings["faceCount"] = int(kwargs.get("faceCount", 500000))
+        if kwargs.get("useGenerateType", False):
+            settings["generateType"] = kwargs.get("generateType", "Normal")
+        if kwargs.get("usePolygonType", False):
+            settings["polygonType"] = kwargs.get("polygonType", "triangle")
+        if kwargs.get("useGeometryOnly", False):
+            settings["geometryOnly"] = bool(kwargs.get("geometryOnly", False))
         if kwargs.get("useTextureSeed", False):
             settings["textureSeed"] = int(kwargs.get("textureSeed", 1))
         if kwargs.get("useTextureAlignment", False):
