@@ -7,6 +7,8 @@ class threeDInference:
 
     # Available 3D models
     THREED_MODELS = {
+        "Tencent Hunyuan 3D 3.1 Pro": "tencent:hunyuan-3d@3.1-pro",
+        "Tencent Hunyuan 3D 3.1 Rapid": "tencent:hunyuan-3d@3.1-rapid",
         "Meta SAM 3D": "meta:sam@3d",
         "TRELLIS.2": "microsoft:trellis-2@4b",
         "Tripo 3D v3.1": "tripo:v3.1@0",
@@ -16,7 +18,7 @@ class threeDInference:
     }
 
     # Output formats
-    OUTPUT_FORMATS = ["GLB", "PLY", "FBX"]
+    OUTPUT_FORMATS = ["GLB", "FBX", "PLY", "OBJ"]
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -30,6 +32,11 @@ class threeDInference:
                     "multiline": True,
                     "placeholder": "Describe the 3D object you want to generate...",
                     "tooltip": "A text prompt describing the 3D object to generate."
+                }),
+                "negativePrompt": ("STRING", {
+                    "multiline": True,
+                    "placeholder": "Describe what to avoid in the 3D output...",
+                    "tooltip": "A negative text prompt describing attributes to avoid in the generated 3D object."
                 }),
                 "useSeed": ("BOOLEAN", {
                     "tooltip": "Include seed in the API request. Turn off if the model should not receive a seed.",
@@ -77,6 +84,7 @@ class threeDInference:
         """Generate 3D model from inputs"""
         modelName = kwargs.get("Model", "Meta SAM 3D")
         positivePrompt = kwargs.get("positivePrompt", "")
+        negativePrompt = kwargs.get("negativePrompt", "")
         seed = kwargs.get("seed", 1)
         use_seed = kwargs.get("useSeed", True)
         outputFormat = kwargs.get("outputFormat", "GLB")
@@ -105,6 +113,10 @@ class threeDInference:
         # Add positivePrompt if provided
         if positivePrompt and positivePrompt.strip() != "":
             genConfig[0]["positivePrompt"] = positivePrompt.strip()
+
+        # Add negativePrompt if provided
+        if negativePrompt and negativePrompt.strip() != "":
+            genConfig[0]["negativePrompt"] = negativePrompt.strip()
 
         if use_seed:
             genConfig[0]["seed"] = seed
