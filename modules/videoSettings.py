@@ -1,6 +1,6 @@
 """
 Runware Video Inference Settings Node
-Provides settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
+Provides settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
 """
 
 from typing import Dict, Any
@@ -33,6 +33,16 @@ class RunwareVideoSettings:
                     "default": False,
                     "label_on": "Enabled",
                     "label_off": "Disabled",
+                }),
+                "useSafetyFilter": ("BOOLEAN", {
+                    "tooltip": "Enable to include safetyFilter in video inference settings.",
+                    "default": False,
+                }),
+                "safetyFilter": ("BOOLEAN", {
+                    "tooltip": "When false, enables safety filtering on prompts and input images. Only used when 'Use Safety Filter' is enabled.",
+                    "default": True,
+                    "label_on": "true",
+                    "label_off": "false",
                 }),
                 "usePromptUpsampling": ("BOOLEAN", {
                     "tooltip": "Enable to include promptUpsampling (enhance prompt automatically) in video inference settings.",
@@ -188,6 +198,15 @@ class RunwareVideoSettings:
                 "segments": ("RUNWAREVIDEOINFERENCESETTINGSSEGMENTS", {
                     "tooltip": "Connect Runware Video Inference Settings Segments for settings.segments[] (startTime, endTime, audio, audioStartTime, audioEndTime).",
                 }),
+                "useVoicePrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include voicePrompt (delivery style instructions) in video inference settings.",
+                    "default": False,
+                }),
+                "voicePrompt": ("STRING", {
+                    "default": "Say the following.",
+                    "multiline": True,
+                    "tooltip": "Speaking style, tone, pacing or emotion instructions for delivery. Only used when 'Use Voice Prompt' is enabled.",
+                }),
             }
         }
 
@@ -196,7 +215,7 @@ class RunwareVideoSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure video inference settings (draft, audio, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
+        "Configure video inference settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
         "Connect to Runware Video Inference node."
     )
 
@@ -206,6 +225,10 @@ class RunwareVideoSettings:
         draft = kwargs.get("draft", False)
         use_audio = kwargs.get("useAudio", False)
         audio = kwargs.get("audio", False)
+        use_voice_prompt = kwargs.get("useVoicePrompt", False)
+        voice_prompt = (kwargs.get("voicePrompt") or "").strip()
+        use_safety_filter = kwargs.get("useSafetyFilter", False)
+        safety_filter = kwargs.get("safetyFilter", True)
         use_prompt_upsampling = kwargs.get("usePromptUpsampling", False)
         prompt_upsampling = kwargs.get("promptUpsampling", False)
         use_background_color = kwargs.get("useBackgroundColor", False)
@@ -248,6 +271,10 @@ class RunwareVideoSettings:
             settings["draft"] = bool(draft)
         if use_audio:
             settings["audio"] = bool(audio)
+        if use_voice_prompt and voice_prompt:
+            settings["voicePrompt"] = voice_prompt
+        if use_safety_filter:
+            settings["safetyFilter"] = bool(safety_filter)
         if use_prompt_upsampling:
             settings["promptUpsampling"] = bool(prompt_upsampling)
         if use_background_color and background_color:
