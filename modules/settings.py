@@ -1,7 +1,7 @@
 """
 Runware Image Inference Settings (registered as Runware Settings for workflow compatibility).
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
-quality, background, promptExtend, editRegions, thinking (boolean),
+quality, background, style, search, promptExtend, editRegions, thinking (boolean),
 thinkingLevel (high/medium/low), sequential, and colorPalette
 (from Runware Image Inference Settings Color Palette).
 """
@@ -136,6 +136,25 @@ class RunwareSettings:
                     "default": "auto",
                     "tooltip": "Background style for the generated image. Only used when 'Use Background' is enabled.",
                 }),
+                "useStyle": ("BOOLEAN", {
+                    "tooltip": "Enable to include style preset in API request",
+                    "default": False,
+                }),
+                "style": ("STRING", {
+                    "default": "auto",
+                    "multiline": False,
+                    "tooltip": "Style preset for generation. Only used when 'Use Style' is enabled.",
+                }),
+                "useSearch": ("BOOLEAN", {
+                    "tooltip": "Enable to include search grounding in API request",
+                    "default": False,
+                }),
+                "search": ("BOOLEAN", {
+                    "tooltip": "Enables web search grounding for reference. Only used when 'Use Search' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -144,7 +163,7 @@ class RunwareSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, "
+        "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, and optional colorPalette from the Color Palette node."
     )
 
@@ -159,6 +178,8 @@ class RunwareSettings:
         useTrueCFGScale = kwargs.get("useTrueCFGScale", False)
         useQuality = kwargs.get("useQuality", False)
         useBackground = kwargs.get("useBackground", False)
+        useStyle = kwargs.get("useStyle", False)
+        useSearch = kwargs.get("useSearch", False)
         usePromptExtend = kwargs.get("usePromptExtend", False)
         promptExtend = kwargs.get("promptExtend", False)
         useEditRegions = kwargs.get("useEditRegions", False)
@@ -174,6 +195,7 @@ class RunwareSettings:
         trueCFGScale = kwargs.get("trueCFGScale")
         quality = kwargs.get("quality", "medium")
         background = kwargs.get("background", "auto")
+        style = kwargs.get("style", "auto")
 
         # Build settings dictionary - only include what is enabled
         settings: Dict[str, Any] = {}
@@ -193,6 +215,10 @@ class RunwareSettings:
             settings["quality"] = quality
         if useBackground:
             settings["background"] = background
+        if useStyle:
+            settings["style"] = style
+        if useSearch:
+            settings["search"] = bool(kwargs.get("search", False))
         if usePromptExtend:
             settings["promptExtend"] = bool(promptExtend)
 

@@ -5105,6 +5105,10 @@ function settingsToggleHandler(settingsNode) {
     const qualityWidget = settingsNode.widgets.find(w => w.name === "quality");
     const useBackgroundWidget = settingsNode.widgets.find(w => w.name === "useBackground");
     const backgroundWidget = settingsNode.widgets.find(w => w.name === "background");
+    const useStyleWidget = settingsNode.widgets.find(w => w.name === "useStyle");
+    const styleWidget = settingsNode.widgets.find(w => w.name === "style");
+    const useSearchWidget = settingsNode.widgets.find(w => w.name === "useSearch");
+    const searchWidget = settingsNode.widgets.find(w => w.name === "search");
     const usePromptExtendWidget = settingsNode.widgets.find(w => w.name === "usePromptExtend");
     const promptExtendWidget = settingsNode.widgets.find(w => w.name === "promptExtend");
     const useEditRegionsWidget = settingsNode.widgets.find(w => w.name === "useEditRegions");
@@ -5179,6 +5183,12 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useBackgroundWidget && backgroundWidget) {
         toggleWidgetState(useBackgroundWidget, backgroundWidget, "background");
+    }
+    if (useStyleWidget && styleWidget) {
+        toggleWidgetState(useStyleWidget, styleWidget, "style");
+    }
+    if (useSearchWidget && searchWidget) {
+        toggleWidgetState(useSearchWidget, searchWidget, "search");
     }
     if (usePromptExtendWidget && promptExtendWidget) {
         toggleWidgetState(usePromptExtendWidget, promptExtendWidget, "promptExtend");
