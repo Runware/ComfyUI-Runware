@@ -74,8 +74,8 @@ class RunwareTextInferenceSettings:
                     "default": "none",
                     "tooltip": (
                         "Extended reasoning level: none, low, medium, high, max, adaptive. "
-                        "off -> disabled. low/medium/high/max -> adaptive thinking with the chosen effort. "
-                        "adaptive -> model picks budget."
+                        "none -> disabled. low/medium/high/max -> adaptive thinking with the chosen effort. "
+                        "adaptive -> model picks budget. Legacy 'off' is mapped to 'none'."
                     ),
                 }),
                 "useStopSequences": ("BOOLEAN", {
