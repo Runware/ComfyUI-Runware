@@ -1354,8 +1354,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     const frequencyPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "frequencyPenalty");
     const useToolsWidget = settingsNode.widgets.find(w => w && w.name === "useTools");
     const toolsWidget = settingsNode.widgets.find(w => w && w.name === "tools");
-    const useToolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "useToolChoice");
-    const toolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "toolChoice");
 
     function toggleWidgetState(useWidget, paramWidget) {
         if (!useWidget || !paramWidget) return;
@@ -1382,7 +1380,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     if (usePresencePenaltyWidget && presencePenaltyWidget) toggleWidgetState(usePresencePenaltyWidget, presencePenaltyWidget);
     if (useFrequencyPenaltyWidget && frequencyPenaltyWidget) toggleWidgetState(useFrequencyPenaltyWidget, frequencyPenaltyWidget);
     if (useToolsWidget && toolsWidget) toggleWidgetState(useToolsWidget, toolsWidget);
-    if (useToolChoiceWidget && toolChoiceWidget) toggleWidgetState(useToolChoiceWidget, toolChoiceWidget);
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -3274,6 +3271,11 @@ function textModelSearchFilterHandler(textModelSearchNode) {
             "openai:gpt@5.4-pro (GPT-5.4 Pro)",
             "openai:gpt@5.4-mini (GPT-5.4 Mini)",
             "openai:gpt@5.4-nano (GPT-5.4 Nano)",
+        ],
+        "Anthropic": [
+            "anthropic:claude@opus-4.7 (Claude Opus 4.7)",
+            "anthropic:claude@sonnet-4.6 (Claude Sonnet 4.6)",
+            "anthropic:claude@haiku-4.5 (Claude Haiku 4.5)",
         ],
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",

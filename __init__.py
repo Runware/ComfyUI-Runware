@@ -53,6 +53,11 @@ from .modules.textInferenceMessages import RunwareTextInferenceMessages
 from .modules.textInferenceMessage import RunwareTextInferenceMessage
 from .modules.textInference import RunwareTextInference
 from .modules.textInferenceSettings import RunwareTextInferenceSettings
+from .modules.textInferenceToolChoice import RunwareTextInferenceToolChoice
+from .modules.textInferenceSettingsCache import RunwareTextInferenceSettingsCache
+from .modules.textInferenceInputs import RunwareTextInferenceInputs
+from .modules.textInferenceInputsImages import RunwareTextInferenceInputsImages
+from .modules.textInferenceInputsVideos import RunwareTextInferenceInputsVideos
 from .modules.audioSections import RunwareAudioSections
 from .modules.audioInferenceInputs import audioInferenceInputs
 from .modules.audioSettings import RunwareAudioSettings
@@ -177,6 +182,11 @@ NODE_CLASS_MAPPINGS = {
     "Runware Text Inference Message": RunwareTextInferenceMessage,
     "Runware Text Inference": RunwareTextInference,
     "Runware Text Inference Settings": RunwareTextInferenceSettings,
+    "Runware Text Inference Tool Choice": RunwareTextInferenceToolChoice,
+    "Runware Text Inference Settings Cache": RunwareTextInferenceSettingsCache,
+    "Runware Text Inference Inputs": RunwareTextInferenceInputs,
+    "Runware Text Inference Inputs Images": RunwareTextInferenceInputsImages,
+    "Runware Text Inference Inputs Videos": RunwareTextInferenceInputsVideos,
     "Runware Audio Sections": RunwareAudioSections,
     "Runware Audio Inference Inputs": audioInferenceInputs,
     "Runware Audio Inference Settings": RunwareAudioSettings,

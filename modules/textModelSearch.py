@@ -13,6 +13,11 @@ class RunwareTextModelSearch:
             "openai:gpt@5.4-mini (GPT-5.4 Mini)",
             "openai:gpt@5.4-nano (GPT-5.4 Nano)",
         ],
+        "Anthropic": [
+            "anthropic:claude@opus-4.7 (Claude Opus 4.7)",
+            "anthropic:claude@sonnet-4.6 (Claude Sonnet 4.6)",
+            "anthropic:claude@haiku-4.5 (Claude Haiku 4.5)",
+        ],
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",
         ],
@@ -23,6 +28,7 @@ class RunwareTextModelSearch:
 
     MODEL_PROVIDERS = [
         "All",
+        "Anthropic",
         "Google",
         "MiniMax",
         "OpenAI",
