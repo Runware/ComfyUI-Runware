@@ -34,16 +34,6 @@ class RunwareVideoSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
-                "useSafetyFilter": ("BOOLEAN", {
-                    "tooltip": "Enable to include safetyFilter in video inference settings.",
-                    "default": False,
-                }),
-                "safetyFilter": ("BOOLEAN", {
-                    "tooltip": "When false, enables safety filtering on prompts and input images. Only used when 'Use Safety Filter' is enabled.",
-                    "default": True,
-                    "label_on": "true",
-                    "label_off": "false",
-                }),
                 "usePromptUpsampling": ("BOOLEAN", {
                     "tooltip": "Enable to include promptUpsampling (enhance prompt automatically) in video inference settings.",
                     "default": False,
@@ -207,6 +197,16 @@ class RunwareVideoSettings:
                     "multiline": True,
                     "tooltip": "Speaking style, tone, pacing or emotion instructions for delivery. Only used when 'Use Voice Prompt' is enabled.",
                 }),
+                "useSafetyFilter": ("BOOLEAN", {
+                    "tooltip": "Enable to include safetyFilter in video inference settings.",
+                    "default": False,
+                }),
+                "safetyFilter": ("BOOLEAN", {
+                    "tooltip": "When false, enables safety filtering on prompts and input images. Only used when 'Use Safety Filter' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -228,7 +228,7 @@ class RunwareVideoSettings:
         use_voice_prompt = kwargs.get("useVoicePrompt", False)
         voice_prompt = (kwargs.get("voicePrompt") or "").strip()
         use_safety_filter = kwargs.get("useSafetyFilter", False)
-        safety_filter = kwargs.get("safetyFilter", True)
+        safety_filter = kwargs.get("safetyFilter", False)
         use_prompt_upsampling = kwargs.get("usePromptUpsampling", False)
         prompt_upsampling = kwargs.get("promptUpsampling", False)
         use_background_color = kwargs.get("useBackgroundColor", False)
