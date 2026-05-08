@@ -70,9 +70,13 @@ class RunwareTextInferenceSettings:
                     "tooltip": f"Top-k sampling (1–{cls._MAX_TOP_K}).",
                 }),
                 # Keep this in the original slot to avoid shifting legacy widgets_values.
-                "thinkingLevel": (["none", "low", "medium", "high"], {
+                "thinkingLevel": (["none", "low", "medium", "high", "max", "adaptive"], {
                     "default": "none",
-                    "tooltip": "Extended reasoning level: none, low, medium, high.",
+                    "tooltip": (
+                        "Extended reasoning level: none, low, medium, high, max, adaptive. "
+                        "off -> disabled. low/medium/high/max -> adaptive thinking with the chosen effort. "
+                        "adaptive -> model picks budget."
+                    ),
                 }),
                 "useStopSequences": ("BOOLEAN", {
                     "default": False,
@@ -123,6 +127,9 @@ class RunwareTextInferenceSettings:
                     "default": "{}",
                     "tooltip": "JSON object for toolChoice.",
                 }),
+                "cache": ("RUNWARETEXTINFERENCESETTINGSCACHE", {
+                    "tooltip": "Connect Runware Text Inference Settings Cache for settings.cache.{scope, ttl}.",
+                }),
             },
         }
 
@@ -132,7 +139,7 @@ class RunwareTextInferenceSettings:
     CATEGORY = "Runware/Text"
     DESCRIPTION = (
         "Optional text inference settings (systemPrompt, maxTokens, temperature, topP, topK, "
-        "stopSequences, presencePenalty, frequencyPenalty, tools, toolChoice, thinkingLevel). "
+        "stopSequences, presencePenalty, frequencyPenalty, tools, toolChoice, thinkingLevel, cache). "
         "Connect to Runware Text Inference."
     )
 
@@ -191,7 +198,7 @@ class RunwareTextInferenceSettings:
             "minimal": "low",
         }
         value = aliases.get(value, value)
-        if value not in ("none", "low", "medium", "high"):
+        if value not in ("none", "low", "medium", "high", "max", "adaptive"):
             return "none"
         return value
 
@@ -241,6 +248,10 @@ class RunwareTextInferenceSettings:
         tl = self._normalize_thinking_level(kwargs.get("thinkingLevel", "none"))
         if tl != "none":
             out["thinkingLevel"] = tl
+
+        cache_cfg = kwargs.get("cache")
+        if cache_cfg is not None and isinstance(cache_cfg, dict) and len(cache_cfg) > 0:
+            out["cache"] = cache_cfg
 
         if not out:
             return ({},)
