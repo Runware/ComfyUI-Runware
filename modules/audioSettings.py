@@ -1,8 +1,9 @@
 """
 Runware Audio Inference Settings Node
 Provides lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization,
-bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart,
-repaintingEnd, xVectorOnly, maxNewTokens, transcript, and more for Runware Audio Inference.
+bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd,
+cfgIntervalStart, cfgIntervalEnd, repaintMode, repaintStrength, xVectorOnly, maxNewTokens, transcript,
+and more for Runware Audio Inference.
 """
 
 from typing import Dict, Any
@@ -233,6 +234,47 @@ class RunwareAudioSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useCfgIntervalStart": ("BOOLEAN", {
+                    "tooltip": "Enable to include cfgIntervalStart (diffusion ratio where CFG begins). ACE-Step Base only — not supported on Turbo variants.",
+                    "default": False,
+                }),
+                "cfgIntervalStart": ("FLOAT", {
+                    "tooltip": "Diffusion ratio where CFG begins (0.0 = first step). Only used when 'Use Cfg Interval Start' is enabled.",
+                    "default": 0.0,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
+                "useCfgIntervalEnd": ("BOOLEAN", {
+                    "tooltip": "Enable to include cfgIntervalEnd (diffusion ratio where CFG ends). ACE-Step Base only — not supported on Turbo variants.",
+                    "default": False,
+                }),
+                "cfgIntervalEnd": ("FLOAT", {
+                    "tooltip": "Diffusion ratio where CFG ends (1.0 = last step). Only used when 'Use Cfg Interval End' is enabled.",
+                    "default": 1.0,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
+                "useRepaintMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include repaintMode (repaint blend strategy). Requires input audio and an active repaint region (repaintingStart / repaintingEnd).",
+                    "default": False,
+                }),
+                "repaintMode": (["conservative", "balanced", "aggressive"], {
+                    "tooltip": "Repaint blend strategy. Only used when 'Use Repaint Mode' is enabled.",
+                    "default": "balanced",
+                }),
+                "useRepaintStrength": ("BOOLEAN", {
+                    "tooltip": "Enable to include repaintStrength (balanced mode only). Requires input audio and an active repaint region.",
+                    "default": False,
+                }),
+                "repaintStrength": ("FLOAT", {
+                    "tooltip": "Repaint aggressiveness (0 = preserve source, 1 = full regen). Balanced mode only. Only used when 'Use Repaint Strength' is enabled.",
+                    "default": 0.5,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
             }
         }
 
@@ -243,7 +285,8 @@ class RunwareAudioSettings:
     DESCRIPTION = (
         "Configure audio generation settings (lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization, "
         "bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd, "
-        "xVectorOnly, maxNewTokens, transcript, etc.) for Runware Audio Inference. Connect to Runware Audio Inference node."
+        "cfgIntervalStart, cfgIntervalEnd, repaintMode, repaintStrength, xVectorOnly, maxNewTokens, transcript, etc.) "
+        "for Runware Audio Inference. Connect to Runware Audio Inference node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -290,6 +333,14 @@ class RunwareAudioSettings:
         max_new_tokens = kwargs.get("maxNewTokens", 4096)
         use_transcript = kwargs.get("useTranscript", False)
         transcript = kwargs.get("transcript", "") or ""
+        use_cfg_interval_start = kwargs.get("useCfgIntervalStart", False)
+        cfg_interval_start = kwargs.get("cfgIntervalStart", 0.0)
+        use_cfg_interval_end = kwargs.get("useCfgIntervalEnd", False)
+        cfg_interval_end = kwargs.get("cfgIntervalEnd", 1.0)
+        use_repaint_mode = kwargs.get("useRepaintMode", False)
+        repaint_mode = kwargs.get("repaintMode", "balanced")
+        use_repaint_strength = kwargs.get("useRepaintStrength", False)
+        repaint_strength = kwargs.get("repaintStrength", 0.5)
 
         settings: Dict[str, Any] = {}
 
@@ -350,6 +401,18 @@ class RunwareAudioSettings:
 
         if use_transcript and transcript.strip():
             settings["transcript"] = transcript.strip()
+
+        if use_cfg_interval_start:
+            settings["cfgIntervalStart"] = float(cfg_interval_start)
+
+        if use_cfg_interval_end:
+            settings["cfgIntervalEnd"] = float(cfg_interval_end)
+
+        if use_repaint_mode:
+            settings["repaintMode"] = repaint_mode
+
+        if use_repaint_strength:
+            settings["repaintStrength"] = float(repaint_strength)
 
         return (settings,)
 

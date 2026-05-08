@@ -18,6 +18,8 @@ class RunwareAudioModelSearch:
             "runware:ace-step@0 (ACE Step v1 3.5B)",
             "runware:ace-step@v1.5-base (ACE-Step v1.5 Base)",
             "runware:ace-step@v1.5-turbo (ACE-Step v1.5 Turbo)",
+            "runware:ace-step@v1.5-xl-base (ACE-Step v1.5 XL Base)",
+            "runware:ace-step@v1.5-xl-turbo (ACE-Step v1.5 XL Turbo)",
         ],
         "Alibaba": [
             "alibaba:qwen@3-tts-1.7b-voicedesign (Qwen3 TTS 1.7B Voice Design)",
