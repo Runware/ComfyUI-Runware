@@ -118,15 +118,6 @@ class RunwareTextInferenceSettings:
                     "default": "[]",
                     "tooltip": "JSON array for tools.",
                 }),
-                "useToolChoice": ("BOOLEAN", {
-                    "default": False,
-                    "tooltip": "Include toolChoice in settings.",
-                }),
-                "toolChoice": ("STRING", {
-                    "multiline": True,
-                    "default": "{}",
-                    "tooltip": "JSON object for toolChoice.",
-                }),
                 "cache": ("RUNWARETEXTINFERENCESETTINGSCACHE", {
                     "tooltip": "Connect Runware Text Inference Settings Cache for settings.cache.{scope, ttl}.",
                 }),
@@ -139,8 +130,8 @@ class RunwareTextInferenceSettings:
     CATEGORY = "Runware/Text"
     DESCRIPTION = (
         "Optional text inference settings (systemPrompt, maxTokens, temperature, topP, topK, "
-        "stopSequences, presencePenalty, frequencyPenalty, tools, toolChoice, thinkingLevel, cache). "
-        "Connect to Runware Text Inference."
+        "stopSequences, presencePenalty, frequencyPenalty, tools, thinkingLevel, cache). "
+        "Connect to Runware Text Inference. For tool calling, use Runware Text Inference Tool Choice on the inference node."
     )
 
     @staticmethod
@@ -239,11 +230,6 @@ class RunwareTextInferenceSettings:
             parsed_tools = self._parse_json_setting(kwargs.get("tools"), list, "tools")
             if parsed_tools:
                 out["tools"] = parsed_tools
-
-        if kwargs.get("useToolChoice", False):
-            parsed_choice = self._parse_json_setting(kwargs.get("toolChoice"), dict, "toolChoice")
-            if parsed_choice:
-                out["toolChoice"] = parsed_choice
 
         tl = self._normalize_thinking_level(kwargs.get("thinkingLevel", "none"))
         if tl != "none":

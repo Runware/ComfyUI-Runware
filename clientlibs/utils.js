@@ -1354,8 +1354,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     const frequencyPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "frequencyPenalty");
     const useToolsWidget = settingsNode.widgets.find(w => w && w.name === "useTools");
     const toolsWidget = settingsNode.widgets.find(w => w && w.name === "tools");
-    const useToolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "useToolChoice");
-    const toolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "toolChoice");
 
     function toggleWidgetState(useWidget, paramWidget) {
         if (!useWidget || !paramWidget) return;
@@ -1382,7 +1380,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     if (usePresencePenaltyWidget && presencePenaltyWidget) toggleWidgetState(usePresencePenaltyWidget, presencePenaltyWidget);
     if (useFrequencyPenaltyWidget && frequencyPenaltyWidget) toggleWidgetState(useFrequencyPenaltyWidget, frequencyPenaltyWidget);
     if (useToolsWidget && toolsWidget) toggleWidgetState(useToolsWidget, toolsWidget);
-    if (useToolChoiceWidget && toolChoiceWidget) toggleWidgetState(useToolChoiceWidget, toolChoiceWidget);
 }
 
 function videoSettingsToggleHandler(settingsNode) {

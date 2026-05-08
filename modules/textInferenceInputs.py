@@ -38,11 +38,15 @@ class RunwareTextInferenceInputs:
         if isinstance(images_block, dict) and images_block.get("images"):
             imgs = images_block["images"]
             if isinstance(imgs, list) and len(imgs) > 0:
-                out["images"] = [str(x).strip() for x in imgs if x is not None and str(x).strip()]
+                filtered_imgs = [str(x).strip() for x in imgs if x is not None and str(x).strip()]
+                if filtered_imgs:
+                    out["images"] = filtered_imgs
 
         if isinstance(videos_block, dict) and videos_block.get("videos"):
             vids = videos_block["videos"]
             if isinstance(vids, list) and len(vids) > 0:
-                out["videos"] = [str(x).strip() for x in vids if x is not None and str(x).strip()]
+                filtered_vids = [str(x).strip() for x in vids if x is not None and str(x).strip()]
+                if filtered_vids:
+                    out["videos"] = filtered_vids
 
         return (out,)
