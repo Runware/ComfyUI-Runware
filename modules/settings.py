@@ -2,7 +2,8 @@
 Runware Image Inference Settings (registered as Runware Settings for workflow compatibility).
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
-thinkingLevel (high/medium/low), sequential, and colorPalette
+thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
+magicPrompt (AUTO/ON/OFF), and colorPalette
 (from Runware Image Inference Settings Color Palette).
 """
 
@@ -155,6 +156,22 @@ class RunwareSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useRenderingSpeed": ("BOOLEAN", {
+                    "tooltip": "Enable to include renderingSpeed in settings.",
+                    "default": False,
+                }),
+                "renderingSpeed": (["TURBO", "DEFAULT", "QUALITY"], {
+                    "default": "DEFAULT",
+                    "tooltip": "The rendering speed to use. Only used when 'Use Rendering Speed' is enabled.",
+                }),
+                "useMagicPrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include magicPrompt in settings.",
+                    "default": False,
+                }),
+                "magicPrompt": (["AUTO", "ON", "OFF"], {
+                    "default": "AUTO",
+                    "tooltip": "Determine if MagicPrompt should be used. Only used when 'Use Magic Prompt' is enabled.",
+                }),
             }
         }
 
@@ -164,7 +181,8 @@ class RunwareSettings:
     CATEGORY = "Runware"
     DESCRIPTION = (
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
-        "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, and optional colorPalette from the Color Palette node."
+        "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
+        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), and optional colorPalette from the Color Palette node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -186,6 +204,8 @@ class RunwareSettings:
         useThinking = kwargs.get("useThinking", False)
         useThinkingLevel = kwargs.get("useThinkingLevel", False)
         useSequential = kwargs.get("useSequential", False)
+        useRenderingSpeed = kwargs.get("useRenderingSpeed", False)
+        useMagicPrompt = kwargs.get("useMagicPrompt", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -196,6 +216,8 @@ class RunwareSettings:
         quality = kwargs.get("quality", "medium")
         background = kwargs.get("background", "auto")
         style = kwargs.get("style", "auto")
+        renderingSpeed = kwargs.get("renderingSpeed", "DEFAULT")
+        magicPrompt = kwargs.get("magicPrompt", "AUTO")
 
         # Build settings dictionary - only include what is enabled
         settings: Dict[str, Any] = {}
@@ -245,6 +267,11 @@ class RunwareSettings:
         palette: Optional[List[Dict[str, Any]]] = kwargs.get("colorPalette")
         if palette is not None and isinstance(palette, list) and len(palette) > 0:
             settings["colorPalette"] = palette
+
+        if useRenderingSpeed:
+            settings["renderingSpeed"] = str(renderingSpeed)
+        if useMagicPrompt:
+            settings["magicPrompt"] = str(magicPrompt)
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
