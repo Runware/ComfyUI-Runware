@@ -2,7 +2,8 @@
 Runware Image Inference Settings (registered as Runware Settings for workflow compatibility).
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
-thinkingLevel (high/medium/low), sequential, and colorPalette
+thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
+magicPrompt (AUTO/ON/OFF), and colorPalette
 (from Runware Image Inference Settings Color Palette).
 """
 
@@ -180,7 +181,8 @@ class RunwareSettings:
     CATEGORY = "Runware"
     DESCRIPTION = (
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
-        "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, and optional colorPalette from the Color Palette node."
+        "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
+        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), and optional colorPalette from the Color Palette node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
