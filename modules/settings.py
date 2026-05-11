@@ -155,6 +155,22 @@ class RunwareSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useRenderingSpeed": ("BOOLEAN", {
+                    "tooltip": "Enable to include renderingSpeed in settings.",
+                    "default": False,
+                }),
+                "renderingSpeed": (["TURBO", "DEFAULT", "QUALITY"], {
+                    "default": "DEFAULT",
+                    "tooltip": "The rendering speed to use. Only used when 'Use Rendering Speed' is enabled.",
+                }),
+                "useMagicPrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include magicPrompt in settings.",
+                    "default": False,
+                }),
+                "magicPrompt": (["AUTO", "ON", "OFF"], {
+                    "default": "AUTO",
+                    "tooltip": "Determine if MagicPrompt should be used. Only used when 'Use Magic Prompt' is enabled.",
+                }),
             }
         }
 
@@ -186,6 +202,8 @@ class RunwareSettings:
         useThinking = kwargs.get("useThinking", False)
         useThinkingLevel = kwargs.get("useThinkingLevel", False)
         useSequential = kwargs.get("useSequential", False)
+        useRenderingSpeed = kwargs.get("useRenderingSpeed", False)
+        useMagicPrompt = kwargs.get("useMagicPrompt", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -196,6 +214,8 @@ class RunwareSettings:
         quality = kwargs.get("quality", "medium")
         background = kwargs.get("background", "auto")
         style = kwargs.get("style", "auto")
+        renderingSpeed = kwargs.get("renderingSpeed", "DEFAULT")
+        magicPrompt = kwargs.get("magicPrompt", "AUTO")
 
         # Build settings dictionary - only include what is enabled
         settings: Dict[str, Any] = {}
@@ -245,6 +265,11 @@ class RunwareSettings:
         palette: Optional[List[Dict[str, Any]]] = kwargs.get("colorPalette")
         if palette is not None and isinstance(palette, list) and len(palette) > 0:
             settings["colorPalette"] = palette
+
+        if useRenderingSpeed:
+            settings["renderingSpeed"] = str(renderingSpeed)
+        if useMagicPrompt:
+            settings["magicPrompt"] = str(magicPrompt)
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}

@@ -5134,6 +5134,10 @@ function settingsToggleHandler(settingsNode) {
     const thinkingLevelWidget = settingsNode.widgets.find(w => w.name === "thinkingLevel");
     const useSequentialWidget = settingsNode.widgets.find(w => w.name === "useSequential");
     const sequentialWidget = settingsNode.widgets.find(w => w.name === "sequential");
+    const useRenderingSpeedWidget = settingsNode.widgets.find(w => w.name === "useRenderingSpeed");
+    const renderingSpeedWidget = settingsNode.widgets.find(w => w.name === "renderingSpeed");
+    const useMagicPromptWidget = settingsNode.widgets.find(w => w.name === "useMagicPrompt");
+    const magicPromptWidget = settingsNode.widgets.find(w => w.name === "magicPrompt");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5219,6 +5223,12 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useSequentialWidget && sequentialWidget) {
         toggleWidgetState(useSequentialWidget, sequentialWidget, "sequential");
+    }
+    if (useRenderingSpeedWidget && renderingSpeedWidget) {
+        toggleWidgetState(useRenderingSpeedWidget, renderingSpeedWidget, "renderingSpeed");
+    }
+    if (useMagicPromptWidget && magicPromptWidget) {
+        toggleWidgetState(useMagicPromptWidget, magicPromptWidget, "magicPrompt");
     }
 }
 
