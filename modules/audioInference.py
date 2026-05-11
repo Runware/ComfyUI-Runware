@@ -51,17 +51,17 @@ class RunwareAudioInference:
                     "default": False,
                     "tooltip": "Enable/disable sampleRate parameter in API request"
                 }),
-                "sampleRate": ([8000, 16000, 22050, 24000, 32000, 44100], {
+                "sampleRate": ([8000, 16000, 22050, 24000, 32000, 44100, 48000], {
                     "default": 32000,
-                    "tooltip": "Audio sample rate in Hz. Supported: 8000, 16000, 22050, 24000, 32000, 44100."
+                    "tooltip": "Audio sample rate in Hz. Supported: 8000, 16000, 22050, 24000, 32000, 44100, 48000.",
                 }),
                 "useBitrate": ("BOOLEAN", {
                     "default": False,
-                    "tooltip": "Enable/disable bitrate parameter in API request (MP3 only)"
+                    "tooltip": "Enable/disable bitrate parameter in API request"
                 }),
-                "bitrate": ([32, 64, 128, 256], {
+                "bitrate": ([16, 32, 64, 128, 256], {
                     "default": 128,
-                    "tooltip": "Audio bitrate in kbps. Allowed: 32, 64, 128, 256. Only applies to MP3 format."
+                    "tooltip": "Audio bitrate in kbps. Allowed: 16, 32, 64, 128, 256. Applies to compressed formats (e.g. MP3, OGG).",
                 }),
                 "useChannels": ("BOOLEAN", {
                     "default": False,
@@ -323,7 +323,7 @@ class RunwareAudioInference:
             audioSettings["sampleRate"] = int(params["sampleRate"])
         if params["useBitrate"]:
             _br = int(params["bitrate"])
-            _allowed_bitrates = (32, 64, 128, 256)
+            _allowed_bitrates = (16, 32, 64, 128, 256)
             audioSettings["bitrate"] = _br if _br in _allowed_bitrates else min(_allowed_bitrates, key=lambda x: abs(x - _br))
         if params["useChannels"]:
             audioSettings["channels"] = params["channels"]

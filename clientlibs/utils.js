@@ -3280,6 +3280,9 @@ function textModelSearchFilterHandler(textModelSearchNode) {
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",
         ],
+        "MoonshotAI": [
+            "moonshotai:kimi@k2.6 (Kimi K2.6)",
+        ],
         "Zai": [
             "zai-glm-5-1 (ZAI GLM 5.1)",
         ],
@@ -3352,6 +3355,7 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
             "minimax:music@2.6 (MiniMax Music 2.6)",
         ],
         "Inworld": [
+            "inworld:tts@2 (Inworld Realtime TTS 2)",
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
             "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
         ],
