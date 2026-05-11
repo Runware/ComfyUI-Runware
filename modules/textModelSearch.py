@@ -21,6 +21,9 @@ class RunwareTextModelSearch:
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",
         ],
+        "MoonshotAI": [
+            "moonshotai:kimi@k2.6 (Kimi K2.6)",
+        ],
         "Zai": [
             "zai-glm-5-1 (ZAI GLM 5.1)",
         ],
@@ -31,6 +34,7 @@ class RunwareTextModelSearch:
         "Anthropic",
         "Google",
         "MiniMax",
+        "MoonshotAI",
         "OpenAI",
         "Zai",
     ]
