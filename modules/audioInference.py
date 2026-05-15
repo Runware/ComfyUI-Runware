@@ -5,6 +5,7 @@ import numpy as np
 import librosa
 import tempfile
 import os
+from urllib.parse import urlparse
 import comfy.model_management
 from .utils import runwareUtils as rwUtils
 
@@ -21,10 +22,6 @@ class RunwareAudioInference:
             "required": {
                 "model": ("RUNWAREAUDIOMODEL", {
                     "tooltip": "AI model to use for audio generation"
-                }),
-                "usePositivePrompt": ("BOOLEAN", {
-                    "default": True,
-                    "tooltip": "Enable/disable positivePrompt parameter in API request"
                 }),
                 "positivePrompt": ("STRING", {
                     "multiline": True,
@@ -51,17 +48,17 @@ class RunwareAudioInference:
                     "default": False,
                     "tooltip": "Enable/disable sampleRate parameter in API request"
                 }),
-                "sampleRate": ([8000, 16000, 22050, 24000, 32000, 44100], {
+                "sampleRate": ([8000, 16000, 22050, 24000, 32000, 44100, 48000], {
                     "default": 32000,
-                    "tooltip": "Audio sample rate in Hz. Supported: 8000, 16000, 22050, 24000, 32000, 44100."
+                    "tooltip": "Audio sample rate in Hz. Supported: 8000, 16000, 22050, 24000, 32000, 44100, 48000.",
                 }),
                 "useBitrate": ("BOOLEAN", {
                     "default": False,
-                    "tooltip": "Enable/disable bitrate parameter in API request (MP3 only)"
+                    "tooltip": "Enable/disable bitrate parameter in API request"
                 }),
                 "bitrate": ([8, 16, 32, 64, 128, 256], {
                     "default": 128,
-                    "tooltip": "Audio bitrate in kbps. Allowed: 8, 16, 32, 64, 128, 256. Only applies to MP3 format."
+                    "tooltip": "Audio bitrate in kbps. Allowed: 8, 16, 32, 64, 128, 256. Applies to compressed formats (e.g. MP3, OGG).",
                 }),
                 "useChannels": ("BOOLEAN", {
                     "default": False,
@@ -73,10 +70,6 @@ class RunwareAudioInference:
                     "max": 2,
                     "step": 1,
                     "tooltip": "Number of audio channels (1=mono, 2=stereo)"
-                }),
-                "outputType": (["URL", "dataURI", "base64Data"], {
-                    "default": "URL",
-                    "tooltip": "Output type for the generated audio"
                 }),
                 "outputFormat": (["MP3", "MP4", "WAV", "FLAC", "OGG"], {
                     "default": "MP3",
@@ -219,13 +212,16 @@ class RunwareAudioInference:
                     status = audioData["status"]
                     
                     if status == "success":
-                        audioUrl = self._extractAudioUrl(pollResult)
-                        hasAudio = audioUrl is not None
+                        audioUrls = self._extractAudioUrls(pollResult)
+                        hasAudio = len(audioUrls) > 0
                         hasVideo = bool(audioData.get("videoURL") or audioData.get("videoBase64Data", False))
                         
                         if hasAudio:
-                            audioObj = self._downloadAndProcessAudio(audioUrl, params["sampleRate"])
-                            print(f"[DEBUG] Audio URL found, returning audio. Audio URL: {audioUrl}")
+                            audioObjects = []
+                            for audioUrl in audioUrls:
+                                audioObjects.append(self._downloadAndProcessAudio(audioUrl, params["sampleRate"], params["outputFormat"]))
+                            audioObj = self._mergeAudioObjects(audioObjects, params["sampleRate"])
+                            print(f"[DEBUG] Audio URL(s) found, returning batched audio. Count: {len(audioUrls)}")
                             # Return empty video object when only audio is present (prevents errors in downstream nodes)
                             emptyVideoObj = rwUtils.VideoObject("", width=0, height=0)
                             return (audioObj, emptyVideoObj)
@@ -260,7 +256,6 @@ class RunwareAudioInference:
         """Extract and validate parameters from kwargs"""
         return {
             "positivePrompt": kwargs.get("positivePrompt", ""),
-            "usePositivePrompt": kwargs.get("usePositivePrompt", True),
             "model": kwargs.get("model", ""),
             "duration": kwargs.get("duration", 30),
             "useDuration": kwargs.get("useDuration", True),
@@ -270,7 +265,6 @@ class RunwareAudioInference:
             "useBitrate": kwargs.get("useBitrate", False),
             "channels": kwargs.get("channels", 2),
             "useChannels": kwargs.get("useChannels", False),
-            "outputType": kwargs.get("outputType", "URL"),
             "outputFormat": kwargs.get("outputFormat", "MP3"),
             "negativePrompt": kwargs.get("negativePrompt", ""),
             "numberResults": kwargs.get("numberResults", 1),
@@ -310,7 +304,7 @@ class RunwareAudioInference:
             "taskType": "audioInference",
             "taskUUID": taskUuid,
             "model": params["model"],
-            "outputType": params["outputType"],
+            "outputType": "URL",
             "outputFormat": params["outputFormat"],
             "deliveryMethod": "async",
             "includeCost": True,
@@ -338,8 +332,8 @@ class RunwareAudioInference:
             params["useDuration"] = False
             print(f"[DEBUG] Disabled duration because sections are provided")
         
-        # Add prompts conditionally
-        if params["usePositivePrompt"]:
+        # Add positivePrompt only when non-empty
+        if len(params["positivePrompt"]) > 0:
             genConfig[0]["positivePrompt"] = params["positivePrompt"]
             print(f"[DEBUG] Added positivePrompt: '{params['positivePrompt']}'")
         else:
@@ -447,26 +441,68 @@ class RunwareAudioInference:
         if not hasAudio and not hasVideo:
             raise Exception("No audio or video data received from API")
 
-    def _extractAudioUrl(self, genResult):
-        """Extract audio URL from API response. Returns None if no audio URL is present (e.g., when only video is returned)."""
-        audioData = genResult["data"][0]
-        
-        audioUrl = audioData.get("audioURL", "")
-        if not audioUrl:
-            audioUrl = audioData.get("audioDataURI", "")
-        if not audioUrl:
-            audioUrl = audioData.get("audioBase64Data", "")
-        
+    def _extractAudioUrls(self, genResult):
+        """Extract all available audio URLs from API response."""
+        audioUrls = []
+        for item in genResult.get("data", []):
+            audioUrl = item.get("audioURL", "") or item.get("audioDataURI", "") or item.get("audioBase64Data", "")
+            if audioUrl:
+                audioUrls.append(audioUrl)
+        return audioUrls
 
-        return audioUrl if audioUrl else None
+    def _mergeAudioObjects(self, audioObjects, targetSampleRate):
+        """Merge multiple audio objects into a single batched audio object."""
+        if not audioObjects:
+            return {
+                "waveform": torch.zeros((1, 1, 1)),
+                "sample_rate": targetSampleRate,
+                "format": "wav"
+            }
 
-    def _downloadAndProcessAudio(self, audioUrl, targetSampleRate):
+        waveforms = []
+        maxChannels = 0
+        maxSamples = 0
+
+        for audioObj in audioObjects:
+            waveform = audioObj["waveform"]
+            if waveform.dim() == 2:
+                waveform = waveform.unsqueeze(0)
+            waveforms.append(waveform)
+            maxChannels = max(maxChannels, waveform.shape[1])
+            maxSamples = max(maxSamples, waveform.shape[2])
+
+        paddedWaveforms = []
+        for waveform in waveforms:
+            batchSize, channels, samples = waveform.shape
+
+            if channels < maxChannels:
+                channelPadding = torch.zeros(
+                    (batchSize, maxChannels - channels, samples),
+                    dtype=waveform.dtype,
+                    device=waveform.device
+                )
+                waveform = torch.cat([waveform, channelPadding], dim=1)
+
+            if samples < maxSamples:
+                waveform = torch.nn.functional.pad(waveform, (0, maxSamples - samples))
+
+            paddedWaveforms.append(waveform)
+
+        outputFormat = audioObjects[0].get("format", "wav")
+        return {
+            "waveform": torch.cat(paddedWaveforms, dim=0),
+            "sample_rate": targetSampleRate,
+            "format": outputFormat
+        }
+
+    def _downloadAndProcessAudio(self, audioUrl, targetSampleRate, outputFormat):
         """Download audio file and process it for ComfyUI"""
         try:
             response = requests.get(audioUrl, timeout=30)
             response.raise_for_status()
-            
-            with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as tempFile:
+
+            tempSuffix = self._inferAudioSuffix(audioUrl, outputFormat)
+            with tempfile.NamedTemporaryFile(suffix=tempSuffix, delete=False) as tempFile:
                 tempFile.write(response.content)
                 tempFilePath = tempFile.name
             
@@ -477,13 +513,31 @@ class RunwareAudioInference:
                 
                 return {
                     "waveform": waveformTensor,
-                    "sample_rate": targetSampleRate
+                    "sample_rate": targetSampleRate,
+                    "format": tempSuffix.lstrip(".")
                 }
             finally:
                 if os.path.exists(tempFilePath):
                     os.unlink(tempFilePath)
         except Exception as e:
             raise Exception(f"Failed to download audio: {e}")
+
+    def _inferAudioSuffix(self, audioUrl, outputFormat):
+        """Infer temporary audio file extension from URL or requested format."""
+        parsedPath = urlparse(audioUrl).path if audioUrl else ""
+        ext = os.path.splitext(parsedPath)[1].lower()
+        allowed = {".mp3", ".mp4", ".wav", ".flac", ".ogg"}
+        if ext in allowed:
+            return ext
+
+        formatMap = {
+            "MP3": ".mp3",
+            "MP4": ".mp4",
+            "WAV": ".wav",
+            "FLAC": ".flac",
+            "OGG": ".ogg",
+        }
+        return formatMap.get(str(outputFormat).upper(), ".wav")
 
     def _loadAudioFile(self, filePath):
         """Load audio file using librosa"""

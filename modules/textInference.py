@@ -25,6 +25,12 @@ class RunwareTextInference:
                 "providerSettings": ("RUNWAREPROVIDERSETTINGS", {
                     "tooltip": "Optional provider-specific settings (wrapped by provider prefix from the model AIR).",
                 }),
+                "toolChoice": ("RUNWARETEXTINFERENCETOOLCHOICE", {
+                    "tooltip": "Connect Runware Text Inference Tool Choice for tool-calling strategy (auto / any / tool / none).",
+                }),
+                "inputs": ("RUNWARETEXTINFERENCEINPUTS", {
+                    "tooltip": "Connect Runware Text Inference Inputs for inputs.images / inputs.videos (URLs or mediaUUIDs).",
+                }),
             },
         }
 
@@ -32,7 +38,7 @@ class RunwareTextInference:
     RETURN_NAMES = ("text",)
     FUNCTION = "infer_text"
     CATEGORY = "Runware/Text"
-    DESCRIPTION = "Run text/chat inference using Runware textInference. Connect Text Model and Text Inference Messages."
+    DESCRIPTION = "Run text/chat inference using Runware textInference. Connect Text Model and Text Inference Messages. Optional: Settings, provider settings, tool choice, inputs (images/videos)."
 
     @staticmethod
     def _extract_text_from_data_item(item: Dict[str, Any]) -> Optional[str]:
@@ -70,6 +76,8 @@ class RunwareTextInference:
         messages: List[Dict[str, str]] = kwargs.get("messages") or []
         text_settings = kwargs.get("settings")
         provider_settings = kwargs.get("providerSettings")
+        tool_choice = kwargs.get("toolChoice")
+        text_inputs = kwargs.get("inputs")
 
         if not model:
             raise Exception("model is empty.")
@@ -93,6 +101,12 @@ class RunwareTextInference:
         if provider_settings is not None and isinstance(provider_settings, dict) and len(provider_settings) > 0:
             provider_name = model.split(":")[0] if ":" in model else model
             task["providerSettings"] = {provider_name: provider_settings}
+
+        if tool_choice is not None and isinstance(tool_choice, dict) and len(tool_choice) > 0:
+            task["toolChoice"] = tool_choice
+
+        if text_inputs is not None and isinstance(text_inputs, dict) and len(text_inputs) > 0:
+            task["inputs"] = dict(text_inputs)
 
         gen_config = [task]
         print(f"[Runware Text Inference] Request: {rwUtils.safe_json_dumps(gen_config, indent=2)}")

@@ -40,6 +40,7 @@ class RunwareAudioModelSearch:
             "minimax:music@2.6 (MiniMax Music 2.6)",
         ],
         "Inworld": [
+            "inworld:tts@2 (Inworld Realtime TTS 2)",
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
             "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
         ],

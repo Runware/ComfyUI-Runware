@@ -1360,8 +1360,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     const frequencyPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "frequencyPenalty");
     const useToolsWidget = settingsNode.widgets.find(w => w && w.name === "useTools");
     const toolsWidget = settingsNode.widgets.find(w => w && w.name === "tools");
-    const useToolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "useToolChoice");
-    const toolChoiceWidget = settingsNode.widgets.find(w => w && w.name === "toolChoice");
 
     function toggleWidgetState(useWidget, paramWidget) {
         if (!useWidget || !paramWidget) return;
@@ -1388,7 +1386,6 @@ function textInferenceSettingsToggleHandler(settingsNode) {
     if (usePresencePenaltyWidget && presencePenaltyWidget) toggleWidgetState(usePresencePenaltyWidget, presencePenaltyWidget);
     if (useFrequencyPenaltyWidget && frequencyPenaltyWidget) toggleWidgetState(useFrequencyPenaltyWidget, frequencyPenaltyWidget);
     if (useToolsWidget && toolsWidget) toggleWidgetState(useToolsWidget, toolsWidget);
-    if (useToolChoiceWidget && toolChoiceWidget) toggleWidgetState(useToolChoiceWidget, toolChoiceWidget);
 }
 
 function videoSettingsToggleHandler(settingsNode) {
@@ -3281,8 +3278,16 @@ function textModelSearchFilterHandler(textModelSearchNode) {
             "openai:gpt@5.4-mini (GPT-5.4 Mini)",
             "openai:gpt@5.4-nano (GPT-5.4 Nano)",
         ],
+        "Anthropic": [
+            "anthropic:claude@opus-4.7 (Claude Opus 4.7)",
+            "anthropic:claude@sonnet-4.6 (Claude Sonnet 4.6)",
+            "anthropic:claude@haiku-4.5 (Claude Haiku 4.5)",
+        ],
         "Google": [
             "google:gemini@3-flash (Gemini 3 Flash)",
+        ],
+        "MoonshotAI": [
+            "moonshotai:kimi@k2.6 (Kimi K2.6)",
         ],
         "Zai": [
             "zai-glm-5-1 (ZAI GLM 5.1)",
@@ -3359,6 +3364,7 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
             "minimax:music@2.6 (MiniMax Music 2.6)",
         ],
         "Inworld": [
+            "inworld:tts@2 (Inworld Realtime TTS 2)",
             "inworld:tts@1.5-mini (Inworld TTS-1.5 Mini)",
             "inworld:tts@1.5-max (Inworld TTS-1.5 Max)",
         ],
@@ -5137,6 +5143,10 @@ function settingsToggleHandler(settingsNode) {
     const thinkingLevelWidget = settingsNode.widgets.find(w => w.name === "thinkingLevel");
     const useSequentialWidget = settingsNode.widgets.find(w => w.name === "useSequential");
     const sequentialWidget = settingsNode.widgets.find(w => w.name === "sequential");
+    const useRenderingSpeedWidget = settingsNode.widgets.find(w => w.name === "useRenderingSpeed");
+    const renderingSpeedWidget = settingsNode.widgets.find(w => w.name === "renderingSpeed");
+    const useMagicPromptWidget = settingsNode.widgets.find(w => w.name === "useMagicPrompt");
+    const magicPromptWidget = settingsNode.widgets.find(w => w.name === "magicPrompt");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5222,6 +5232,12 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useSequentialWidget && sequentialWidget) {
         toggleWidgetState(useSequentialWidget, sequentialWidget, "sequential");
+    }
+    if (useRenderingSpeedWidget && renderingSpeedWidget) {
+        toggleWidgetState(useRenderingSpeedWidget, renderingSpeedWidget, "renderingSpeed");
+    }
+    if (useMagicPromptWidget && magicPromptWidget) {
+        toggleWidgetState(useMagicPromptWidget, magicPromptWidget, "magicPrompt");
     }
 }
 

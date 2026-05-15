@@ -89,6 +89,11 @@ const RUNWARE_NODE_TYPES = {
     TEXTINFERENCEMESSAGES: "Runware Text Inference Messages",
     TEXTINFERENCEMESSAGE: "Runware Text Inference Message",
     TEXTINFERENCESETTINGS: "Runware Text Inference Settings",
+    TEXTINFERENCETOOLCHOICE: "Runware Text Inference Tool Choice",
+    TEXTINFERENCESETTINGSCACHE: "Runware Text Inference Settings Cache",
+    TEXTINFERENCEINPUTS: "Runware Text Inference Inputs",
+    TEXTINFERENCEINPUTSIMAGES: "Runware Text Inference Inputs Images",
+    TEXTINFERENCEINPUTSVIDEOS: "Runware Text Inference Inputs Videos",
     AUDIOSECTIONS: "Runware Audio Sections",
     AUDIOINFERENCEINPUTS: "Runware Audio Inference Inputs",
     AUDIOSETTINGS: "Runware Audio Inference Settings",
@@ -325,6 +330,26 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.TEXTINFERENCEMESSAGE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCETOOLCHOICE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCESETTINGSCACHE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCEINPUTSIMAGES]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCEINPUTSVIDEOS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.TEXTINFERENCEINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

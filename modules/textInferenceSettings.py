@@ -70,9 +70,13 @@ class RunwareTextInferenceSettings:
                     "tooltip": f"Top-k sampling (1–{cls._MAX_TOP_K}).",
                 }),
                 # Keep this in the original slot to avoid shifting legacy widgets_values.
-                "thinkingLevel": (["none", "low", "medium", "high"], {
+                "thinkingLevel": (["none", "low", "medium", "high", "max", "adaptive"], {
                     "default": "none",
-                    "tooltip": "Extended reasoning level: none, low, medium, high.",
+                    "tooltip": (
+                        "Extended reasoning level: none, low, medium, high, max, adaptive. "
+                        "none -> disabled. low/medium/high/max -> adaptive thinking with the chosen effort. "
+                        "adaptive -> model picks budget. Legacy 'off' is mapped to 'none'."
+                    ),
                 }),
                 "useStopSequences": ("BOOLEAN", {
                     "default": False,
@@ -114,14 +118,8 @@ class RunwareTextInferenceSettings:
                     "default": "[]",
                     "tooltip": "JSON array for tools.",
                 }),
-                "useToolChoice": ("BOOLEAN", {
-                    "default": False,
-                    "tooltip": "Include toolChoice in settings.",
-                }),
-                "toolChoice": ("STRING", {
-                    "multiline": True,
-                    "default": "{}",
-                    "tooltip": "JSON object for toolChoice.",
+                "cache": ("RUNWARETEXTINFERENCESETTINGSCACHE", {
+                    "tooltip": "Connect Runware Text Inference Settings Cache for settings.cache.{scope, ttl}.",
                 }),
             },
         }
@@ -132,8 +130,8 @@ class RunwareTextInferenceSettings:
     CATEGORY = "Runware/Text"
     DESCRIPTION = (
         "Optional text inference settings (systemPrompt, maxTokens, temperature, topP, topK, "
-        "stopSequences, presencePenalty, frequencyPenalty, tools, toolChoice, thinkingLevel). "
-        "Connect to Runware Text Inference."
+        "stopSequences, presencePenalty, frequencyPenalty, tools, thinkingLevel, cache). "
+        "Connect to Runware Text Inference. For tool calling, use Runware Text Inference Tool Choice on the inference node."
     )
 
     @staticmethod
@@ -191,7 +189,7 @@ class RunwareTextInferenceSettings:
             "minimal": "low",
         }
         value = aliases.get(value, value)
-        if value not in ("none", "low", "medium", "high"):
+        if value not in ("none", "low", "medium", "high", "max", "adaptive"):
             return "none"
         return value
 
@@ -233,14 +231,13 @@ class RunwareTextInferenceSettings:
             if parsed_tools:
                 out["tools"] = parsed_tools
 
-        if kwargs.get("useToolChoice", False):
-            parsed_choice = self._parse_json_setting(kwargs.get("toolChoice"), dict, "toolChoice")
-            if parsed_choice:
-                out["toolChoice"] = parsed_choice
-
         tl = self._normalize_thinking_level(kwargs.get("thinkingLevel", "none"))
         if tl != "none":
             out["thinkingLevel"] = tl
+
+        cache_cfg = kwargs.get("cache")
+        if cache_cfg is not None and isinstance(cache_cfg, dict) and len(cache_cfg) > 0:
+            out["cache"] = cache_cfg
 
         if not out:
             return ({},)
