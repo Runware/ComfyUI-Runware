@@ -1,8 +1,9 @@
 """
 Runware Audio Inference Settings Node
 Provides lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization,
-bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart,
-repaintingEnd, xVectorOnly, maxNewTokens, transcript, and more for Runware Audio Inference.
+bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd,
+cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, transcript,
+and more for Runware Audio Inference.
 """
 
 from typing import Dict, Any
@@ -233,6 +234,28 @@ class RunwareAudioSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useCfgIntervalStart": ("BOOLEAN", {
+                    "tooltip": "Enable to include cfgIntervalStart (diffusion ratio where CFG begins). ACE-Step Base only — not supported on Turbo variants.",
+                    "default": False,
+                }),
+                "cfgIntervalStart": ("FLOAT", {
+                    "tooltip": "Diffusion ratio where CFG begins (0.0 = first step). Only used when 'Use Cfg Interval Start' is enabled.",
+                    "default": 0.0,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
+                "useCfgIntervalEnd": ("BOOLEAN", {
+                    "tooltip": "Enable to include cfgIntervalEnd (diffusion ratio where CFG ends). ACE-Step Base only — not supported on Turbo variants.",
+                    "default": False,
+                }),
+                "cfgIntervalEnd": ("FLOAT", {
+                    "tooltip": "Diffusion ratio where CFG ends (1.0 = last step). Only used when 'Use Cfg Interval End' is enabled.",
+                    "default": 1.0,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
             }
         }
 
@@ -243,7 +266,8 @@ class RunwareAudioSettings:
     DESCRIPTION = (
         "Configure audio generation settings (lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization, "
         "bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd, "
-        "xVectorOnly, maxNewTokens, transcript, etc.) for Runware Audio Inference. Connect to Runware Audio Inference node."
+        "cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, transcript, etc.) "
+        "for Runware Audio Inference. Connect to Runware Audio Inference node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -290,6 +314,10 @@ class RunwareAudioSettings:
         max_new_tokens = kwargs.get("maxNewTokens", 4096)
         use_transcript = kwargs.get("useTranscript", False)
         transcript = kwargs.get("transcript", "") or ""
+        use_cfg_interval_start = kwargs.get("useCfgIntervalStart", False)
+        cfg_interval_start = kwargs.get("cfgIntervalStart", 0.0)
+        use_cfg_interval_end = kwargs.get("useCfgIntervalEnd", False)
+        cfg_interval_end = kwargs.get("cfgIntervalEnd", 1.0)
 
         settings: Dict[str, Any] = {}
 
@@ -350,6 +378,12 @@ class RunwareAudioSettings:
 
         if use_transcript and transcript.strip():
             settings["transcript"] = transcript.strip()
+
+        if use_cfg_interval_start:
+            settings["cfgIntervalStart"] = float(cfg_interval_start)
+
+        if use_cfg_interval_end:
+            settings["cfgIntervalEnd"] = float(cfg_interval_end)
 
         return (settings,)
 
