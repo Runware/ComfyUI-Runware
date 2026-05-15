@@ -1293,6 +1293,10 @@ function audioSettingsToggleHandler(settingsNode) {
     const maxNewTokensWidget = settingsNode.widgets.find(w => w && w.name === "maxNewTokens");
     const useTranscriptWidget = settingsNode.widgets.find(w => w && w.name === "useTranscript");
     const transcriptWidget = settingsNode.widgets.find(w => w && w.name === "transcript");
+    const useCfgIntervalStartWidget = settingsNode.widgets.find(w => w && w.name === "useCfgIntervalStart");
+    const cfgIntervalStartWidget = settingsNode.widgets.find(w => w && w.name === "cfgIntervalStart");
+    const useCfgIntervalEndWidget = settingsNode.widgets.find(w => w && w.name === "useCfgIntervalEnd");
+    const cfgIntervalEndWidget = settingsNode.widgets.find(w => w && w.name === "cfgIntervalEnd");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1331,6 +1335,8 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useXVectorOnlyWidget && xVectorOnlyWidget) toggleWidgetState(useXVectorOnlyWidget, xVectorOnlyWidget, "xVectorOnly");
     if (useMaxNewTokensWidget && maxNewTokensWidget) toggleWidgetState(useMaxNewTokensWidget, maxNewTokensWidget, "maxNewTokens");
     if (useTranscriptWidget && transcriptWidget) toggleWidgetState(useTranscriptWidget, transcriptWidget, "transcript");
+    if (useCfgIntervalStartWidget && cfgIntervalStartWidget) toggleWidgetState(useCfgIntervalStartWidget, cfgIntervalStartWidget, "cfgIntervalStart");
+    if (useCfgIntervalEndWidget && cfgIntervalEndWidget) toggleWidgetState(useCfgIntervalEndWidget, cfgIntervalEndWidget, "cfgIntervalEnd");
 }
 
 function textInferenceSettingsToggleHandler(settingsNode) {
@@ -3333,6 +3339,7 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
             "runware:ace-step@v1.5-turbo (ACE-Step v1.5 Turbo)",
             "runware:ace-step@v1.5-xl-base (ACE-Step v1.5 XL Base)",
             "runware:ace-step@v1.5-xl-turbo (ACE-Step v1.5 XL Turbo)",
+            "runware:ace-step@v1.5-xl-sft (ACE-Step v1.5 XL SFT)",
         ],
         "Alibaba": [
             "alibaba:qwen@3-tts-1.7b-voicedesign (Qwen3 TTS 1.7B Voice Design)",

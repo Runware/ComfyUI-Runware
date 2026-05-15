@@ -2,7 +2,7 @@
 Runware Audio Inference Settings Node
 Provides lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization,
 bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd,
-cfgIntervalStart, cfgIntervalEnd, repaintMode, repaintStrength, xVectorOnly, maxNewTokens, transcript,
+cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, transcript,
 and more for Runware Audio Inference.
 """
 
@@ -256,25 +256,6 @@ class RunwareAudioSettings:
                     "max": 1.0,
                     "step": 0.01,
                 }),
-                "useRepaintMode": ("BOOLEAN", {
-                    "tooltip": "Enable to include repaintMode (repaint blend strategy). Requires input audio and an active repaint region (repaintingStart / repaintingEnd).",
-                    "default": False,
-                }),
-                "repaintMode": (["conservative", "balanced", "aggressive"], {
-                    "tooltip": "Repaint blend strategy. Only used when 'Use Repaint Mode' is enabled.",
-                    "default": "balanced",
-                }),
-                "useRepaintStrength": ("BOOLEAN", {
-                    "tooltip": "Enable to include repaintStrength (balanced mode only). Requires input audio and an active repaint region.",
-                    "default": False,
-                }),
-                "repaintStrength": ("FLOAT", {
-                    "tooltip": "Repaint aggressiveness (0 = preserve source, 1 = full regen). Balanced mode only. Only used when 'Use Repaint Strength' is enabled.",
-                    "default": 0.5,
-                    "min": 0.0,
-                    "max": 1.0,
-                    "step": 0.01,
-                }),
             }
         }
 
@@ -285,7 +266,7 @@ class RunwareAudioSettings:
     DESCRIPTION = (
         "Configure audio generation settings (lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization, "
         "bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd, "
-        "cfgIntervalStart, cfgIntervalEnd, repaintMode, repaintStrength, xVectorOnly, maxNewTokens, transcript, etc.) "
+        "cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, transcript, etc.) "
         "for Runware Audio Inference. Connect to Runware Audio Inference node."
     )
 
@@ -337,10 +318,6 @@ class RunwareAudioSettings:
         cfg_interval_start = kwargs.get("cfgIntervalStart", 0.0)
         use_cfg_interval_end = kwargs.get("useCfgIntervalEnd", False)
         cfg_interval_end = kwargs.get("cfgIntervalEnd", 1.0)
-        use_repaint_mode = kwargs.get("useRepaintMode", False)
-        repaint_mode = kwargs.get("repaintMode", "balanced")
-        use_repaint_strength = kwargs.get("useRepaintStrength", False)
-        repaint_strength = kwargs.get("repaintStrength", 0.5)
 
         settings: Dict[str, Any] = {}
 
@@ -407,12 +384,6 @@ class RunwareAudioSettings:
 
         if use_cfg_interval_end:
             settings["cfgIntervalEnd"] = float(cfg_interval_end)
-
-        if use_repaint_mode:
-            settings["repaintMode"] = repaint_mode
-
-        if use_repaint_strength:
-            settings["repaintStrength"] = float(repaint_strength)
 
         return (settings,)
 
