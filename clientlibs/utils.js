@@ -1431,6 +1431,10 @@ function videoSettingsToggleHandler(settingsNode) {
     const occlusionDetectionWidget = settingsNode.widgets.find(w => w && w.name === "occlusionDetection");
     const useKeyframeIdWidget = settingsNode.widgets.find(w => w && w.name === "useKeyframeId");
     const keyframeIdWidget = settingsNode.widgets.find(w => w && w.name === "keyframeId");
+    const useFitWidget = settingsNode.widgets.find(w => w && w.name === "useFit");
+    const fitWidget = settingsNode.widgets.find(w => w && w.name === "fit");
+    const useCaptionWidget = settingsNode.widgets.find(w => w && w.name === "useCaption");
+    const captionWidget = settingsNode.widgets.find(w => w && w.name === "caption");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1468,6 +1472,8 @@ function videoSettingsToggleHandler(settingsNode) {
     if (useTemperatureWidget && temperatureWidget) toggleWidgetState(useTemperatureWidget, temperatureWidget, "temperature");
     if (useOcclusionDetectionWidget && occlusionDetectionWidget) toggleWidgetState(useOcclusionDetectionWidget, occlusionDetectionWidget, "occlusionDetection");
     if (useKeyframeIdWidget && keyframeIdWidget) toggleWidgetState(useKeyframeIdWidget, keyframeIdWidget, "keyframeId");
+    if (useFitWidget && fitWidget) toggleWidgetState(useFitWidget, fitWidget, "fit");
+    if (useCaptionWidget && captionWidget) toggleWidgetState(useCaptionWidget, captionWidget, "caption");
 }
 
 function videoInferenceSettingsTtsToggleHandler(node) {
@@ -2848,6 +2854,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "HeyGen": [
             "heygen:avatar@4 (HeyGen Avatar IV)",
             "heygen:video-agent@0 (HeyGen Video Agent)",
+            "heygen:avatar@5 (HeyGen Avatar V)",
         ],
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
@@ -2965,6 +2972,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "prunaai:p-video@avatar": {"width": 1280, "height": 720},
         "heygen:avatar@4": {"width": 1280, "height": 720},
         "heygen:video-agent@0": {"width": 1280, "height": 720},
+        "heygen:avatar@5": {"width": 1280, "height": 720},
         "skywork:skyreels@v4": {"width": 1280, "height": 720},
     };
 
@@ -3063,6 +3071,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "prunaai:p-video@avatar": "720p",
         "heygen:avatar@4": "720p",
         "heygen:video-agent@0": "720p",
+        "heygen:avatar@5": "720p",
         "skywork:skyreels@v4": "720p",
     };
 
