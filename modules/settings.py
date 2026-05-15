@@ -246,6 +246,8 @@ class RunwareSettings:
         if palette is not None and isinstance(palette, list) and len(palette) > 0:
             settings["colorPalette"] = palette
 
+
+
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
 
