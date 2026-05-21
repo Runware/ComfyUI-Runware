@@ -5272,18 +5272,43 @@ function outpaintSettingsToggleHandler(settingsNode) {
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
-        function applyState() {
+
+        function toggleEnabled() {
             const enabled = useWidget.value === true;
-            toggleWidgetEnabled(paramWidget, enabled, settingsNode);
-            if (paramWidget.options && paramWidget.options.element) {
-                paramWidget.options.element.disabled = !enabled;
-                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
-                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
             }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = settingsNode.htmlElements?.widgetsContainer || settingsNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
             settingsNode.setDirtyCanvas(true);
         }
-        setTimeout(applyState, 100);
-        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
     }
 
     if (useTopWidget && topWidget) toggleWidgetState(useTopWidget, topWidget, "Top");
