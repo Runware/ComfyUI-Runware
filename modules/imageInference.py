@@ -351,7 +351,7 @@ class txt2img:
                 genConfig[0]["embeddings"] = runwareEmbedding
             elif (isinstance(runwareEmbedding, dict)):
                 genConfig[0]["embeddings"] = [runwareEmbedding]
-        if (runwareOutpainting is not None):
+        if runwareOutpainting:
             genConfig[0]["outpaint"] = runwareOutpainting
         if (runwareVAE is not None):
             genConfig[0]["vae"] = runwareVAE
