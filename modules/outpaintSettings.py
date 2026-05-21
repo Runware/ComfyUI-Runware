@@ -1,8 +1,3 @@
-def _round_to_multiple_of_64(value: int) -> int:
-    """Round pixel extension to the nearest multiple of 64 (API constraint)."""
-    return max(0, min(2048, round(value / 64) * 64))
-
-
 class outpaintSettings:
     @classmethod
     def INPUT_TYPES(cls):
@@ -15,7 +10,7 @@ class outpaintSettings:
                 "Top": (
                     "INT",
                     {
-                        "tooltip": "Number of pixels to extend at the top of the image. Rounded to the nearest multiple of 64 when sent to the API. Only used when 'Use Top' is enabled.",
+                        "tooltip": "Number of pixels to extend at the top of the image. Only used when 'Use Top' is enabled.",
                         "default": 64,
                         "min": 0,
                         "max": 2048,
@@ -29,7 +24,7 @@ class outpaintSettings:
                 "Right": (
                     "INT",
                     {
-                        "tooltip": "Number of pixels to extend at the right of the image. Rounded to the nearest multiple of 64 when sent to the API. Only used when 'Use Right' is enabled.",
+                        "tooltip": "Number of pixels to extend at the right of the image. Only used when 'Use Right' is enabled.",
                         "default": 64,
                         "min": 0,
                         "max": 2048,
@@ -43,7 +38,7 @@ class outpaintSettings:
                 "Bottom": (
                     "INT",
                     {
-                        "tooltip": "Number of pixels to extend at the bottom of the image. Rounded to the nearest multiple of 64 when sent to the API. Only used when 'Use Bottom' is enabled.",
+                        "tooltip": "Number of pixels to extend at the bottom of the image. Only used when 'Use Bottom' is enabled.",
                         "default": 64,
                         "min": 0,
                         "max": 2048,
@@ -57,7 +52,7 @@ class outpaintSettings:
                 "Left": (
                     "INT",
                     {
-                        "tooltip": "Number of pixels to extend at the left of the image. Rounded to the nearest multiple of 64 when sent to the API. Only used when 'Use Left' is enabled.",
+                        "tooltip": "Number of pixels to extend at the left of the image. Only used when 'Use Left' is enabled.",
                         "default": 64,
                         "min": 0,
                         "max": 2048,
@@ -91,13 +86,13 @@ class outpaintSettings:
         outpaint = {}
 
         if kwargs.get("useTop", False):
-            outpaint["top"] = _round_to_multiple_of_64(int(kwargs.get("Top", 0)))
+            outpaint["top"] = int(kwargs.get("Top", 0))
         if kwargs.get("useRight", False):
-            outpaint["right"] = _round_to_multiple_of_64(int(kwargs.get("Right", 0)))
+            outpaint["right"] = int(kwargs.get("Right", 0))
         if kwargs.get("useBottom", False):
-            outpaint["bottom"] = _round_to_multiple_of_64(int(kwargs.get("Bottom", 0)))
+            outpaint["bottom"] = int(kwargs.get("Bottom", 0))
         if kwargs.get("useLeft", False):
-            outpaint["left"] = _round_to_multiple_of_64(int(kwargs.get("Left", 0)))
+            outpaint["left"] = int(kwargs.get("Left", 0))
         if kwargs.get("useBlur", False):
             outpaint["blur"] = int(kwargs.get("Blur", 0))
 
