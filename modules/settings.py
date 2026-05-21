@@ -3,7 +3,7 @@ Runware Image Inference Settings (registered as Runware Settings for workflow co
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
 thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
-magicPrompt (AUTO/ON/OFF), and colorPalette
+magicPrompt (AUTO/ON/OFF), autoCrop, and colorPalette
 (from Runware Image Inference Settings Color Palette).
 """
 
@@ -172,6 +172,16 @@ class RunwareSettings:
                     "default": "AUTO",
                     "tooltip": "Determine if MagicPrompt should be used. Only used when 'Use Magic Prompt' is enabled.",
                 }),
+                "useAutoCrop": ("BOOLEAN", {
+                    "tooltip": "Enable to include autoCrop in settings.",
+                    "default": False,
+                }),
+                "autoCrop": ("BOOLEAN", {
+                    "tooltip": "If true, crop the reference image to the canvas bounds when it extends beyond the edges. Defaults to false. Only used when 'Use Auto Crop' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -182,7 +192,7 @@ class RunwareSettings:
     DESCRIPTION = (
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
-        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), and optional colorPalette from the Color Palette node."
+        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, and optional colorPalette from the Color Palette node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -206,6 +216,7 @@ class RunwareSettings:
         useSequential = kwargs.get("useSequential", False)
         useRenderingSpeed = kwargs.get("useRenderingSpeed", False)
         useMagicPrompt = kwargs.get("useMagicPrompt", False)
+        useAutoCrop = kwargs.get("useAutoCrop", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -272,6 +283,8 @@ class RunwareSettings:
             settings["renderingSpeed"] = str(renderingSpeed)
         if useMagicPrompt:
             settings["magicPrompt"] = str(magicPrompt)
+        if useAutoCrop:
+            settings["autoCrop"] = bool(kwargs.get("autoCrop", False))
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
