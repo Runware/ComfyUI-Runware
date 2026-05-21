@@ -5042,6 +5042,7 @@ export {
     syncProviderSettingsToggleHandler,
     syncSegmentToggleHandler,
     settingsToggleHandler,
+    outpaintSettingsToggleHandler,
     safetyInputsToggleHandler,
     imageInferenceSettingsColorPaletteToggleHandler,
     audioInputToggleHandler,
@@ -5156,6 +5157,8 @@ function settingsToggleHandler(settingsNode) {
     const renderingSpeedWidget = settingsNode.widgets.find(w => w.name === "renderingSpeed");
     const useMagicPromptWidget = settingsNode.widgets.find(w => w.name === "useMagicPrompt");
     const magicPromptWidget = settingsNode.widgets.find(w => w.name === "magicPrompt");
+    const useAutoCropWidget = settingsNode.widgets.find(w => w.name === "useAutoCrop");
+    const autoCropWidget = settingsNode.widgets.find(w => w.name === "autoCrop");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5248,6 +5251,71 @@ function settingsToggleHandler(settingsNode) {
     if (useMagicPromptWidget && magicPromptWidget) {
         toggleWidgetState(useMagicPromptWidget, magicPromptWidget, "magicPrompt");
     }
+    if (useAutoCropWidget && autoCropWidget) {
+        toggleWidgetState(useAutoCropWidget, autoCropWidget, "autoCrop");
+    }
+}
+
+function outpaintSettingsToggleHandler(settingsNode) {
+    if (!settingsNode?.widgets) return;
+
+    const useTopWidget = settingsNode.widgets.find(w => w && w.name === "useTop");
+    const topWidget = settingsNode.widgets.find(w => w && w.name === "Top");
+    const useRightWidget = settingsNode.widgets.find(w => w && w.name === "useRight");
+    const rightWidget = settingsNode.widgets.find(w => w && w.name === "Right");
+    const useBottomWidget = settingsNode.widgets.find(w => w && w.name === "useBottom");
+    const bottomWidget = settingsNode.widgets.find(w => w && w.name === "Bottom");
+    const useLeftWidget = settingsNode.widgets.find(w => w && w.name === "useLeft");
+    const leftWidget = settingsNode.widgets.find(w => w && w.name === "Left");
+    const useBlurWidget = settingsNode.widgets.find(w => w && w.name === "useBlur");
+    const blurWidget = settingsNode.widgets.find(w => w && w.name === "Blur");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl) {
+                const nodeElement = settingsNode.htmlElements?.widgetsContainer || settingsNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
+            settingsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useTopWidget && topWidget) toggleWidgetState(useTopWidget, topWidget, "Top");
+    if (useRightWidget && rightWidget) toggleWidgetState(useRightWidget, rightWidget, "Right");
+    if (useBottomWidget && bottomWidget) toggleWidgetState(useBottomWidget, bottomWidget, "Bottom");
+    if (useLeftWidget && leftWidget) toggleWidgetState(useLeftWidget, leftWidget, "Left");
+    if (useBlurWidget && blurWidget) toggleWidgetState(useBlurWidget, blurWidget, "Blur");
 }
 
 function safetyInputsToggleHandler(safetyNode) {
