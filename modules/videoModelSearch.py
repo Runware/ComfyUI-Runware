@@ -122,6 +122,7 @@ class videoModelSearch:
         "HeyGen": [
             "heygen:avatar@4 (HeyGen Avatar IV)",
             "heygen:video-agent@0 (HeyGen Video Agent)",
+            "heygen:avatar@5 (HeyGen Avatar V)",
         ],
         "Hunyuan": [
             "runware:hunyuanvideo@1.5 (HunyuanVideo-1.5)",
@@ -278,9 +279,10 @@ class videoModelSearch:
         "prunaai:p-video@0": {"width": 1280, "height": 720},
         "prunaai:p-video@avatar": {"width": 1280, "height": 720},
 
-        # HeyGen Models (Model ID: heygen-avatar-iv)
+        # HeyGen Models (Model ID: heygen-avatar-iv, heygen-avatar-v)
         "heygen:avatar@4": {"width": 1280, "height": 720},
         "heygen:video-agent@0": {"width": 1280, "height": 720},
+        "heygen:avatar@5": {"width": 1280, "height": 720},
 
         # SkyReels Models
         "skywork:skyreels@v4": {"width": 1280, "height": 720},
@@ -423,6 +425,7 @@ class videoModelSearch:
         # HeyGen Models
         "heygen:avatar@4": "720p",
         "heygen:video-agent@0": "720p",
+        "heygen:avatar@5": "720p",
 
         # SkyReels Models
         "skywork:skyreels@v4": "720p",

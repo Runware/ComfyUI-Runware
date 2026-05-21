@@ -1,6 +1,6 @@
 """
 Runware Video Inference Settings Node
-Provides settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
+Provides settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
 """
 
 from typing import Dict, Any
@@ -207,6 +207,24 @@ class RunwareVideoSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useFit": ("BOOLEAN", {
+                    "tooltip": "Enable to include fit (avatar scaling on output canvas) in video inference settings.",
+                    "default": False,
+                }),
+                "fit": (["auto", "cover", "contain"], {
+                    "tooltip": "How the avatar is scaled to the output canvas. cover: scale to fill (may crop edges). contain: scale to fit entirely (may show background). auto: server picks based on source and canvas orientations. Only used when 'Use Fit' is enabled.",
+                    "default": "auto",
+                }),
+                "useCaption": ("BOOLEAN", {
+                    "tooltip": "Enable to include caption in video inference settings.",
+                    "default": False,
+                }),
+                "caption": ("BOOLEAN", {
+                    "tooltip": "Caption flag. Only used when 'Use Caption' is enabled.",
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
             }
         }
 
@@ -215,7 +233,7 @@ class RunwareVideoSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure video inference settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
+        "Configure video inference settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
         "Connect to Runware Video Inference node."
     )
 
@@ -229,6 +247,10 @@ class RunwareVideoSettings:
         voice_prompt = (kwargs.get("voicePrompt") or "").strip()
         use_safety_filter = kwargs.get("useSafetyFilter", False)
         safety_filter = kwargs.get("safetyFilter", False)
+        use_fit = kwargs.get("useFit", False)
+        fit = kwargs.get("fit", "auto")
+        use_caption = kwargs.get("useCaption", False)
+        caption = kwargs.get("caption", False)
         use_prompt_upsampling = kwargs.get("usePromptUpsampling", False)
         prompt_upsampling = kwargs.get("promptUpsampling", False)
         use_background_color = kwargs.get("useBackgroundColor", False)
@@ -275,6 +297,10 @@ class RunwareVideoSettings:
             settings["voicePrompt"] = voice_prompt
         if use_safety_filter:
             settings["safetyFilter"] = bool(safety_filter)
+        if use_fit:
+            settings["fit"] = str(fit)
+        if use_caption:
+            settings["caption"] = bool(caption)
         if use_prompt_upsampling:
             settings["promptUpsampling"] = bool(prompt_upsampling)
         if use_background_color and background_color:
