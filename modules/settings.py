@@ -3,7 +3,7 @@ Runware Image Inference Settings (registered as Runware Settings for workflow co
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
 thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
-magicPrompt (AUTO/ON/OFF), autoCrop, and colorPalette
+magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, and colorPalette
 (from Runware Image Inference Settings Color Palette).
 """
 
@@ -182,6 +182,17 @@ class RunwareSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "useDilatePixels": ("BOOLEAN", {
+                    "tooltip": "Enable to include dilatePixels in settings.",
+                    "default": False,
+                }),
+                "dilatePixels": ("INT", {
+                    "tooltip": "Expands mask edges for cleaner removal. Only used when 'Use Dilate Pixels' is enabled.",
+                    "default": 10,
+                    "min": 0,
+                    "max": 100,
+                    "step": 1,
+                }),
             }
         }
 
@@ -192,7 +203,7 @@ class RunwareSettings:
     DESCRIPTION = (
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
-        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, and optional colorPalette from the Color Palette node."
+        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, and optional colorPalette from the Color Palette node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -217,6 +228,7 @@ class RunwareSettings:
         useRenderingSpeed = kwargs.get("useRenderingSpeed", False)
         useMagicPrompt = kwargs.get("useMagicPrompt", False)
         useAutoCrop = kwargs.get("useAutoCrop", False)
+        useDilatePixels = kwargs.get("useDilatePixels", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -285,6 +297,8 @@ class RunwareSettings:
             settings["magicPrompt"] = str(magicPrompt)
         if useAutoCrop:
             settings["autoCrop"] = bool(kwargs.get("autoCrop", False))
+        if useDilatePixels:
+            settings["dilatePixels"] = int(kwargs.get("dilatePixels", 10))
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
