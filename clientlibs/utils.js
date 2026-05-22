@@ -5159,6 +5159,8 @@ function settingsToggleHandler(settingsNode) {
     const magicPromptWidget = settingsNode.widgets.find(w => w.name === "magicPrompt");
     const useAutoCropWidget = settingsNode.widgets.find(w => w.name === "useAutoCrop");
     const autoCropWidget = settingsNode.widgets.find(w => w.name === "autoCrop");
+    const useDilatePixelsWidget = settingsNode.widgets.find(w => w.name === "useDilatePixels");
+    const dilatePixelsWidget = settingsNode.widgets.find(w => w.name === "dilatePixels");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5253,6 +5255,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useAutoCropWidget && autoCropWidget) {
         toggleWidgetState(useAutoCropWidget, autoCropWidget, "autoCrop");
+    }
+    if (useDilatePixelsWidget && dilatePixelsWidget) {
+        toggleWidgetState(useDilatePixelsWidget, dilatePixelsWidget, "dilatePixels");
     }
 }
 
