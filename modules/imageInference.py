@@ -150,6 +150,14 @@ class txt2img:
                     "max": 100,
                     "step": 1,
                 }),
+                "useUpscaleFactor": ("BOOLEAN", {
+                    "tooltip": "Enable to include upscaleFactor parameter in API request.",
+                    "default": False,
+                }),
+                "upscaleFactor": ([1, 2, 4], {
+                    "tooltip": "Upscale the initially generated image by the given factor. Supported values: 1, 2, or 4.",
+                    "default": 2,
+                }),
 
             },
             "optional": {
@@ -272,6 +280,8 @@ class txt2img:
         acceleration = kwargs.get("acceleration", "none")
         useResolution = kwargs.get("useResolution", False)
         resolution = kwargs.get("resolution", "1k")
+        useUpscaleFactor = kwargs.get("useUpscaleFactor", False)
+        upscaleFactor = kwargs.get("upscaleFactor", 2)
         
         if (maskImage is not None and seedImage is None):
             raise Exception("Mask Image Requires Seed Image To Be Provided!")
@@ -335,6 +345,12 @@ class txt2img:
         # Add resolution if enabled
         if useResolution:
             genConfig[0]["resolution"] = resolution
+
+        if useUpscaleFactor:
+            upscaleFactor = int(upscaleFactor)
+            if upscaleFactor not in (1, 2, 4):
+                raise ValueError("upscaleFactor must be 1, 2, or 4 when useUpscaleFactor is enabled.")
+            genConfig[0]["upscaleFactor"] = upscaleFactor
         
         if (runwareLora is not None):
             if (isinstance(runwareLora, list)):

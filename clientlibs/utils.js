@@ -812,6 +812,7 @@ function useParameterToggleHandler(node) {
         "useCFGScale": ["cfgScale"], // Image inference uses lowercase cfgScale
         "useScheduler": ["scheduler"],
         "useClipSkip": ["clipSkip"],
+        "useUpscaleFactor": ["upscaleFactor"],
         
         // Video Inference
         "useCustomDimensions": ["width", "height"], // Note: Also handled separately in videoInferenceDimensionsHandler
@@ -2520,6 +2521,8 @@ function imageInferenceToggleHandler(imageInferenceNode) {
     const maskMarginValueWidget = imageInferenceNode.widgets.find(w => w.name === "maskMargin");
     const useResolutionWidget = imageInferenceNode.widgets.find(w => w.name === "useResolution");
     const resolutionWidget = imageInferenceNode.widgets.find(w => w.name === "resolution");
+    const useUpscaleFactorWidget = imageInferenceNode.widgets.find(w => w.name === "useUpscaleFactor");
+    const upscaleFactorWidget = imageInferenceNode.widgets.find(w => w.name === "upscaleFactor");
     const dimensionsWidget = imageInferenceNode.widgets.find(w => w.name === "dimensions");
     const widthWidget = imageInferenceNode.widgets.find(w => w.name === "width");
     const heightWidget = imageInferenceNode.widgets.find(w => w.name === "height");
@@ -2599,6 +2602,10 @@ function imageInferenceToggleHandler(imageInferenceNode) {
     // Handle Resolution
     if (useResolutionWidget && resolutionWidget) {
         toggleWidgetState(useResolutionWidget, resolutionWidget, "resolution");
+    }
+
+    if (useUpscaleFactorWidget && upscaleFactorWidget) {
+        toggleWidgetState(useUpscaleFactorWidget, upscaleFactorWidget, "upscaleFactor");
     }
     
     // Handle Dimensions - disable width/height when dimensions is "None"
