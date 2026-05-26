@@ -5168,6 +5168,8 @@ function settingsToggleHandler(settingsNode) {
     const autoCropWidget = settingsNode.widgets.find(w => w.name === "autoCrop");
     const useDilatePixelsWidget = settingsNode.widgets.find(w => w.name === "useDilatePixels");
     const dilatePixelsWidget = settingsNode.widgets.find(w => w.name === "dilatePixels");
+    const useCreativityWidget = settingsNode.widgets.find(w => w.name === "useCreativity");
+    const creativityWidget = settingsNode.widgets.find(w => w.name === "creativity");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5265,6 +5267,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useDilatePixelsWidget && dilatePixelsWidget) {
         toggleWidgetState(useDilatePixelsWidget, dilatePixelsWidget, "dilatePixels");
+    }
+    if (useCreativityWidget && creativityWidget) {
+        toggleWidgetState(useCreativityWidget, creativityWidget, "creativity");
     }
 }
 

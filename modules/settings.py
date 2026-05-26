@@ -3,7 +3,7 @@ Runware Image Inference Settings (registered as Runware Settings for workflow co
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
 thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
-magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, and colorPalette
+magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), and colorPalette
 (from Runware Image Inference Settings Color Palette).
 """
 
@@ -193,6 +193,14 @@ class RunwareSettings:
                     "max": 100,
                     "step": 1,
                 }),
+                "useCreativity": ("BOOLEAN", {
+                    "tooltip": "Enable to include creativity in settings.",
+                    "default": False,
+                }),
+                "creativity": (["raw", "low", "medium", "high"], {
+                    "default": "medium",
+                    "tooltip": "Creativity level. Only used when 'Use Creativity' is enabled.",
+                }),
             }
         }
 
@@ -203,7 +211,7 @@ class RunwareSettings:
     DESCRIPTION = (
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
-        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, and optional colorPalette from the Color Palette node."
+        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), and optional colorPalette from the Color Palette node."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -229,6 +237,7 @@ class RunwareSettings:
         useMagicPrompt = kwargs.get("useMagicPrompt", False)
         useAutoCrop = kwargs.get("useAutoCrop", False)
         useDilatePixels = kwargs.get("useDilatePixels", False)
+        useCreativity = kwargs.get("useCreativity", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -241,6 +250,7 @@ class RunwareSettings:
         style = kwargs.get("style", "auto")
         renderingSpeed = kwargs.get("renderingSpeed", "DEFAULT")
         magicPrompt = kwargs.get("magicPrompt", "AUTO")
+        creativity = kwargs.get("creativity", "medium")
 
         # Build settings dictionary - only include what is enabled
         settings: Dict[str, Any] = {}
@@ -299,6 +309,11 @@ class RunwareSettings:
             settings["autoCrop"] = bool(kwargs.get("autoCrop", False))
         if useDilatePixels:
             settings["dilatePixels"] = int(kwargs.get("dilatePixels", 10))
+        if useCreativity:
+            creativity = str(creativity)
+            if creativity not in ("raw", "low", "medium", "high"):
+                raise ValueError("creativity must be raw, low, medium, or high when useCreativity is enabled.")
+            settings["creativity"] = creativity
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}
