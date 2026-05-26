@@ -1865,6 +1865,7 @@ function ultralyticsProviderSettingsToggleHandler(ultralyticsNode) {
         ["useSteps", "steps"],
         ["useCFGScale", "CFGScale"],
         ["useStrength", "strength"],
+        ["useInpaintSize", "inpaintSize"],
     ];
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {

@@ -96,6 +96,17 @@ class RunwareUltralyticsInputs:
                     "step": 0.01,
                     "tooltip": "Denoising strength (0.0001-1).",
                 }),
+                "useInpaintSize": ("BOOLEAN", {
+                    "tooltip": "Enable to include inpaintSize parameter.",
+                    "default": False,
+                }),
+                "inpaintSize": ("INT", {
+                    "default": 1024,
+                    "min": 128,
+                    "max": 2048,
+                    "step": 1,
+                    "tooltip": "Image size to use for each inpainting region. Only used when 'Use Inpaint Size' is enabled.",
+                }),
             }
         }
 
@@ -130,6 +141,8 @@ class RunwareUltralyticsInputs:
             settings["CFGScale"] = kwargs.get("CFGScale", 8.0)
         if kwargs.get("useStrength", False):
             settings["strength"] = kwargs.get("strength", 0.3)
+        if kwargs.get("useInpaintSize", False):
+            settings["inpaintSize"] = int(kwargs.get("inpaintSize", 1024))
 
         return (settings,)
 
