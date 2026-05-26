@@ -47,6 +47,9 @@ class RunwareAudioModelSearch:
         "Google": [
             "google:gemini@3.1-flash-tts (Gemini 3.1 Flash TTS)",
         ],
+        "Fish": [
+            "fishaudio:s2.1@pro (Fish Audio S2.1 Pro)",
+        ],
     }
     
     MODEL_PROVIDERS = [
@@ -61,6 +64,7 @@ class RunwareAudioModelSearch:
         "MiniMax",
         "Inworld",
         "Google",
+        "Fish",
     ]
     
     @classmethod
