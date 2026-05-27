@@ -122,9 +122,6 @@ class RunwareSettings:
                 "colorPalette": ("RUNWAREIMAGEINFERENCECOLORPALETTE", {
                     "tooltip": "Connect Runware Image Inference Color Palette. When the palette node outputs at least one swatch, it is merged into settings.colorPalette.",
                 }),
-                "moodboards": ("RUNWAREIMAGEINFERENCEMOODBOARDS", {
-                    "tooltip": "Connect Runware Image Inference Settings Moodboards. When connected with at least one entry, it is merged into settings.moodboards.",
-                }),
                 "useThinkingLevel": ("BOOLEAN", {
                     "tooltip": "Enable to include thinkingLevel (string) in settings.",
                     "default": False,
@@ -204,6 +201,9 @@ class RunwareSettings:
                 "creativity": (["raw", "low", "medium", "high"], {
                     "default": "medium",
                     "tooltip": "Creativity level. Only used when 'Use Creativity' is enabled.",
+                }),
+                "moodboards": ("RUNWAREIMAGEINFERENCEMOODBOARDS", {
+                    "tooltip": "Connect Runware Image Inference Settings Moodboards. When connected with at least one entry, it is merged into settings.moodboards.",
                 }),
             }
         }
