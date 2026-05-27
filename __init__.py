@@ -108,6 +108,7 @@ from .modules.videoInputsFrame import RunwareVideoInputsFrameImages
 from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
 from .modules.imageInferenceSettingsColorPalette import RunwareImageInferenceSettingsColorPalette
+from .modules.imageInferenceSettingsMoodboards import RunwareImageInferenceSettingsMoodboards
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 from .modules.saveImage import RunwareSaveImage
@@ -245,6 +246,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Safety Inputs": safetyInputs,
     "Runware Settings": RunwareSettings,
     "Runware Image Inference Settings Color Palette": RunwareImageInferenceSettingsColorPalette,
+    "Runware Image Inference Settings Moodboards": RunwareImageInferenceSettingsMoodboards,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
     "Runware Save Image": RunwareSaveImage,

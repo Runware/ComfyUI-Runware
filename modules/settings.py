@@ -3,7 +3,8 @@ Runware Image Inference Settings (registered as Runware Settings for workflow co
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
 thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
-magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), and colorPalette
+magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), colorPalette,
+and moodboards
 (from Runware Image Inference Settings Color Palette).
 """
 
@@ -121,6 +122,9 @@ class RunwareSettings:
                 "colorPalette": ("RUNWAREIMAGEINFERENCECOLORPALETTE", {
                     "tooltip": "Connect Runware Image Inference Color Palette. When the palette node outputs at least one swatch, it is merged into settings.colorPalette.",
                 }),
+                "moodboards": ("RUNWAREIMAGEINFERENCEMOODBOARDS", {
+                    "tooltip": "Connect Runware Image Inference Settings Moodboards. When connected with at least one entry, it is merged into settings.moodboards.",
+                }),
                 "useThinkingLevel": ("BOOLEAN", {
                     "tooltip": "Enable to include thinkingLevel (string) in settings.",
                     "default": False,
@@ -211,7 +215,8 @@ class RunwareSettings:
     DESCRIPTION = (
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
-        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), and optional colorPalette from the Color Palette node."
+        "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, "
+        "creativity (raw/low/medium/high), and optional colorPalette and moodboards from dedicated settings nodes."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -300,6 +305,9 @@ class RunwareSettings:
         palette: Optional[List[Dict[str, Any]]] = kwargs.get("colorPalette")
         if palette is not None and isinstance(palette, list) and len(palette) > 0:
             settings["colorPalette"] = palette
+        moodboards: Optional[List[Dict[str, Any]]] = kwargs.get("moodboards")
+        if moodboards is not None and isinstance(moodboards, list) and len(moodboards) > 0:
+            settings["moodboards"] = moodboards
 
         if useRenderingSpeed:
             settings["renderingSpeed"] = str(renderingSpeed)

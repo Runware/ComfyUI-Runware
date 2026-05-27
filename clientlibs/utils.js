@@ -5052,6 +5052,7 @@ export {
     outpaintSettingsToggleHandler,
     safetyInputsToggleHandler,
     imageInferenceSettingsColorPaletteToggleHandler,
+    imageInferenceSettingsMoodboardsToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
     briaProviderMaskToggleHandler,
@@ -5448,6 +5449,25 @@ function imageInferenceSettingsColorPaletteToggleHandler(paletteNode) {
     for (let i = 1; i <= 8; i++) {
         bindSlot(i);
     }
+}
+
+function imageInferenceSettingsMoodboardsToggleHandler(moodboardsNode) {
+    if (!moodboardsNode?.widgets) return;
+
+    const useStrengthWidget = moodboardsNode.widgets.find((w) => w && w.name === "useStrength");
+    const strengthWidget = moodboardsNode.widgets.find((w) => w && w.name === "strength");
+    if (!useStrengthWidget || !strengthWidget) return;
+
+    function toggleStrengthState() {
+        const enabled = useStrengthWidget.value === true;
+        toggleWidgetEnabled(strengthWidget, enabled, moodboardsNode);
+        moodboardsNode.setDirtyCanvas(true);
+    }
+
+    appendWidgetCB(useStrengthWidget, () => {
+        setTimeout(toggleStrengthState, 50);
+    });
+    setTimeout(toggleStrengthState, 100);
 }
 
 function syncProviderSettingsToggleHandler(syncNode) {
