@@ -105,7 +105,7 @@ class RunwareUltralyticsInputs:
                     "min": 128,
                     "max": 2048,
                     "step": 1,
-                    "tooltip": "Image size to use for each inpainting region. Only used when 'Use Inpaint Size' is enabled.",
+                    "tooltip": "Image size to use for each inpainting region. Only used when useInpaintSize is enabled.",
                 }),
             }
         }
