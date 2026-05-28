@@ -27,6 +27,10 @@ class imageInferenceInputs:
                 "tooltip": f"Optional tag describing {ordinal.capitalize()} Reference Image. Leave empty to omit.",
                 "default": "",
             })
+            optionalInputs[f"Reference Role {i}"] = ("STRING", {
+                "tooltip": f"Optional role for {ordinal} reference image (e.g. person, garment). Leave empty to omit.",
+                "default": "",
+            })
             optionalInputs[f"Reference Type {i}"] = ("STRING", {
                 "tooltip": f"Optional type for {ordinal} reference, e.g. 'sketch' for illustrative style models. Leave empty to omit.",
                 "default": "",
@@ -44,13 +48,13 @@ class imageInferenceInputs:
             optionalInputs[f"Super Resolution Reference Image {i}"] = ("IMAGE", {
                 "tooltip": f"Specifies {ordinal.capitalize()} Super Resolution Reference Image for the inputs.",
             })
-        
+
         return {
             "required": {},
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including reference images (with optional type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch) that can be passed to the inference node."
+    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including image/mask, reference images (with optional tag, role, type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch), and super resolution references."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREIMAGEINFERENCEINPUTS",)
     RETURN_NAMES = ("Inference Inputs",)
@@ -85,34 +89,41 @@ class imageInferenceInputs:
         for i in range(1, self.MAX_REFERENCE_IMAGES + 1):
             image = kwargs.get(f"Reference Image {i}", None)
             tag = kwargs.get(f"Reference Tag {i}", "")
+            role = kwargs.get(f"Reference Role {i}", "")
             ref_type = kwargs.get(f"Reference Type {i}", "")
             strength = kwargs.get(f"Reference Strength {i}", 0.0)
             if image is not None:
-                reference_slots.append((image, tag, ref_type, strength))
+                reference_slots.append((image, tag, role, ref_type, strength))
 
         if not reference_slots:
             return []
 
         has_tags = any(
             isinstance(tag, str) and tag.strip() != ""
-            for _, tag, _, _ in reference_slots
+            for _, tag, _, _, _ in reference_slots
+        )
+        has_roles = any(
+            isinstance(role, str) and role.strip() != ""
+            for _, _, role, _, _ in reference_slots
         )
         has_type = any(
             isinstance(rt, str) and rt.strip() != ""
-            for _, _, rt, _ in reference_slots
+            for _, _, _, rt, _ in reference_slots
         )
 
-        if not has_tags and not has_type:
+        if not has_tags and not has_roles and not has_type:
             return [
                 rwUtils.convertTensor2IMG(image)
-                for image, _, _, _ in reference_slots
+                for image, _, _, _, _ in reference_slots
             ]
 
         references = []
-        for image, tag, ref_type, strength in reference_slots:
+        for image, tag, role, ref_type, strength in reference_slots:
             entry = {"image": rwUtils.convertTensor2IMG(image)}
             if isinstance(tag, str) and tag.strip() != "":
                 entry["tag"] = tag.strip()
+            if isinstance(role, str) and role.strip() != "":
+                entry["role"] = role.strip()
             if isinstance(ref_type, str) and ref_type.strip() != "":
                 entry["type"] = ref_type.strip()
                 if ref_type.strip().lower() == "sketch":
