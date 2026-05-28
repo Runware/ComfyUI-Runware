@@ -44,13 +44,20 @@ class imageInferenceInputs:
             optionalInputs[f"Super Resolution Reference Image {i}"] = ("IMAGE", {
                 "tooltip": f"Specifies {ordinal.capitalize()} Super Resolution Reference Image for the inputs.",
             })
+
+        optionalInputs["person"] = ("IMAGE", {
+            "tooltip": "Person image for inputs.person."
+        })
+        optionalInputs["garment"] = ("IMAGE", {
+            "tooltip": "Garment reference image for inputs.garment."
+        })
         
         return {
             "required": {},
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including reference images (with optional type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch) that can be passed to the inference node."
+    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including image/mask, reference images (with optional type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch), super resolution references, and person/garment images."
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREIMAGEINFERENCEINPUTS",)
     RETURN_NAMES = ("Inference Inputs",)
@@ -60,6 +67,8 @@ class imageInferenceInputs:
         """Create image inference inputs from provided parameters"""
         image = kwargs.get("image", None)
         mask = kwargs.get("mask", None)
+        person = kwargs.get("person", None)
+        garment = kwargs.get("garment", None)
 
         inputs = {}
         
@@ -67,6 +76,10 @@ class imageInferenceInputs:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
         if mask is not None:
             inputs["mask"] = rwUtils.convertTensor2IMG(mask)
+        if person is not None:
+            inputs["person"] = rwUtils.convertTensor2IMG(person)
+        if garment is not None:
+            inputs["garment"] = rwUtils.convertTensor2IMG(garment)
 
         references = self._collectReferences(kwargs)
         if len(references) > 0:
