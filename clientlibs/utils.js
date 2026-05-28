@@ -5053,6 +5053,7 @@ export {
     outpaintSettingsToggleHandler,
     safetyInputsToggleHandler,
     imageInferenceSettingsColorPaletteToggleHandler,
+    imageInferenceSettingsMoodboardsToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
     briaProviderMaskToggleHandler,
@@ -5169,6 +5170,8 @@ function settingsToggleHandler(settingsNode) {
     const autoCropWidget = settingsNode.widgets.find(w => w.name === "autoCrop");
     const useDilatePixelsWidget = settingsNode.widgets.find(w => w.name === "useDilatePixels");
     const dilatePixelsWidget = settingsNode.widgets.find(w => w.name === "dilatePixels");
+    const useCreativityWidget = settingsNode.widgets.find(w => w.name === "useCreativity");
+    const creativityWidget = settingsNode.widgets.find(w => w.name === "creativity");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5266,6 +5269,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useDilatePixelsWidget && dilatePixelsWidget) {
         toggleWidgetState(useDilatePixelsWidget, dilatePixelsWidget, "dilatePixels");
+    }
+    if (useCreativityWidget && creativityWidget) {
+        toggleWidgetState(useCreativityWidget, creativityWidget, "creativity");
     }
 }
 
@@ -5444,6 +5450,25 @@ function imageInferenceSettingsColorPaletteToggleHandler(paletteNode) {
     for (let i = 1; i <= 8; i++) {
         bindSlot(i);
     }
+}
+
+function imageInferenceSettingsMoodboardsToggleHandler(moodboardsNode) {
+    if (!moodboardsNode?.widgets) return;
+
+    const useStrengthWidget = moodboardsNode.widgets.find((w) => w && w.name === "useStrength");
+    const strengthWidget = moodboardsNode.widgets.find((w) => w && w.name === "strength");
+    if (!useStrengthWidget || !strengthWidget) return;
+
+    function toggleStrengthState() {
+        const enabled = useStrengthWidget.value === true;
+        toggleWidgetEnabled(strengthWidget, enabled, moodboardsNode);
+        moodboardsNode.setDirtyCanvas(true);
+    }
+
+    appendWidgetCB(useStrengthWidget, () => {
+        setTimeout(toggleStrengthState, 50);
+    });
+    setTimeout(toggleStrengthState, 100);
 }
 
 function syncProviderSettingsToggleHandler(syncNode) {
