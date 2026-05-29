@@ -169,6 +169,7 @@ const RUNWARE_NODE_TYPES = {
     THREEDINFERENCESETTINGSSPARSESTRUCTURE: "Runware 3D Inference Settings Sparse Structure",
     THREEDINFERENCESETTINGSSHAPESLAT: "Runware 3D Inference Settings Shape Slat",
     THREEDINFERENCESETTINGSTEXSLAT: "Runware 3D Inference Settings Tex Slat",
+    THREEDINFERENCESETTINGSMESHCLUSTER: "Runware 3D Inference Settings Mesh Cluster",
     SAVE3D: "Runware Save 3D",
     LOADMESH: "Runware Load Mesh",
     WATERMARKADVANCEDFEATURE: "Runware Watermark Advanced Feature",
@@ -667,6 +668,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSTEXSLAT]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSMESHCLUSTER]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

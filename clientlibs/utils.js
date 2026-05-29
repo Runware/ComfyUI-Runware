@@ -2224,6 +2224,14 @@ function threeDInferenceSettingsToggleHandler(node) {
         ["useModeration", "moderation"],
         ["useSavePreRemeshedModel", "savePreRemeshedModel"],
         ["useTexturePrompt", "texturePrompt"],
+        ["useFaceCount", "faceCount"],
+        ["useGenerateType", "generateType"],
+        ["usePolygonType", "polygonType"],
+        ["useGeometryOnly", "geometryOnly"],
+        ["useRemeshBand", "remeshBand"],
+        ["useRemeshProject", "remeshProject"],
+        ["useTextureFormat", "textureFormat"],
+        ["useAlphaMode", "alphaMode"],
     ];
     pairs.forEach(([useName, paramName]) => {
         const useW = node.widgets.find(w => w.name === useName);
@@ -2245,6 +2253,27 @@ function threeDInferenceSettingsLatToggleHandler(node) {
         ["useGuidanceRescale", "guidanceRescale"],
         ["useSteps", "steps"],
         ["useRescaleT", "rescaleT"],
+    ];
+    pairs.forEach(([useName, paramName]) => {
+        const useW = node.widgets.find(w => w.name === useName);
+        const paramW = node.widgets.find(w => w.name === paramName);
+        if (!useW || !paramW) return;
+        function toggleEnabled() {
+            const enabled = useW.value === true;
+            toggleWidgetEnabled(paramW, enabled, node);
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useW, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    });
+}
+
+function threeDInferenceSettingsMeshClusterToggleHandler(node) {
+    const pairs = [
+        ["useThresholdConeHalfAngleRad", "thresholdConeHalfAngleRad"],
+        ["useRefineIterations", "refineIterations"],
+        ["useGlobalIterations", "globalIterations"],
+        ["useSmoothStrength", "smoothStrength"],
     ];
     pairs.forEach(([useName, paramName]) => {
         const useW = node.widgets.find(w => w.name === useName);
@@ -5043,6 +5072,7 @@ export {
     threeDInferenceToggleHandler,
     threeDInferenceSettingsToggleHandler,
     threeDInferenceSettingsLatToggleHandler,
+    threeDInferenceSettingsMeshClusterToggleHandler,
     ultralyticsProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
