@@ -435,7 +435,7 @@ class Runware3DInferenceSettings:
                 "remeshBand": ("FLOAT", {
                     "tooltip": "Narrow-band width (in voxels) for dual-contouring remeshing. Must be greater than 0 when remesh is true. Only used when enabled.",
                     "default": 1.0,
-                    "min": 0.0,
+                    "min": 0.1,
                     "max": 16.0,
                     "step": 0.1,
                 }),
@@ -445,8 +445,8 @@ class Runware3DInferenceSettings:
                 }),
                 "remeshProject": ("FLOAT", {
                     "tooltip": "Projection factor for snapping remeshed vertices back to the original surface. Must be greater than 0 when remesh is true. Only used when enabled.",
-                    "default": 0.0,
-                    "min": 0.0,
+                    "default": 0.01,
+                    "min": 0.01,
                     "max": 1.0,
                     "step": 0.01,
                 }),
@@ -493,7 +493,7 @@ class Runware3DInferenceSettings:
         if kwargs.get("useRemeshBand", False):
             settings["remeshBand"] = float(kwargs.get("remeshBand", 1.0))
         if kwargs.get("useRemeshProject", False):
-            settings["remeshProject"] = float(kwargs.get("remeshProject", 0.0))
+            settings["remeshProject"] = float(kwargs.get("remeshProject", 0.01))
         if kwargs.get("useResolution", False):
             settings["resolution"] = int(kwargs.get("resolution", 1024))
 
