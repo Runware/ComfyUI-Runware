@@ -16,7 +16,7 @@ class RunwareVideoInputsFrameImages:
                 "tooltip": "Frame image to include in video inference inputs.frameImages.",
             })
             optionalInputs[f"useFrame{i}"] = ("BOOLEAN", {
-                "tooltip": "Enable to set frame position (first/last). Mutually exclusive with timestamp for this slot.",
+                "tooltip": "Enable to set frame position (first/last).",
                 "default": False,
             })
             optionalInputs[f"frame{i} position"] = (cls.FRAME_POSITIONS, {
@@ -24,7 +24,7 @@ class RunwareVideoInputsFrameImages:
                 "tooltip": "Frame position: 'first' or 'last'. Only used when 'Use Frame' is enabled.",
             })
             optionalInputs[f"useTimestamp{i}"] = ("BOOLEAN", {
-                "tooltip": "Enable to set a timestamp (seconds) within the input video. Mutually exclusive with frame position for this slot.",
+                "tooltip": "Enable to set a timestamp (seconds) within the input video.",
                 "default": False,
             })
             optionalInputs[f"timestamp{i}"] = ("STRING", {
@@ -38,8 +38,9 @@ class RunwareVideoInputsFrameImages:
         }
 
     DESCRIPTION = (
-        "Build inputs.frameImages for video inference: image-only strings, "
-        "{image, frame: first|last}, or {image, timestamp: seconds}."
+        "Build inputs.frameImages entries for video inference: "
+        "{image: base64}, {image: base64, frame: first|last|<int>}, or "
+        "{image: base64, timestamp: seconds}."
     )
     FUNCTION = "createFrameInputs"
     RETURN_TYPES = ("RUNWAREVIDEOINPUTSFRAMEIMAGES",)
