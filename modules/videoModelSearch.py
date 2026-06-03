@@ -139,6 +139,7 @@ class videoModelSearch:
         "Pruna": [
             "prunaai:p-video@0 (P-Video)",
             "prunaai:p-video@avatar (P-Video Avatar)",
+            "prunaai:p-video@animate (P-Video Animate)",
         ],
         "SkyReels": [
             "skywork:skyreels@v4 (SkyReels V4)",
@@ -278,6 +279,7 @@ class videoModelSearch:
         # Pruna Models (720p)
         "prunaai:p-video@0": {"width": 1280, "height": 720},
         "prunaai:p-video@avatar": {"width": 1280, "height": 720},
+        "prunaai:p-video@animate": {"width": 1280, "height": 720},
 
         # HeyGen Models (Model ID: heygen-avatar-iv, heygen-avatar-v)
         "heygen:avatar@4": {"width": 1280, "height": 720},
@@ -421,6 +423,7 @@ class videoModelSearch:
         # Pruna Models
         "prunaai:p-video@0": "720p",
         "prunaai:p-video@avatar": "720p",
+        "prunaai:p-video@animate": "720p",
 
         # HeyGen Models
         "heygen:avatar@4": "720p",

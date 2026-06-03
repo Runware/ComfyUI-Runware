@@ -1,9 +1,9 @@
 """
 Runware 3D Inference Settings Node
-Main settings for 3D inference: textureSize, decimationTarget, remesh, resolution,
-imageAutoFix, faceLimit, texture, pbr, Tripo mesh/texture options, material/quality,
+Main settings for 3D inference: textureSize, decimationTarget, remesh, remeshBand, remeshProject,
+resolution, imageAutoFix, faceLimit, texture, pbr, textureFormat, alphaMode, Tripo mesh/texture options, material/quality,
 polyCount, taPose, boundingBox, meshMode, addons, hdTexture, and sub-configs
-sparseStructure, shapeSlat, texSlat from connected nodes.
+sparseStructure, shapeSlat, texSlat, meshCluster from connected nodes.
 """
 
 from typing import Dict, Any
@@ -425,6 +425,47 @@ class Runware3DInferenceSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "meshCluster": ("RUNWARE3DINFERENCESETTINGSLAT", {
+                    "tooltip": "Connect Runware 3D Inference Settings Mesh Cluster node.",
+                }),
+                "useRemeshBand": ("BOOLEAN", {
+                    "tooltip": "Enable to include remeshBand in settings.",
+                    "default": False,
+                }),
+                "remeshBand": ("FLOAT", {
+                    "tooltip": "Narrow-band width (in voxels) for dual-contouring remeshing. Must be greater than 0 when remesh is true. Only used when enabled.",
+                    "default": 1.0,
+                    "min": 0.1,
+                    "max": 16.0,
+                    "step": 0.1,
+                }),
+                "useRemeshProject": ("BOOLEAN", {
+                    "tooltip": "Enable to include remeshProject in settings.",
+                    "default": False,
+                }),
+                "remeshProject": ("FLOAT", {
+                    "tooltip": "Projection factor for snapping remeshed vertices back to the original surface. Must be greater than 0 when remesh is true. Only used when enabled.",
+                    "default": 0.01,
+                    "min": 0.01,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
+                "useTextureFormat": ("BOOLEAN", {
+                    "tooltip": "Enable to include textureFormat in settings.",
+                    "default": False,
+                }),
+                "textureFormat": (["WEBP", "PNG"], {
+                    "tooltip": "Texture format stored in the GLB output: WEBP or PNG. Only used when 'Use Texture Format' is enabled.",
+                    "default": "WEBP",
+                }),
+                "useAlphaMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include alphaMode in settings.",
+                    "default": False,
+                }),
+                "alphaMode": (["OPAQUE", "BLEND", "MASK"], {
+                    "tooltip": "Material alpha mode. Only used when 'Use Alpha Mode' is enabled.",
+                    "default": "OPAQUE",
+                }),
             }
         }
 
@@ -433,10 +474,11 @@ class Runware3DInferenceSettings:
     FUNCTION = "create"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure Runware 3D Inference settings: textureSize, decimationTarget, remesh, resolution, imageAutoFix, faceLimit, "
-        "texture, pbr, textureSeed, textureAlignment, textureQuality, autoSize, orientation, quad, compress, "
+        "Configure Runware 3D Inference settings: textureSize, decimationTarget, remesh, remeshBand, remeshProject, "
+        "resolution, imageAutoFix, faceLimit, texture, pbr, textureSeed, textureAlignment, textureQuality, "
+        "textureFormat, alphaMode, autoSize, orientation, quad, compress, "
         "smartLowPoly, generateParts, exportUv, geometryQuality, originalAlpha, material, quality, polyCount, "
-        "taPose, boundingBox, meshMode, addons, hdTexture, and lat configs."
+        "taPose, boundingBox, meshMode, addons, hdTexture, lat configs, and meshCluster."
     )
 
     def create(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -448,6 +490,10 @@ class Runware3DInferenceSettings:
             settings["decimationTarget"] = int(kwargs.get("decimationTarget", 500000))
         if kwargs.get("useRemesh", False):
             settings["remesh"] = bool(kwargs.get("remesh", True))
+        if kwargs.get("useRemeshBand", False):
+            settings["remeshBand"] = float(kwargs.get("remeshBand", 1.0))
+        if kwargs.get("useRemeshProject", False):
+            settings["remeshProject"] = float(kwargs.get("remeshProject", 0.01))
         if kwargs.get("useResolution", False):
             settings["resolution"] = int(kwargs.get("resolution", 1024))
 
@@ -473,6 +519,10 @@ class Runware3DInferenceSettings:
             settings["textureAlignment"] = kwargs.get("textureAlignment", "original_image")
         if kwargs.get("useTextureQuality", False):
             settings["textureQuality"] = kwargs.get("textureQuality", "standard")
+        if kwargs.get("useTextureFormat", False):
+            settings["textureFormat"] = kwargs.get("textureFormat", "WEBP")
+        if kwargs.get("useAlphaMode", False):
+            settings["alphaMode"] = kwargs.get("alphaMode", "OPAQUE")
         if kwargs.get("useAutoSize", False):
             settings["autoSize"] = bool(kwargs.get("autoSize", False))
         if kwargs.get("useOrientation", False):
@@ -555,6 +605,10 @@ class Runware3DInferenceSettings:
         tex = kwargs.get("texSlat", None)
         if tex is not None and isinstance(tex, dict) and len(tex) > 0:
             settings["texSlat"] = tex
+
+        mesh_cluster = kwargs.get("meshCluster", None)
+        if mesh_cluster is not None and isinstance(mesh_cluster, dict) and len(mesh_cluster) > 0:
+            settings["meshCluster"] = mesh_cluster
 
         return (settings,)
 

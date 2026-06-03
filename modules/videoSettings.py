@@ -225,6 +225,16 @@ class RunwareVideoSettings:
                     "label_on": "true",
                     "label_off": "false",
                 }),
+                "usePreserveAudio": ("BOOLEAN", {
+                    "tooltip": "Enable to include preserveAudio in video inference settings.",
+                    "default": False,
+                }),
+                "preserveAudio": ("BOOLEAN", {
+                    "tooltip": "Preserve source audio in output video. Only used when 'Use Preserve Audio' is enabled.",
+                    "default": True,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             }
         }
 
@@ -243,6 +253,8 @@ class RunwareVideoSettings:
         draft = kwargs.get("draft", False)
         use_audio = kwargs.get("useAudio", False)
         audio = kwargs.get("audio", False)
+        use_preserve_audio = kwargs.get("usePreserveAudio", False)
+        preserve_audio = kwargs.get("preserveAudio", True)
         use_voice_prompt = kwargs.get("useVoicePrompt", False)
         voice_prompt = (kwargs.get("voicePrompt") or "").strip()
         use_safety_filter = kwargs.get("useSafetyFilter", False)
@@ -293,6 +305,8 @@ class RunwareVideoSettings:
             settings["draft"] = bool(draft)
         if use_audio:
             settings["audio"] = bool(audio)
+        if use_preserve_audio:
+            settings["preserveAudio"] = bool(preserve_audio)
         if use_voice_prompt and voice_prompt:
             settings["voicePrompt"] = voice_prompt
         if use_safety_filter:

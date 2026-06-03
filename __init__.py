@@ -109,6 +109,7 @@ from .modules.videoInputsFrame import RunwareVideoInputsFrameImages
 from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
 from .modules.imageInferenceSettingsColorPalette import RunwareImageInferenceSettingsColorPalette
+from .modules.imageInferenceSettingsMoodboards import RunwareImageInferenceSettingsMoodboards
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 from .modules.saveImage import RunwareSaveImage
@@ -119,6 +120,7 @@ from .modules.threeDInferenceSettings import Runware3DInferenceSettings
 from .modules.threeDInferenceSettingsSparseStructure import Runware3DInferenceSettingsSparseStructure
 from .modules.threeDInferenceSettingsShapeSlat import Runware3DInferenceSettingsShapeSlat
 from .modules.threeDInferenceSettingsTexSlat import Runware3DInferenceSettingsTexSlat
+from .modules.threeDInferenceSettingsMeshCluster import Runware3DInferenceSettingsMeshCluster
 from .modules.save3D import RunwareSave3D
 from .modules.saveText import RunwareSaveText
 from .modules.loadMesh import RunwareLoadMesh
@@ -247,6 +249,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Safety Inputs": safetyInputs,
     "Runware Settings": RunwareSettings,
     "Runware Image Inference Settings Color Palette": RunwareImageInferenceSettingsColorPalette,
+    "Runware Image Inference Settings Moodboards": RunwareImageInferenceSettingsMoodboards,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
     "Runware Save Image": RunwareSaveImage,
@@ -257,6 +260,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware 3D Inference Settings Sparse Structure": Runware3DInferenceSettingsSparseStructure,
     "Runware 3D Inference Settings Shape Slat": Runware3DInferenceSettingsShapeSlat,
     "Runware 3D Inference Settings Tex Slat": Runware3DInferenceSettingsTexSlat,
+    "Runware 3D Inference Settings Mesh Cluster": Runware3DInferenceSettingsMeshCluster,
     "Runware Save 3D": RunwareSave3D,
     "Runware Save Text": RunwareSaveText,
     "Runware Load Mesh": RunwareLoadMesh,
