@@ -27,8 +27,11 @@ class RunwareVideoInputsFrameImages:
                 "tooltip": "Enable to set a timestamp (seconds) within the input video.",
                 "default": False,
             })
-            optionalInputs[f"timestamp{i}"] = ("STRING", {
-                "default": "0",
+            optionalInputs[f"timestamp{i}"] = ("FLOAT", {
+                "default": 0.0,
+                "min": 0.0,
+                "max": 9999.0,
+                "step": 0.01,
                 "tooltip": "Timestamp in seconds (hundredths supported, e.g. 3.44). Only used when 'Use Timestamp' is enabled.",
             })
 
@@ -39,7 +42,7 @@ class RunwareVideoInputsFrameImages:
 
     DESCRIPTION = (
         "Build inputs.frameImages entries for video inference: "
-        "{image: base64}, {image: base64, frame: first|last|<int>}, or "
+        "{image: base64}, {image: base64, frame: first|last}, or "
         "{image: base64, timestamp: seconds}."
     )
     FUNCTION = "createFrameInputs"
@@ -58,7 +61,7 @@ class RunwareVideoInputsFrameImages:
             use_frame = kwargs.get(f"useFrame{i}", False)
             frame_position = kwargs.get(f"frame{i} position", "first")
             use_timestamp = kwargs.get(f"useTimestamp{i}", False)
-            timestamp = self._parse_timestamp(kwargs.get(f"timestamp{i}", "0"))
+            timestamp = self._parse_timestamp(kwargs.get(f"timestamp{i}", 0.0))
 
             frameImages.append(
                 self._createFrameEntry(
@@ -83,7 +86,10 @@ class RunwareVideoInputsFrameImages:
             stripped = value.strip()
             if stripped == "":
                 return default
-            return max(0.0, float(stripped))
+            try:
+                return max(0.0, float(stripped))
+            except ValueError:
+                return default
         return default
 
     def _createFrameEntry(self, image, use_frame, frame_position, use_timestamp, timestamp):

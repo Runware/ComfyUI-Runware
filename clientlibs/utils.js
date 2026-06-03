@@ -5042,6 +5042,13 @@ function videoInputsFrameToggleHandler(frameImagesNode) {
         function toggleEnabled() {
             const enabled = useWidget.value === true;
 
+            // FLOAT timestamp widgets: avoid '' on disabled slots (ComfyUI validation error)
+            if (!enabled && paramName && paramName.startsWith("timestamp")) {
+                if (paramWidget.value === "" || paramWidget.value == null) {
+                    paramWidget.value = 0.0;
+                }
+            }
+
             if (paramWidget.inputEl) {
                 paramWidget.inputEl.disabled = !enabled;
                 paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
