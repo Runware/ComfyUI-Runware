@@ -3,61 +3,101 @@ from .utils import runwareUtils as rwUtils
 
 class RunwareVideoInputsFrameImages:
     """Video Inputs Frame node for adapting frame images structure for video inference"""
-    
+
     MAX_FRAMES = 4
-    
+    FRAME_POSITIONS = ["first", "last"]
+
     @classmethod
     def INPUT_TYPES(cls):
         optionalInputs = {}
-        
+
         for i in range(1, cls.MAX_FRAMES + 1):
             optionalInputs[f"image{i}"] = ("IMAGE", {
-                "tooltip": "Frame image to include in video inference inputs."
+                "tooltip": "Frame image to include in video inference inputs.frameImages.",
             })
-            optionalInputs[f"frame{i} position"] = ("STRING", {
-                "default": "",
-                "tooltip": "Optional frame label (e.g., 'first', 'last', specific frame number). Leave blank for provider defaults."
+            optionalInputs[f"useFrame{i}"] = ("BOOLEAN", {
+                "tooltip": "Enable to set frame position (first/last). Mutually exclusive with timestamp for this slot.",
+                "default": False,
             })
-        
+            optionalInputs[f"frame{i} position"] = (cls.FRAME_POSITIONS, {
+                "default": "first",
+                "tooltip": "Frame position: 'first' or 'last'. Only used when 'Use Frame' is enabled.",
+            })
+            optionalInputs[f"useTimestamp{i}"] = ("BOOLEAN", {
+                "tooltip": "Enable to set a timestamp (seconds) within the input video. Mutually exclusive with frame position for this slot.",
+                "default": False,
+            })
+            optionalInputs[f"timestamp{i}"] = ("STRING", {
+                "default": "0",
+                "tooltip": "Timestamp in seconds (hundredths supported, e.g. 3.44). Only used when 'Use Timestamp' is enabled.",
+            })
+
         return {
             "required": {},
-            "optional": optionalInputs
+            "optional": optionalInputs,
         }
-    
-    DESCRIPTION = "Convert Runware Frame Images into the expected structure for video inference inputs."
+
+    DESCRIPTION = (
+        "Build inputs.frameImages for video inference: image-only strings, "
+        "{image, frame: first|last}, or {image, timestamp: seconds}."
+    )
     FUNCTION = "createFrameInputs"
     RETURN_TYPES = ("RUNWAREVIDEOINPUTSFRAMEIMAGES",)
     RETURN_NAMES = ("Video Inputs Frame Images",)
     CATEGORY = "Runware"
-    
+
     def createFrameInputs(self, **kwargs):
         frameImages = []
-        
+
         for i in range(1, self.MAX_FRAMES + 1):
-            imageKey = f"image{i}"
-            frameKey = f"frame{i} position"
-            
-            image = kwargs.get(imageKey)
-            frame = kwargs.get(frameKey, "")
-            
+            image = kwargs.get(f"image{i}")
             if image is None:
                 continue
-            
-            frameData = self._createFrameEntry(image, frame)
-            frameImages.append(frameData)
-        
+
+            use_frame = kwargs.get(f"useFrame{i}", False)
+            frame_position = kwargs.get(f"frame{i} position", "first")
+            use_timestamp = kwargs.get(f"useTimestamp{i}", False)
+            timestamp = self._parse_timestamp(kwargs.get(f"timestamp{i}", "0"))
+
+            frameImages.append(
+                self._createFrameEntry(
+                    image,
+                    use_frame=use_frame,
+                    frame_position=frame_position,
+                    use_timestamp=use_timestamp,
+                    timestamp=timestamp,
+                )
+            )
+
         return (frameImages,)
-    
-    def _createFrameEntry(self, image, frameLabel):
+
+    @staticmethod
+    def _parse_timestamp(value, default=0.0):
+        """Coerce timestamp input; ComfyUI may send '' when the widget is disabled."""
+        if value is None:
+            return default
+        if isinstance(value, (int, float)):
+            return max(0.0, float(value))
+        if isinstance(value, str):
+            stripped = value.strip()
+            if stripped == "":
+                return default
+            return max(0.0, float(stripped))
+        return default
+
+    def _createFrameEntry(self, image, use_frame, frame_position, use_timestamp, timestamp):
         imageData = rwUtils.convertTensor2IMGBase64Only(image)
         entry = {"image": imageData}
-        
-        if isinstance(frameLabel, str) and frameLabel.strip() != "":
-            if frameLabel.strip().isdigit():
-                entry["frame"] = int(frameLabel.strip())
-            else:
-                entry["frame"] = frameLabel.strip()
-        
+
+        if use_timestamp:
+            entry["timestamp"] = round(timestamp, 2)
+        elif use_frame:
+            frame_value = frame_position
+            if isinstance(frame_value, str):
+                frame_value = frame_value.strip()
+            if frame_value:
+                entry["frame"] = frame_value
+
         return entry
 
 

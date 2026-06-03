@@ -97,6 +97,7 @@ class videoModelSearch:
             "runware:190@1 (Ovi)",
         ],
         "Runway": [
+            "runway:aleph@2.0 (Runway Aleph 2.0)",
             "runway:2@1 (Runway Aleph)",
             "runway:1@1 (Runway Gen-4 Turbo)",
             "runway:1@2 (Runway Gen-4.5)",
@@ -242,6 +243,7 @@ class videoModelSearch:
         "runware:190@1": {"width": 0, "height": 0},
         
         # Runway Models
+        "runway:aleph@2.0": {"width": 0, "height": 0},
         "runway:2@1": {"width": 1280, "height": 720},
         "runway:1@1": {"width": 1280, "height": 720},
         "runway:1@2": {"width": 1280, "height": 720},
@@ -386,6 +388,7 @@ class videoModelSearch:
         "runware:190@1": None,  # No resolution support
         
         # Runway Models
+        "runway:aleph@2.0": None,  # Output ratio matches input video
         "runway:2@1": "720p",
         "runway:1@1": "720p",
         "runway:1@2": "720p",
