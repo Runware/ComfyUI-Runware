@@ -2899,6 +2899,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "runware:190@1 (Ovi)",
         ],
         "Runway": [
+            "runway:aleph@2.0 (Runway Aleph 2.0)",
             "runway:2@1 (Runway Aleph)",
             "runway:1@1 (Runway Gen-4 Turbo)",
             "runway:1@2 (Runway Gen-4.5)",
@@ -3022,6 +3023,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lightricks:ltx@2.3": {"width": 1920, "height": 1080},
         "lightricks:ltx@2.3-fast": {"width": 1920, "height": 1080},
         "runware:190@1": {"width": 0, "height": 0},
+        "runway:aleph@2.0": {"width": 0, "height": 0},
         "runway:2@1": {"width": 1280, "height": 720},
         "runway:1@1": {"width": 1280, "height": 720},
         "runway:1@2": {"width": 1280, "height": 720},
@@ -3122,6 +3124,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lightricks:ltx@2.3": "1080p",
         "lightricks:ltx@2.3-fast": "1080p",
         "runware:190@1": null,  // No resolution support
+        "runway:aleph@2.0": null,  // Output ratio matches input video
         "runway:2@1": "720p",
         "runway:1@1": "720p",
         "runway:1@2": "720p",
@@ -5028,6 +5031,89 @@ function audioInferenceSpeechVoicesToggleHandler(voicesNode) {
     }
 }
 
+function videoInputsFrameToggleHandler(frameImagesNode) {
+    if (!frameImagesNode?.widgets) return;
+    if (frameImagesNode._videoInputsFrameToggleHandlerRegistered) return;
+    frameImagesNode._videoInputsFrameToggleHandlerRegistered = true;
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            // FLOAT timestamp widgets: avoid '' on disabled slots (ComfyUI validation error)
+            if (!enabled && paramName && paramName.startsWith("timestamp")) {
+                if (paramWidget.value === "" || paramWidget.value == null) {
+                    paramWidget.value = 0.0;
+                }
+            }
+
+            if (paramWidget.inputEl) {
+                paramWidget.inputEl.disabled = !enabled;
+                paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                paramWidget.inputEl.readOnly = !enabled;
+            }
+
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+
+            paramWidget.disabled = !enabled;
+
+            if (!paramWidget.inputEl && paramName) {
+                const nodeElement = frameImagesNode.htmlElements?.widgetsContainer || frameImagesNode.htmlElements;
+                if (nodeElement) {
+                    const input = nodeElement.querySelector(`input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`);
+                    if (input) {
+                        input.disabled = !enabled;
+                        input.style.opacity = enabled ? "1" : "0.5";
+                        input.style.cursor = enabled ? "text" : "not-allowed";
+                        input.readOnly = !enabled;
+                        if (input.tagName === "SELECT") {
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            }
+
+            frameImagesNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => {
+            setTimeout(toggleEnabled, 50);
+        });
+
+        setTimeout(toggleEnabled, 100);
+    }
+
+    function initializeHandler() {
+        if (!frameImagesNode.widgets || frameImagesNode.widgets.length === 0) {
+            setTimeout(initializeHandler, 100);
+            return;
+        }
+
+        for (let i = 1; i <= 4; i++) {
+            const useFrameWidget = frameImagesNode.widgets.find((w) => w && w.name === `useFrame${i}`);
+            const frameWidget = frameImagesNode.widgets.find((w) => w && w.name === `frame${i} position`);
+            const useTimestampWidget = frameImagesNode.widgets.find((w) => w && w.name === `useTimestamp${i}`);
+            const timestampWidget = frameImagesNode.widgets.find((w) => w && w.name === `timestamp${i}`);
+
+            if (useFrameWidget && frameWidget) {
+                toggleWidgetState(useFrameWidget, frameWidget, `frame${i} position`);
+            }
+            if (useTimestampWidget && timestampWidget) {
+                toggleWidgetState(useTimestampWidget, timestampWidget, `timestamp${i}`);
+            }
+        }
+    }
+
+    initializeHandler();
+}
+
 function referenceVideosToggleHandler(referenceVideosNode) {
     if (!referenceVideosNode?.widgets) return;
 
@@ -5168,6 +5254,7 @@ export {
     audioInferenceInputsToggleHandler,
     audioInferenceReferenceVoiceToggleHandler,
     audioInferenceSpeechVoicesToggleHandler,
+    videoInputsFrameToggleHandler,
     referenceVideosToggleHandler,
 };
 
