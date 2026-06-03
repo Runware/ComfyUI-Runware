@@ -96,6 +96,7 @@ const RUNWARE_NODE_TYPES = {
     TEXTINFERENCEINPUTSVIDEOS: "Runware Text Inference Inputs Videos",
     AUDIOSECTIONS: "Runware Audio Sections",
     AUDIOINFERENCEINPUTS: "Runware Audio Inference Inputs",
+    AUDIOINFERENCEINPUTSREFERENCEAUDIO: "Runware Audio Inference Inputs Reference Audio",
     AUDIOSETTINGS: "Runware Audio Inference Settings",
     AUDIOSETTINGSVOICEMODIFY: "Runware Audio Inference Settings Voice Modify",
     PIXVERSEPROVIDERSETTINGS: "Runware Pixverse Provider Settings",
@@ -571,6 +572,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.AUDIOINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.AUDIOINFERENCEINPUTSREFERENCEAUDIO]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

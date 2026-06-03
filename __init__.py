@@ -60,6 +60,7 @@ from .modules.textInferenceInputsImages import RunwareTextInferenceInputsImages
 from .modules.textInferenceInputsVideos import RunwareTextInferenceInputsVideos
 from .modules.audioSections import RunwareAudioSections
 from .modules.audioInferenceInputs import audioInferenceInputs
+from .modules.audioInferenceReferenceVoices import RunwareAudioInferenceReferenceVoices
 from .modules.audioSettings import RunwareAudioSettings
 from .modules.audioSettingsVoiceModify import RunwareAudioSettingsVoiceModify
 from .modules.providerSettings.elevenlabsProviderSettings import RunwareElevenLabsProviderSettings
@@ -191,6 +192,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Text Inference Inputs Videos": RunwareTextInferenceInputsVideos,
     "Runware Audio Sections": RunwareAudioSections,
     "Runware Audio Inference Inputs": audioInferenceInputs,
+    "Runware Audio Inference Inputs Reference Audio": RunwareAudioInferenceReferenceVoices,
     "Runware Audio Inference Settings": RunwareAudioSettings,
     "Runware Audio Inference Settings Voice Modify": RunwareAudioSettingsVoiceModify,
     "Runware ElevenLabs Provider Settings": RunwareElevenLabsProviderSettings,

@@ -52,13 +52,21 @@ class audioInferenceInputs:
                 "tooltip": f"Audio URL or mediaUUID for the {ordinal} audio. Only used when 'Use Audios' is enabled.",
                 "default": "",
             })
+
+        optionalInputs["Reference Voice"] = ("RUNWAREAUDIOINFERENCEREFERENCEVOICES", {
+            "tooltip": "Connect Runware Audio Inference Inputs Reference Audio for zero-shot voice cloning (inputs.referenceVoices).",
+        })
         
         return {
             "required": {},
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Audio Inference, including optional single or multiple audio URL/mediaUUID (inputs.audio or inputs.audios), and single or multiple video inputs for audio extraction or generation."
+    DESCRIPTION = (
+        "Configure custom inputs for Runware Audio Inference, including optional single or multiple audio URL/mediaUUID "
+        "(inputs.audio or inputs.audios), reference voice for cloning (inputs.referenceVoices), "
+        "and single or multiple video inputs for audio extraction or generation."
+    )
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREAUDIOINFERENCEINPUTS",)
     RETURN_NAMES = ("Audio Inference Inputs",)
@@ -72,6 +80,7 @@ class audioInferenceInputs:
         useVideo = kwargs.get("useVideo", False)
         video = kwargs.get("Video", None)
         useVideos = kwargs.get("useVideos", False)
+        referenceVoices = kwargs.get("Reference Voice", None)
         
         inputs = {}
 
@@ -106,6 +115,9 @@ class audioInferenceInputs:
             
             if len(videoList) > 0:
                 inputs["videos"] = videoList
+
+        if referenceVoices is not None and isinstance(referenceVoices, list) and len(referenceVoices) > 0:
+            inputs["referenceVoices"] = referenceVoices
         
         return (inputs,)
 

@@ -1298,6 +1298,26 @@ function audioSettingsToggleHandler(settingsNode) {
     const cfgIntervalStartWidget = settingsNode.widgets.find(w => w && w.name === "cfgIntervalStart");
     const useCfgIntervalEndWidget = settingsNode.widgets.find(w => w && w.name === "useCfgIntervalEnd");
     const cfgIntervalEndWidget = settingsNode.widgets.find(w => w && w.name === "cfgIntervalEnd");
+    const useNormalizeLoudnessWidget = settingsNode.widgets.find(w => w && w.name === "useNormalizeLoudness");
+    const normalizeLoudnessWidget = settingsNode.widgets.find(w => w && w.name === "normalizeLoudness");
+    const useTopPWidget = settingsNode.widgets.find(w => w && w.name === "useTopP");
+    const topPWidget = settingsNode.widgets.find(w => w && w.name === "topP");
+    const useChunkLengthWidget = settingsNode.widgets.find(w => w && w.name === "useChunkLength");
+    const chunkLengthWidget = settingsNode.widgets.find(w => w && w.name === "chunkLength");
+    const useMinChunkLengthWidget = settingsNode.widgets.find(w => w && w.name === "useMinChunkLength");
+    const minChunkLengthWidget = settingsNode.widgets.find(w => w && w.name === "minChunkLength");
+    const useNormalizeWidget = settingsNode.widgets.find(w => w && w.name === "useNormalize");
+    const normalizeWidget = settingsNode.widgets.find(w => w && w.name === "normalize");
+    const useLatencyWidget = settingsNode.widgets.find(w => w && w.name === "useLatency");
+    const latencyWidget = settingsNode.widgets.find(w => w && w.name === "latency");
+    const useMaxTokensWidget = settingsNode.widgets.find(w => w && w.name === "useMaxTokens");
+    const maxTokensWidget = settingsNode.widgets.find(w => w && w.name === "maxTokens");
+    const useRepetitionPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "useRepetitionPenalty");
+    const repetitionPenaltyWidget = settingsNode.widgets.find(w => w && w.name === "repetitionPenalty");
+    const useConditionOnPreviousChunksWidget = settingsNode.widgets.find(w => w && w.name === "useConditionOnPreviousChunks");
+    const conditionOnPreviousChunksWidget = settingsNode.widgets.find(w => w && w.name === "conditionOnPreviousChunks");
+    const useEarlyStopThresholdWidget = settingsNode.widgets.find(w => w && w.name === "useEarlyStopThreshold");
+    const earlyStopThresholdWidget = settingsNode.widgets.find(w => w && w.name === "earlyStopThreshold");
 
     function toggleWidgetState(useWidget, paramWidget, paramName) {
         if (!useWidget || !paramWidget) return;
@@ -1338,6 +1358,16 @@ function audioSettingsToggleHandler(settingsNode) {
     if (useTranscriptWidget && transcriptWidget) toggleWidgetState(useTranscriptWidget, transcriptWidget, "transcript");
     if (useCfgIntervalStartWidget && cfgIntervalStartWidget) toggleWidgetState(useCfgIntervalStartWidget, cfgIntervalStartWidget, "cfgIntervalStart");
     if (useCfgIntervalEndWidget && cfgIntervalEndWidget) toggleWidgetState(useCfgIntervalEndWidget, cfgIntervalEndWidget, "cfgIntervalEnd");
+    if (useNormalizeLoudnessWidget && normalizeLoudnessWidget) toggleWidgetState(useNormalizeLoudnessWidget, normalizeLoudnessWidget, "normalizeLoudness");
+    if (useTopPWidget && topPWidget) toggleWidgetState(useTopPWidget, topPWidget, "topP");
+    if (useChunkLengthWidget && chunkLengthWidget) toggleWidgetState(useChunkLengthWidget, chunkLengthWidget, "chunkLength");
+    if (useMinChunkLengthWidget && minChunkLengthWidget) toggleWidgetState(useMinChunkLengthWidget, minChunkLengthWidget, "minChunkLength");
+    if (useNormalizeWidget && normalizeWidget) toggleWidgetState(useNormalizeWidget, normalizeWidget, "normalize");
+    if (useLatencyWidget && latencyWidget) toggleWidgetState(useLatencyWidget, latencyWidget, "latency");
+    if (useMaxTokensWidget && maxTokensWidget) toggleWidgetState(useMaxTokensWidget, maxTokensWidget, "maxTokens");
+    if (useRepetitionPenaltyWidget && repetitionPenaltyWidget) toggleWidgetState(useRepetitionPenaltyWidget, repetitionPenaltyWidget, "repetitionPenalty");
+    if (useConditionOnPreviousChunksWidget && conditionOnPreviousChunksWidget) toggleWidgetState(useConditionOnPreviousChunksWidget, conditionOnPreviousChunksWidget, "conditionOnPreviousChunks");
+    if (useEarlyStopThresholdWidget && earlyStopThresholdWidget) toggleWidgetState(useEarlyStopThresholdWidget, earlyStopThresholdWidget, "earlyStopThreshold");
 }
 
 function textInferenceSettingsToggleHandler(settingsNode) {
@@ -3423,6 +3453,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
         "Google": [
             "google:gemini@3.1-flash-tts (Gemini 3.1 Flash TTS)",
         ],
+        "Fish": [
+            "fishaudio:s2.1@pro (Fish Audio S2.1 Pro)",
+        ],
     };
 
     function filterModelList() {
@@ -4727,6 +4760,43 @@ function regionalPromptingRegionsToggleHandler(regionsNode) {
     }
 }
 
+function audioInferenceReferenceVoiceToggleHandler(referenceVoiceNode) {
+    if (!referenceVoiceNode?.widgets) return;
+    if (referenceVoiceNode._audioInferenceReferenceVoiceToggleHandlerRegistered) return;
+    referenceVoiceNode._audioInferenceReferenceVoiceToggleHandlerRegistered = true;
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, referenceVoiceNode);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            referenceVoiceNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+        setTimeout(applyState, 100);
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        const useReferenceVoiceWidget = referenceVoiceNode.widgets.find((w) => w && w.name === `useReferenceVoice${i}`);
+        const audioWidget = referenceVoiceNode.widgets.find((w) => w && w.name === `audio${i}`);
+        const textWidget = referenceVoiceNode.widgets.find((w) => w && w.name === `text${i}`);
+
+        if (useReferenceVoiceWidget && audioWidget) {
+            toggleWidgetState(useReferenceVoiceWidget, audioWidget, `audio${i}`);
+        }
+        if (useReferenceVoiceWidget && textWidget) {
+            toggleWidgetState(useReferenceVoiceWidget, textWidget, `text${i}`);
+        }
+    }
+}
+
 function audioInferenceInputsToggleHandler(audioInputsNode) {
     if (!audioInputsNode?.widgets) return;
 
@@ -5096,6 +5166,7 @@ export {
     wanAnimateAdvancedFeatureSettingsToggleHandler,
     videoAdvancedFeatureInputsToggleHandler,
     audioInferenceInputsToggleHandler,
+    audioInferenceReferenceVoiceToggleHandler,
     audioInferenceSpeechVoicesToggleHandler,
     referenceVideosToggleHandler,
 };

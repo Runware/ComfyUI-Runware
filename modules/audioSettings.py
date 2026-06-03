@@ -2,8 +2,9 @@
 Runware Audio Inference Settings Node
 Provides lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization,
 bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd,
-cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, transcript,
-and more for Runware Audio Inference.
+cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, maxTokens, transcript,
+normalizeLoudness, topP, chunkLength, minChunkLength, normalize, latency, repetitionPenalty,
+conditionOnPreviousChunks, earlyStopThreshold, and more for Runware Audio Inference.
 """
 
 from typing import Dict, Any
@@ -256,6 +257,110 @@ class RunwareAudioSettings:
                     "max": 1.0,
                     "step": 0.01,
                 }),
+                "useNormalizeLoudness": ("BOOLEAN", {
+                    "tooltip": "Enable to include normalizeLoudness in settings.",
+                    "default": False,
+                }),
+                "normalizeLoudness": ("BOOLEAN", {
+                    "tooltip": "Normalize output loudness for consistent perceived volume. Only used when 'Use Normalize Loudness' is enabled.",
+                    "default": True,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useTopP": ("BOOLEAN", {
+                    "tooltip": "Enable to include topP in settings.",
+                    "default": False,
+                }),
+                "topP": ("FLOAT", {
+                    "tooltip": "Controls diversity via nucleus sampling. Must be between 0.0001 and 1. Only used when 'Use Top P' is enabled.",
+                    "default": 0.7,
+                    "min": 0.0001,
+                    "max": 1.0,
+                    "step": 0.0001,
+                }),
+                "useChunkLength": ("BOOLEAN", {
+                    "tooltip": "Enable to include chunkLength in settings.",
+                    "default": False,
+                }),
+                "chunkLength": ("INT", {
+                    "tooltip": "Text segment size for processing. Only used when 'Use Chunk Length' is enabled.",
+                    "default": 300,
+                    "min": 100,
+                    "max": 300,
+                    "step": 1,
+                }),
+                "useMinChunkLength": ("BOOLEAN", {
+                    "tooltip": "Enable to include minChunkLength in settings.",
+                    "default": False,
+                }),
+                "minChunkLength": ("INT", {
+                    "tooltip": "Minimum characters before splitting into a new chunk. Only used when 'Use Min Chunk Length' is enabled.",
+                    "default": 50,
+                    "min": 0,
+                    "max": 100,
+                    "step": 1,
+                }),
+                "useNormalize": ("BOOLEAN", {
+                    "tooltip": "Enable to include normalize in settings (text normalization for English and Chinese).",
+                    "default": False,
+                }),
+                "normalize": ("BOOLEAN", {
+                    "tooltip": "Normalizes text for English and Chinese, improving stability for numbers. Only used when 'Use Normalize' is enabled.",
+                    "default": True,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useLatency": ("BOOLEAN", {
+                    "tooltip": "Enable to include latency in settings.",
+                    "default": False,
+                }),
+                "latency": (["low", "normal", "balanced"], {
+                    "tooltip": "Latency / quality trade-off. normal = best quality, balanced = reduced latency, low = lowest latency. Only used when 'Use Latency' is enabled.",
+                    "default": "normal",
+                }),
+                "useMaxTokens": ("BOOLEAN", {
+                    "tooltip": "Enable to include maxTokens in settings (e.g. Fish Audio TTS).",
+                    "default": False,
+                }),
+                "maxTokens": ("INT", {
+                    "tooltip": "Maximum audio tokens to generate per text chunk. Only used when 'Use Max Tokens' is enabled.",
+                    "default": 1024,
+                    "min": 1,
+                    "max": 4294967295,
+                    "step": 1,
+                }),
+                "useRepetitionPenalty": ("BOOLEAN", {
+                    "tooltip": "Enable to include repetitionPenalty in settings.",
+                    "default": False,
+                }),
+                "repetitionPenalty": ("FLOAT", {
+                    "tooltip": "Penalty for repeating audio patterns. Values above 1.0 reduce repetition. Only used when 'Use Repetition Penalty' is enabled.",
+                    "default": 1.2,
+                    "min": 0.0,
+                    "max": 2.0,
+                    "step": 0.01,
+                }),
+                "useConditionOnPreviousChunks": ("BOOLEAN", {
+                    "tooltip": "Enable to include conditionOnPreviousChunks in settings.",
+                    "default": False,
+                }),
+                "conditionOnPreviousChunks": ("BOOLEAN", {
+                    "tooltip": "Use previous audio as context for voice consistency across chunks. Only used when 'Use Condition On Previous Chunks' is enabled.",
+                    "default": True,
+                    "label_on": "true",
+                    "label_off": "false",
+                }),
+                "useEarlyStopThreshold": ("BOOLEAN", {
+                    "tooltip": "Enable to include earlyStopThreshold in settings.",
+                    "default": False,
+                }),
+                "earlyStopThreshold": ("FLOAT", {
+                    "tooltip": "Early stopping threshold for batch processing. Only used when 'Use Early Stop Threshold' is enabled.",
+                    "default": 1.0,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01,
+                }),
             }
         }
 
@@ -266,7 +371,9 @@ class RunwareAudioSettings:
     DESCRIPTION = (
         "Configure audio generation settings (lyrics, lyricsOptimizer, instrumental, guidanceType, languageBoost, turbo, temperature, textNormalization, "
         "bpm, keyScale, timeSignature, vocalLanguage, coverConditioningScale, repaintingStart, repaintingEnd, "
-        "cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, transcript, etc.) "
+        "cfgIntervalStart, cfgIntervalEnd, xVectorOnly, maxNewTokens, maxTokens, transcript, "
+        "normalizeLoudness, topP, chunkLength, minChunkLength, normalize, latency, repetitionPenalty, "
+        "conditionOnPreviousChunks, earlyStopThreshold, etc.) "
         "for Runware Audio Inference. Connect to Runware Audio Inference node."
     )
 
@@ -318,6 +425,24 @@ class RunwareAudioSettings:
         cfg_interval_start = kwargs.get("cfgIntervalStart", 0.0)
         use_cfg_interval_end = kwargs.get("useCfgIntervalEnd", False)
         cfg_interval_end = kwargs.get("cfgIntervalEnd", 1.0)
+        use_normalize_loudness = kwargs.get("useNormalizeLoudness", False)
+        use_top_p = kwargs.get("useTopP", False)
+        top_p = kwargs.get("topP", 0.7)
+        use_chunk_length = kwargs.get("useChunkLength", False)
+        chunk_length = kwargs.get("chunkLength", 300)
+        use_min_chunk_length = kwargs.get("useMinChunkLength", False)
+        min_chunk_length = kwargs.get("minChunkLength", 50)
+        use_normalize = kwargs.get("useNormalize", False)
+        normalize = kwargs.get("normalize", True)
+        use_latency = kwargs.get("useLatency", False)
+        latency = kwargs.get("latency", "normal")
+        use_max_tokens = kwargs.get("useMaxTokens", False)
+        max_tokens = kwargs.get("maxTokens", 1024)
+        use_repetition_penalty = kwargs.get("useRepetitionPenalty", False)
+        repetition_penalty = kwargs.get("repetitionPenalty", 1.2)
+        use_condition_on_previous_chunks = kwargs.get("useConditionOnPreviousChunks", False)
+        use_early_stop_threshold = kwargs.get("useEarlyStopThreshold", False)
+        early_stop_threshold = kwargs.get("earlyStopThreshold", 1.0)
 
         settings: Dict[str, Any] = {}
 
@@ -384,6 +509,36 @@ class RunwareAudioSettings:
 
         if use_cfg_interval_end:
             settings["cfgIntervalEnd"] = float(cfg_interval_end)
+
+        if use_normalize_loudness:
+            settings["normalizeLoudness"] = bool(kwargs.get("normalizeLoudness", True))
+
+        if use_top_p:
+            settings["topP"] = float(top_p)
+
+        if use_chunk_length:
+            settings["chunkLength"] = int(chunk_length)
+
+        if use_min_chunk_length:
+            settings["minChunkLength"] = int(min_chunk_length)
+
+        if use_normalize:
+            settings["normalize"] = bool(normalize)
+
+        if use_latency:
+            settings["latency"] = str(latency)
+
+        if use_max_tokens:
+            settings["maxTokens"] = int(max_tokens)
+
+        if use_repetition_penalty:
+            settings["repetitionPenalty"] = float(repetition_penalty)
+
+        if use_condition_on_previous_chunks:
+            settings["conditionOnPreviousChunks"] = bool(kwargs.get("conditionOnPreviousChunks", True))
+
+        if use_early_stop_threshold:
+            settings["earlyStopThreshold"] = float(early_stop_threshold)
 
         return (settings,)
 
