@@ -106,7 +106,7 @@ class txt2vid:
                 }),
                 "useDuration": ("BOOLEAN", {
                     "tooltip": "Enable to include duration parameter in API request. Disable if your model doesn't support duration.",
-                    "default": True,
+                    "default": False,
                 }),
                 "duration": ("INT", {
                     "tooltip": "The duration of the video in seconds.",
@@ -116,7 +116,7 @@ class txt2vid:
                 }),
                 "useFps": ("BOOLEAN", {
                     "tooltip": "Enable to include fps parameter in API request. Disable if your model doesn't support fps.",
-                    "default": True,
+                    "default": False,
                 }),
                 "fps": ("INT", {
                     "tooltip": "Frames per second for the generated video. Only used when 'Use FPS' is enabled.",
@@ -130,7 +130,7 @@ class txt2vid:
                 }),
                 "useSeed": ("BOOLEAN", {
                     "tooltip": "Enable to include seed parameter in API request. Disable if your model doesn't support seed.",
-                    "default": True,
+                    "default": False,
                 }),
                 "seed": ("INT", {
                     "tooltip": "A value used to randomize the video generation. If you want to make videos reproducible (generate the same video multiple times), you can use the same seed value.",
@@ -263,13 +263,13 @@ class txt2vid:
         videoAdvancedFeatureInputs = kwargs.get("videoAdvancedFeatureInputs", None)
         runwareAccelerator = kwargs.get("Accelerator", None)
         settings = kwargs.get("settings", None)
-        useDuration = kwargs.get("useDuration", True)
+        useDuration = kwargs.get("useDuration", False)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
-        useFps = kwargs.get("useFps", True)
+        useFps = kwargs.get("useFps", False)
         outputFormat = kwargs.get("outputFormat", "mp4")
         seed = kwargs.get("seed", 1)
-        useSeed = kwargs.get("useSeed", True)
+        useSeed = kwargs.get("useSeed", False)
         steps = kwargs.get("steps", 20)
         useSteps = kwargs.get("useSteps", False)
         useBatchSize = kwargs.get("useBatchSize", False)
