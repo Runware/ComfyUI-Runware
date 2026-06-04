@@ -225,7 +225,23 @@ class txt2img:
     def VALIDATE_INPUTS(cls, **kwargs):
         positivePrompt = kwargs.get("positivePrompt", "")
         negativePrompt = kwargs.get("negativePrompt", "")
-        
+        settings = kwargs.get("settings")
+
+        structured_prompt = None
+        if isinstance(settings, dict):
+            structured_prompt = settings.get("structuredPrompt")
+        has_structured_prompt = (
+            isinstance(structured_prompt, dict) and len(structured_prompt) > 0
+        )
+        has_positive_prompt = bool(
+            positivePrompt is not None and str(positivePrompt) != ""
+        )
+        if has_structured_prompt and has_positive_prompt:
+            return (
+                "settings.structuredPrompt and positivePrompt are mutually exclusive. "
+                "Clear positivePrompt or disconnect Structured Prompt from Settings."
+            )
+
         # Only validate positivePrompt length if it's provided
         if positivePrompt and len(positivePrompt) > 10000:
             return "Positive Prompt is too long. Maximum length is 10000 characters."

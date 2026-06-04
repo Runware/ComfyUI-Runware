@@ -5258,6 +5258,7 @@ export {
     safetyInputsToggleHandler,
     imageInferenceSettingsColorPaletteToggleHandler,
     imageInferenceSettingsMoodboardsToggleHandler,
+    imageInferenceSettingsStructuredPromptToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
     briaProviderMaskToggleHandler,
@@ -5675,6 +5676,96 @@ function imageInferenceSettingsMoodboardsToggleHandler(moodboardsNode) {
         setTimeout(toggleStrengthState, 50);
     });
     setTimeout(toggleStrengthState, 100);
+}
+
+function imageInferenceSettingsStructuredPromptToggleHandler(node) {
+    if (!node?.widgets) return;
+
+    function applyParamState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        const enabled = useWidget.value === true;
+        if (paramWidget.inputEl) {
+            paramWidget.inputEl.disabled = !enabled;
+            paramWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+            paramWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+            paramWidget.inputEl.readOnly = !enabled;
+        }
+        paramWidget.disabled = !enabled;
+        if (!paramWidget.inputEl) {
+            const nodeElement = node.htmlElements?.widgetsContainer || node.htmlElements;
+            if (nodeElement) {
+                const input = nodeElement.querySelector(
+                    `input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`
+                );
+                if (input) {
+                    input.disabled = !enabled;
+                    input.style.opacity = enabled ? "1" : "0.5";
+                    input.style.cursor = enabled ? "text" : "not-allowed";
+                    input.readOnly = !enabled;
+                }
+            }
+        }
+    }
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function toggleEnabled() {
+            applyParamState(useWidget, paramWidget, paramName);
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useWidget, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    }
+
+    const useStyleDescriptionWidget = node.widgets.find((w) => w && w.name === "useStyleDescription");
+    const styleDescriptionWidget = node.widgets.find((w) => w && w.name === "style_description");
+    if (useStyleDescriptionWidget && styleDescriptionWidget) {
+        toggleWidgetState(useStyleDescriptionWidget, styleDescriptionWidget, "style_description");
+    }
+
+    const useElementsJsonWidget = node.widgets.find((w) => w && w.name === "useElementsJson");
+    const elementsJsonWidget = node.widgets.find((w) => w && w.name === "elementsJson");
+    const elementSlotRefreshers = [];
+    if (useElementsJsonWidget && elementsJsonWidget) {
+        toggleWidgetState(useElementsJsonWidget, elementsJsonWidget, "elementsJson");
+    }
+
+    function bindElementSlot(i) {
+        const useW = node.widgets.find((w) => w && w.name === `use_element_${i}`);
+        const typeW = node.widgets.find((w) => w && w.name === `element_type_${i}`);
+        const descW = node.widgets.find((w) => w && w.name === `element_desc_${i}`);
+        const textW = node.widgets.find((w) => w && w.name === `element_text_${i}`);
+        const bboxW = node.widgets.find((w) => w && w.name === `element_bbox_${i}`);
+        const paletteW = node.widgets.find((w) => w && w.name === `element_color_palette_${i}`);
+        if (!useW) return;
+
+        function toggleSlot() {
+            const jsonMode = useElementsJsonWidget?.value === true;
+            toggleWidgetEnabled(useW, !jsonMode, node);
+            const enabled = !jsonMode && useW.value === true;
+            [typeW, descW, textW, bboxW, paletteW].forEach((w) => {
+                if (w) toggleWidgetEnabled(w, enabled, node);
+            });
+            node.setDirtyCanvas(true);
+        }
+
+        elementSlotRefreshers.push(toggleSlot);
+        appendWidgetCB(useW, () => setTimeout(toggleSlot, 50));
+        setTimeout(toggleSlot, 100);
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        bindElementSlot(i);
+    }
+
+    if (useElementsJsonWidget) {
+        function refreshElementSlotsForJsonMode() {
+            elementSlotRefreshers.forEach((refresh) => refresh());
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useElementsJsonWidget, () => setTimeout(refreshElementSlotsForJsonMode, 50));
+        setTimeout(refreshElementSlotsForJsonMode, 100);
+    }
 }
 
 function syncProviderSettingsToggleHandler(syncNode) {

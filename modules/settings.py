@@ -4,8 +4,8 @@ Provides settings for image generation including temperature, systemPrompt, topP
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
 thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
 magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), colorPalette,
-and moodboards
-(from Runware Image Inference Settings Color Palette).
+moodboards (from Runware Image Inference Settings Moodboards),
+and structuredPrompt (from Runware Image Inference Settings Structured Prompt; Ideogram 4.0).
 """
 
 import json
@@ -205,6 +205,9 @@ class RunwareSettings:
                 "moodboards": ("RUNWAREIMAGEINFERENCEMOODBOARDS", {
                     "tooltip": "Connect Runware Image Inference Settings Moodboards. When connected with at least one entry, it is merged into settings.moodboards.",
                 }),
+                "structuredPrompt": ("RUNWAREIMAGEINFERENCESTRUCTUREDPROMPT", {
+                    "tooltip": "Connect Runware Image Inference Settings Structured Prompt (Ideogram 4.0). Merged into settings.structuredPrompt. Mutually exclusive with positivePrompt on the same API request.",
+                }),
             }
         }
 
@@ -216,7 +219,7 @@ class RunwareSettings:
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
         "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, "
-        "creativity (raw/low/medium/high), and optional colorPalette and moodboards from dedicated settings nodes."
+        "creativity (raw/low/medium/high), and optional colorPalette, moodboards, and structuredPrompt from dedicated settings nodes."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -308,6 +311,14 @@ class RunwareSettings:
         moodboards: Optional[List[Dict[str, Any]]] = kwargs.get("moodboards")
         if moodboards is not None and isinstance(moodboards, list) and len(moodboards) > 0:
             settings["moodboards"] = moodboards
+
+        structured_prompt: Optional[Dict[str, Any]] = kwargs.get("structuredPrompt")
+        if (
+            structured_prompt is not None
+            and isinstance(structured_prompt, dict)
+            and len(structured_prompt) > 0
+        ):
+            settings["structuredPrompt"] = structured_prompt
 
         if useRenderingSpeed:
             settings["renderingSpeed"] = str(renderingSpeed)
