@@ -5716,6 +5716,7 @@ function imageInferenceSettingsStructuredPromptToggleHandler(node) {
 
     const useElementsJsonWidget = node.widgets.find((w) => w && w.name === "useElementsJson");
     const elementsJsonWidget = node.widgets.find((w) => w && w.name === "elementsJson");
+    const elementSlotRefreshers = [];
     if (useElementsJsonWidget && elementsJsonWidget) {
         toggleWidgetState(useElementsJsonWidget, elementsJsonWidget, "elementsJson");
     }
@@ -5730,19 +5731,31 @@ function imageInferenceSettingsStructuredPromptToggleHandler(node) {
         if (!useW) return;
 
         function toggleSlot() {
-            const enabled = useW.value === true;
+            const jsonMode = useElementsJsonWidget?.value === true;
+            toggleWidgetEnabled(useW, !jsonMode, node);
+            const enabled = !jsonMode && useW.value === true;
             [typeW, descW, textW, bboxW, paletteW].forEach((w) => {
                 if (w) toggleWidgetEnabled(w, enabled, node);
             });
             node.setDirtyCanvas(true);
         }
 
+        elementSlotRefreshers.push(toggleSlot);
         appendWidgetCB(useW, () => setTimeout(toggleSlot, 50));
         setTimeout(toggleSlot, 100);
     }
 
     for (let i = 1; i <= 8; i++) {
         bindElementSlot(i);
+    }
+
+    if (useElementsJsonWidget) {
+        function refreshElementSlotsForJsonMode() {
+            elementSlotRefreshers.forEach((refresh) => refresh());
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useElementsJsonWidget, () => setTimeout(refreshElementSlotsForJsonMode, 50));
+        setTimeout(refreshElementSlotsForJsonMode, 100);
     }
 }
 

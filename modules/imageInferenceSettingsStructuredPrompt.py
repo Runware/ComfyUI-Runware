@@ -17,11 +17,6 @@ class RunwareImageInferenceSettingsStructuredPrompt:
     @classmethod
     def INPUT_TYPES(cls):
         optional: Dict[str, tuple] = {
-            "high_level_description": ("STRING", {
-                "multiline": True,
-                "default": "",
-                "tooltip": "Global scene summary (required).",
-            }),
             "background": ("STRING", {
                 "multiline": True,
                 "default": "",
@@ -81,7 +76,14 @@ class RunwareImageInferenceSettingsStructuredPrompt:
                 "tooltip": f"Element {i} optional hex colours, comma-separated (e.g. #1F3B26,#7A5A2F).",
             })
 
-        return {"required": {}, "optional": optional}
+        required = {
+            "high_level_description": ("STRING", {
+                "multiline": True,
+                "default": "",
+                "tooltip": "Global scene summary (required).",
+            }),
+        }
+        return {"required": required, "optional": optional}
 
     RETURN_TYPES = ("RUNWAREIMAGEINFERENCESTRUCTUREDPROMPT",)
     RETURN_NAMES = ("structuredPrompt",)
