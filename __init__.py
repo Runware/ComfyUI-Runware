@@ -110,6 +110,7 @@ from .modules.safetyInputs import safetyInputs
 from .modules.settings import RunwareSettings
 from .modules.imageInferenceSettingsColorPalette import RunwareImageInferenceSettingsColorPalette
 from .modules.imageInferenceSettingsMoodboards import RunwareImageInferenceSettingsMoodboards
+from .modules.imageInferenceSettingsStructuredPrompt import RunwareImageInferenceSettingsStructuredPrompt
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 from .modules.saveImage import RunwareSaveImage
@@ -250,6 +251,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Settings": RunwareSettings,
     "Runware Image Inference Settings Color Palette": RunwareImageInferenceSettingsColorPalette,
     "Runware Image Inference Settings Moodboards": RunwareImageInferenceSettingsMoodboards,
+    "Runware Image Inference Settings Structured Prompt": RunwareImageInferenceSettingsStructuredPrompt,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
     "Runware Save Image": RunwareSaveImage,
@@ -277,6 +279,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware Audio Model Search": "Runware Audio Model",
     "Runware Text Model Search": "Runware Text Model",
     "Runware Image Inference Settings Color Palette": "Runware Image Inference Color Palette",
+    "Runware Image Inference Settings Structured Prompt": "Runware Image Inference Structured Prompt",
     "Runware Video Transcription": "Runware Video Caption",
     "Runware Video Inputs References": "Runware Video Inference Inputs Reference Images",
     "Runware Video Inference Inputs Reference Images": "Runware Video Inference Inputs Reference Images",

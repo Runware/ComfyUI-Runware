@@ -159,6 +159,7 @@ const RUNWARE_NODE_TYPES = {
     SETTINGS: "Runware Settings",
     IMAGEINFERENCESETTINGSCOLORPALETTE: "Runware Image Inference Settings Color Palette",
     IMAGEINFERENCESETTINGSMOODBOARDS: "Runware Image Inference Settings Moodboards",
+    IMAGEINFERENCESETTINGSSTRUCTUREDPROMPT: "Runware Image Inference Settings Structured Prompt",
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
     WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
     SAVEIMAGE: "Runware Save Image",
@@ -629,6 +630,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.IMAGEINFERENCESETTINGSMOODBOARDS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCESETTINGSSTRUCTUREDPROMPT]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
