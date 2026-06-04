@@ -2934,6 +2934,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "runware:210@1 (Kandinsky 5.0 Lite)",
         ],
         "xAI": [
+            "xai:grok-imagine@video-1.5-preview (Grok Imagine Video 1.5 Preview)",
             "xai:grok-imagine@video (Grok Imagine Video)",
         ],
         "VEED": [
@@ -3039,6 +3040,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@0": {"width": 1280, "height": 720},
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
         "runware:210@1": {"width": 512, "height": 512},
+        "xai:grok-imagine@video-1.5-preview": {"width": 480, "height": 480},
         "xai:grok-imagine@video": {"width": 480, "height": 480},
         "veed:fabric@1.0": {"width": 1280, "height": 720},
         "prunaai:p-video@0": {"width": 1280, "height": 720},
@@ -3140,6 +3142,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@0": "720p",
         "runware:hunyuanvideo@1.5": "480p",
         "runware:210@1": null,  // No resolution support (fixed 512x512)
+        "xai:grok-imagine@video-1.5-preview": "480p",
         "xai:grok-imagine@video": "480p",
         "veed:fabric@1.0": "720p",
         "prunaai:p-video@0": "720p",

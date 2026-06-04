@@ -132,6 +132,7 @@ class videoModelSearch:
             "runware:210@1 (Kandinsky 5.0 Lite)",
         ],
         "xAI": [
+            "xai:grok-imagine@video-1.5-preview (Grok Imagine Video 1.5 Preview)",
             "xai:grok-imagine@video (Grok Imagine Video)",
         ],
         "VEED": [
@@ -273,6 +274,7 @@ class videoModelSearch:
         "runware:210@1": {"width": 512, "height": 512},
 
         # xAI Models
+        "xai:grok-imagine@video-1.5-preview": {"width": 480, "height": 480},
         "xai:grok-imagine@video": {"width": 480, "height": 480},
 
         # VEED Models (preserves input aspect ratio; resolution = shorter side)
@@ -418,6 +420,7 @@ class videoModelSearch:
         "runware:210@1": None,  # No resolution support (fixed 512x512)
 
         # xAI Models
+        "xai:grok-imagine@video-1.5-preview": "480p",
         "xai:grok-imagine@video": "480p",
 
         # VEED Models
