@@ -235,6 +235,26 @@ class RunwareVideoSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useSourceAudioSync": ("BOOLEAN", {
+                    "tooltip": "Enable to include sourceAudioSync in video inference settings.",
+                    "default": False,
+                }),
+                "sourceAudioSync": ("BOOLEAN", {
+                    "tooltip": "When true, the source audio is used during generation (affects lip and motion sync).",
+                    "default": True,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useTurbo": ("BOOLEAN", {
+                    "tooltip": "Enable to include turbo in video inference settings.",
+                    "default": False,
+                }),
+                "turbo": ("BOOLEAN", {
+                    "tooltip": "Turbo mode: faster generation for slightly lower quality.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             }
         }
 
@@ -255,6 +275,10 @@ class RunwareVideoSettings:
         audio = kwargs.get("audio", False)
         use_preserve_audio = kwargs.get("usePreserveAudio", False)
         preserve_audio = kwargs.get("preserveAudio", True)
+        use_source_audio_sync = kwargs.get("useSourceAudioSync", False)
+        source_audio_sync = kwargs.get("sourceAudioSync", True)
+        use_turbo = kwargs.get("useTurbo", False)
+        turbo = kwargs.get("turbo", False)
         use_voice_prompt = kwargs.get("useVoicePrompt", False)
         voice_prompt = (kwargs.get("voicePrompt") or "").strip()
         use_safety_filter = kwargs.get("useSafetyFilter", False)
@@ -307,6 +331,10 @@ class RunwareVideoSettings:
             settings["audio"] = bool(audio)
         if use_preserve_audio:
             settings["preserveAudio"] = bool(preserve_audio)
+        if use_source_audio_sync:
+            settings["sourceAudioSync"] = bool(source_audio_sync)
+        if use_turbo:
+            settings["turbo"] = bool(turbo)
         if use_voice_prompt and voice_prompt:
             settings["voicePrompt"] = voice_prompt
         if use_safety_filter:

@@ -1428,6 +1428,10 @@ function videoSettingsToggleHandler(settingsNode) {
     const audioWidget = settingsNode.widgets.find(w => w && w.name === "audio");
     const usePreserveAudioWidget = settingsNode.widgets.find(w => w && w.name === "usePreserveAudio");
     const preserveAudioWidget = settingsNode.widgets.find(w => w && w.name === "preserveAudio");
+    const useSourceAudioSyncWidget = settingsNode.widgets.find(w => w && w.name === "useSourceAudioSync");
+    const sourceAudioSyncWidget = settingsNode.widgets.find(w => w && w.name === "sourceAudioSync");
+    const useTurboWidget = settingsNode.widgets.find(w => w && w.name === "useTurbo");
+    const turboWidget = settingsNode.widgets.find(w => w && w.name === "turbo");
     const useVoicePromptWidget = settingsNode.widgets.find(w => w && w.name === "useVoicePrompt");
     const voicePromptWidget = settingsNode.widgets.find(w => w && w.name === "voicePrompt");
     const useSafetyFilterWidget = settingsNode.widgets.find(w => w && w.name === "useSafetyFilter");
@@ -1488,6 +1492,8 @@ function videoSettingsToggleHandler(settingsNode) {
     if (useDraftWidget && draftWidget) toggleWidgetState(useDraftWidget, draftWidget, "draft");
     if (useAudioWidget && audioWidget) toggleWidgetState(useAudioWidget, audioWidget, "audio");
     if (usePreserveAudioWidget && preserveAudioWidget) toggleWidgetState(usePreserveAudioWidget, preserveAudioWidget, "preserveAudio");
+    if (useSourceAudioSyncWidget && sourceAudioSyncWidget) toggleWidgetState(useSourceAudioSyncWidget, sourceAudioSyncWidget, "sourceAudioSync");
+    if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
     if (useVoicePromptWidget && voicePromptWidget) toggleWidgetState(useVoicePromptWidget, voicePromptWidget, "voicePrompt");
     if (useSafetyFilterWidget && safetyFilterWidget) toggleWidgetState(useSafetyFilterWidget, safetyFilterWidget, "safetyFilter");
     if (usePromptUpsamplingWidget && promptUpsamplingWidget) toggleWidgetState(usePromptUpsamplingWidget, promptUpsamplingWidget, "promptUpsampling");
@@ -2944,6 +2950,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "prunaai:p-video@0 (P-Video)",
             "prunaai:p-video@avatar (P-Video Avatar)",
             "prunaai:p-video@animate (P-Video Animate)",
+            "prunaai:p-video@replace (P-Video Replace)",
         ],
         "SkyReels": [
             "skywork:skyreels@v4 (SkyReels V4)",
@@ -3046,6 +3053,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "prunaai:p-video@0": {"width": 1280, "height": 720},
         "prunaai:p-video@avatar": {"width": 1280, "height": 720},
         "prunaai:p-video@animate": {"width": 1280, "height": 720},
+        "prunaai:p-video@replace": {"width": 1280, "height": 720},
         "heygen:avatar@4": {"width": 1280, "height": 720},
         "heygen:video-agent@0": {"width": 1280, "height": 720},
         "heygen:avatar@5": {"width": 1280, "height": 720},
@@ -3148,6 +3156,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "prunaai:p-video@0": "720p",
         "prunaai:p-video@avatar": "720p",
         "prunaai:p-video@animate": "720p",
+        "prunaai:p-video@replace": "720p",
         "heygen:avatar@4": "720p",
         "heygen:video-agent@0": "720p",
         "heygen:avatar@5": "720p",
