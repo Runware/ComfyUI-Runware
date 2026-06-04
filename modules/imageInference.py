@@ -233,7 +233,9 @@ class txt2img:
         has_structured_prompt = (
             isinstance(structured_prompt, dict) and len(structured_prompt) > 0
         )
-        has_positive_prompt = bool(positivePrompt and str(positivePrompt).strip())
+        has_positive_prompt = bool(
+            positivePrompt is not None and str(positivePrompt) != ""
+        )
         if has_structured_prompt and has_positive_prompt:
             return (
                 "settings.structuredPrompt and positivePrompt are mutually exclusive. "
