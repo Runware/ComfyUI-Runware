@@ -63,7 +63,7 @@ class txt2img:
                 }),
                 "useSteps": ("BOOLEAN", {
                     "tooltip": "Enable to include steps parameter in API request. Disable if your model doesn't support steps (like nano banana).",
-                    "default": True,
+                    "default": False,
                 }),
                 "steps": ("INT", {
                     "tooltip": "The number of steps is the number of iterations the model will perform to generate the image. Only used when 'Use Steps' is enabled.",
@@ -73,7 +73,7 @@ class txt2img:
                 }),
                 "useScheduler": ("BOOLEAN", {
                     "tooltip": "Enable to include scheduler parameter in API request. Disable if your model doesn't support scheduler.",
-                    "default": True,
+                    "default": False,
                 }),
                 "scheduler": (['Default', 'DDIM', 'DDIMScheduler', 'DDPMScheduler', 'DEISMultistepScheduler', 'DPMSolverSinglestepScheduler', 'DPMSolverMultistepScheduler', 'DPMSolverMultistepInverse', 'DPM++', 'DPM++ Karras', 'DPM++ 2M', 'DPM++ 2M Karras', 'DPM++ 2M SDE Karras', 'DPM++ 2M SDE', 'DPM++ 3M', 'DPM++ 3M Karras', 'DPM++ SDE Karras', 'DPM++ SDE', 'EDMEulerScheduler', 'EDMDPMSolverMultistepScheduler', 'Euler', 'EulerDiscreteScheduler', 'Euler Karras', 'Euler a', 'EulerAncestralDiscreteScheduler', 'FlowMatchEulerDiscreteScheduler', 'Heun', 'HeunDiscreteScheduler', 'Heun Karras', 'IPNDMScheduler', 'KDPM2DiscreteScheduler', 'KDPM2AncestralDiscreteScheduler', 'LCM', 'LCMScheduler', 'LMS', 'LMSDiscreteScheduler', 'LMS Karras', 'PNDMScheduler', 'TCDScheduler', 'UniPC', 'UniPCMultistepScheduler', 'UniPC Karras', 'UniPC 2M', 'UniPC 2M Karras', 'UniPC 3M', 'UniPC 3M Karras'], {
                     "tooltip": "An scheduler is a component that manages the inference process. Different schedulers can be used to achieve different results like more detailed images, faster inference, or more accurate results.",
@@ -81,7 +81,7 @@ class txt2img:
                 }),
                 "useCFGScale": ("BOOLEAN", {
                     "tooltip": "Enable to include CFG scale parameter in API request. Disable if your model doesn't support CFG scale (like nano banana).",
-                    "default": True,
+                    "default": False,
                 }),
                 "cfgScale": ("FLOAT", {
                     "tooltip": "Guidance scale represents how closely the images will resemble the prompt or how much freedom the AI model has. Only used when 'Use CFG Scale' is enabled.",
@@ -92,7 +92,7 @@ class txt2img:
                 }),
                 "useSeed": ("BOOLEAN", {
                     "tooltip": "Enable to include seed parameter in API request. Disable if your model doesn't support seed.",
-                    "default": True,
+                    "default": False,
                 }),
                 "seed": ("INT", {
                     "tooltip": "A value used to randomize the image generation. If you want to make images reproducible (generate the same image multiple times), you can use the same seed value.",
@@ -102,7 +102,7 @@ class txt2img:
                 }),
                 "useClipSkip": ("BOOLEAN", {
                     "tooltip": "Enable to include clipSkip parameter in API request. Disable if your model doesn't support clipSkip.",
-                    "default": True,
+                    "default": False,
                 }),
                 "clipSkip": ("INT", {
                     "tooltip": "Enables skipping layers of the CLIP embedding process, leading to quicker and more varied image generation. Only used when 'Use Clip Skip' is enabled.",
@@ -281,14 +281,14 @@ class txt2img:
         height = kwargs.get("height", 512)
         width = kwargs.get("width", 512)
         steps = kwargs.get("steps", 4)
-        useSteps = kwargs.get("useSteps", True)
+        useSteps = kwargs.get("useSteps", False)
         scheduler = kwargs.get("scheduler", "Default")
-        useScheduler = kwargs.get("useScheduler", True)
+        useScheduler = kwargs.get("useScheduler", False)
         cfgScale = kwargs.get("cfgScale", 6.5)
-        useCFGScale = kwargs.get("useCFGScale", True)
+        useCFGScale = kwargs.get("useCFGScale", False)
         seed = kwargs.get("seed")
-        useSeed = kwargs.get("useSeed", True)
-        useClipSkip = kwargs.get("useClipSkip", True)
+        useSeed = kwargs.get("useSeed", False)
+        useClipSkip = kwargs.get("useClipSkip", False)
         dimensions = kwargs.get("dimensions", "Square (512x512)")
         outputFormat = kwargs.get("outputFormat", rwUtils.getOutputFormat())
         batchSize = kwargs.get("batchSize", 1)

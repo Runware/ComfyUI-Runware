@@ -5259,6 +5259,7 @@ export {
     imageInferenceSettingsColorPaletteToggleHandler,
     imageInferenceSettingsMoodboardsToggleHandler,
     imageInferenceSettingsStructuredPromptToggleHandler,
+    imageInferenceSettingsPromptEnhanceToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
     briaProviderMaskToggleHandler,
@@ -5656,6 +5657,32 @@ function imageInferenceSettingsColorPaletteToggleHandler(paletteNode) {
 
     for (let i = 1; i <= 8; i++) {
         bindSlot(i);
+    }
+}
+
+function imageInferenceSettingsPromptEnhanceToggleHandler(node) {
+    if (!node?.widgets) return;
+
+    const useTemperatureWidget = node.widgets.find((w) => w && w.name === "useTemperature");
+    const temperatureWidget = node.widgets.find((w) => w && w.name === "temperature");
+    const useTopPWidget = node.widgets.find((w) => w && w.name === "useTopP");
+    const topPWidget = node.widgets.find((w) => w && w.name === "topP");
+
+    function toggleWidgetState(useWidget, paramWidget) {
+        if (!useWidget || !paramWidget) return;
+        function toggleEnabled() {
+            toggleWidgetEnabled(paramWidget, useWidget.value === true, node);
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useWidget, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    }
+
+    if (useTemperatureWidget && temperatureWidget) {
+        toggleWidgetState(useTemperatureWidget, temperatureWidget);
+    }
+    if (useTopPWidget && topPWidget) {
+        toggleWidgetState(useTopPWidget, topPWidget);
     }
 }
 

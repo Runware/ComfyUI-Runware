@@ -5,7 +5,8 @@ quality, background, style, search, promptExtend, editRegions, thinking (boolean
 thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
 magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), colorPalette,
 moodboards (from Runware Image Inference Settings Moodboards),
-and structuredPrompt (from Runware Image Inference Settings Structured Prompt; Ideogram 4.0).
+structuredPrompt (from Runware Image Inference Settings Structured Prompt; Ideogram 4.0),
+and promptEnhance (from Runware Image Inference Settings Prompt Enhance).
 """
 
 import json
@@ -208,6 +209,9 @@ class RunwareSettings:
                 "structuredPrompt": ("RUNWAREIMAGEINFERENCESTRUCTUREDPROMPT", {
                     "tooltip": "Connect Runware Image Inference Settings Structured Prompt (Ideogram 4.0). Merged into settings.structuredPrompt. Mutually exclusive with positivePrompt on the same API request.",
                 }),
+                "promptEnhance": ("RUNWAREIMAGEINFERENCEPROMPTENHANCE", {
+                    "tooltip": "Connect Runware Image Inference Settings Prompt Enhance. Merged into settings.promptEnhance (temperature, topP). Omit from API when not connected or empty.",
+                }),
             }
         }
 
@@ -219,7 +223,7 @@ class RunwareSettings:
         "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
         "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, "
-        "creativity (raw/low/medium/high), and optional colorPalette, moodboards, and structuredPrompt from dedicated settings nodes."
+        "creativity (raw/low/medium/high), and optional colorPalette, moodboards, structuredPrompt, and promptEnhance from dedicated settings nodes."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -319,6 +323,14 @@ class RunwareSettings:
             and len(structured_prompt) > 0
         ):
             settings["structuredPrompt"] = structured_prompt
+
+        prompt_enhance: Optional[Dict[str, Any]] = kwargs.get("promptEnhance")
+        if (
+            prompt_enhance is not None
+            and isinstance(prompt_enhance, dict)
+            and len(prompt_enhance) > 0
+        ):
+            settings["promptEnhance"] = prompt_enhance
 
         if useRenderingSpeed:
             settings["renderingSpeed"] = str(renderingSpeed)
