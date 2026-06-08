@@ -5687,6 +5687,8 @@ function imageInferenceSettingsPromptEnhanceToggleHandler(node) {
     const temperatureWidget = node.widgets.find((w) => w && w.name === "temperature");
     const useTopPWidget = node.widgets.find((w) => w && w.name === "useTopP");
     const topPWidget = node.widgets.find((w) => w && w.name === "topP");
+    const useEnabledWidget = node.widgets.find((w) => w && w.name === "useEnabled");
+    const enabledWidget = node.widgets.find((w) => w && w.name === "enabled");
 
     function toggleWidgetState(useWidget, paramWidget) {
         if (!useWidget || !paramWidget) return;
@@ -5703,6 +5705,9 @@ function imageInferenceSettingsPromptEnhanceToggleHandler(node) {
     }
     if (useTopPWidget && topPWidget) {
         toggleWidgetState(useTopPWidget, topPWidget);
+    }
+    if (useEnabledWidget && enabledWidget) {
+        toggleWidgetState(useEnabledWidget, enabledWidget);
     }
 }
 
