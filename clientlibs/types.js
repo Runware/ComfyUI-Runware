@@ -76,6 +76,7 @@ const RUNWARE_NODE_TYPES = {
     VAE: "Runware VAE Search",
     REFERENCEIMAGES: "Runware Reference Images",
     IMAGEINFERENCEINPUTS: "Runware Image Inference Inputs",
+    IMAGEINFERENCEINPUTSFONTS: "Runware Image Inference Inputs Fonts",
     IMAGEINFERENCEADVANCEDFEATURES: "Runware Image  Advanced Feature Input",
     VIDEOINFERENCE: "Runware Video Inference",
     VIDEOMODELSEARCH: "Runware Video Model Search",
@@ -161,6 +162,8 @@ const RUNWARE_NODE_TYPES = {
     IMAGEINFERENCESETTINGSMOODBOARDS: "Runware Image Inference Settings Moodboards",
     IMAGEINFERENCESETTINGSSTRUCTUREDPROMPT: "Runware Image Inference Settings Structured Prompt",
     IMAGEINFERENCESETTINGSPROMPTENHANCE: "Runware Image Inference Settings Prompt Enhance",
+    IMAGEINFERENCESETTINGSSCORINGRUBRIC: "Runware Image Inference Settings Scoring Rubric",
+    IMAGEINFERENCESETTINGSSCORINGRUBRICCOMBINE: "Runware Image Inference Settings Scoring Rubric Combine",
     VIDEOADVANCEDFEATUREINPUTS: "Runware Video Advanced Feature Inputs",
     WANANIMATEADVANCEDFEATURESETTINGS: "Runware Wan Animate Advanced Feature Settings",
     SAVEIMAGE: "Runware Save Image",
@@ -367,6 +370,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.IMAGEINFERENCEINPUTS]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCEINPUTSFONTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },
@@ -639,6 +646,14 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.IMAGEINFERENCESETTINGSPROMPTENHANCE]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCESETTINGSSCORINGRUBRIC]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.IMAGEINFERENCESETTINGSSCORINGRUBRICCOMBINE]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

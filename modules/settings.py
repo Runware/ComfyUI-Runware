@@ -2,7 +2,8 @@
 Runware Image Inference Settings (registered as Runware Settings for workflow compatibility).
 Provides settings for image generation including temperature, systemPrompt, topP, layers,
 quality, background, style, search, promptExtend, editRegions, thinking (boolean),
-thinkingLevel (high/medium/low), sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
+thinkingLevel (low/medium/high/xhigh), backgroundMode (original/transparent/solid), backgroundColor,
+enhancePrompt, scoringPrompt, sequential, renderingSpeed (TURBO/DEFAULT/QUALITY),
 magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), colorPalette,
 moodboards (from Runware Image Inference Settings Moodboards),
 structuredPrompt (from Runware Image Inference Settings Structured Prompt; Ideogram 4.0),
@@ -127,9 +128,12 @@ class RunwareSettings:
                     "tooltip": "Enable to include thinkingLevel (string) in settings.",
                     "default": False,
                 }),
-                "thinkingLevel": (["high", "medium", "low"], {
+                "thinkingLevel": (["high", "medium", "low", "xhigh"], {
                     "default": "high",
-                    "tooltip": "Reasoning level for visual understanding. Only used when 'Use Thinking Level' is enabled.",
+                    "tooltip": (
+                        "Reasoning level for visual understanding. Riverflow 2.5 also supports xhigh (Pro only). "
+                        "Only used when 'Use Thinking Level' is enabled."
+                    ),
                 }),
                 "useBackground": ("BOOLEAN", {
                     "tooltip": "Enable to include background style in API request",
@@ -212,6 +216,60 @@ class RunwareSettings:
                 "promptEnhance": ("RUNWAREIMAGEINFERENCEPROMPTENHANCE", {
                     "tooltip": "Connect Runware Image Inference Settings Prompt Enhance. Merged into settings.promptEnhance (temperature, topP). Omit from API when not connected or empty.",
                 }),
+                "useBackgroundMode": ("BOOLEAN", {
+                    "tooltip": "Enable to include backgroundMode in settings (Riverflow 2.5 output background handling).",
+                    "default": False,
+                }),
+                "backgroundMode": (["original", "transparent", "solid"], {
+                    "default": "original",
+                    "tooltip": (
+                        "settings.backgroundMode: original, transparent, or solid. "
+                        "Only used when 'Use Background Mode' is enabled."
+                    ),
+                }),
+                "useBackgroundColor": ("BOOLEAN", {
+                    "tooltip": "Enable to include backgroundColor in settings (required when backgroundMode is solid).",
+                    "default": False,
+                }),
+                "backgroundColor": ("STRING", {
+                    "default": "#FFFFFF",
+                    "tooltip": (
+                        "Hex color (#RRGGBB) composited when backgroundMode is solid. "
+                        "Only used when 'Use Background Color' is enabled."
+                    ),
+                }),
+                "useEnhancePrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include enhancePrompt (boolean) in settings.",
+                    "default": False,
+                }),
+                "enhancePrompt": ("BOOLEAN", {
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                    "tooltip": (
+                        "Enhance the prompt with use-case context before generation (Riverflow 2.5). "
+                        "Distinct from settings.promptEnhance (nested object). "
+                        "Only used when 'Use Enhance Prompt' is enabled."
+                    ),
+                }),
+                "useScoringPrompt": ("BOOLEAN", {
+                    "tooltip": "Enable to include scoringPrompt in settings.",
+                    "default": False,
+                }),
+                "scoringPrompt": ("STRING", {
+                    "multiline": True,
+                    "default": "",
+                    "tooltip": (
+                        "Optional quality rubric used when RF 2.5 scores candidate outputs. "
+                        "Only used when 'Use Scoring Prompt' is enabled."
+                    ),
+                }),
+                "scoringRubric": ("RUNWAREIMAGEINFERENCESCORINGRUBRIC", {
+                    "tooltip": (
+                        "Connect Runware Image Inference Settings Scoring Rubric or Scoring Rubric Combine "
+                        "for settings.scoringRubric (up to 4 dimensions via Combine)."
+                    ),
+                }),
             }
         }
 
@@ -220,10 +278,12 @@ class RunwareSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, background, style, search, "
-        "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (high/medium/low), sequential, "
+        "Configure general settings for image generation: temperature, system prompt, top-p, layers, quality, "
+        "backgroundMode (original/transparent/solid), backgroundColor, enhancePrompt, scoringPrompt, background, style, search, "
+        "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (low/medium/high/xhigh), sequential, "
         "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, "
-        "creativity (raw/low/medium/high), and optional colorPalette, moodboards, structuredPrompt, and promptEnhance from dedicated settings nodes."
+        "creativity (raw/low/medium/high), and optional colorPalette, moodboards, structuredPrompt, promptEnhance, "
+        "and scoringRubric from dedicated settings nodes."
     )
 
     def createSettings(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -244,6 +304,10 @@ class RunwareSettings:
         useEditRegions = kwargs.get("useEditRegions", False)
         useThinking = kwargs.get("useThinking", False)
         useThinkingLevel = kwargs.get("useThinkingLevel", False)
+        useBackgroundMode = kwargs.get("useBackgroundMode", False)
+        useBackgroundColor = kwargs.get("useBackgroundColor", False)
+        useEnhancePrompt = kwargs.get("useEnhancePrompt", False)
+        useScoringPrompt = kwargs.get("useScoringPrompt", False)
         useSequential = kwargs.get("useSequential", False)
         useRenderingSpeed = kwargs.get("useRenderingSpeed", False)
         useMagicPrompt = kwargs.get("useMagicPrompt", False)
@@ -306,6 +370,22 @@ class RunwareSettings:
         if useThinkingLevel:
             settings["thinkingLevel"] = str(kwargs.get("thinkingLevel", "high"))
 
+        if useBackgroundMode:
+            settings["backgroundMode"] = str(kwargs.get("backgroundMode", "original"))
+
+        if useBackgroundColor:
+            background_color = (kwargs.get("backgroundColor") or "").strip()
+            if background_color:
+                settings["backgroundColor"] = background_color
+
+        if useEnhancePrompt:
+            settings["enhancePrompt"] = bool(kwargs.get("enhancePrompt", False))
+
+        if useScoringPrompt:
+            scoring_prompt = (kwargs.get("scoringPrompt") or "").strip()
+            if scoring_prompt:
+                settings["scoringPrompt"] = scoring_prompt
+
         if useSequential:
             settings["sequential"] = bool(kwargs.get("sequential", False))
 
@@ -331,6 +411,10 @@ class RunwareSettings:
             and len(prompt_enhance) > 0
         ):
             settings["promptEnhance"] = prompt_enhance
+
+        scoring_rubric: Optional[List[Dict[str, Any]]] = kwargs.get("scoringRubric")
+        if scoring_rubric is not None and isinstance(scoring_rubric, list) and len(scoring_rubric) > 0:
+            settings["scoringRubric"] = scoring_rubric
 
         if useRenderingSpeed:
             settings["renderingSpeed"] = str(renderingSpeed)
