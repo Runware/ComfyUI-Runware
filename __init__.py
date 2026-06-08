@@ -26,6 +26,7 @@ from .modules.ipAdapterCombine import ipAdapterCombine
 from .modules.vaeSearch import vaeSearch
 from .modules.referenceImages import referenceImages
 from .modules.imageInferenceInputs import imageInferenceInputs
+from .modules.imageInferenceInputsFonts import RunwareImageInferenceInputsFonts
 from .modules.imageInferenceAdvancedFeatures import RunwareImageInferenceAdvancedFeatures
 from .modules.imageWatermarkAdvancedFeature import RunwareWatermarkAdvancedFeature
 from .modules.imageRegionalPromptingAdvancedFeature import RunwareRegionalPromptingAdvancedFeature
@@ -112,6 +113,10 @@ from .modules.imageInferenceSettingsColorPalette import RunwareImageInferenceSet
 from .modules.imageInferenceSettingsMoodboards import RunwareImageInferenceSettingsMoodboards
 from .modules.imageInferenceSettingsStructuredPrompt import RunwareImageInferenceSettingsStructuredPrompt
 from .modules.imageInferenceSettingsPromptEnhance import RunwareImageInferenceSettingsPromptEnhance
+from .modules.imageInferenceSettingsScoringRubric import (
+    RunwareImageInferenceSettingsScoringRubric,
+    RunwareImageInferenceSettingsScoringRubricCombine,
+)
 from .modules.videoAdvancedFeatureInputs import videoAdvancedFeatureInputs
 from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import RunwareWanAnimateAdvancedFeatureSettings
 from .modules.saveImage import RunwareSaveImage
@@ -166,6 +171,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware IPAdapters Combine": ipAdapterCombine,
     "Runware Reference Images": referenceImages,
     "Runware Image Inference Inputs": imageInferenceInputs,
+    "Runware Image Inference Inputs Fonts": RunwareImageInferenceInputsFonts,
     "Runware Image  Advanced Feature Input": RunwareImageInferenceAdvancedFeatures,
     "Runware Watermark Advanced Feature": RunwareWatermarkAdvancedFeature,
     "Runware Regional Prompting Advanced Feature": RunwareRegionalPromptingAdvancedFeature,
@@ -254,6 +260,8 @@ NODE_CLASS_MAPPINGS = {
     "Runware Image Inference Settings Moodboards": RunwareImageInferenceSettingsMoodboards,
     "Runware Image Inference Settings Structured Prompt": RunwareImageInferenceSettingsStructuredPrompt,
     "Runware Image Inference Settings Prompt Enhance": RunwareImageInferenceSettingsPromptEnhance,
+    "Runware Image Inference Settings Scoring Rubric": RunwareImageInferenceSettingsScoringRubric,
+    "Runware Image Inference Settings Scoring Rubric Combine": RunwareImageInferenceSettingsScoringRubricCombine,
     "Runware Video Advanced Feature Inputs": videoAdvancedFeatureInputs,
     "Runware Wan Animate Advanced Feature Settings": RunwareWanAnimateAdvancedFeatureSettings,
     "Runware Save Image": RunwareSaveImage,

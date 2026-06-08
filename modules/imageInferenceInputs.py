@@ -49,12 +49,20 @@ class imageInferenceInputs:
                 "tooltip": f"Specifies {ordinal.capitalize()} Super Resolution Reference Image for the inputs.",
             })
 
+        optionalInputs["Fonts"] = ("RUNWAREIMAGEINFERENCEFONTS", {
+            "tooltip": "Connect Runware Image Inference Inputs Fonts for inputs.fonts (up to 2 font URL + text references).",
+        })
+
         return {
             "required": {},
             "optional": optionalInputs
         }
 
-    DESCRIPTION = "Configure custom inputs for Runware Image Inference, including image/mask, reference images (with optional tag, role, type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch), and super resolution references."
+    DESCRIPTION = (
+        "Configure custom inputs for Runware Image Inference, including image/mask, reference images "
+        "(with optional tag, role, type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch), "
+        "super resolution references, and font references (inputs.fonts)."
+    )
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREIMAGEINFERENCEINPUTS",)
     RETURN_NAMES = ("Inference Inputs",)
@@ -79,6 +87,10 @@ class imageInferenceInputs:
         super_resolution_refs = self._collectSuperResolutionReferences(kwargs)
         if len(super_resolution_refs) > 0:
             inputs["superResolutionReferenceImages"] = super_resolution_refs
+
+        fonts = kwargs.get("Fonts", None)
+        if fonts is not None and isinstance(fonts, list) and len(fonts) > 0:
+            inputs["fonts"] = fonts
 
         return (inputs,)
 

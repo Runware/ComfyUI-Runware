@@ -2135,12 +2135,9 @@ function sourcefulProviderSettingsToggleHandler(sourcefulNode) {
 }
 
 function sourcefulProviderSettingsFontsToggleHandler(fontsNode) {
-    const useFont1Widget = fontsNode.widgets.find(w => w.name === "useFont1");
-    const fontUrl1Widget = fontsNode.widgets.find(w => w.name === "fontUrl1");
-    const text1Widget = fontsNode.widgets.find(w => w.name === "text1");
-    const useFont2Widget = fontsNode.widgets.find(w => w.name === "useFont2");
-    const fontUrl2Widget = fontsNode.widgets.find(w => w.name === "fontUrl2");
-    const text2Widget = fontsNode.widgets.find(w => w.name === "text2");
+    if (!fontsNode?.widgets) return;
+    if (fontsNode._sourcefulProviderSettingsFontsToggleHandlerRegistered) return;
+    fontsNode._sourcefulProviderSettingsFontsToggleHandlerRegistered = true;
 
     function toggleFontGroup(useWidget, fontUrlWidget, textWidget, fontParamName, textParamName) {
         if (!useWidget || !fontUrlWidget || !textWidget) return;
@@ -2180,11 +2177,13 @@ function sourcefulProviderSettingsFontsToggleHandler(fontsNode) {
         setTimeout(toggleEnabled, 100);
     }
 
-    if (useFont1Widget && fontUrl1Widget && text1Widget) {
-        toggleFontGroup(useFont1Widget, fontUrl1Widget, text1Widget, "fontUrl1", "text1");
-    }
-    if (useFont2Widget && fontUrl2Widget && text2Widget) {
-        toggleFontGroup(useFont2Widget, fontUrl2Widget, text2Widget, "fontUrl2", "text2");
+    for (let i = 1; i <= 2; i++) {
+        const useFontWidget = fontsNode.widgets.find(w => w && w.name === `useFont${i}`);
+        const fontUrlWidget = fontsNode.widgets.find(w => w && w.name === `fontUrl${i}`);
+        const textWidget = fontsNode.widgets.find(w => w && w.name === `text${i}`);
+        if (useFontWidget && fontUrlWidget && textWidget) {
+            toggleFontGroup(useFontWidget, fontUrlWidget, textWidget, `fontUrl${i}`, `text${i}`);
+        }
     }
 }
 
@@ -5260,6 +5259,7 @@ export {
     imageInferenceSettingsMoodboardsToggleHandler,
     imageInferenceSettingsStructuredPromptToggleHandler,
     imageInferenceSettingsPromptEnhanceToggleHandler,
+    imageInferenceSettingsScoringRubricToggleHandler,
     audioInputToggleHandler,
     speechInputToggleHandler,
     briaProviderMaskToggleHandler,
@@ -5380,6 +5380,14 @@ function settingsToggleHandler(settingsNode) {
     const dilatePixelsWidget = settingsNode.widgets.find(w => w.name === "dilatePixels");
     const useCreativityWidget = settingsNode.widgets.find(w => w.name === "useCreativity");
     const creativityWidget = settingsNode.widgets.find(w => w.name === "creativity");
+    const useBackgroundModeWidget = settingsNode.widgets.find(w => w.name === "useBackgroundMode");
+    const backgroundModeWidget = settingsNode.widgets.find(w => w.name === "backgroundMode");
+    const useBackgroundColorWidget = settingsNode.widgets.find(w => w.name === "useBackgroundColor");
+    const backgroundColorWidget = settingsNode.widgets.find(w => w.name === "backgroundColor");
+    const useEnhancePromptWidget = settingsNode.widgets.find(w => w.name === "useEnhancePrompt");
+    const enhancePromptWidget = settingsNode.widgets.find(w => w.name === "enhancePrompt");
+    const useScoringPromptWidget = settingsNode.widgets.find(w => w.name === "useScoringPrompt");
+    const scoringPromptWidget = settingsNode.widgets.find(w => w.name === "scoringPrompt");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5480,6 +5488,18 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useCreativityWidget && creativityWidget) {
         toggleWidgetState(useCreativityWidget, creativityWidget, "creativity");
+    }
+    if (useBackgroundModeWidget && backgroundModeWidget) {
+        toggleWidgetState(useBackgroundModeWidget, backgroundModeWidget, "backgroundMode");
+    }
+    if (useBackgroundColorWidget && backgroundColorWidget) {
+        toggleWidgetState(useBackgroundColorWidget, backgroundColorWidget, "backgroundColor");
+    }
+    if (useEnhancePromptWidget && enhancePromptWidget) {
+        toggleWidgetState(useEnhancePromptWidget, enhancePromptWidget, "enhancePrompt");
+    }
+    if (useScoringPromptWidget && scoringPromptWidget) {
+        toggleWidgetState(useScoringPromptWidget, scoringPromptWidget, "scoringPrompt");
     }
 }
 
@@ -5703,6 +5723,65 @@ function imageInferenceSettingsMoodboardsToggleHandler(moodboardsNode) {
         setTimeout(toggleStrengthState, 50);
     });
     setTimeout(toggleStrengthState, 100);
+}
+
+function imageInferenceSettingsScoringRubricToggleHandler(rubricNode) {
+    if (!rubricNode?.widgets) return;
+    if (rubricNode._imageInferenceSettingsScoringRubricToggleHandlerRegistered) return;
+    rubricNode._imageInferenceSettingsScoringRubricToggleHandlerRegistered = true;
+
+    function toggleWidgetState(useWidget, paramWidgets, paramNames) {
+        if (!useWidget) return;
+        const widgets = Array.isArray(paramWidgets) ? paramWidgets : [paramWidgets];
+        const names = Array.isArray(paramNames) ? paramNames : [paramNames];
+
+        function toggleEnabled() {
+            const enabled = useWidget.value === true;
+
+            widgets.forEach((paramWidget, index) => {
+                if (!paramWidget) return;
+                toggleWidgetEnabled(paramWidget, enabled, rubricNode);
+                const paramName = names[index];
+                if (!paramWidget.inputEl && paramName) {
+                    const nodeElement = rubricNode.htmlElements?.widgetsContainer || rubricNode.htmlElements;
+                    if (nodeElement) {
+                        const input = nodeElement.querySelector(
+                            `input[name="${paramName}"], textarea[name="${paramName}"], select[name="${paramName}"]`
+                        );
+                        if (input) {
+                            input.disabled = !enabled;
+                            input.style.opacity = enabled ? "1" : "0.5";
+                            input.style.pointerEvents = enabled ? "auto" : "none";
+                        }
+                    }
+                }
+            });
+
+            rubricNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useWidget, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    }
+
+    const usePassingScoreWidget = rubricNode.widgets.find((w) => w && w.name === "usePassingScore");
+    const passingScoreWidget = rubricNode.widgets.find((w) => w && w.name === "passingScore");
+    if (usePassingScoreWidget && passingScoreWidget) {
+        toggleWidgetState(usePassingScoreWidget, passingScoreWidget, "passingScore");
+    }
+
+    for (let i = 1; i <= 5; i++) {
+        const useScoreGuidanceWidget = rubricNode.widgets.find((w) => w && w.name === `useScoreGuidance${i}`);
+        const scoreWidget = rubricNode.widgets.find((w) => w && w.name === `score${i}`);
+        const guidanceDescriptionWidget = rubricNode.widgets.find((w) => w && w.name === `guidanceDescription${i}`);
+        if (useScoreGuidanceWidget && (scoreWidget || guidanceDescriptionWidget)) {
+            toggleWidgetState(
+                useScoreGuidanceWidget,
+                [scoreWidget, guidanceDescriptionWidget].filter(Boolean),
+                [`score${i}`, `guidanceDescription${i}`]
+            );
+        }
+    }
 }
 
 function imageInferenceSettingsStructuredPromptToggleHandler(node) {
