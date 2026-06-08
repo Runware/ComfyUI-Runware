@@ -28,7 +28,7 @@ class RunwareImageInferenceSettingsPromptEnhance:
                     "step": 0.1,
                     "tooltip": (
                         "settings.promptEnhance.temperature (0.1–5). "
-                        "Requires settings.promptEnhance.enabled. Ernie default when omitted: 0.6."
+                        "Ernie-specific API default when omitted: 0.6."
                     ),
                 }),
                 "useTopP": ("BOOLEAN", {
@@ -44,7 +44,7 @@ class RunwareImageInferenceSettingsPromptEnhance:
                     "step": 0.01,
                     "tooltip": (
                         "settings.promptEnhance.topP (0.1–1). "
-                        "Requires settings.promptEnhance.enabled. Ernie default when omitted: 0.95."
+                        "Ernie-specific API default when omitted: 0.95."
                     ),
                 }),
                 "useEnabled": ("BOOLEAN", {
