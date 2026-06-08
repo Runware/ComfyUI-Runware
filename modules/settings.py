@@ -368,28 +368,14 @@ class RunwareSettings:
             settings["thinking"] = bool(kwargs.get("thinking", False))
 
         if useThinkingLevel:
-            thinking_level = str(kwargs.get("thinkingLevel", "high"))
-            if thinking_level not in ("low", "medium", "high", "xhigh"):
-                raise ValueError(
-                    "thinkingLevel must be low, medium, high, or xhigh when useThinkingLevel is enabled."
-                )
-            settings["thinkingLevel"] = thinking_level
+            settings["thinkingLevel"] = str(kwargs.get("thinkingLevel", "high"))
 
         if useBackgroundMode:
-            background_mode = str(kwargs.get("backgroundMode", "original"))
-            if background_mode not in ("original", "transparent", "solid"):
-                raise ValueError(
-                    "backgroundMode must be original, transparent, or solid when useBackgroundMode is enabled."
-                )
-            settings["backgroundMode"] = background_mode
+            settings["backgroundMode"] = str(kwargs.get("backgroundMode", "original"))
 
         if useBackgroundColor:
             background_color = (kwargs.get("backgroundColor") or "").strip()
             if background_color:
-                if not background_color.startswith("#") or len(background_color) != 7:
-                    raise ValueError(
-                        "backgroundColor must be a hex color in #RRGGBB format when useBackgroundColor is enabled."
-                    )
                 settings["backgroundColor"] = background_color
 
         if useEnhancePrompt:
