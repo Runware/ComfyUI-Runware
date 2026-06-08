@@ -5388,6 +5388,8 @@ function settingsToggleHandler(settingsNode) {
     const enhancePromptWidget = settingsNode.widgets.find(w => w.name === "enhancePrompt");
     const useScoringPromptWidget = settingsNode.widgets.find(w => w.name === "useScoringPrompt");
     const scoringPromptWidget = settingsNode.widgets.find(w => w.name === "scoringPrompt");
+    const useCopyrightDetectionWidget = settingsNode.widgets.find(w => w.name === "useCopyrightDetection");
+    const copyrightDetectionWidget = settingsNode.widgets.find(w => w.name === "copyrightDetection");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5500,6 +5502,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (useScoringPromptWidget && scoringPromptWidget) {
         toggleWidgetState(useScoringPromptWidget, scoringPromptWidget, "scoringPrompt");
+    }
+    if (useCopyrightDetectionWidget && copyrightDetectionWidget) {
+        toggleWidgetState(useCopyrightDetectionWidget, copyrightDetectionWidget, "copyrightDetection");
     }
 }
 

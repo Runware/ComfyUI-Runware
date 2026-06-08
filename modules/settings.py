@@ -270,6 +270,19 @@ class RunwareSettings:
                         "for settings.scoringRubric (up to 4 dimensions via Combine)."
                     ),
                 }),
+                "useCopyrightDetection": ("BOOLEAN", {
+                    "tooltip": "Enable to include copyrightDetection in settings.",
+                    "default": False,
+                }),
+                "copyrightDetection": ("BOOLEAN", {
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                    "tooltip": (
+                        "Opt into post-generation copyright detection (Hive likeness + logo checks). "
+                        "Only used when 'Use Copyright Detection' is enabled."
+                    ),
+                }),
             }
         }
 
@@ -308,6 +321,7 @@ class RunwareSettings:
         useBackgroundColor = kwargs.get("useBackgroundColor", False)
         useEnhancePrompt = kwargs.get("useEnhancePrompt", False)
         useScoringPrompt = kwargs.get("useScoringPrompt", False)
+        useCopyrightDetection = kwargs.get("useCopyrightDetection", False)
         useSequential = kwargs.get("useSequential", False)
         useRenderingSpeed = kwargs.get("useRenderingSpeed", False)
         useMagicPrompt = kwargs.get("useMagicPrompt", False)
@@ -385,6 +399,9 @@ class RunwareSettings:
             scoring_prompt = (kwargs.get("scoringPrompt") or "").strip()
             if scoring_prompt:
                 settings["scoringPrompt"] = scoring_prompt
+
+        if useCopyrightDetection:
+            settings["copyrightDetection"] = bool(kwargs.get("copyrightDetection", False))
 
         if useSequential:
             settings["sequential"] = bool(kwargs.get("sequential", False))
