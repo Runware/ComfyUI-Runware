@@ -122,12 +122,14 @@ from .modules.advancedFeatureSettings.wanAnimateAdvancedFeatureSettings import R
 from .modules.saveImage import RunwareSaveImage
 from .modules.videoOutputs import RunwareVideoInferenceOutputs
 from .modules.threeDInference import threeDInference
+from .modules.threeDModelSearch import Runware3DModelSearch
 from .modules.threeDInferenceInputs import threeDInferenceInputs
 from .modules.threeDInferenceSettings import Runware3DInferenceSettings
 from .modules.threeDInferenceSettingsSparseStructure import Runware3DInferenceSettingsSparseStructure
 from .modules.threeDInferenceSettingsShapeSlat import Runware3DInferenceSettingsShapeSlat
 from .modules.threeDInferenceSettingsTexSlat import Runware3DInferenceSettingsTexSlat
 from .modules.threeDInferenceSettingsMeshCluster import Runware3DInferenceSettingsMeshCluster
+from .modules.threeDInferenceSettingsDracoCompression import Runware3DInferenceSettingsDracoCompression
 from .modules.save3D import RunwareSave3D
 from .modules.saveText import RunwareSaveText
 from .modules.loadMesh import RunwareLoadMesh
@@ -267,12 +269,14 @@ NODE_CLASS_MAPPINGS = {
     "Runware Save Image": RunwareSaveImage,
     "Runware Video Inference Outputs": RunwareVideoInferenceOutputs,
     "Runware 3D Inference": threeDInference,
+    "Runware 3D Model Search": Runware3DModelSearch,
     "Runware 3D Inference Inputs": threeDInferenceInputs,
     "Runware 3D Inference Settings": Runware3DInferenceSettings,
     "Runware 3D Inference Settings Sparse Structure": Runware3DInferenceSettingsSparseStructure,
     "Runware 3D Inference Settings Shape Slat": Runware3DInferenceSettingsShapeSlat,
     "Runware 3D Inference Settings Tex Slat": Runware3DInferenceSettingsTexSlat,
     "Runware 3D Inference Settings Mesh Cluster": Runware3DInferenceSettingsMeshCluster,
+    "Runware 3D Inference Settings Draco Compression": Runware3DInferenceSettingsDracoCompression,
     "Runware Save 3D": RunwareSave3D,
     "Runware Save Text": RunwareSaveText,
     "Runware Load Mesh": RunwareLoadMesh,
@@ -286,6 +290,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Runware VAE Search": "Runware VAE",
     "Runware Multi Inference": "Runware Multi Inference [BETA]",
     "Runware Video Model Search": "Runware Video Model",
+    "Runware 3D Model Search": "Runware 3D Model",
     "Runware Audio Model Search": "Runware Audio Model",
     "Runware Text Model Search": "Runware Text Model",
     "Runware Image Inference Settings Color Palette": "Runware Image Inference Color Palette",

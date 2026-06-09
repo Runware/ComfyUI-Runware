@@ -170,12 +170,14 @@ const RUNWARE_NODE_TYPES = {
     SAVETEXT: "Runware Save Text",
     VIDEOINFERENCEOUTPUTS: "Runware Video Inference Outputs",
     THREEDINFERENCE: "Runware 3D Inference",
+    THREEDMODELSEARCH: "Runware 3D Model Search",
     THREEDINFERENCEINPUTS: "Runware 3D Inference Inputs",
     THREEDINFERENCESETTINGS: "Runware 3D Inference Settings",
     THREEDINFERENCESETTINGSSPARSESTRUCTURE: "Runware 3D Inference Settings Sparse Structure",
     THREEDINFERENCESETTINGSSHAPESLAT: "Runware 3D Inference Settings Shape Slat",
     THREEDINFERENCESETTINGSTEXSLAT: "Runware 3D Inference Settings Tex Slat",
     THREEDINFERENCESETTINGSMESHCLUSTER: "Runware 3D Inference Settings Mesh Cluster",
+    THREEDINFERENCESETTINGSDRACOCOMPRESSION: "Runware 3D Inference Settings Draco Compression",
     SAVE3D: "Runware Save 3D",
     LOADMESH: "Runware Load Mesh",
     WATERMARKADVANCEDFEATURE: "Runware Watermark Advanced Feature",
@@ -681,6 +683,10 @@ const RUNWARE_NODE_PROPS = {
         bgColor: DEFAULT_BGCOLOR,
         promptEnhancer: true,
     },
+    [RUNWARE_NODE_TYPES.THREEDMODELSEARCH]: {
+        bgColor: DEFAULT_BGCOLOR,
+        liveSearch: false,
+    },
     [RUNWARE_NODE_TYPES.THREEDINFERENCEINPUTS]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
@@ -702,6 +708,10 @@ const RUNWARE_NODE_PROPS = {
         colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSMESHCLUSTER]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
+    },
+    [RUNWARE_NODE_TYPES.THREEDINFERENCESETTINGSDRACOCOMPRESSION]: {
         bgColor: DEFAULT_BGCOLOR,
         colorModeOnly: true,
     },

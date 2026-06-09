@@ -3,7 +3,7 @@ Runware 3D Inference Settings Node
 Main settings for 3D inference: textureSize, decimationTarget, remesh, remeshBand, remeshProject,
 resolution, imageAutoFix, faceLimit, texture, pbr, textureFormat, alphaMode, Tripo mesh/texture options, material/quality,
 polyCount, taPose, boundingBox, meshMode, addons, hdTexture, and sub-configs
-sparseStructure, shapeSlat, texSlat, meshCluster from connected nodes.
+sparseStructure, shapeSlat, texSlat, meshCluster, dracoCompression from connected nodes.
 """
 
 from typing import Dict, Any
@@ -466,6 +466,9 @@ class Runware3DInferenceSettings:
                     "tooltip": "Material alpha mode. Only used when 'Use Alpha Mode' is enabled.",
                     "default": "OPAQUE",
                 }),
+                "dracoCompression": ("RUNWARE3DINFERENCESETTINGSLAT", {
+                    "tooltip": "Connect Runware 3D Inference Settings Draco Compression node.",
+                }),
             }
         }
 
@@ -478,7 +481,7 @@ class Runware3DInferenceSettings:
         "resolution, imageAutoFix, faceLimit, texture, pbr, textureSeed, textureAlignment, textureQuality, "
         "textureFormat, alphaMode, autoSize, orientation, quad, compress, "
         "smartLowPoly, generateParts, exportUv, geometryQuality, originalAlpha, material, quality, polyCount, "
-        "taPose, boundingBox, meshMode, addons, hdTexture, lat configs, and meshCluster."
+        "taPose, boundingBox, meshMode, addons, hdTexture, lat configs, meshCluster, and dracoCompression."
     )
 
     def create(self, **kwargs) -> tuple[Dict[str, Any]]:
@@ -609,6 +612,10 @@ class Runware3DInferenceSettings:
         mesh_cluster = kwargs.get("meshCluster", None)
         if mesh_cluster is not None and isinstance(mesh_cluster, dict) and len(mesh_cluster) > 0:
             settings["meshCluster"] = mesh_cluster
+
+        draco_compression = kwargs.get("dracoCompression", None)
+        if draco_compression is not None and isinstance(draco_compression, dict) and len(draco_compression) > 0:
+            settings["dracoCompression"] = draco_compression
 
         return (settings,)
 

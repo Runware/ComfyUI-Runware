@@ -21,7 +21,7 @@ class threeDInferenceInputs:
             }),
         }
         for i in range(1, _IMAGE_SLOTS + 1):
-            optional[f"images_{i}"] = ("IMAGE", {
+            optional[f"Images {i}"] = ("IMAGE", {
                 "tooltip": f"Multi-view image slot {i}; merged in order into inputs.images as a list of data URIs.",
             })
         return {
@@ -30,7 +30,7 @@ class threeDInferenceInputs:
         }
 
     DESCRIPTION = (
-        "Configure custom inputs for Runware 3D Inference: image, mask, meshFile, and images_1…images_8 "
+        "Configure custom inputs for Runware 3D Inference: image, mask, meshFile, and Images 1…Images 8 "
         "(merged into inputs.images as an array)."
     )
     FUNCTION = "createInputs"
@@ -57,7 +57,7 @@ class threeDInferenceInputs:
 
         images_list: list = []
         for i in range(1, _IMAGE_SLOTS + 1):
-            slot = kwargs.get(f"images_{i}")
+            slot = kwargs.get(f"Images {i}")
             if slot is not None:
                 images_list.append(rwUtils.convertTensor2IMG(slot))
         if images_list:
