@@ -5,18 +5,6 @@ import comfy.model_management
 class threeDInference:
     """Runware 3D Inference node for generating 3D models from images"""
 
-    # Available 3D models
-    THREED_MODELS = {
-        "Tencent Hunyuan 3D 3.1 Pro": "tencent:hunyuan-3d@3.1-pro",
-        "Tencent Hunyuan 3D 3.1 Rapid": "tencent:hunyuan-3d@3.1-rapid",
-        "Meta SAM 3D": "meta:sam@3d",
-        "TRELLIS.2": "microsoft:trellis-2@4b",
-        "Tripo 3D v3.1": "tripo:v3.1@0",
-        "Rodin Gen-1": "hyper3d:rodin@gen-1",
-        "Rodin Gen-2": "hyper3d:rodin@gen-2",
-        "Meshy 6": "meshy:meshy@6",
-    }
-
     # Output formats
     OUTPUT_FORMATS = ["GLB", "FBX", "PLY", "OBJ"]
 
@@ -24,9 +12,8 @@ class threeDInference:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "Model": (list(cls.THREED_MODELS.keys()), {
-                    "tooltip": "Select the 3D generation model to use.",
-                    "default": "Meta SAM 3D",
+                "Model": ("RUNWARE3DMODEL", {
+                    "tooltip": "Connect a Runware 3D Model from Runware 3D Model Search node.",
                 }),
                 "positivePrompt": ("STRING", {
                     "multiline": True,
@@ -66,7 +53,7 @@ class threeDInference:
                     "step": 1,
                 }),
                 "inputs": ("RUNWARE3DINFERENCEINPUTS", {
-                    "tooltip": "Connect Runware 3D Inference Inputs for image, mask, meshFile, images (array from images_1…4), etc.",
+                    "tooltip": "Connect Runware 3D Inference Inputs for image, mask, meshFile, images (array from Images 1…8), etc.",
                 }),
                 "settings": ("RUNWARE3DINFERENCESETTINGS", {
                     "tooltip": "Connect Runware 3D Inference Settings for textureSize, decimationTarget, remesh, resolution, imageAutoFix, faceLimit, texture, pbr, quad, Tripo options, sparseStructure, shapeSlat, texSlat, etc.",
@@ -82,7 +69,7 @@ class threeDInference:
 
     def generate3D(self, **kwargs):
         """Generate 3D model from inputs"""
-        modelName = kwargs.get("Model", "Meta SAM 3D")
+        model = kwargs.get("Model", "meta:sam@3d")
         positivePrompt = kwargs.get("positivePrompt", "")
         negativePrompt = kwargs.get("negativePrompt", "")
         seed = kwargs.get("seed", 1)
@@ -92,9 +79,6 @@ class threeDInference:
         output_quality = kwargs.get("outputQuality", 95)
         inputs = kwargs.get("inputs", None)
         settings = kwargs.get("settings", None)
-
-        # Get model AIR code
-        model = self.THREED_MODELS.get(modelName, "meta:sam@3d")
 
         # Build generation config
         genConfig = [

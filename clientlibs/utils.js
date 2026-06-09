@@ -2324,6 +2324,28 @@ function threeDInferenceSettingsMeshClusterToggleHandler(node) {
     });
 }
 
+function threeDInferenceSettingsDracoCompressionToggleHandler(node) {
+    const pairs = [
+        ["useEnabled", "enabled"],
+        ["useLevel", "level"],
+        ["useQuantizationPosition", "quantizationPosition"],
+        ["useQuantizationNormal", "quantizationNormal"],
+        ["useQuantizationTexCoord", "quantizationTexCoord"],
+    ];
+    pairs.forEach(([useName, paramName]) => {
+        const useW = node.widgets.find(w => w.name === useName);
+        const paramW = node.widgets.find(w => w.name === paramName);
+        if (!useW || !paramW) return;
+        function toggleEnabled() {
+            const enabled = useW.value === true;
+            toggleWidgetEnabled(paramW, enabled, node);
+            node.setDirtyCanvas(true);
+        }
+        appendWidgetCB(useW, () => setTimeout(toggleEnabled, 50));
+        setTimeout(toggleEnabled, 100);
+    });
+}
+
 function openaiProviderSettingsToggleHandler(openaiNode) {
     // Find all "use" parameter widgets for OpenAI Provider Settings (these are COMBO widgets)
     const useBackgroundWidget = openaiNode.widgets.find(w => w.name === "useBackground");
@@ -3413,6 +3435,61 @@ function textModelSearchFilterHandler(textModelSearchNode) {
     }
 
     appendWidgetCB(modelProviderWidget, filterModelList);
+    filterModelList();
+}
+
+function threeDModelSearchFilterHandler(threeDModelSearchNode) {
+    const modelArchWidget = threeDModelSearchNode.widgets.find(w => w.name === "Model Architecture");
+    const threeDListWidget = threeDModelSearchNode.widgets.find(w => w.name === "ThreeDList");
+
+    if (!modelArchWidget || !threeDListWidget) return;
+
+    const THREED_MODELS = {
+        "Tencent": [
+            "tencent:hunyuan-3d@3.1-pro (Tencent Hunyuan 3D 3.1 Pro)",
+            "tencent:hunyuan-3d@3.1-rapid (Tencent Hunyuan 3D 3.1 Rapid)",
+        ],
+        "Meta": [
+            "meta:sam@3d (Meta SAM 3D)",
+        ],
+        "Microsoft": [
+            "microsoft:trellis-2@4b (TRELLIS.2)",
+        ],
+        "Tripo": [
+            "tripo:v3.1@0 (Tripo 3D v3.1)",
+        ],
+        "Hyper3D": [
+            "hyper3d:rodin@gen-1 (Rodin Gen-1)",
+            "hyper3d:rodin@gen-2 (Rodin Gen-2)",
+        ],
+        "Meshy": [
+            "meshy:meshy@6 (Meshy 6)",
+        ],
+    };
+
+    function filterModelList() {
+        const selectedArch = modelArchWidget.value;
+        let filteredModels = [];
+
+        if (selectedArch === "All") {
+            Object.values(THREED_MODELS).forEach(models => filteredModels.push(...models));
+        } else if (THREED_MODELS[selectedArch]) {
+            filteredModels = THREED_MODELS[selectedArch];
+        }
+
+        if (filteredModels.length > 0) {
+            const currentValue = threeDListWidget.value;
+            threeDListWidget.options.values = filteredModels;
+
+            if (!filteredModels.includes(currentValue)) {
+                threeDListWidget.value = filteredModels[0];
+            }
+
+            threeDModelSearchNode.setDirtyCanvas(true);
+        }
+    }
+
+    appendWidgetCB(modelArchWidget, filterModelList);
     filterModelList();
 }
 
@@ -5208,6 +5285,7 @@ export {
     APIKeyHandler,
     videoInferenceDimensionsHandler,
     videoModelSearchFilterHandler,
+    threeDModelSearchFilterHandler,
     audioModelSearchFilterHandler,
     textModelSearchFilterHandler,
     vectorizeModelSearchFilterHandler,
@@ -5240,6 +5318,7 @@ export {
     threeDInferenceSettingsToggleHandler,
     threeDInferenceSettingsLatToggleHandler,
     threeDInferenceSettingsMeshClusterToggleHandler,
+    threeDInferenceSettingsDracoCompressionToggleHandler,
     ultralyticsProviderSettingsToggleHandler,
     openaiProviderSettingsToggleHandler,
     lightricksProviderSettingsToggleHandler,
