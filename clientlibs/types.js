@@ -124,6 +124,7 @@ const RUNWARE_NODE_TYPES = {
     VIDEOINFERENCEELEMENTS: "Runware Video Inference Elements",
     VIDEOINFERENCEELEMENTSCOMBINE: "Runware Video Inference Elements Combine",
     VIDEOINFERENCESPEECHINPUT: "Runware Video Inference Speech Input",
+    VIDEOINFERENCELORA: "Runware Video Inference Lora",
     VIDEOSETTINGS: "Runware Video Inference Settings",
     VIDEOINFERENCESETTINGSTTS: "Runware Video Inference Settings TTS",
     VIDEOINFERENCESETTINGSACTIVESPEAKERDETECTION: "Runware Video Inference Settings Active Speaker Detection",
@@ -389,6 +390,10 @@ const RUNWARE_NODE_PROPS = {
     },
     [RUNWARE_NODE_TYPES.VIDEOINFERENCESPEECHINPUT]: {
         bgColor: DEFAULT_BGCOLOR,
+    },
+    [RUNWARE_NODE_TYPES.VIDEOINFERENCELORA]: {
+        bgColor: DEFAULT_BGCOLOR,
+        colorModeOnly: true,
     },
     [RUNWARE_NODE_TYPES.REGIONALPROMPTINGADVFEATURE]: {
         bgColor: DEFAULT_BGCOLOR,

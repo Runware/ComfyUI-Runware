@@ -2921,6 +2921,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "lightricks:2@0 (LTX Fast)", "lightricks:2@1 (LTX Pro)",
             "lightricks:3@1 (LTX-2 Retake)", "lightricks:ltx@2 (LTX-2)",
             "lightricks:ltx@2.3 (LTX 2.3)", "lightricks:ltx@2.3-fast (LTX 2.3 Fast)",
+            "lightricks:ltx@2.3-open (LTX-2.3 Open)",
         ],
         "Ovi": [
             "runware:190@1 (Ovi)",
@@ -3051,6 +3052,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lightricks:ltx@2": {"width": 1024, "height": 1024},
         "lightricks:ltx@2.3": {"width": 1920, "height": 1080},
         "lightricks:ltx@2.3-fast": {"width": 1920, "height": 1080},
+        "lightricks:ltx@2.3-open": {"width": 1024, "height": 1024},
         "runware:190@1": {"width": 0, "height": 0},
         "runway:aleph@2.0": {"width": 0, "height": 0},
         "runway:2@1": {"width": 1280, "height": 720},
@@ -3154,6 +3156,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lightricks:ltx@2": null,  // No resolution support (fixed 1024x1024)
         "lightricks:ltx@2.3": "1080p",
         "lightricks:ltx@2.3-fast": "1080p",
+        "lightricks:ltx@2.3-open": null,  // No resolution support (fixed 1024x1024)
         "runware:190@1": null,  // No resolution support
         "runway:aleph@2.0": null,  // Output ratio matches input video
         "runway:2@1": "720p",

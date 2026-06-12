@@ -33,6 +33,7 @@ from .modules.imageRegionalPromptingAdvancedFeature import RunwareRegionalPrompt
 from .modules.imageRegionalPromptingAdvancedFeatureRegions import RunwareRegionalPromptingAdvancedFeatureRegions
 from .modules.videoInference import txt2vid
 from .modules.videoInferenceSpeechInput import RunwareVideoInferenceSpeechInput
+from .modules.videoInferenceLora import RunwareVideoInferenceLora
 from .modules.videoModelSearch import videoModelSearch
 from .modules.videoSettings import RunwareVideoSettings
 from .modules.videoInferenceSettingsTts import RunwareVideoInferenceSettingsTts
@@ -225,6 +226,7 @@ NODE_CLASS_MAPPINGS = {
     "Runware Video Inference Elements": RunwareVideoInferenceElements,
     "Runware Video Inference Elements Combine": RunwareVideoInferenceElementsCombine,
     "Runware Video Inference Speech Input": RunwareVideoInferenceSpeechInput,
+    "Runware Video Inference Lora": RunwareVideoInferenceLora,
     "Runware Video Inference Settings": RunwareVideoSettings,
     "Runware Video Inference Settings TTS": RunwareVideoInferenceSettingsTts,
     "Runware Video Inference Settings Active Speaker Detection": RunwareVideoInferenceSettingsActiveSpeakerDetection,

@@ -226,6 +226,9 @@ class txt2vid:
                 "settings": ("RUNWAREVIDEOSETTINGS", {
                     "tooltip": "Connect a Runware Video Inference Settings node to configure draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, tts, activeSpeakerDetection, segments, etc.",
                 }),
+                "lora": ("RUNWAREVIDEOINFERENCELORA", {
+                    "tooltip": "Connect a Runware Video Inference Lora node to apply LoRA models (e.g. for LTX video models).",
+                }),
             }
         }
 
@@ -263,6 +266,7 @@ class txt2vid:
         videoAdvancedFeatureInputs = kwargs.get("videoAdvancedFeatureInputs", None)
         runwareAccelerator = kwargs.get("Accelerator", None)
         settings = kwargs.get("settings", None)
+        lora = kwargs.get("lora", None)
         useDuration = kwargs.get("useDuration", False)
         duration = kwargs.get("duration", 5)
         fps = kwargs.get("fps", 24)
@@ -436,6 +440,9 @@ class txt2vid:
         # Add settings if provided (draft, audio, promptUpsampling, voiceDescription, ...)
         if settings is not None and isinstance(settings, dict) and len(settings) > 0:
             genConfig[0]["settings"] = settings
+
+        if lora and lora.get("model"):
+            genConfig[0]["lora"] = [lora]
         
         # Add acceleration if not "none"
         if acceleration and acceleration != "none":
