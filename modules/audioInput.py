@@ -3,7 +3,7 @@ Runware Audio Input Node
 Creates an audio input configuration with id and source
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 class RunwareAudioInput:

@@ -3,7 +3,7 @@ Runware Bytedance Provider Settings Node
 Provides Bytedance-specific settings for image/video generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 class RunwareBytedanceProviderSettings:
     """Runware Bytedance Provider Settings Node"""

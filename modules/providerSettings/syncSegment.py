@@ -3,7 +3,7 @@ Runware Sync Segment Node
 Creates a sync segment configuration for sync provider settings
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 class RunwareSyncSegment:

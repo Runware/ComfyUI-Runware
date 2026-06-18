@@ -3,7 +3,7 @@ Runware BlackForest Labs Provider Settings Node
 Provides BlackForest Labs-specific settings for image generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 class RunwareBlackForestProviderSettings:
     """Runware BlackForest Labs Provider Settings Node"""

@@ -1,5 +1,5 @@
 from .utils import runwareUtils as rwUtils
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 
 class audioInferenceInputs:

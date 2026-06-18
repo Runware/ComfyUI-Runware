@@ -7,10 +7,10 @@ import soundfile as sf
 import numpy as np
 from io import BytesIO
 from .utils.runwareUtils import (
-    RUNWARE_API_KEY,
     RUNWARE_API_BASE_URL,
     generalRequestWrapper,
     genRandUUID,
+    getRunwareApiHeaders,
     sanitize_for_logging,
     safe_json_dumps,
     sendMediaUUID,
@@ -237,21 +237,13 @@ class RunwareMediaUpload:
             "media": mediaData,
         }]
 
-    def _getApiHeaders(self):
-        """Get API request headers"""
-        return {
-            "Authorization": f"Bearer {RUNWARE_API_KEY}",
-            "Content-Type": "application/json",
-            "Accept-Encoding": "gzip, deflate, br, zstd",
-        }
-
     def _makeUploadRequest(self, uploadConfig):
         """Make upload request to Runware API"""
         def recaller():
             print(f"[Debug] Making POST request to Runware API...")
             return requests.post(
                 RUNWARE_API_BASE_URL,
-                headers=self._getApiHeaders(),
+                headers=getRunwareApiHeaders(),
                 json=uploadConfig,
                 timeout=self.REQUEST_TIMEOUT,
                 allow_redirects=False,
@@ -301,7 +293,7 @@ class RunwareMediaUpload:
                 def recaller():
                     return requests.post(
                         RUNWARE_API_BASE_URL,
-                        headers=self._getApiHeaders(),
+                        headers=getRunwareApiHeaders(),
                         json=pollConfig,
                         timeout=self.REQUEST_TIMEOUT,
                         allow_redirects=False,

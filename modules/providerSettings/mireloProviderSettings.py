@@ -3,7 +3,7 @@ Runware Mirelo Provider Settings Node
 Provides Mirelo-specific settings for audio generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 class RunwareMireloProviderSettings:

@@ -1,4 +1,3 @@
-from ..utils import runwareUtils as rwUtils
 
 class RunwareViduProviderSettings:
     @classmethod
