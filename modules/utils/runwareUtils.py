@@ -22,6 +22,20 @@ import re
 
 load_dotenv()
 
+from ...version import __version__
+
+def getRunwareApiHeaders(include_auth=True):
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "X-SDK-Name": "comfyui",
+        "X-SDK-Version": __version__,
+    }
+    if include_auth:
+        headers["Authorization"] = f"Bearer {os.getenv('RUNWARE_API_KEY')}"
+    return headers
+
 BASEFOLDER = Path(__file__).parent.parent.parent
 IMAGE_CACHE_FILE = BASEFOLDER / "imagesCache.json"
 
@@ -250,12 +264,7 @@ def getOrdinal(num):
     return ordinals.get(num, f"{num}th")
 
 def checkAPIKey(apiKey):
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-    }
-
+    headers = getRunwareApiHeaders(include_auth=False)
     genConfig = [
         {
             "taskType": "authentication",
@@ -359,11 +368,7 @@ def inferenecRequest(genConfig):
     global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
     RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY")
     SESSION_TIMEOUT = int(os.getenv("RUNWARE_TIMEOUT"))
-    headers = {
-        "Authorization": f"Bearer {RUNWARE_API_KEY}",
-        "Content-Type": "application/json",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-    }
+    headers = getRunwareApiHeaders()
 
     try:
         def recaller():
@@ -720,11 +725,7 @@ def pollVideoResult(taskUUID):
         }
     ]
     
-    headers = {
-        "Authorization": f"Bearer {RUNWARE_API_KEY}",
-        "Content-Type": "application/json",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-    }
+    headers = getRunwareApiHeaders()
     
     try:
         def recaller():
