@@ -20,9 +20,9 @@ import io
 import threading
 import re
 
-load_dotenv()
+from ..version import __version__
 
-from ...version import __version__
+load_dotenv()
 
 def getRunwareApiHeaders(include_auth=True):
     headers = {
