@@ -7,7 +7,8 @@ enhancePrompt, scoringPrompt, sequential, renderingSpeed (TURBO/DEFAULT/QUALITY)
 magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/high), colorPalette,
 moodboards (from Runware Image Inference Settings Moodboards),
 structuredPrompt (from Runware Image Inference Settings Structured Prompt; Ideogram 4.0),
-and promptEnhance (from Runware Image Inference Settings Prompt Enhance).
+and promptEnhance (from Runware Image Inference Settings Prompt Enhance),
+preserveInputSize (return output at original input resolution).
 """
 
 import json
@@ -283,6 +284,19 @@ class RunwareSettings:
                         "Only used when 'Use Copyright Detection' is enabled."
                     ),
                 }),
+                "usePreserveInputSize": ("BOOLEAN", {
+                    "tooltip": "Enable to include preserveInputSize in settings.",
+                    "default": False,
+                }),
+                "preserveInputSize": ("BOOLEAN", {
+                    "default": False,
+                    "label_on": "true",
+                    "label_off": "false",
+                    "tooltip": (
+                        "Return the output at the original input resolution. "
+                        "Only used when 'Use Preserve Input Size' is enabled."
+                    ),
+                }),
             }
         }
 
@@ -295,7 +309,7 @@ class RunwareSettings:
         "backgroundMode (original/transparent/solid), backgroundColor, enhancePrompt, scoringPrompt, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (low/medium/high/xhigh), sequential, "
         "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, "
-        "creativity (raw/low/medium/high), and optional colorPalette, moodboards, structuredPrompt, promptEnhance, "
+        "creativity (raw/low/medium/high), preserveInputSize, and optional colorPalette, moodboards, structuredPrompt, promptEnhance, "
         "and scoringRubric from dedicated settings nodes."
     )
 
@@ -322,6 +336,7 @@ class RunwareSettings:
         useEnhancePrompt = kwargs.get("useEnhancePrompt", False)
         useScoringPrompt = kwargs.get("useScoringPrompt", False)
         useCopyrightDetection = kwargs.get("useCopyrightDetection", False)
+        usePreserveInputSize = kwargs.get("usePreserveInputSize", False)
         useSequential = kwargs.get("useSequential", False)
         useRenderingSpeed = kwargs.get("useRenderingSpeed", False)
         useMagicPrompt = kwargs.get("useMagicPrompt", False)
@@ -402,6 +417,9 @@ class RunwareSettings:
 
         if useCopyrightDetection:
             settings["copyrightDetection"] = bool(kwargs.get("copyrightDetection", False))
+
+        if usePreserveInputSize:
+            settings["preserveInputSize"] = bool(kwargs.get("preserveInputSize", False))
 
         if useSequential:
             settings["sequential"] = bool(kwargs.get("sequential", False))
