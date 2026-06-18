@@ -33,7 +33,12 @@ def getRunwareApiHeaders(include_auth=True):
         "X-SDK-Version": __version__,
     }
     if include_auth:
-        headers["Authorization"] = f"Bearer {os.getenv('RUNWARE_API_KEY')}"
+        api_key = getAPIKey()
+        if not api_key:
+            raise Exception(
+                "Runware API key is not configured. Add your API key in the Runware API Manager node."
+            )
+        headers["Authorization"] = f"Bearer {api_key}"
     return headers
 
 BASEFOLDER = Path(__file__).parent.parent.parent
