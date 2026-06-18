@@ -3,7 +3,7 @@ Runware MiniMax Provider Settings Node
 Provides MiniMax-specific settings for video generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 class RunwareMiniMaxProviderSettings:
     """Runware MiniMax Provider Settings Node"""

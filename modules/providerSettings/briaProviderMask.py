@@ -3,7 +3,7 @@ Runware Bria Provider Mask Node
 Creates mask configuration for Bria video eraser settings
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 
 
 class RunwareBriaProviderMask:

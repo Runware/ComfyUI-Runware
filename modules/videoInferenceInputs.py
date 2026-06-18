@@ -1,5 +1,4 @@
 from .utils import runwareUtils as rwUtils
-from typing import List
 
 
 class videoInferenceInputs:

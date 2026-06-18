@@ -3,7 +3,7 @@ Runware KlingAI Provider Settings Node
 Provides KlingAI-specific settings for video generation
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 
 
 class RunwareKlingProviderSettings:

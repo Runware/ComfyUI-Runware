@@ -3,8 +3,7 @@ Runware Bria Provider Settings Node
 Provides Bria-specific settings for image/video generation
 """
 
-import torch
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 class RunwareBriaProviderSettings:
     """Runware Bria Provider Settings Node"""

@@ -3,7 +3,7 @@ Runware Sync Provider Settings Node
 Provides Sync-specific settings for video generation with lip-sync capabilities
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 
 
 class RunwareSyncProviderSettings:

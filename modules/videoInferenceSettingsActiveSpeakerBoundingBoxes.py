@@ -4,7 +4,6 @@ Builds settings.activeSpeakerDetection.boundingBoxes for Sync models.
 Each element is [x1, y1, x2, y2] or null. Up to 4 elements.
 """
 
-from typing import Dict, Any
 
 
 def _parse_box(raw: str, label: str):

@@ -3,7 +3,7 @@ Runware Lightricks Provider Settings Node
 Provides Lightricks-specific settings for video generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 class RunwareLightricksProviderSettings:
     """Runware Lightricks Provider Settings Node"""

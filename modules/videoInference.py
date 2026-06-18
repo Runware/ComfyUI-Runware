@@ -1,5 +1,4 @@
 from .utils import runwareUtils as rwUtils
-from .videoModelSearch import videoModelSearch
 import comfy.model_management
 
 

@@ -3,7 +3,7 @@ Runware Sourceful Provider Settings Node
 Provides Sourceful-specific settings for image generation (providerSettings.sourceful.*)
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 
 class RunwareSourcefulProviderSettings:

@@ -3,7 +3,7 @@ Runware Google Provider Settings Node
 Provides Google-specific settings for image/video generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 class RunwareGoogleProviderSettings:

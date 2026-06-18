@@ -3,7 +3,7 @@ Runware Wan Animate Advanced Feature Settings Node
 Provides Wan Animate-specific settings for video generation
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 class RunwareWanAnimateAdvancedFeatureSettings:
     """Runware Wan Animate Advanced Feature Settings Node"""

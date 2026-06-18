@@ -1,7 +1,6 @@
 import uuid
 import requests
 import torch
-import numpy as np
 import librosa
 import tempfile
 import os

@@ -3,7 +3,7 @@ Runware Speech Input Node
 Creates a speech input configuration with TTS provider settings
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 class RunwareSpeechInput:
