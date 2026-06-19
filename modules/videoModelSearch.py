@@ -108,6 +108,7 @@ class videoModelSearch:
             "lumaai:1@1 (Luma Ray 1.6)",
             "lumaai:2@1 (Luma Ray 2)",
             "lumaai:2@2 (Luma Ray 2 Flash)",
+            "luma:ray@3.2 (Luma Ray 3.2)",
         ],
         "Sync": [
             "sync:lipsync-2@1 (Sync LipSync 2)",
@@ -258,6 +259,7 @@ class videoModelSearch:
         "lumaai:1@1": {"width": 1080, "height": 720},
         "lumaai:2@1": {"width": 1080, "height": 720},
         "lumaai:2@2": {"width": 1080, "height": 720},
+        "luma:ray@3.2": {"width": 1280, "height": 720},
         
         # Sync Models
         "sync:lipsync-2@1": {"width": 0, "height": 0},
@@ -407,6 +409,7 @@ class videoModelSearch:
         "lumaai:1@1": "720p",
         "lumaai:2@1": "720p",
         "lumaai:2@2": "720p",
+        "luma:ray@3.2": "720p",
         
         # Sync Models
         "sync:lipsync-2@1": "720p",
