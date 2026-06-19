@@ -241,12 +241,6 @@ class RunwareMediaUpload:
         print(f"[Debug] Making upload request to Runware API...")
         return inferenecRequest(uploadConfig)
 
-    def _parseJsonResponse(self, response):
-        """Validate JSON response from API"""
-        if not isinstance(response, dict):
-            raise Exception("Request failed: Invalid response from server")
-        return response
-
     def _validateUploadResponse(self, uploadResult):
         """Validate upload response"""
         print(f"[Debug] Upload response: {safe_json_dumps(uploadResult, indent=2) if isinstance(uploadResult, (dict, list)) else uploadResult}")

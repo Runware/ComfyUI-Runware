@@ -327,6 +327,7 @@ class RunwareWebSocketClient:
         self._stop_reader.clear()
         self._ws = websocket.create_connection(
             url,
+            timeout=10,
             header=getRunwareWsHeaders(),
         )
         self._ws.settimeout(None)
@@ -438,7 +439,12 @@ class RunwareWebSocketClient:
                     if task_uuid and task_uuid in pending["task_uuids"]:
                         pending["collected_errors"].append(item)
                         pending["task_uuids"].discard(task_uuid)
-                    elif pending["task_uuids"] and len(pending["task_uuids"]) == 1:
+                    elif (
+                        not task_uuid
+                        and len(self._pending) == 1
+                        and pending["task_uuids"]
+                        and len(pending["task_uuids"]) == 1
+                    ):
                         pending["collected_errors"].append(item)
                         pending["task_uuids"].clear()
 
@@ -547,8 +553,9 @@ def checkAPIKeyWithWebSocket(apiKey):
         )
         ws.send(json.dumps([{"taskType": "authentication", "apiKey": apiKey}]))
         response = json.loads(ws.recv())
-        if "errors" in response:
-            return str(response["errors"][0]["message"])
+        errors = response.get("errors") or []
+        if errors:
+            return str(errors[0].get("message", "Authentication failed"))
         return True
     except Exception:
         return False
