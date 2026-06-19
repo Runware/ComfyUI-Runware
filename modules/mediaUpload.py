@@ -1,16 +1,15 @@
 import base64
 import os
 import time
-import requests
 import torch
 import soundfile as sf
 import numpy as np
 from io import BytesIO
 from .utils.runwareUtils import (
     RUNWARE_API_BASE_URL,
-    generalRequestWrapper,
     genRandUUID,
-    getRunwareApiHeaders,
+    inferenecRequest,
+    pollVideoResult,
     sanitize_for_logging,
     safe_json_dumps,
     sendMediaUUID,
@@ -239,37 +238,8 @@ class RunwareMediaUpload:
 
     def _makeUploadRequest(self, uploadConfig):
         """Make upload request to Runware API"""
-        def recaller():
-            print(f"[Debug] Making POST request to Runware API...")
-            return requests.post(
-                RUNWARE_API_BASE_URL,
-                headers=getRunwareApiHeaders(),
-                json=uploadConfig,
-                timeout=self.REQUEST_TIMEOUT,
-                allow_redirects=False,
-                stream=True,
-            )
-        
-        response = generalRequestWrapper(recaller)
-        return self._parseJsonResponse(response)
-
-    def _parseJsonResponse(self, response):
-        """Parse JSON response from API"""
-        if response.status_code != 200:
-            errorText = response.text[:500]
-            print(f"[Debug] Request failed with status {response.status_code}")
-            print(f"[Debug] Response text: {errorText}")
-            raise Exception(f"Request failed with status {response.status_code}: {response.text[:200]}")
-        
-        if not response.text or not response.text.strip():
-            raise Exception("Request failed: Empty response from server")
-        
-        try:
-            return response.json()
-        except ValueError as e:
-            print(f"[Debug] Failed to parse JSON response: {str(e)}")
-            print(f"[Debug] Response text: {response.text[:500]}")
-            raise Exception(f"Request failed: Invalid JSON response from server: {str(e)}")
+        print(f"[Debug] Making upload request to Runware API...")
+        return inferenecRequest(uploadConfig)
 
     def _validateUploadResponse(self, uploadResult):
         """Validate upload response"""
@@ -281,26 +251,11 @@ class RunwareMediaUpload:
 
     def _pollForResult(self, taskUuid):
         """Poll for media upload result"""
-        pollConfig = [{
-            "taskType": "getResponse",
-            "taskUUID": taskUuid,
-        }]
-        
         for attempt in range(self.MAX_POLL_ATTEMPTS):
             try:
                 print(f"[Debug] Poll attempt {attempt + 1}/{self.MAX_POLL_ATTEMPTS}")
-                
-                def recaller():
-                    return requests.post(
-                        RUNWARE_API_BASE_URL,
-                        headers=getRunwareApiHeaders(),
-                        json=pollConfig,
-                        timeout=self.REQUEST_TIMEOUT,
-                        allow_redirects=False,
-                        stream=True,
-                    )
-                
-                pollResult = generalRequestWrapper(recaller)
+
+                pollResult = pollVideoResult(taskUuid)
                 pollData = self._parsePollResponse(pollResult)
                 
                 if pollData:
@@ -324,32 +279,18 @@ class RunwareMediaUpload:
 
     def _parsePollResponse(self, pollResult):
         """Parse polling response"""
-        if pollResult.status_code != 200:
-            print(f"[Debug] Poll failed with status {pollResult.status_code}")
-            return None
-        
-        if not pollResult.text or not pollResult.text.strip():
+        if pollResult is None:
             print(f"[Debug] Poll returned empty response")
             return None
-        
-        try:
-            pollResultJson = pollResult.json()
-        except ValueError as e:
-            print(f"[Debug] Failed to parse JSON in poll: {str(e)}")
+
+        print(f"[Debug] Poll response: {safe_json_dumps(pollResult, indent=2) if isinstance(pollResult, (dict, list)) else pollResult}")
+        if "errors" in pollResult:
+            print(f"[Debug] Poll error: {safe_json_dumps(pollResult, indent=2) if isinstance(pollResult, (dict, list)) else pollResult}")
             return None
-        
-        print(f"[Debug] Poll response: {safe_json_dumps(pollResultJson, indent=2) if isinstance(pollResultJson, (dict, list)) else pollResultJson}")
-        
-        if "errors" in pollResultJson:
-            print(f"[Debug] Poll error: {safe_json_dumps(pollResultJson, indent=2) if isinstance(pollResultJson, (dict, list)) else pollResultJson}")
-            return None
-        
-        if "data" in pollResultJson and len(pollResultJson["data"]) > 0:
-            print(f"[Debug] Poll data: {sanitize_for_logging(pollResultJson['data'][0])}")
-            return pollResultJson["data"][0]
-        
+
+        if "data" in pollResult and len(pollResult["data"]) > 0:
+            print(f"[Debug] Poll data: {sanitize_for_logging(pollResult['data'][0])}")
+            return pollResult["data"][0]
+
         return None
-
-
-# Export the class directly
 runwareMediaUpload = RunwareMediaUpload

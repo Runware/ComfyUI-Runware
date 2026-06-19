@@ -20,6 +20,8 @@ import io
 import threading
 import re
 
+import websocket
+
 from ..version import __version__
 
 load_dotenv()
@@ -177,7 +179,20 @@ def getCustomEndpoint():
     custom_endpoint = os.getenv("RUNWARE_CUSTOM_ENDPOINT")
     if custom_endpoint and isinstance(custom_endpoint, str):
         return custom_endpoint
-    return "https://api.runware.ai/v1"
+    return "wss://ws-api.runware.ai/v1"
+
+def usesWebSocketTransport(endpoint=None):
+    endpoint = endpoint or getCustomEndpoint()
+    return endpoint.startswith("ws://") or endpoint.startswith("wss://")
+
+def getRunwareWsHeaders():
+    return [
+        f"X-SDK-Name: comfyui",
+        f"X-SDK-Version: {__version__}",
+    ]
+
+WS_CONNECT_TIMEOUT = 10
+WS_READ_TIMEOUT = 1
 
 SESSION_TIMEOUT = getTimeout()
 RUNWARE_API_KEY = getAPIKey()
@@ -186,6 +201,11 @@ OUTPUT_QUALITY = getOutputQuality()
 ENABLE_IMAGES_CACHING = getEnableImagesCaching()
 MIN_IMAGE_CACHE_SIZE = getMinImageCacheSize()
 RUNWARE_API_BASE_URL = getCustomEndpoint()
+
+def refreshRunwareEndpoint():
+    global RUNWARE_API_BASE_URL
+    RUNWARE_API_BASE_URL = getCustomEndpoint()
+    return RUNWARE_API_BASE_URL
 
 def setEnvKey(keyName, keyValue):
     comfyNodeRoot = Path(__file__).parent.parent.parent
@@ -214,6 +234,7 @@ def setAPIKey(apiKey: str):
     if envSetRes:
         RUNWARE_API_KEY = apiKey
         os.environ["RUNWARE_API_KEY"] = apiKey
+        _reset_ws_client()
         return True
 
 def setTimeout(timeout: int):
@@ -268,7 +289,297 @@ def getOrdinal(num):
     ordinals = {1: "first", 2: "second", 3: "third", 4: "fourth"}
     return ordinals.get(num, f"{num}th")
 
+
+class RunwareWebSocketClient:
+    """Persistent WebSocket client for Runware API task requests."""
+
+    def __init__(self):
+        self._conn_lock = threading.RLock()
+        self._pending_lock = threading.Lock()
+        self._ws = None
+        self._connection_session_uuid = None
+        self._reader_thread = None
+        self._stop_reader = threading.Event()
+        self._pending = {}
+
+    def close(self):
+        with self._conn_lock:
+            self._stop_reader.set()
+            if self._ws is not None:
+                try:
+                    self._ws.close()
+                except Exception:
+                    pass
+                self._ws = None
+            if self._reader_thread and self._reader_thread.is_alive():
+                self._reader_thread.join(timeout=2)
+            self._reader_thread = None
+            with self._pending_lock:
+                for pending in self._pending.values():
+                    pending["response"] = {"errors": [{"message": "WebSocket connection closed"}]}
+                    pending["event"].set()
+                self._pending.clear()
+
+    def _connect(self):
+        url = getCustomEndpoint()
+        self._stop_reader.set()
+        if self._ws is not None:
+            try:
+                self._ws.close()
+            except Exception:
+                pass
+            self._ws = None
+        if self._reader_thread and self._reader_thread.is_alive():
+            self._reader_thread.join(timeout=2)
+
+        self._stop_reader.clear()
+        self._ws = websocket.create_connection(
+            url,
+            timeout=WS_CONNECT_TIMEOUT,
+            header=getRunwareWsHeaders(),
+        )
+        self._ws.settimeout(WS_READ_TIMEOUT)
+        self._reader_thread = threading.Thread(
+            target=self._reader_loop,
+            name="RunwareWebSocketReader",
+            daemon=True,
+        )
+        self._reader_thread.start()
+        self._authenticate()
+
+    def _ensure_connected(self):
+        reader_alive = self._reader_thread is not None and self._reader_thread.is_alive()
+        if self._ws is None or not reader_alive:
+            self._connect()
+            return
+        try:
+            self._ws.ping()
+        except Exception:
+            self._connect()
+
+    def _authenticate(self, api_key=None):
+        key = api_key or getAPIKey()
+        if not key:
+            raise Exception(
+                "Runware API key is not configured. Add your API key in the Runware API Manager node."
+            )
+        auth_task = {
+            "taskType": "authentication",
+            "apiKey": key,
+        }
+        if self._connection_session_uuid:
+            auth_task["connectionSessionUUID"] = self._connection_session_uuid
+        response = self._send_and_wait([auth_task], timeout=10, is_auth=True)
+        if "errors" in response:
+            error_message = response["errors"][0].get("message", "Authentication failed")
+            raise Exception(error_message)
+        auth_data = response.get("data", [{}])[0]
+        session_uuid = auth_data.get("connectionSessionUUID")
+        if session_uuid:
+            self._connection_session_uuid = session_uuid
+
+    def _reader_loop(self):
+        while not self._stop_reader.is_set() and self._ws is not None:
+            try:
+                raw = self._ws.recv()
+            except websocket.WebSocketTimeoutException:
+                continue
+            except websocket.WebSocketConnectionClosedException:
+                break
+            except Exception as e:
+                if not self._stop_reader.is_set():
+                    print(f"[Runware] WebSocket reader error: {e}")
+                break
+
+            if not raw:
+                continue
+
+            try:
+                message = json.loads(raw)
+            except json.JSONDecodeError:
+                print(f"[Runware] WebSocket received invalid JSON")
+                continue
+
+            if self._is_ping_response(message):
+                continue
+
+            self._dispatch_message(message)
+
+        with self._pending_lock:
+            for pending in self._pending.values():
+                if pending["response"] is None:
+                    pending["response"] = {"errors": [{"message": "WebSocket connection closed"}]}
+                    pending["event"].set()
+
+    @staticmethod
+    def _is_ping_response(message):
+        data = message.get("data") or []
+        return bool(data) and data[0].get("taskType") == "ping" and data[0].get("pong")
+
+    def _dispatch_message(self, message):
+        with self._pending_lock:
+            for pending in list(self._pending.values()):
+                if pending["response"] is not None:
+                    continue
+
+                if pending["is_auth"]:
+                    if message.get("data") and any(
+                        item.get("taskType") == "authentication" for item in message["data"]
+                    ):
+                        pending["response"] = message
+                        pending["event"].set()
+                        continue
+                    if message.get("errors") and any(
+                        item.get("taskType") == "authentication" for item in message["errors"]
+                    ):
+                        pending["response"] = message
+                        pending["event"].set()
+                    continue
+
+                for item in message.get("data", []):
+                    task_uuid = item.get("taskUUID")
+                    if task_uuid and task_uuid in pending["task_uuids"]:
+                        pending["collected_data"].append(item)
+                        pending["task_uuids"].discard(task_uuid)
+
+                for item in message.get("errors", []):
+                    task_uuid = item.get("taskUUID")
+                    if task_uuid and task_uuid in pending["task_uuids"]:
+                        pending["collected_errors"].append(item)
+                        pending["task_uuids"].discard(task_uuid)
+                    elif (
+                        not task_uuid
+                        and len(self._pending) == 1
+                        and pending["task_uuids"]
+                        and len(pending["task_uuids"]) == 1
+                    ):
+                        pending["collected_errors"].append(item)
+                        pending["task_uuids"].clear()
+
+                if pending["task_uuids"]:
+                    continue
+
+                response = {}
+                if pending["collected_data"]:
+                    response["data"] = pending["collected_data"]
+                if pending["collected_errors"]:
+                    response["errors"] = pending["collected_errors"]
+                if not response:
+                    response = message
+                pending["response"] = response
+                pending["event"].set()
+
+    def _send_and_wait(self, gen_config, timeout, is_auth=False):
+        wait_event = threading.Event()
+        task_uuids = {task.get("taskUUID") for task in gen_config if task.get("taskUUID")}
+        pending = {
+            "event": wait_event,
+            "response": None,
+            "task_uuids": set(task_uuids),
+            "is_auth": is_auth,
+            "collected_data": [],
+            "collected_errors": [],
+        }
+        pending_id = id(pending)
+
+        with self._pending_lock:
+            self._pending[pending_id] = pending
+
+        try:
+            payload = json.dumps(gen_config)
+            with self._conn_lock:
+                self._ensure_connected()
+                self._ws.send(payload)
+
+            if not wait_event.wait(timeout):
+                raise TimeoutError(f"WebSocket request timed out after {timeout} seconds")
+
+            if pending["response"] is None:
+                raise Exception("WebSocket request failed: empty response")
+            return pending["response"]
+        finally:
+            with self._pending_lock:
+                self._pending.pop(pending_id, None)
+
+    def request(self, gen_config, timeout):
+        def recaller():
+            return self._send_and_wait(gen_config, timeout=timeout)
+
+        return wsRequestWrapper(recaller)
+
+
+_ws_client = None
+_ws_client_lock = threading.Lock()
+
+
+def _get_ws_client():
+    global _ws_client
+    with _ws_client_lock:
+        if _ws_client is None:
+            _ws_client = RunwareWebSocketClient()
+        return _ws_client
+
+
+def _reset_ws_client():
+    global _ws_client
+    with _ws_client_lock:
+        if _ws_client is not None:
+            _ws_client.close()
+            _ws_client = None
+
+
+def wsRequestWrapper(recaller):
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            return recaller()
+        except (
+            websocket.WebSocketException,
+            ConnectionError,
+            OSError,
+        ):
+            if attempt == MAX_RETRIES:
+                raise
+            cooldown = RETRY_COOLDOWNS[attempt]
+            print(
+                f"[Runware] WebSocket request failed! Retrying in {cooldown} seconds..."
+                f" (Attempt {attempt + 1}/{MAX_RETRIES})"
+            )
+            time.sleep(cooldown)
+            _reset_ws_client()
+            continue
+    return False
+
+
+def checkAPIKeyWithWebSocket(apiKey):
+    url = getCustomEndpoint()
+    ws = None
+    try:
+        ws = websocket.create_connection(
+            url,
+            timeout=WS_CONNECT_TIMEOUT,
+            header=getRunwareWsHeaders(),
+        )
+        ws.send(json.dumps([{"taskType": "authentication", "apiKey": apiKey}]))
+        response = json.loads(ws.recv())
+        errors = response.get("errors") or []
+        if errors:
+            return str(errors[0].get("message", "Authentication failed"))
+        return True
+    except Exception:
+        return False
+    finally:
+        if ws is not None:
+            try:
+                ws.close()
+            except Exception:
+                pass
+
+
 def checkAPIKey(apiKey):
+    endpoint = refreshRunwareEndpoint()
+    if usesWebSocketTransport(endpoint):
+        return checkAPIKeyWithWebSocket(apiKey)
+
     headers = getRunwareApiHeaders(include_auth=False)
     genConfig = [
         {
@@ -370,9 +681,46 @@ def sendVideoOutputs(draftId, videoId, nodeID):
     )
 
 def inferenecRequest(genConfig):
-    global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
+    global RUNWARE_API_KEY, SESSION_TIMEOUT
     RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY")
     SESSION_TIMEOUT = int(os.getenv("RUNWARE_TIMEOUT"))
+    endpoint = refreshRunwareEndpoint()
+
+    if usesWebSocketTransport(endpoint):
+        try:
+            genResult = _get_ws_client().request(genConfig, timeout=SESSION_TIMEOUT)
+        except TimeoutError:
+            raise Exception(
+                f"Error: Request Timed Out After {SESSION_TIMEOUT} Seconds - Please Try Again!"
+            )
+        except Exception as e:
+            if "invalid api key" in str(e).lower():
+                PromptServer.instance.send_sync(
+                    "runwareError",
+                    {
+                        "success": False,
+                        "errorMessage": str(e),
+                        "errorCode": 401,
+                    },
+                )
+                raise InterruptProcessingException()
+            raise Exception(f"Error: {e}")
+
+        if "errors" in genResult:
+            print(f"[DEBUG] API Error Response: {safe_json_dumps(genResult, indent=2) if isinstance(genResult, dict) else genResult}")
+            error_obj = genResult["errors"][0]
+            error_message = error_obj.get("message", "Unknown error")
+
+            if "allowedValues" in error_obj:
+                allowed_values = error_obj["allowedValues"]
+                error_message += f"\n\nAllowed values:\n" + "\n".join(f"  - {val}" for val in allowed_values)
+
+            if "documentation" in error_obj:
+                error_message += f"\n\nDocumentation: {error_obj['documentation']}"
+
+            raise Exception(error_message)
+        return genResult
+
     headers = getRunwareApiHeaders()
 
     try:
@@ -721,15 +1069,27 @@ def convertVideoB64List(videoDataObject, width=None, height=None):
 
 def pollVideoResult(taskUUID):
     """Poll async task result with taskType getResponse (video, audio, text inference, etc.)."""
-    global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
-    
+    endpoint = refreshRunwareEndpoint()
+
     pollConfig = [
         {
             "taskType": "getResponse",
             "taskUUID": taskUUID,
         }
     ]
-    
+
+    if usesWebSocketTransport(endpoint):
+        try:
+            pollResult = _get_ws_client().request(pollConfig, timeout=30)
+        except Exception as e:
+            print(f"[Debugging] Poll request failed: {str(e)}")
+            return None
+
+        if "errors" in pollResult:
+            print(f"[Debugging] Poll error: {safe_json_dumps(pollResult, indent=2) if isinstance(pollResult, (dict, list)) else pollResult}")
+            return pollResult
+        return pollResult
+
     headers = getRunwareApiHeaders()
     
     try:
