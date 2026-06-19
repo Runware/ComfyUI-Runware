@@ -20,7 +20,8 @@ import io
 import threading
 import re
 
-import websocket
+from websockets.sync.client import connect as ws_connect
+from websockets.exceptions import ConnectionClosed, WebSocketException
 
 from ..version import __version__
 
@@ -191,6 +192,13 @@ def getRunwareWsHeaders():
         f"X-SDK-Version: {__version__}",
     ]
 
+def getRunwareWsHeadersDict():
+    headers = {}
+    for header in getRunwareWsHeaders():
+        key, value = header.split(": ", 1)
+        headers[key] = value
+    return headers
+
 WS_CONNECT_TIMEOUT = 10
 WS_READ_TIMEOUT = 1
 
@@ -333,12 +341,12 @@ class RunwareWebSocketClient:
             self._reader_thread.join(timeout=2)
 
         self._stop_reader.clear()
-        self._ws = websocket.create_connection(
+        self._ws = ws_connect(
             url,
-            timeout=WS_CONNECT_TIMEOUT,
-            header=getRunwareWsHeaders(),
+            max_size=None,
+            additional_headers=getRunwareWsHeadersDict(),
+            open_timeout=WS_CONNECT_TIMEOUT,
         )
-        self._ws.settimeout(WS_READ_TIMEOUT)
         self._reader_thread = threading.Thread(
             target=self._reader_loop,
             name="RunwareWebSocketReader",
@@ -381,12 +389,12 @@ class RunwareWebSocketClient:
     def _reader_loop(self):
         while not self._stop_reader.is_set() and self._ws is not None:
             try:
-                raw = self._ws.recv()
-            except websocket.WebSocketTimeoutException:
+                raw = self._ws.recv(timeout=WS_READ_TIMEOUT)
+            except TimeoutError:
                 continue
-            except websocket.WebSocketConnectionClosedException:
+            except ConnectionClosed:
                 break
-            except Exception as e:
+            except WebSocketException as e:
                 if not self._stop_reader.is_set():
                     print(f"[Runware] WebSocket reader error: {e}")
                 break
@@ -533,9 +541,11 @@ def wsRequestWrapper(recaller):
         try:
             return recaller()
         except (
-            websocket.WebSocketException,
+            WebSocketException,
+            ConnectionClosed,
             ConnectionError,
             OSError,
+            TimeoutError,
         ):
             if attempt == MAX_RETRIES:
                 raise
@@ -554,10 +564,11 @@ def checkAPIKeyWithWebSocket(apiKey):
     url = getCustomEndpoint()
     ws = None
     try:
-        ws = websocket.create_connection(
+        ws = ws_connect(
             url,
-            timeout=WS_CONNECT_TIMEOUT,
-            header=getRunwareWsHeaders(),
+            max_size=None,
+            additional_headers=getRunwareWsHeadersDict(),
+            open_timeout=WS_CONNECT_TIMEOUT,
         )
         ws.send(json.dumps([{"taskType": "authentication", "apiKey": apiKey}]))
         response = json.loads(ws.recv())

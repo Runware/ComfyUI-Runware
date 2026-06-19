@@ -3,4 +3,4 @@ brotli
 zstd
 librosa
 imageio
-websocket-client
+websockets

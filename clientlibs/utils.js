@@ -1432,6 +1432,12 @@ function videoSettingsToggleHandler(settingsNode) {
     const sourceAudioSyncWidget = settingsNode.widgets.find(w => w && w.name === "sourceAudioSync");
     const useTurboWidget = settingsNode.widgets.find(w => w && w.name === "useTurbo");
     const turboWidget = settingsNode.widgets.find(w => w && w.name === "turbo");
+    const useLoopWidget = settingsNode.widgets.find(w => w && w.name === "useLoop");
+    const loopWidget = settingsNode.widgets.find(w => w && w.name === "loop");
+    const useHdrWidget = settingsNode.widgets.find(w => w && w.name === "useHdr");
+    const hdrWidget = settingsNode.widgets.find(w => w && w.name === "hdr");
+    const useExrExportWidget = settingsNode.widgets.find(w => w && w.name === "useExrExport");
+    const exrExportWidget = settingsNode.widgets.find(w => w && w.name === "exrExport");
     const useVoicePromptWidget = settingsNode.widgets.find(w => w && w.name === "useVoicePrompt");
     const voicePromptWidget = settingsNode.widgets.find(w => w && w.name === "voicePrompt");
     const useSafetyFilterWidget = settingsNode.widgets.find(w => w && w.name === "useSafetyFilter");
@@ -1494,6 +1500,9 @@ function videoSettingsToggleHandler(settingsNode) {
     if (usePreserveAudioWidget && preserveAudioWidget) toggleWidgetState(usePreserveAudioWidget, preserveAudioWidget, "preserveAudio");
     if (useSourceAudioSyncWidget && sourceAudioSyncWidget) toggleWidgetState(useSourceAudioSyncWidget, sourceAudioSyncWidget, "sourceAudioSync");
     if (useTurboWidget && turboWidget) toggleWidgetState(useTurboWidget, turboWidget, "turbo");
+    if (useLoopWidget && loopWidget) toggleWidgetState(useLoopWidget, loopWidget, "loop");
+    if (useHdrWidget && hdrWidget) toggleWidgetState(useHdrWidget, hdrWidget, "hdr");
+    if (useExrExportWidget && exrExportWidget) toggleWidgetState(useExrExportWidget, exrExportWidget, "exrExport");
     if (useVoicePromptWidget && voicePromptWidget) toggleWidgetState(useVoicePromptWidget, voicePromptWidget, "voicePrompt");
     if (useSafetyFilterWidget && safetyFilterWidget) toggleWidgetState(useSafetyFilterWidget, safetyFilterWidget, "safetyFilter");
     if (usePromptUpsamplingWidget && promptUpsamplingWidget) toggleWidgetState(usePromptUpsamplingWidget, promptUpsamplingWidget, "promptUpsampling");
@@ -1672,6 +1681,49 @@ function videoInferenceSettingsSegmentsToggleHandler(node) {
     wireSegment(2);
     wireSegment(3);
     wireSegment(4);
+}
+
+function videoInferenceSettingsControlToggleHandler(node) {
+    if (!node?.widgets) return;
+
+    const useAutoControlsWidget = node.widgets.find(w => w && w.name === "useAutoControls");
+    const autoControlsWidget = node.widgets.find(w => w && w.name === "autoControls");
+    const useStrengthWidget = node.widgets.find(w => w && w.name === "useStrength");
+    const strengthWidget = node.widgets.find(w => w && w.name === "strength");
+    const useDepthBlurWidget = node.widgets.find(w => w && w.name === "useDepthBlur");
+    const depthBlurWidget = node.widgets.find(w => w && w.name === "depthBlur");
+    const useFaceWidget = node.widgets.find(w => w && w.name === "useFace");
+    const faceWidget = node.widgets.find(w => w && w.name === "face");
+    const useNormalsAugmentationWidget = node.widgets.find(w => w && w.name === "useNormalsAugmentation");
+    const normalsAugmentationWidget = node.widgets.find(w => w && w.name === "normalsAugmentation");
+    const usePoseStrengthWidget = node.widgets.find(w => w && w.name === "usePoseStrength");
+    const poseStrengthWidget = node.widgets.find(w => w && w.name === "poseStrength");
+    const useTrajectorySparsityWidget = node.widgets.find(w => w && w.name === "useTrajectorySparsity");
+    const trajectorySparsityWidget = node.widgets.find(w => w && w.name === "trajectorySparsity");
+
+    function toggleWidgetState(useWidget, paramWidget, paramName) {
+        if (!useWidget || !paramWidget) return;
+        function applyState() {
+            const enabled = useWidget.value === true;
+            toggleWidgetEnabled(paramWidget, enabled, node);
+            if (paramWidget.options && paramWidget.options.element) {
+                paramWidget.options.element.disabled = !enabled;
+                paramWidget.options.element.style.opacity = enabled ? "1" : "0.5";
+                paramWidget.options.element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            node.setDirtyCanvas(true);
+        }
+        setTimeout(applyState, 100);
+        appendWidgetCB(useWidget, () => setTimeout(applyState, 50));
+    }
+
+    if (useAutoControlsWidget && autoControlsWidget) toggleWidgetState(useAutoControlsWidget, autoControlsWidget, "autoControls");
+    if (useStrengthWidget && strengthWidget) toggleWidgetState(useStrengthWidget, strengthWidget, "strength");
+    if (useDepthBlurWidget && depthBlurWidget) toggleWidgetState(useDepthBlurWidget, depthBlurWidget, "depthBlur");
+    if (useFaceWidget && faceWidget) toggleWidgetState(useFaceWidget, faceWidget, "face");
+    if (useNormalsAugmentationWidget && normalsAugmentationWidget) toggleWidgetState(useNormalsAugmentationWidget, normalsAugmentationWidget, "normalsAugmentation");
+    if (usePoseStrengthWidget && poseStrengthWidget) toggleWidgetState(usePoseStrengthWidget, poseStrengthWidget, "poseStrength");
+    if (useTrajectorySparsityWidget && trajectorySparsityWidget) toggleWidgetState(useTrajectorySparsityWidget, trajectorySparsityWidget, "trajectorySparsity");
 }
 
 function audioInferenceSpeechToggleHandler(speechNode) {
@@ -2937,6 +2989,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "lumaai:1@1 (Luma Ray 1.6)",
             "lumaai:2@1 (Luma Ray 2)",
             "lumaai:2@2 (Luma Ray 2 Flash)",
+            "luma:ray@3.2 (Luma Ray 3.2)",
         ],
         "Sync": [
             "sync:lipsync-2@1 (Sync LipSync 2)",
@@ -3063,6 +3116,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lumaai:1@1": {"width": 1080, "height": 720},
         "lumaai:2@1": {"width": 1080, "height": 720},
         "lumaai:2@2": {"width": 1080, "height": 720},
+        "luma:ray@3.2": {"width": 1280, "height": 720},
         "sync:lipsync-2@1": {"width": 0, "height": 0},
         "sync:lipsync-2-pro@1": {"width": 0, "height": 0},
         "sync:react-1@1": {"width": 0, "height": 0},
@@ -3168,6 +3222,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "lumaai:1@1": "720p",
         "lumaai:2@1": "720p",
         "lumaai:2@2": "720p",
+        "luma:ray@3.2": "720p",
         "sync:lipsync-2@1": "720p",
         "sync:lipsync-2-pro@1": "720p",
         "sync:react-1@1": "720p",
@@ -5314,6 +5369,7 @@ export {
     videoInferenceSettingsActiveSpeakerDetectionToggleHandler,
     videoInferenceSettingsActiveSpeakerBoundingBoxesToggleHandler,
     videoInferenceSettingsSegmentsToggleHandler,
+    videoInferenceSettingsControlToggleHandler,
     acceleratorOptionsToggleHandler,
     bytedanceProviderSettingsToggleHandler,
     xaiProviderSettingsToggleHandler,

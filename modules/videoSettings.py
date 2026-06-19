@@ -1,6 +1,6 @@
 """
 Runware Video Inference Settings Node
-Provides settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
+Provides settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, loop, hdr, exrExport, edit, sourcePosition, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
 """
 
 from typing import Dict, Any
@@ -255,6 +255,42 @@ class RunwareVideoSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "useLoop": ("BOOLEAN", {
+                    "tooltip": "Enable to include loop in video inference settings.",
+                    "default": False,
+                }),
+                "loop": ("BOOLEAN", {
+                    "tooltip": "Loop the video. Type video only; rejected with 10s, hdr, end_frame, or keyframes. Only used when 'Use Loop' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useHdr": ("BOOLEAN", {
+                    "tooltip": "Enable to include hdr in video inference settings.",
+                    "default": False,
+                }),
+                "hdr": ("BOOLEAN", {
+                    "tooltip": "HDR output. Requires 720p/1080p; incompatible with 10s or loop. Bills at a higher rate. Only used when 'Use HDR' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "useExrExport": ("BOOLEAN", {
+                    "tooltip": "Enable to include exrExport in video inference settings.",
+                    "default": False,
+                }),
+                "exrExport": ("BOOLEAN", {
+                    "tooltip": "Export EXR. Requires hdr to be true. Only used when 'Use EXR Export' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
+                "edit": ("RUNWAREVIDEOINFERENCESETTINGSEDIT", {
+                    "tooltip": "Connect Runware Video Inference Settings Edit for settings.edit (autoControls, strength, controls).",
+                }),
+                "sourcePosition": ("RUNWAREVIDEOINFERENCESETTINGSSOURCEPOSITION", {
+                    "tooltip": "Connect Runware Video Inference Settings Source Position for settings.sourcePosition (width, height, x, y). Requires inputs.video and output width/height.",
+                }),
             }
         }
 
@@ -263,7 +299,7 @@ class RunwareVideoSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure video inference settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
+        "Configure video inference settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, loop, hdr, exrExport, edit, sourcePosition, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
         "Connect to Runware Video Inference node."
     )
 
@@ -279,6 +315,12 @@ class RunwareVideoSettings:
         source_audio_sync = kwargs.get("sourceAudioSync", True)
         use_turbo = kwargs.get("useTurbo", False)
         turbo = kwargs.get("turbo", False)
+        use_loop = kwargs.get("useLoop", False)
+        loop = kwargs.get("loop", False)
+        use_hdr = kwargs.get("useHdr", False)
+        hdr = kwargs.get("hdr", False)
+        use_exr_export = kwargs.get("useExrExport", False)
+        exr_export = kwargs.get("exrExport", False)
         use_voice_prompt = kwargs.get("useVoicePrompt", False)
         voice_prompt = (kwargs.get("voicePrompt") or "").strip()
         use_safety_filter = kwargs.get("useSafetyFilter", False)
@@ -322,6 +364,8 @@ class RunwareVideoSettings:
         use_keyframe_id = kwargs.get("useKeyframeId", False)
         keyframe_id = kwargs.get("keyframeId", 0)
         segments_cfg = kwargs.get("segments", None)
+        edit_cfg = kwargs.get("edit", None)
+        source_position_cfg = kwargs.get("sourcePosition", None)
 
         settings: Dict[str, Any] = {}
 
@@ -335,6 +379,12 @@ class RunwareVideoSettings:
             settings["sourceAudioSync"] = bool(source_audio_sync)
         if use_turbo:
             settings["turbo"] = bool(turbo)
+        if use_loop:
+            settings["loop"] = bool(loop)
+        if use_hdr:
+            settings["hdr"] = bool(hdr)
+        if use_exr_export:
+            settings["exrExport"] = bool(exr_export)
         if use_voice_prompt and voice_prompt:
             settings["voicePrompt"] = voice_prompt
         if use_safety_filter:
@@ -382,6 +432,10 @@ class RunwareVideoSettings:
             settings["activeSpeakerDetection"] = active_speaker_cfg
         if segments_cfg is not None and isinstance(segments_cfg, list) and len(segments_cfg) > 0:
             settings["segments"] = segments_cfg
+        if edit_cfg is not None and isinstance(edit_cfg, dict) and len(edit_cfg) > 0:
+            settings["edit"] = edit_cfg
+        if source_position_cfg is not None and isinstance(source_position_cfg, dict) and len(source_position_cfg) > 0:
+            settings["sourcePosition"] = source_position_cfg
 
         return (settings,)
 
