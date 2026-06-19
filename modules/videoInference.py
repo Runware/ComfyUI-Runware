@@ -304,6 +304,7 @@ class txt2vid:
                 "model": model,
                 "outputFormat": outputFormat,
                 "includeCost": True,
+                "deliveryMethod": "async",
             }
         ]
         
