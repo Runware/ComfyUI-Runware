@@ -1,6 +1,6 @@
 """
 Runware Video Inference Settings Node
-Provides settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, loop, hdr, exrExport, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
+Provides settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, loop, hdr, exrExport, edit, sourcePosition, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference.
 """
 
 from typing import Dict, Any
@@ -188,12 +188,6 @@ class RunwareVideoSettings:
                 "segments": ("RUNWAREVIDEOINFERENCESETTINGSSEGMENTS", {
                     "tooltip": "Connect Runware Video Inference Settings Segments for settings.segments[] (startTime, endTime, audio, audioStartTime, audioEndTime).",
                 }),
-                "edit": ("RUNWAREVIDEOINFERENCESETTINGSEDIT", {
-                    "tooltip": "Connect Runware Video Inference Settings Edit for settings.edit (autoControls, strength, controls).",
-                }),
-                "sourcePosition": ("RUNWAREVIDEOINFERENCESETTINGSSOURCEPOSITION", {
-                    "tooltip": "Connect Runware Video Inference Settings Source Position for settings.sourcePosition (width, height, x, y). Requires inputs.video and output width/height.",
-                }),
                 "useVoicePrompt": ("BOOLEAN", {
                     "tooltip": "Enable to include voicePrompt (delivery style instructions) in video inference settings.",
                     "default": False,
@@ -291,6 +285,12 @@ class RunwareVideoSettings:
                     "label_on": "Enabled",
                     "label_off": "Disabled",
                 }),
+                "edit": ("RUNWAREVIDEOINFERENCESETTINGSEDIT", {
+                    "tooltip": "Connect Runware Video Inference Settings Edit for settings.edit (autoControls, strength, controls).",
+                }),
+                "sourcePosition": ("RUNWAREVIDEOINFERENCESETTINGSSOURCEPOSITION", {
+                    "tooltip": "Connect Runware Video Inference Settings Source Position for settings.sourcePosition (width, height, x, y). Requires inputs.video and output width/height.",
+                }),
             }
         }
 
@@ -299,7 +299,7 @@ class RunwareVideoSettings:
     FUNCTION = "createSettings"
     CATEGORY = "Runware"
     DESCRIPTION = (
-        "Configure video inference settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, loop, hdr, exrExport, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
+        "Configure video inference settings (draft, audio, voicePrompt, safetyFilter, promptUpsampling, voiceDescription, style, thinking, multiClip, shotType, promptExtend, syncMode, mode, emotion, temperature, occlusionDetection, fit, caption, loop, hdr, exrExport, edit, sourcePosition, tts, activeSpeakerDetection, segments, etc.) for Runware Video Inference. "
         "Connect to Runware Video Inference node."
     )
 
