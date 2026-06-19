@@ -191,6 +191,9 @@ def getRunwareWsHeaders():
         f"X-SDK-Version: {__version__}",
     ]
 
+WS_CONNECT_TIMEOUT = 10
+WS_READ_TIMEOUT = 1
+
 SESSION_TIMEOUT = getTimeout()
 RUNWARE_API_KEY = getAPIKey()
 OUTPUT_FORMAT = getOutputFormat()
@@ -198,6 +201,11 @@ OUTPUT_QUALITY = getOutputQuality()
 ENABLE_IMAGES_CACHING = getEnableImagesCaching()
 MIN_IMAGE_CACHE_SIZE = getMinImageCacheSize()
 RUNWARE_API_BASE_URL = getCustomEndpoint()
+
+def refreshRunwareEndpoint():
+    global RUNWARE_API_BASE_URL
+    RUNWARE_API_BASE_URL = getCustomEndpoint()
+    return RUNWARE_API_BASE_URL
 
 def setEnvKey(keyName, keyValue):
     comfyNodeRoot = Path(__file__).parent.parent.parent
@@ -327,10 +335,10 @@ class RunwareWebSocketClient:
         self._stop_reader.clear()
         self._ws = websocket.create_connection(
             url,
-            timeout=10,
+            timeout=WS_CONNECT_TIMEOUT,
             header=getRunwareWsHeaders(),
         )
-        self._ws.settimeout(None)
+        self._ws.settimeout(WS_READ_TIMEOUT)
         self._reader_thread = threading.Thread(
             target=self._reader_loop,
             name="RunwareWebSocketReader",
@@ -548,7 +556,7 @@ def checkAPIKeyWithWebSocket(apiKey):
     try:
         ws = websocket.create_connection(
             url,
-            timeout=10,
+            timeout=WS_CONNECT_TIMEOUT,
             header=getRunwareWsHeaders(),
         )
         ws.send(json.dumps([{"taskType": "authentication", "apiKey": apiKey}]))
@@ -568,7 +576,8 @@ def checkAPIKeyWithWebSocket(apiKey):
 
 
 def checkAPIKey(apiKey):
-    if usesWebSocketTransport():
+    endpoint = refreshRunwareEndpoint()
+    if usesWebSocketTransport(endpoint):
         return checkAPIKeyWithWebSocket(apiKey)
 
     headers = getRunwareApiHeaders(include_auth=False)
@@ -672,12 +681,12 @@ def sendVideoOutputs(draftId, videoId, nodeID):
     )
 
 def inferenecRequest(genConfig):
-    global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
+    global RUNWARE_API_KEY, SESSION_TIMEOUT
     RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY")
     SESSION_TIMEOUT = int(os.getenv("RUNWARE_TIMEOUT"))
-    RUNWARE_API_BASE_URL = getCustomEndpoint()
+    endpoint = refreshRunwareEndpoint()
 
-    if usesWebSocketTransport(RUNWARE_API_BASE_URL):
+    if usesWebSocketTransport(endpoint):
         try:
             genResult = _get_ws_client().request(genConfig, timeout=SESSION_TIMEOUT)
         except TimeoutError:
@@ -1060,8 +1069,7 @@ def convertVideoB64List(videoDataObject, width=None, height=None):
 
 def pollVideoResult(taskUUID):
     """Poll async task result with taskType getResponse (video, audio, text inference, etc.)."""
-    global RUNWARE_API_KEY, RUNWARE_API_BASE_URL, SESSION_TIMEOUT
-    RUNWARE_API_BASE_URL = getCustomEndpoint()
+    endpoint = refreshRunwareEndpoint()
 
     pollConfig = [
         {
@@ -1070,7 +1078,7 @@ def pollVideoResult(taskUUID):
         }
     ]
 
-    if usesWebSocketTransport(RUNWARE_API_BASE_URL):
+    if usesWebSocketTransport(endpoint):
         try:
             pollResult = _get_ws_client().request(pollConfig, timeout=30)
         except Exception as e:
