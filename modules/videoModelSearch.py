@@ -81,7 +81,7 @@ class videoModelSearch:
             "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
             "alibaba:wan@2.7 (Wan 2.7)",
             "alibaba:happyhorse@1.0 (Alibaba Happy Horse 1.0)",
-            "alibaba:happyhorse@1.1 (Alibaba HappyHorse 1.1)",
+            "alibaba:happyhorse@1.1 (Alibaba Happy Horse 1.1)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)",
