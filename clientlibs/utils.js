@@ -2966,6 +2966,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
             "alibaba:wan@2.7 (Wan 2.7)",
             "alibaba:happyhorse@1.0 (Alibaba Happy Horse 1.0)",
+            "alibaba:happyhorse@1.1 (Alibaba HappyHorse 1.1)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)", "openai:3@0 (OpenAI Sora 3.0)",
@@ -3099,6 +3100,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "alibaba:wan@2.6-flash": {"width": 1280, "height": 720},
         "alibaba:wan@2.7": {"width": 1280, "height": 720},
         "alibaba:happyhorse@1.0": {"width": 1280, "height": 720},
+        "alibaba:happyhorse@1.1": {"width": 1280, "height": 720},
         "openai:3@1": {"width": 1280, "height": 720},
         "openai:3@0": {"width": 1280, "height": 720},
         "lightricks:2@0": {"width": 1920, "height": 1080},
@@ -3205,6 +3207,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "alibaba:wan@2.6-flash": "720p",
         "alibaba:wan@2.7": "720p",
         "alibaba:happyhorse@1.0": "720p",
+        "alibaba:happyhorse@1.1": "720p",
         "openai:3@1": "720p",
         "openai:3@0": "720p",
         "lightricks:2@0": "1080p",
