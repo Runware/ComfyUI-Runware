@@ -81,6 +81,7 @@ class videoModelSearch:
             "alibaba:wan@2.6-flash (Wan 2.6 Flash)",
             "alibaba:wan@2.7 (Wan 2.7)",
             "alibaba:happyhorse@1.0 (Alibaba Happy Horse 1.0)",
+            "alibaba:happyhorse@1.1 (Alibaba Happy Horse 1.1)",
         ],
         "OpenAI": [
             "openai:3@1 (OpenAI Sora 3.1)",
@@ -232,6 +233,7 @@ class videoModelSearch:
         "alibaba:wan@2.6-flash": {"width": 1280, "height": 720},
         "alibaba:wan@2.7": {"width": 1280, "height": 720},
         "alibaba:happyhorse@1.0": {"width": 1280, "height": 720},
+        "alibaba:happyhorse@1.1": {"width": 1280, "height": 720},
         
         # OpenAI Models
         "openai:3@1": {"width": 1280, "height": 720},
@@ -382,6 +384,7 @@ class videoModelSearch:
         "alibaba:wan@2.6-flash": "720p",
         "alibaba:wan@2.7": "720p",
         "alibaba:happyhorse@1.0": "720p",
+        "alibaba:happyhorse@1.1": "720p",
         
         # OpenAI Models
         "openai:3@1": "720p",
