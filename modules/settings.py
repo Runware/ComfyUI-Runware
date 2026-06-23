@@ -8,7 +8,7 @@ magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/hi
 moodboards (from Runware Image Inference Settings Moodboards),
 structuredPrompt (from Runware Image Inference Settings Structured Prompt; Ideogram 4.0),
 and promptEnhance (from Runware Image Inference Settings Prompt Enhance),
-preserveInputSize (return output at original input resolution).
+preserveInputSize (return output at original input resolution), turbo.
 """
 
 import json
@@ -297,6 +297,16 @@ class RunwareSettings:
                         "Only used when 'Use Preserve Input Size' is enabled."
                     ),
                 }),
+                "useTurbo": ("BOOLEAN", {
+                    "tooltip": "Enable to include turbo in settings.",
+                    "default": False,
+                }),
+                "turbo": ("BOOLEAN", {
+                    "tooltip": "Turbo mode flag. Only used when 'Use Turbo' is enabled.",
+                    "default": False,
+                    "label_on": "Enabled",
+                    "label_off": "Disabled",
+                }),
             }
         }
 
@@ -309,7 +319,7 @@ class RunwareSettings:
         "backgroundMode (original/transparent/solid), backgroundColor, enhancePrompt, scoringPrompt, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (low/medium/high/xhigh), sequential, "
         "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, "
-        "creativity (raw/low/medium/high), preserveInputSize, and optional colorPalette, moodboards, structuredPrompt, promptEnhance, "
+        "creativity (raw/low/medium/high), preserveInputSize, turbo, and optional colorPalette, moodboards, structuredPrompt, promptEnhance, "
         "and scoringRubric from dedicated settings nodes."
     )
 
@@ -343,6 +353,7 @@ class RunwareSettings:
         useAutoCrop = kwargs.get("useAutoCrop", False)
         useDilatePixels = kwargs.get("useDilatePixels", False)
         useCreativity = kwargs.get("useCreativity", False)
+        useTurbo = kwargs.get("useTurbo", False)
 
         # Get value parameters
         temperature = kwargs.get("temperature", 1.0)
@@ -464,6 +475,8 @@ class RunwareSettings:
             if creativity not in ("raw", "low", "medium", "high"):
                 raise ValueError("creativity must be raw, low, medium, or high when useCreativity is enabled.")
             settings["creativity"] = creativity
+        if useTurbo:
+            settings["turbo"] = bool(kwargs.get("turbo", False))
 
         # Clean up None values
         settings = {k: v for k, v in settings.items() if v is not None}

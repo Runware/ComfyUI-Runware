@@ -5536,6 +5536,8 @@ function settingsToggleHandler(settingsNode) {
     const copyrightDetectionWidget = settingsNode.widgets.find(w => w.name === "copyrightDetection");
     const usePreserveInputSizeWidget = settingsNode.widgets.find(w => w.name === "usePreserveInputSize");
     const preserveInputSizeWidget = settingsNode.widgets.find(w => w.name === "preserveInputSize");
+    const useTurboWidget = settingsNode.widgets.find(w => w.name === "useTurbo");
+    const turboWidget = settingsNode.widgets.find(w => w.name === "turbo");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5654,6 +5656,9 @@ function settingsToggleHandler(settingsNode) {
     }
     if (usePreserveInputSizeWidget && preserveInputSizeWidget) {
         toggleWidgetState(usePreserveInputSizeWidget, preserveInputSizeWidget, "preserveInputSize");
+    }
+    if (useTurboWidget && turboWidget) {
+        toggleWidgetState(useTurboWidget, turboWidget, "turbo");
     }
 }
 
