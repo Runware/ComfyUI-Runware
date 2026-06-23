@@ -44,6 +44,7 @@ class videoModelSearch:
             "bytedance:seedance@1.5-pro (Seedance 1.5 Pro)",
             "bytedance:seedance@2.0-fast (Seedance 2.0 Fast)",
             "bytedance:seedance@2.0 (Seedance 2.0)",
+            "bytedance:seedance@2.0-mini (Seedance 2.0 Mini)",
         ],
         "MiniMax": [
             "minimax:1@1 (MiniMax 01 Base)",
@@ -196,6 +197,7 @@ class videoModelSearch:
         "bytedance:seedance@1.5-pro": {"width": 864, "height": 496},
         "bytedance:seedance@2.0-fast": {"width": 864, "height": 496},
         "bytedance:seedance@2.0": {"width": 864, "height": 496},
+        "bytedance:seedance@2.0-mini": {"width": 864, "height": 496},
         
         # MiniMax Models
         "minimax:1@1": {"width": 1366, "height": 768},
@@ -347,6 +349,7 @@ class videoModelSearch:
         "bytedance:seedance@1.5-pro": "480p",
         "bytedance:seedance@2.0-fast": "480p",
         "bytedance:seedance@2.0": "480p",
+        "bytedance:seedance@2.0-mini": "480p",
         
         # MiniMax Models (support both 768p and 720p, using 768p as primary)
         "minimax:1@1": "768p",

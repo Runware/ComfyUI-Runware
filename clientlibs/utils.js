@@ -2942,6 +2942,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "bytedance:seedance@1.5-pro (Seedance 1.5 Pro)",
             "bytedance:seedance@2.0-fast (Seedance 2.0 Fast)",
             "bytedance:seedance@2.0 (Seedance 2.0)",
+            "bytedance:seedance@2.0-mini (Seedance 2.0 Mini)",
         ],
         "MiniMax": [
             "minimax:1@1 (MiniMax 01 Base)", "minimax:2@1 (MiniMax 01 Director)",
@@ -3071,6 +3072,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:seedance@1.5-pro": {"width": 864, "height": 496},
         "bytedance:seedance@2.0-fast": {"width": 864, "height": 496},
         "bytedance:seedance@2.0": {"width": 864, "height": 496},
+        "bytedance:seedance@2.0-mini": {"width": 864, "height": 496},
         "minimax:1@1": {"width": 1366, "height": 768},
         "minimax:2@1": {"width": 1366, "height": 768},
         "minimax:2@3": {"width": 1366, "height": 768},
@@ -3178,6 +3180,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "bytedance:seedance@1.5-pro": "480p",
         "bytedance:seedance@2.0-fast": "480p",
         "bytedance:seedance@2.0": "480p",
+        "bytedance:seedance@2.0-mini": "480p",
         "minimax:1@1": "768p",
         "minimax:2@1": "768p",
         "minimax:2@3": "768p",
