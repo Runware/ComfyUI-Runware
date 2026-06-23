@@ -8,7 +8,8 @@ magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, creativity (raw/low/medium/hi
 moodboards (from Runware Image Inference Settings Moodboards),
 structuredPrompt (from Runware Image Inference Settings Structured Prompt; Ideogram 4.0),
 and promptEnhance (from Runware Image Inference Settings Prompt Enhance),
-preserveInputSize (return output at original input resolution), turbo.
+preserveInputSize (return output at original input resolution),
+and turbo (faster generation for slightly lower quality).
 """
 
 import json
@@ -302,10 +303,10 @@ class RunwareSettings:
                     "default": False,
                 }),
                 "turbo": ("BOOLEAN", {
-                    "tooltip": "Turbo mode flag. Only used when 'Use Turbo' is enabled.",
+                    "tooltip": "Turbo mode: faster generation for slightly lower quality. Only used when 'Use Turbo' is enabled.",
                     "default": False,
-                    "label_on": "Enabled",
-                    "label_off": "Disabled",
+                    "label_on": "true",
+                    "label_off": "false",
                 }),
             }
         }
@@ -319,7 +320,7 @@ class RunwareSettings:
         "backgroundMode (original/transparent/solid), backgroundColor, enhancePrompt, scoringPrompt, background, style, search, "
         "promptExtend, editRegions (JSON), thinking (boolean), thinkingLevel (low/medium/high/xhigh), sequential, "
         "renderingSpeed (TURBO/DEFAULT/QUALITY), magicPrompt (AUTO/ON/OFF), autoCrop, dilatePixels, "
-        "creativity (raw/low/medium/high), preserveInputSize, turbo, and optional colorPalette, moodboards, structuredPrompt, promptEnhance, "
+        "creativity (raw/low/medium/high), preserveInputSize, turbo (faster generation for slightly lower quality), and optional colorPalette, moodboards, structuredPrompt, promptEnhance, "
         "and scoringRubric from dedicated settings nodes."
     )
 
