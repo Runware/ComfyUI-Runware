@@ -31,7 +31,7 @@ class txt2img:
                     "tooltip": "Prompt weighting allows you to adjust how strongly different parts of your prompt influence the generated image.\n\nChoose between \"compel\" notation with advanced weighting operations or \"sdEmbeds\" for simple emphasis adjustments.\n\nCompel Example: \"small+ dog, pixar style\"\n\nsdEmbeds Example: \"(small:2.5) dog, pixar style\"",
                 }),
                 "dimensions": ([
-                    "None", "Square (512x512)", "Square HD (1024x1024)", "Portrait 3:4 (768x1024)",
+                    "None", "Square (512x512)", "Square HD (1024x1024)", "Square 2K (2048x2048)", "Portrait 3:4 (768x1024)",
                     "Portrait 9:16 (576x1024)", "Landscape 4:3 (1024x768)",
                     "Landscape 16:9 (1024x576)",
                     "Custom"
