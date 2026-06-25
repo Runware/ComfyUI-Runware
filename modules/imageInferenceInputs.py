@@ -16,6 +16,9 @@ class imageInferenceInputs:
             "mask": ("IMAGE", {
                 "tooltip": "Optional mask image for the inference process."
             }),
+            "seedImage": ("IMAGE", {
+                "tooltip": "Optional seed image for the inference process"
+            }),
         }
         
         for i in range(1, cls.MAX_REFERENCE_IMAGES + 1):
@@ -59,7 +62,7 @@ class imageInferenceInputs:
         }
 
     DESCRIPTION = (
-        "Configure custom inputs for Runware Image Inference, including image/mask, reference images "
+        "Configure custom inputs for Runware Image Inference, including image/mask/seedImage, reference images "
         "(with optional tag, role, type e.g. 'sketch' for illustrative style models, and strength 0-1 for sketch), "
         "super resolution references, and font references (inputs.fonts)."
     )
@@ -72,6 +75,7 @@ class imageInferenceInputs:
         """Create image inference inputs from provided parameters"""
         image = kwargs.get("image", None)
         mask = kwargs.get("mask", None)
+        seedImage = kwargs.get("seedImage", None)
 
         inputs = {}
         
@@ -79,6 +83,8 @@ class imageInferenceInputs:
             inputs["image"] = rwUtils.convertTensor2IMG(image)
         if mask is not None:
             inputs["mask"] = rwUtils.convertTensor2IMG(mask)
+        if seedImage is not None:
+            inputs["seedImage"] = rwUtils.convertTensor2IMG(seedImage)
 
         references = self._collectReferences(kwargs)
         if len(references) > 0:

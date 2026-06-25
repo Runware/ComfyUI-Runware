@@ -3,6 +3,7 @@ const DEFAULT_BGCOLOR = "#5345bf";
 const DEFAULT_DIMENSIONS_LIST = {
     "Square (512x512)": "512x512",
     "Square HD (1024x1024)": "1024x1024",
+    "Square 2K (2048x2048)": "2048x2048",
     "Portrait 3:4 (768x1024)": "768x1024",
     "Portrait 9:16 (576x1024)": "576x1024",
     "Landscape 4:3 (1024x768)": "1024x768",
