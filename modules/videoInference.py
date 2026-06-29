@@ -180,16 +180,6 @@ class txt2vid:
                     "tooltip": "Applies optimized acceleration presets that automatically configure multiple generation parameters for the best speed and quality balance. This parameter serves as an abstraction layer that intelligently adjusts acceleratorOptions, steps, scheduler, and other underlying settings.\n\nAvailable values:\n- none: No acceleration applied, uses default parameter values.\n- low: Minimal acceleration with optimized settings for lowest quality loss.\n- medium: Balanced acceleration preset with moderate speed improvements.\n- high: Maximum acceleration with caching and aggressive optimizations for fastest generation.",
                     "default": "none",
                 }),
-                "useTtl": ("BOOLEAN", {
-                    "tooltip": "Enable to include ttl parameter in API request. Sets output URL retention time in seconds (requires outputType URL).",
-                    "default": False,
-                }),
-                "ttl": ("INT", {
-                    "tooltip": "Time-to-live in seconds for generated video URLs. Only used when 'Use TTL' is enabled. Minimum 60.",
-                    "default": 604800,
-                    "min": 60,
-                    "max": 2592000,
-                }),
             },
             "optional": {
                 "positivePrompt": ("STRING", {
@@ -237,6 +227,16 @@ class txt2vid:
                 }),
                 "lora": ("RUNWAREVIDEOINFERENCELORA", {
                     "tooltip": "Connect a Runware Video Inference Lora node to apply LoRA models (e.g. for LTX video models).",
+                }),
+                "useTtl": ("BOOLEAN", {
+                    "tooltip": "Enable to include ttl parameter in API request. Sets output URL retention time in seconds (requires outputType URL).",
+                    "default": False,
+                }),
+                "ttl": ("INT", {
+                    "tooltip": "Time-to-live in seconds for generated video URLs. Only used when 'Use TTL' is enabled. Minimum 60.",
+                    "default": 604800,
+                    "min": 60,
+                    "max": 2592000,
                 }),
             }
         }
