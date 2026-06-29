@@ -228,6 +228,16 @@ class txt2vid:
                 "lora": ("RUNWAREVIDEOINFERENCELORA", {
                     "tooltip": "Connect a Runware Video Inference Lora node to apply LoRA models (e.g. for LTX video models).",
                 }),
+                "useTtl": ("BOOLEAN", {
+                    "tooltip": "Enable to include ttl parameter in API request. Sets output URL retention time in seconds.",
+                    "default": False,
+                }),
+                "ttl": ("INT", {
+                    "tooltip": "Time-to-live in seconds for generated video URLs. Only used when 'Use TTL' is enabled. Minimum 60.",
+                    "default": 604800,
+                    "min": 60,
+                    "max": 2592000,
+                }),
             }
         }
 
@@ -282,6 +292,8 @@ class txt2vid:
         useCFGScale = kwargs.get("useCFGScale", False)
         cfgScale = kwargs.get("cfgScale", 5.0)
         acceleration = kwargs.get("acceleration", "none")
+        useTtl = kwargs.get("useTtl", False)
+        ttl = kwargs.get("ttl", 604800)
         
         # Handle model input - could be dict or string
         if isinstance(runwareVideoModel, dict):
@@ -447,6 +459,10 @@ class txt2vid:
         # Add acceleration if not "none"
         if acceleration and acceleration != "none":
             genConfig[0]["acceleration"] = acceleration
+
+        # Add TTL for output URL retention (requires outputType URL)
+        if useTtl:
+            genConfig[0]["ttl"] = int(ttl)
 
         if (multiInferenceMode):
             return (None, genConfig, None)
