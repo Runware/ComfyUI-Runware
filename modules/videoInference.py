@@ -229,7 +229,7 @@ class txt2vid:
                     "tooltip": "Connect a Runware Video Inference Lora node to apply LoRA models (e.g. for LTX video models).",
                 }),
                 "useTtl": ("BOOLEAN", {
-                    "tooltip": "Enable to include ttl parameter in API request. Sets output URL retention time in seconds (requires outputType URL).",
+                    "tooltip": "Enable to include ttl parameter in API request. Sets output URL retention time in seconds.",
                     "default": False,
                 }),
                 "ttl": ("INT", {
@@ -463,7 +463,6 @@ class txt2vid:
         # Add TTL for output URL retention (requires outputType URL)
         if useTtl:
             genConfig[0]["ttl"] = int(ttl)
-            genConfig[0]["outputType"] = "URL"
 
         if (multiInferenceMode):
             return (None, genConfig, None)
