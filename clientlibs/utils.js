@@ -820,6 +820,7 @@ function useParameterToggleHandler(node) {
         "useFps": ["fps"],
         "useSchedulers": ["scheduler"],
         "useCFGScale": ["cfgScale"],
+        "useTtl": ["ttl"],
         // useSteps and useSeed are same as image inference, handled by fallback
         
         // Upscaler specific mappings (override for nodes that have CFGScale with capital C)
@@ -2822,6 +2823,8 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     const schedulerWidget = videoInferenceNode.widgets.find(w => w.name === "scheduler");
     const useCFGScaleWidget = videoInferenceNode.widgets.find(w => w.name === "useCFGScale");
     const cfgScaleWidget = videoInferenceNode.widgets.find(w => w.name === "cfgScale");
+    const useTtlWidget = videoInferenceNode.widgets.find(w => w.name === "useTtl");
+    const ttlWidget = videoInferenceNode.widgets.find(w => w.name === "ttl");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -2896,6 +2899,10 @@ function videoInferenceDimensionsHandler(videoInferenceNode) {
     
     if (useCFGScaleWidget && cfgScaleWidget) {
         toggleWidgetState(useCFGScaleWidget, cfgScaleWidget, "cfgScale");
+    }
+
+    if (useTtlWidget && ttlWidget) {
+        toggleWidgetState(useTtlWidget, ttlWidget, "ttl");
     }
 }
 
@@ -3018,6 +3025,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "runware:210@1 (Kandinsky 5.0 Lite)",
         ],
         "xAI": [
+            "xai:grok-imagine@video-1.5 (Grok Imagine Video 1.5)",
             "xai:grok-imagine@video-1.5-preview (Grok Imagine Video 1.5 Preview)",
             "xai:grok-imagine@video (Grok Imagine Video)",
         ],
@@ -3130,6 +3138,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@0": {"width": 1280, "height": 720},
         "runware:hunyuanvideo@1.5": {"width": 848, "height": 480},
         "runware:210@1": {"width": 512, "height": 512},
+        "xai:grok-imagine@video-1.5": {"width": 480, "height": 480},
         "xai:grok-imagine@video-1.5-preview": {"width": 480, "height": 480},
         "xai:grok-imagine@video": {"width": 480, "height": 480},
         "veed:fabric@1.0": {"width": 1280, "height": 720},
@@ -3238,6 +3247,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "creatify:aurora@0": "720p",
         "runware:hunyuanvideo@1.5": "480p",
         "runware:210@1": null,  // No resolution support (fixed 512x512)
+        "xai:grok-imagine@video-1.5": "480p",
         "xai:grok-imagine@video-1.5-preview": "480p",
         "xai:grok-imagine@video": "480p",
         "veed:fabric@1.0": "720p",
