@@ -27,6 +27,9 @@ class RunwareAudioModelSearch:
             "alibaba:qwen@3-tts-1.7b-customvoice (Qwen3 TTS 1.7B Custom Voice)",
             "alibaba:qwen@3-tts-1.7b-base (Qwen3 TTS 1.7B Base)",
         ],
+        "Bytedance": [
+            "bytedance:seed-audio@1.0 (Seed Audio 1.0)",
+        ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
             "runware:dia2@2b (Dia2 2B)",
@@ -59,6 +62,7 @@ class RunwareAudioModelSearch:
         "Mirelo",
         "Ace",
         "Alibaba",
+        "Bytedance",
         "Dia",
         "xAI",
         "MiniMax",

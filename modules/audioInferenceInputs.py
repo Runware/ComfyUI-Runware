@@ -7,6 +7,8 @@ class audioInferenceInputs:
     
     MAX_VIDEOS = 4
     MAX_AUDIOS = 4
+    MAX_REFERENCE_IMAGES = 4
+    MAX_REFERENCE_AUDIOS = 4
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -53,6 +55,23 @@ class audioInferenceInputs:
                 "default": "",
             })
 
+        for i in range(1, cls.MAX_REFERENCE_IMAGES + 1):
+            ordinal = rwUtils.getOrdinal(i)
+            optionalInputs[f"Reference Image {i}"] = ("IMAGE", {
+                "tooltip": f"Optional {ordinal} reference image for audio inference (inputs.referenceImages).",
+            })
+
+        optionalInputs["useReferenceAudios"] = ("BOOLEAN", {
+            "tooltip": "Enable to include reference audios in API request (inputs.referenceAudios array).",
+            "default": False,
+        })
+        for i in range(1, cls.MAX_REFERENCE_AUDIOS + 1):
+            ordinal = rwUtils.getOrdinal(i)
+            optionalInputs[f"Reference Audio {i}"] = ("STRING", {
+                "tooltip": f"Audio URL or mediaUUID for the {ordinal} reference audio (inputs.referenceAudios).",
+                "default": "",
+            })
+
         optionalInputs["Reference Voice"] = ("RUNWAREAUDIOINFERENCEREFERENCEVOICES", {
             "tooltip": "Connect Runware Audio Inference Inputs Reference Audio for zero-shot voice cloning (inputs.referenceVoices).",
         })
@@ -65,7 +84,8 @@ class audioInferenceInputs:
     DESCRIPTION = (
         "Configure custom inputs for Runware Audio Inference, including optional single or multiple audio URL/mediaUUID "
         "(inputs.audio or inputs.audios), reference voice for cloning (inputs.referenceVoices), "
-        "and single or multiple video inputs for audio extraction or generation."
+        "single or multiple video inputs for audio extraction or generation, up to 4 reference images "
+        "(inputs.referenceImages), and up to 4 reference audios (inputs.referenceAudios)."
     )
     FUNCTION = "createInputs"
     RETURN_TYPES = ("RUNWAREAUDIOINFERENCEINPUTS",)
@@ -80,6 +100,7 @@ class audioInferenceInputs:
         useVideo = kwargs.get("useVideo", False)
         video = kwargs.get("Video", None)
         useVideos = kwargs.get("useVideos", False)
+        useReferenceAudios = kwargs.get("useReferenceAudios", False)
         referenceVoices = kwargs.get("Reference Voice", None)
         
         inputs = {}
@@ -115,6 +136,23 @@ class audioInferenceInputs:
             
             if len(videoList) > 0:
                 inputs["videos"] = videoList
+
+        referenceImages = []
+        for i in range(1, self.MAX_REFERENCE_IMAGES + 1):
+            image = kwargs.get(f"Reference Image {i}", None)
+            if image is not None:
+                referenceImages.append(rwUtils.convertTensor2IMG(image))
+        if len(referenceImages) > 0:
+            inputs["referenceImages"] = referenceImages
+
+        if useReferenceAudios:
+            referenceAudios = []
+            for i in range(1, self.MAX_REFERENCE_AUDIOS + 1):
+                audioUrl = kwargs.get(f"Reference Audio {i}", None)
+                if audioUrl and isinstance(audioUrl, str) and audioUrl.strip() != "":
+                    referenceAudios.append(audioUrl.strip())
+            if len(referenceAudios) > 0:
+                inputs["referenceAudios"] = referenceAudios
 
         if referenceVoices is not None and isinstance(referenceVoices, list) and len(referenceVoices) > 0:
             inputs["referenceVoices"] = referenceVoices

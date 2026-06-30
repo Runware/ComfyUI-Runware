@@ -23,8 +23,8 @@ class RunwareAudioInferenceSpeech:
             "required": {
                 "text": ("STRING", {
                     "multiline": True,
-                    "default": "Hello, this is a test of the speech synthesis model.",
-                    "tooltip": "Text to synthesize as speech (speech.text)",
+                    "default": "",
+                    "tooltip": "Text to synthesize as speech (speech.text). Optional when positivePrompt on Runware Audio Inference carries the script (e.g. Seed Audio).",
                 }),
             },
             "optional": {
@@ -38,19 +38,19 @@ class RunwareAudioInferenceSpeech:
                 }),
                 "useSpeed": ("BOOLEAN", {"default": False, "tooltip": "Include speed (speech.speed)"}),
                 "speed": ("FLOAT", {
-                    "default": 1.0,
-                    "min": 0.5,
+                    "default": 0.0,
+                    "min": 0.0,
                     "max": 2.0,
                     "step": 0.01,
-                    "tooltip": "Speech rate multiplier (speech.speed)",
+                    "tooltip": "Speech rate adjustment (speech.speed). 0 = no change for Seed Audio.",
                 }),
                 "useVolume": ("BOOLEAN", {"default": False, "tooltip": "Include volume (speech.volume)"}),
                 "volume": ("FLOAT", {
-                    "default": 1.0,
-                    "min": 1.0,
+                    "default": 0.0,
+                    "min": 0.0,
                     "max": 10.0,
                     "step": 0.1,
-                    "tooltip": "Volume level 1-10 (speech.volume)",
+                    "tooltip": "Volume adjustment (speech.volume). 0 = no change.",
                 }),
                 "usePitch": ("BOOLEAN", {"default": False, "tooltip": "Include pitch (speech.pitch)"}),
                 "pitch": ("FLOAT", {
@@ -111,10 +111,12 @@ class RunwareAudioInferenceSpeech:
         language = (kwargs.get("language") or "Auto").strip()
         voices = kwargs.get("voices")
 
-        speech: Dict[str, Any] = {"text": text}
+        speech: Dict[str, Any] = {}
+        if text:
+            speech["text"] = text
         if isinstance(voices, list) and len(voices) > 0:
             speech["voices"] = voices
-        elif use_voice:
+        elif use_voice and voice:
             speech["voice"] = voice
         if use_speed:
             speech["speed"] = speed
@@ -131,8 +133,6 @@ class RunwareAudioInferenceSpeech:
         if use_language:
             speech["language"] = language
 
-        if not text:
-            return ({},)
         return (speech,)
 
 

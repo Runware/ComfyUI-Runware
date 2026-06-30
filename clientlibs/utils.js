@@ -3601,6 +3601,9 @@ function audioModelSearchFilterHandler(audioModelSearchNode) {
             "alibaba:qwen@3-tts-1.7b-customvoice (Qwen3 TTS 1.7B Custom Voice)",
             "alibaba:qwen@3-tts-1.7b-base (Qwen3 TTS 1.7B Base)",
         ],
+        "Bytedance": [
+            "bytedance:seed-audio@1.0 (Seed Audio 1.0)",
+        ],
         "Dia": [
             "runware:dia@v1.0 (Dia 1.6B)",
             "runware:dia2@2b (Dia2 2B)",
@@ -4975,6 +4978,7 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
     const videoWidget = audioInputsNode.widgets.find(w => w && w.name === "Video");
     const useVideosWidget = audioInputsNode.widgets.find(w => w && w.name === "useVideos");
     const useAudiosWidget = audioInputsNode.widgets.find(w => w && w.name === "useAudios");
+    const useReferenceAudiosWidget = audioInputsNode.widgets.find(w => w && w.name === "useReferenceAudios");
     
     // Helper function to toggle widget enabled state
     function toggleWidgetState(useWidget, paramWidget, paramName) {
@@ -5135,6 +5139,59 @@ function audioInferenceInputsToggleHandler(audioInputsNode) {
         
         // Initial call to set initial state
         setTimeout(toggleVideosEnabled, 100);
+    }
+
+    // Set up toggle handlers for reference audios (Reference Audio 1 … N; N from widgets, fallback to 4)
+    if (useReferenceAudiosWidget) {
+        function getAudioInferenceReferenceAudioSlotCount() {
+            let max = 0;
+            for (const w of audioInputsNode.widgets) {
+                if (!w?.name) continue;
+                const m = /^Reference Audio (\d+)$/.exec(w.name);
+                if (m) max = Math.max(max, parseInt(m[1], 10));
+            }
+            return max > 0 ? max : 4;
+        }
+
+        function toggleReferenceAudiosEnabled() {
+            const enabled = useReferenceAudiosWidget.value === true;
+            const slotCount = getAudioInferenceReferenceAudioSlotCount();
+
+            for (let i = 1; i <= slotCount; i++) {
+                const refAudioWidget = audioInputsNode.widgets.find(w => w && w.name === `Reference Audio ${i}`);
+                if (refAudioWidget) {
+                    if (refAudioWidget.inputEl) {
+                        refAudioWidget.inputEl.disabled = !enabled;
+                        refAudioWidget.inputEl.style.opacity = enabled ? "1" : "0.5";
+                        refAudioWidget.inputEl.style.cursor = enabled ? "text" : "not-allowed";
+                        refAudioWidget.inputEl.readOnly = !enabled;
+                    }
+
+                    refAudioWidget.disabled = !enabled;
+
+                    if (!refAudioWidget.inputEl) {
+                        const nodeElement = audioInputsNode.htmlElements?.widgetsContainer || audioInputsNode.htmlElements;
+                        if (nodeElement) {
+                            const input = nodeElement.querySelector(`input[name="Reference Audio ${i}"], textarea[name="Reference Audio ${i}"], select[name="Reference Audio ${i}"]`);
+                            if (input) {
+                                input.disabled = !enabled;
+                                input.style.opacity = enabled ? "1" : "0.5";
+                                input.style.cursor = enabled ? "text" : "not-allowed";
+                                input.readOnly = !enabled;
+                            }
+                        }
+                    }
+                }
+            }
+
+            audioInputsNode.setDirtyCanvas(true);
+        }
+
+        appendWidgetCB(useReferenceAudiosWidget, () => {
+            setTimeout(toggleReferenceAudiosEnabled, 50);
+        });
+
+        setTimeout(toggleReferenceAudiosEnabled, 100);
     }
 }
 
