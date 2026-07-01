@@ -2938,10 +2938,11 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
             "klingai:avatar@2.0-standard (KlingAI Avatar 2.0 Standard)",
             "klingai:avatar@2.0-pro (KlingAI Avatar 2.0 Pro)",
         ],
-        "Veo": [
+        "Google": [
             "google:2@0 (Veo 2.0)", "google:3@0 (Veo 3.0)", "google:3@1 (Veo 3.0 Fast)",
             "google:3@2 (Veo 3.1)", "google:3@3 (Veo 3.1 Fast)",
             "google:veo@3.1-lite (Veo 3.1 Lite)",
+            "google:gemini@omni-flash (Gemini Omni Flash)",
         ],
         "Bytedance": [
             "bytedance:2@1 (Seedance 1.0 Pro)", "bytedance:1@1 (Seedance 1.0 Lite)",
@@ -3073,6 +3074,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "google:3@2": {"width": 1280, "height": 720},
         "google:3@3": {"width": 1280, "height": 720},
         "google:veo@3.1-lite": {"width": 1280, "height": 720},
+        "google:gemini@omni-flash": {"width": 1280, "height": 720},
         "bytedance:2@1": {"width": 864, "height": 480},
         "bytedance:1@1": {"width": 864, "height": 480},
         "bytedance:5@1": {"width": 1024, "height": 1024},
@@ -3182,6 +3184,7 @@ function videoModelSearchFilterHandler(videoModelSearchNode) {
         "google:3@2": "720p",
         "google:3@3": "720p",
         "google:veo@3.1-lite": "720p",
+        "google:gemini@omni-flash": "720p",
         "bytedance:2@1": "480p",
         "bytedance:1@1": "480p",
         "bytedance:5@1": null,  // No resolution support
