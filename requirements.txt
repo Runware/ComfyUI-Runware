@@ -1,6 +1,3 @@
-python-dotenv
-brotli
-zstd
-librosa
-imageio
-websockets
+runware-sdk>=1.5.0
+pillow
+soundfile

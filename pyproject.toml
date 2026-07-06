@@ -1,0 +1,28 @@
+[project]
+name = "runware"
+version = "2.0.0"
+description = "Every Runware model as a ComfyUI node: image, video, audio, 3D, and text generation in the cloud."
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = [
+    "runware-sdk>=1.5.0",
+    "pillow",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.urls]
+Repository = "https://github.com/Runware/ComfyUI-Runware"
+Documentation = "https://runware.ai/docs"
+"Bug Tracker" = "https://github.com/Runware/ComfyUI-Runware/issues"
+
+[tool.comfy]
+PublisherId = "runware"
+DisplayName = "Runware"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# importlib mode imports test files by path, so the pack-root __init__.py (which
+# expects the ComfyUI runtime) is never imported during collection.
+addopts = "--import-mode=importlib"

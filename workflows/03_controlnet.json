@@ -1,0 +1,315 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "revision": 0,
+  "last_node_id": 5,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Runware_stabilityai_stable_diffusion_xl_v1_0_vae_fix",
+      "pos": [
+        460,
+        120
+      ],
+      "size": [
+        340,
+        460
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "seedImage",
+          "type": "IMAGE",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "maskImage",
+          "type": "IMAGE",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "outpaint",
+          "type": "RUNWARE_OUTPAINT",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "lora",
+          "type": "RUNWARE_LORA",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "controlNet",
+          "type": "RUNWARE_CONTROLNET",
+          "shape": 7,
+          "link": 2
+        },
+        {
+          "name": "ipAdapters",
+          "type": "RUNWARE_IPADAPTERS",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "embeddings",
+          "type": "RUNWARE_EMBEDDINGS",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "refiner",
+          "type": "RUNWARE_REFINER",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "photoMaker",
+          "type": "RUNWARE_PHOTOMAKER",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "ultralytics",
+          "type": "RUNWARE_ULTRALYTICS",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "watermark",
+          "type": "RUNWARE_WATERMARK",
+          "shape": 7,
+          "link": null
+        },
+        {
+          "name": "acceleratorOptions",
+          "type": "RUNWARE_ACCELERATOROPTIONS",
+          "shape": 7,
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Runware_stabilityai_stable_diffusion_xl_v1_0_vae_fix"
+      },
+      "widgets_values": [
+        "a fantasy castle on a cliff, concept art",
+        1024,
+        1024,
+        "",
+        0,
+        "fixed",
+        30,
+        "(default)",
+        false,
+        0.0,
+        false,
+        0.8,
+        false,
+        32,
+        false,
+        0,
+        "",
+        "(default)",
+        1,
+        false,
+        false,
+        false,
+        60,
+        "JPG",
+        95,
+        ""
+      ]
+    },
+    {
+      "id": 2,
+      "type": "RunwareBuild_controlNet",
+      "pos": [
+        80,
+        120
+      ],
+      "size": [
+        300,
+        260
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "guideImage",
+          "type": "IMAGE",
+          "shape": 7,
+          "link": 1
+        },
+        {
+          "name": "controlNet",
+          "type": "RUNWARE_CONTROLNET",
+          "shape": 7,
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "controlNet",
+          "type": "RUNWARE_CONTROLNET",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RunwareBuild_controlNet"
+      },
+      "widgets_values": [
+        "runware:20@1",
+        "balanced",
+        false,
+        1,
+        false,
+        1,
+        false,
+        0,
+        false,
+        0,
+        1.0
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        80,
+        440
+      ],
+      "size": [
+        260,
+        180
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "example.png",
+        "image"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SaveImage",
+      "pos": [
+        900,
+        120
+      ],
+      "size": [
+        260,
+        180
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "shape": 7,
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Runware"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "MarkdownNote",
+      "pos": [
+        80,
+        650
+      ],
+      "size": [
+        320,
+        160
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "### ControlNet\nWire your control image into **Load Image**. The ControlNet **model** is scoped to the SDXL node it feeds (`runware:20@1` = an SDXL ControlNet)."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      1,
+      4,
+      "RUNWARE_CONTROLNET"
+    ],
+    [
+      3,
+      1,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

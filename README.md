@@ -1,168 +1,82 @@
-# ComfyUI-Runware Integration 🚀
+# ComfyUI-Runware
 
-Welcome to **ComfyUI-Runware**! 🌟 This is the official integration for **[Runware](https://runware.ai/?utm_source=github&utm_medium=referral&utm_campaign=comfyui)**, bringing you the power of **inference-as-a-service** directly into **ComfyUI**! 
+Every Runware model as a ComfyUI node — image, video, audio, 3D, and text. The
+whole catalog stays current as new models launch, and each node's parameters
+match the live model exactly.
 
-## 🌟 What is ComfyUI-Runware?
+## Install
 
-Imagine creating stunning images or videos, refining details, or even removing backgrounds—all without needing a powerful GPU. With **Runware**, all the heavy lifting happens on our servers. No GPU? No problem! 🖥️💨 
+**ComfyUI Manager** (recommended): search **Runware** and install.
 
-This integration adds a suite of custom nodes to ComfyUI, allowing you to:
-- Perform advanced image inference tasks, including image generation and editing with powerful models.
-- Utilize PhotoMaker V2 pipelines
-- Leverage cutting-edge image models like **Flux .1 Kontext Pro**, **Flux .1 Kontext Max**, **Nano Banana**, **Seedream**, and more for superior image generation and editing.
-- Upscale images
-- Remove backgrounds
-- Generate videos from text prompts and/or images with video inference
-- Generate audio from text
-- Upscale videos
-- Generate video captions
-- Remove video backgrounds
-- Leverage specialized models and LoRAs
-- Use your custom uploaded models and LoRAs
-
-... and so much more! Let’s make your workflows seamless and efficient with **Runware**. 🖌️✨
-
----
-
-## 📖 Table of Contents
-
-1. [Introduction](#-what-is-comfyui-runware)
-2. [Workflows](#-workflows)
-3. [Installation](#-installation)
-4. [Node Features](#-node-features)
-5. [Support & Community](#-support--community)
-
----
-
-## 🎬 Workflows
-
-Here are some example workflows showcasing the power of ComfyUI-Runware:
-
-### Image Workflows
-![Image Inference Workflow](assets/image-inference.png)
-
-### Video Workflows
-![Video Inference Workflow](assets/video-inference.png)
-
----
-
-## 🔧 Installation
-
-### Step 1: Install ComfyUI
-
-First, ensure you have ComfyUI installed. You can follow the [pre-built package guide](https://docs.comfy.org/get_started/pre_package) or the [manual installation guide](https://docs.comfy.org/get_started/manual_install).
-
-Make sure your system meets these requirements:
-- **Python 3.10+**
-- **ComfyUI installed**
-
-### Step 2: Install ComfyUI-Runware
-
-You have two options to install this integration:
-
-#### Option 1: Using ComfyUI Manager (Recommended)
-First, ensure you have the `ComfyUI-Manager` custom node installed. If you don't have it or are using the beta ComfyUI desktop version, follow the instructions on this [GitHub Repo](https://github.com/ltdrdata/ComfyUI-Manager?tab=readme-ov-file#installation).
-
-After installing ComfyUI-Manager, open it and click on "Custom Nodes Manager". Search for "Runware" or **"Runware.ai"** and then click on install or update. Finally, restart your ComfyUI. ✨
-
-#### Option 2: Manual Installation
-
-1. Navigate to the custom nodes directory:
-   ```bash
-   cd custom_nodes
-   ```
-
-2. Clone the repository:
-   ```bash
-   git clone https://github.com/Runware/ComfyUI-Runware.git
-   ```
-
-3. Navigate to the repository folder:
-   ```bash
-   cd ComfyUI-Runware
-   ```
-
-4. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Step 3: Run ComfyUI
-
-Install latest ComfyUI frontend package
+**Manual:**
 ```bash
-pip install -U comfyui-frontend-package
-````
-
-Start ComfyUI with the following command:
-```bash
-python main.py
+cd ComfyUI/custom_nodes
+git clone https://github.com/Runware/ComfyUI-Runware
+pip install -r ComfyUI-Runware/requirements.txt
 ```
+Restart ComfyUI.
 
-#### Optional: CPU-Only Mode
-If you want to run ComfyUI without a GPU, add the `--cpu` flag:
-```bash
-python main.py --cpu
-```
+## API key
 
-### Step 4: Explore Workflows
-Inside the `ComfyUI-Runware` custom node folder, you’ll find a `workflows` folder with pre-made workflows to get you started! 🚀
+Use any of these (the environment variable wins if more than one is set):
 
----
+- **ComfyUI Settings → Runware API key** — paste your key in the UI, no terminal needed.
+- **`RUNWARE_API_KEY`** in the environment ComfyUI runs in.
+- **[Runware CLI](https://runware.ai/docs/platform/cli)** — run `runware auth login`
+  once and the nodes reuse the stored key.
 
-## 🧩 Node Features
+## Use
 
-Here's a breakdown of the amazing nodes included in this integration:
+Search the node menu for **Runware** — one node per model, grouped
+`Runware/<Modality>/<creator>`. Set the parameters, wire the output, and queue:
 
-- **Runware API Manager**: Set or change your API keys, adjust the max connection timeout, adjust the image output quality and format, and enable or disable image caching directly in ComfyUI—no need to edit config files manually! 🔑
-- **Runware Image Inference**: Perform advanced tasks like inpainting, outpainting, and more 🎨
-- **Runware PhotoMakerV2**: Create consistent identities with our photomaker pipeline. 🖼️
-- **Runware Image Upscale**: Upscale your images up to 4x. 🔍
-- **Runware Background Removal**: Effortlessly remove image backgrounds. 🧹
-- **Runware LoRA**: Search and select LoRAs to enhance your workflow. 📂
-- **Runware Model**: Choose specific models to connect with image inference. 🤖
-- **Runware ControlNet**: Guide your image generation with ControlNet and guide images. 🗺️
-- **Runware Refiner**: Refine your images with advanced tools. ✨
-- **Runware LoRA Combine**: Combine up to 3 LoRAs together. 🔗
-- **Runware ControlNet Combine**: Combine multiple ControlNets for complex workflows. 🧩
-- **Runware Image Masking**: Automatically mask elements like faces, hands, and more. 🖌️
-- **Runware ControlNet Preprocessor**: Preprocess images before using them as guide images in ControlNet. 🔄
-- **Runware VAE**: Search and connect a VAE to Image inference. 🖼️
-- **Runware Embedding**: Search and connect Embedding to image inference. 🧩
-- **Runware Embedding Combine**: Combine multiple embeddings together. 🔗
-- **Runware Image Caption**: Generate descriptive text from images for further workflow integration. 🖼️
-- **Runware IPAdapter**: Use reference images to guide the style and content of generated images. 🖌️
-- **Runware IPAdapters Combine**: Combine multiple IP-Adapter inputs for sophisticated image conditioning. 🔗
-- **Runware Video Inference**: Generate videos from text prompts using advanced AI models with support for frame images and reference images. 🎬
+- **Image** models output a native ComfyUI IMAGE.
+- **Audio / video** models output native ComfyUI AUDIO / VIDEO (chain them straight
+  into preview or save nodes); **3D** and other files download to your output folder
+  and return a path.
+- **Reference / seed images** are IMAGE inputs and **inpainting masks** are MASK
+  inputs; audio/video inputs take a URL or path.
+- **Builder nodes keep model nodes clean** (`Runware/Params`). Stackable features
+  live in their own nodes instead of crowding every model node: `LoRA`, `ControlNet`,
+  `IP-Adapter`, `Embeddings`, `Refiner`, feature blocks (`PuLID`, `PhotoMaker`,
+  `Watermark`, `Ultralytics`, `Accelerator Options`), and reference inputs. Each feature is a distinct socket
+  type, so you wire a builder into the model's matching typed socket (`lora`,
+  `controlNet`, ...) and chain the stackable ones to combine them. The model node only
+  shows the features a generation actually uses. LoRA, Embeddings, and Refiner have an
+  editable **model** field plus a **search catalog** button beneath it that opens a live
+  catalog search to fill the AIR. ControlNet and IP-Adapter instead scope their **model**
+  field to the model/architecture node you wire them into (chaining through any other same
+  builders): it becomes a dropdown of exactly the models that node accepts, or a free AIR
+  field until it reaches one. The Speech, reference, Accelerator Options, and Outpaint
+  builders scope their **fields** the same way: wired into a model, each shows only what that
+  model supports and hides the rest (Speech's `voice`/`language` become that model's own
+  lists, Accelerator Options shows only its caching strategies, Outpaint drops `blur` where
+  unsupported).
+- **Model-specific config flattens onto the model node** as dotted fields under a
+  **Settings** section: `safety.checkContent`, `providerSettings.google.webSearch`
+  (only your model's provider is shown).
+- **Widgets are grouped into sections** (inputs, core, settings, output). Where a model
+  has no fixed default for a setting, the node leaves it to the model rather than guess:
+  a number like `steps` or `CFGScale` shows a **set** toggle that reveals its field only
+  when you opt in, and a dropdown like `scheduler` carries a `(default)` option. Leave
+  these to use the model's own default, or set them to take control. Dimensions and
+  `seed` always show a value. A cohesive settings group reveals behind one toggle too:
+  `safety`, `toolChoice`, and `advancedFeatures` each hide their fields (e.g.
+  `safety.checkContent` / `safety.mode`) until you enable the group.
+- Niche per-model params (and anything not auto-typed) go into the raw
+  `advanced_json` input.
+- **Runware Upload Image** / **Runware Load Image (URL)** — upload an image once for
+  a reusable UUID, or pull any image URL (including a Runware result) into the graph
+  as an IMAGE.
+- After a run, each model, architecture, and custom node shows its cost and, when the
+  model ran a content check, the NSFW result along its title bar (e.g. `$0.00078  ·  NSFW: no`).
+- **Runware (custom)** — a generic node for any model AIR + taskType, for models
+  newer than your installed version. It makes no assumption about modality: you give
+  it the request as JSON (`request_json`) and it returns the raw response as
+  `result_json`. Feed media in as UUIDs/URLs (see **Runware Upload Image**).
+- **Runware Get** — pulls a field out of a `result_json` by dot-path (e.g.
+  `0.imageURL`, `0.videoURL`, `0.outputs.files.0.url`; leave it empty to grab the
+  first URL). The `STRING` it outputs goes to **Runware Load Image (URL)** to preview
+  an image, or to a Save/Preview node for any other result.
 
-- **Runware Frame Images**: Configure keyframe images with precise positioning control for video generation. 🖼️➡️🎥
-- **Runware Reference Images**: Provide reference images for overall visual guidance in video generation. 🖼️
-
-### Provider Settings
-
-Configure provider-specific settings for various services:
-- **Runware Alibaba Provider Settings**: Configure Alibaba-specific settings. ☁️
-- **Runware BRIA Image Provider Settings**: Configure BRIA Image-specific settings. 🖼️
-- **Runware ByteDance Provider Settings**: Configure ByteDance-specific settings. 🎬
-- **Runware ElevenLabs Provider Settings**: Configure ElevenLabs-specific settings for audio generation. 🎤
-- **Runware Kling Provider Settings**: Configure Kling-specific settings. 🎥
-- **Runware Lightricks Provider Settings**: Configure Lightricks-specific settings. ✨
-- **Runware Luma Provider Settings**: Configure Luma-specific settings. 🎬
-- **Runware Midjourney Provider Settings**: Configure Midjourney-specific settings. 🎨
-- **Runware MiniMax Provider Settings**: Configure MiniMax-specific settings. 🤖
-- **Runware OpenAI Provider Settings**: Configure OpenAI-specific settings with quality, background, and style options. 🤖
-- **Runware Pixverse Provider Settings**: Configure Pixverse-specific settings with effect, style, motion, and sound options. 🎬
-- **Runware Runway Provider Settings**: Configure Runway-specific settings. 🎥
-- **Runware Vidu Provider Settings**: Configure Vidu-specific settings. 🎬
-
----
-
-## 🤝 Support & Community
-
-This is the **official Runware integration**, maintained by **Runware Inc**. We’re here to help you every step of the way! 💬
-
-Join our community on Discord for support, updates, and to connect with fellow creators: [Runware Discord](https://discord.com/invite/aJ4UzvBqNU) 🎉
-
----
-
-Thank you for using **ComfyUI-Runware**! Let’s create something amazing together. 🌟
+Browse models and get an API key at [runware.ai](https://runware.ai/docs).
