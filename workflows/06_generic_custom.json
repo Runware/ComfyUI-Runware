@@ -1,0 +1,116 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "revision": 0,
+  "last_node_id": 3,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "RunwareCustom",
+      "pos": [
+        80,
+        120
+      ],
+      "size": [
+        260,
+        180
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "result_json",
+          "type": "STRING",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RunwareCustom"
+      },
+      "widgets_values": [
+        "runware:100@1",
+        "imageInference",
+        "{\"positivePrompt\": \"a serene mountain lake at dawn\", \"width\": 1024, \"height\": 1024}"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "RunwareGet",
+      "pos": [
+        420,
+        120
+      ],
+      "size": [
+        260,
+        180
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "result_json",
+          "type": "STRING",
+          "shape": 7,
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RunwareGet"
+      },
+      "widgets_values": [
+        "0.imageURL"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "MarkdownNote",
+      "pos": [
+        80,
+        360
+      ],
+      "size": [
+        320,
+        160
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "### Generic node\n`Runware (custom)` runs any model as raw JSON in \u2192 JSON out. `Runware Get` pulls a field by path (`0.imageURL`). Wire **value** into **Runware Load Image (URL)** \u2192 **Preview Image** to view it."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}
