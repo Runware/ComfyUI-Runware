@@ -598,9 +598,9 @@ async def run_upload(image_uri: str) -> str:
     if not api_key:
         raise RuntimeError("No Runware API key. Set RUNWARE_API_KEY or run `runware auth login`.")
     async with Runware(api_key=api_key, transport="rest", user_agent_prefix=USER_AGENT_PREFIX) as client:
-        for r in await client.image_upload({"image": image_uri}):
-            if isinstance(r, dict) and r.get("imageUUID"):
-                return str(r["imageUUID"])
+        for r in await client.media_storage({"operation": "upload", "media": image_uri}):
+            if isinstance(r, dict) and r.get("mediaUUID"):
+                return str(r["mediaUUID"])
     return ""
 
 
