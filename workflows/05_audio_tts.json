@@ -84,10 +84,10 @@
       },
       "widgets_values": [
         "Hello from Runware. This is a text to speech demo.",
-        "eve",
-        "(default)",
-        1,
+        "Zephyr",
         0,
+        0,
+        "en-US",
         0,
         ""
       ]

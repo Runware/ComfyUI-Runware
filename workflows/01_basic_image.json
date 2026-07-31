@@ -50,14 +50,14 @@
           "link": null
         },
         {
-          "name": "watermark",
-          "type": "RUNWARE_WATERMARK",
+          "name": "acceleratorOptions",
+          "type": "RUNWARE_ACCELERATOROPTIONS",
           "shape": 7,
           "link": null
         },
         {
-          "name": "acceleratorOptions",
-          "type": "RUNWARE_ACCELERATOROPTIONS",
+          "name": "advancedFeatures.watermark.image",
+          "type": "IMAGE",
           "shape": 7,
           "link": null
         }
@@ -95,6 +95,13 @@
         32,
         "(default)",
         1,
+        false,
+        "",
+        "(default)",
+        "",
+        false,
+        0.1,
+        "",
         false,
         false,
         false,
