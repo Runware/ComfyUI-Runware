@@ -6,7 +6,7 @@
   "nodes": [
     {
       "id": 1,
-      "type": "Runware_lightricks_ltx_2_fast",
+      "type": "Runware_lightricks_ltx_2_5_fast",
       "pos": [
         80,
         120
@@ -19,6 +19,12 @@
       "order": 0,
       "mode": 0,
       "inputs": [
+        {
+          "name": "referenceImages",
+          "type": "IMAGE",
+          "shape": 7,
+          "link": null
+        },
         {
           "name": "frameImages",
           "type": "IMAGE",
@@ -37,22 +43,24 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "Runware_lightricks_ltx_2_fast"
+        "Node name for S&R": "Runware_lightricks_ltx_2_5_fast"
       },
       "widgets_values": [
         "a hot air balloon drifting over misty mountains at sunrise",
-        "1080p (16:9)",
-        6,
-        25,
+        "",
+        "1920x1080",
+        "(default)",
         1,
         false,
+        "(default)",
         false,
         false,
         "fast",
         false,
         60,
         "MP4",
-        95
+        95,
+        ""
       ]
     },
     {
