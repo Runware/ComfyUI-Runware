@@ -17,7 +17,6 @@ torch / numpy / PIL / folder_paths come from the ComfyUI runtime; `runware` and
 from __future__ import annotations
 
 import asyncio
-import concurrent.futures
 import base64
 import importlib.util
 import io
@@ -68,19 +67,6 @@ def _package_version() -> str:
 USER_AGENT_PREFIX = f"runware-comfyui/{_package_version()}"
 
 
-# ----------------------------------------------------------------------- async bridge
-
-
-def run_blocking(coro: Any) -> Any:
-    """Drive an async coroutine from sync node code, even inside ComfyUI's loop."""
-    try:
-        asyncio.get_running_loop()
-    except RuntimeError:
-        return asyncio.run(coro)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-        return pool.submit(asyncio.run, coro).result()
-
-
 _UI_API_KEY: str | None = None  # set from the ComfyUI Settings panel via /runware/set_key
 
 
@@ -129,11 +115,11 @@ def _clean_error(exc: BaseException) -> str:
     return "Runware: " + msg + (f"  [{', '.join(tail)}]" if tail else "")
 
 
-def run_request_blocking(request: dict[str, Any]) -> list[dict[str, Any]]:
-    """Run a request synchronously, but on failure raise a clean single-line error instead of the
-    deep SDK/asyncio traceback ComfyUI would otherwise dump. Set RUNWARE_DEBUG for the full stack."""
+async def run_request_clean(request: dict[str, Any]) -> list[dict[str, Any]]:
+    """Run a request, but on failure raise a clean single-line error instead of the deep
+    SDK/asyncio traceback ComfyUI would otherwise dump. Set RUNWARE_DEBUG for the full stack."""
     try:
-        return run_blocking(run_request(request))
+        return await run_request(request)
     except Exception as exc:  # noqa: BLE001
         if os.environ.get("RUNWARE_DEBUG"):
             import traceback  # noqa: PLC0415
@@ -434,7 +420,24 @@ class _RunwareNode:
     def INPUT_TYPES(cls) -> dict[str, Any]:
         return cls._INPUT_TYPES
 
-    def execute(self, **kwargs: Any) -> Any:
+    async def execute(self, **kwargs: Any) -> Any:
+        request = await asyncio.to_thread(self._build_request, kwargs)
+        results = await run_request_clean(request)
+        if os.environ.get("RUNWARE_DEBUG"):
+            keys = sorted({k for r in results if isinstance(r, dict) for k in r})
+            nsfw = [r.get("NSFWContent") for r in results if isinstance(r, dict)]
+            print(f"[Runware] {self.TASK_TYPE} sent safety={request.get('safety')} | "
+                  f"result keys={keys} | NSFWContent={nsfw}")
+        outputs = await asyncio.to_thread(self._outputs, results)
+        info = _run_info(results)  # cost + NSFW flag, shown on the node
+        if info:
+            print(f"[Runware] {self.TASK_TYPE}: {info}")
+            return {"ui": {"runware_info": [info]}, "result": outputs}
+        keys = sorted({k for r in results if isinstance(r, dict) for k in r})
+        print(f"[Runware] {self.TASK_TYPE}: no cost/NSFW in response; result keys = {keys}")
+        return outputs
+
+    def _build_request(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         request: dict[str, Any] = {"model": self.MODEL, "taskType": self.TASK_TYPE, "includeCost": True}
         advanced = kwargs.pop("advanced_json", "") or ""
 
@@ -456,21 +459,7 @@ class _RunwareNode:
                     request.update(data)
             except json.JSONDecodeError:
                 pass
-
-        results = run_request_blocking(request)
-        if os.environ.get("RUNWARE_DEBUG"):
-            keys = sorted({k for r in results if isinstance(r, dict) for k in r})
-            nsfw = [r.get("NSFWContent") for r in results if isinstance(r, dict)]
-            print(f"[Runware] {self.TASK_TYPE} sent safety={request.get('safety')} | "
-                  f"result keys={keys} | NSFWContent={nsfw}")
-        outputs = self._outputs(results)
-        info = _run_info(results)  # cost + NSFW flag, shown on the node
-        if info:
-            print(f"[Runware] {self.TASK_TYPE}: {info}")
-            return {"ui": {"runware_info": [info]}, "result": outputs}
-        keys = sorted({k for r in results if isinstance(r, dict) for k in r})
-        print(f"[Runware] {self.TASK_TYPE}: no cost/NSFW in response; result keys = {keys}")
-        return outputs
+        return request
 
     def _outputs(self, results: list[dict[str, Any]]) -> tuple[Any]:
         results = [r for r in results if isinstance(r, dict)]
@@ -494,9 +483,6 @@ class _RunwareNode:
             if url:
                 return (_download(url, _SUFFIX.get(self.TASK_TYPE, ".bin")),)
         return ("",)
-
-    async def _run(self, request: dict[str, Any]) -> list[dict[str, Any]]:  # kept for symmetry
-        return await run_request(request)
 
 
 # ----------------------------------------------------------------------- generic node
@@ -526,7 +512,7 @@ class RunwareCustom:
             },
         }
 
-    def execute(self, model: str, taskType: str, request_json: str = "{}") -> Any:
+    async def execute(self, model: str, taskType: str, request_json: str = "{}") -> Any:
         request: dict[str, Any] = {"model": model, "taskType": taskType, "includeCost": True}
         try:
             data = json.loads(request_json or "{}")
@@ -535,7 +521,7 @@ class RunwareCustom:
         except json.JSONDecodeError:
             pass
 
-        results = run_request_blocking(request)
+        results = await run_request_clean(request)
         results = [r for r in results if isinstance(r, dict)]
         outputs = (json.dumps(results),)
         info = _run_info(results)
@@ -616,8 +602,9 @@ class RunwareUploadImage:
     def INPUT_TYPES(cls) -> dict[str, Any]:
         return {"required": {"image": ("IMAGE",)}}
 
-    def execute(self, image: Any) -> tuple[str]:
-        return (run_blocking(run_upload(tensor_to_data_uris(image)[0])),)
+    async def execute(self, image: Any) -> tuple[str]:
+        uris = await asyncio.to_thread(tensor_to_data_uris, image)
+        return (await run_upload(uris[0]),)
 
 
 class RunwareLoadImage:
@@ -632,9 +619,9 @@ class RunwareLoadImage:
     def INPUT_TYPES(cls) -> dict[str, Any]:
         return {"required": {"url": ("STRING", {"default": "", "tooltip": "Image URL"})}}
 
-    def execute(self, url: str) -> tuple[Any]:
+    async def execute(self, url: str) -> tuple[Any]:
         url = (url or "").strip()
-        return (urls_to_image([url] if url else []),)
+        return (await asyncio.to_thread(urls_to_image, [url] if url else []),)
 
 
 def _first_url(data: Any) -> str | None:
