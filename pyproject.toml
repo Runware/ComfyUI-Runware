@@ -1,6 +1,6 @@
 [project]
 name = "ComfyUI-Runware"
-version = "2.1.0"
+version = "2.1.1"
 description = "Every Runware model as a ComfyUI node: image, video, audio, 3D, and text generation in the cloud."
 license = "MIT"
 requires-python = ">=3.11"

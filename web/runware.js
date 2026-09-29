@@ -642,3 +642,69 @@ app.registerExtension({
         };
     },
 });
+
+// ------------------------------------------------------------------ widget values by name
+
+const RW_VALUES = "rw_widget_values";
+
+function rwIsValueWidget(w) {
+    return w.type !== "rw_header" && w.type !== "button";
+}
+
+function rwValuesByName(node) {
+    const out = {};
+    for (const w of node.widgets || []) {
+        if (rwIsValueWidget(w) && w.name && w.value !== undefined) out[w.name] = w.value;
+    }
+    return out;
+}
+
+function rwValuesFromPhantomSlots(node, values) {
+    const widgets = node.widgets || [];
+    if (!Array.isArray(values) || values.length !== widgets.length) return null;
+    if (widgets.every(rwIsValueWidget)) return null;
+    const out = {};
+    for (let i = 0; i < widgets.length; i++) {
+        if (rwIsValueWidget(widgets[i])) out[widgets[i].name] = values[i];
+        else if (values[i] != null) return null;
+    }
+    return out;
+}
+
+function rwApplyValues(node, values) {
+    for (const w of node.widgets || []) {
+        if (rwIsValueWidget(w) && w.name && Object.prototype.hasOwnProperty.call(values, w.name)) {
+            w.value = values[w.name];
+        }
+    }
+}
+
+app.registerExtension({
+    name: "Runware.WidgetValues",
+    beforeRegisterNodeDef(nodeType, nodeData) {
+        const name = nodeData?.name || "";
+        if (!/^Runware(_|Build_|Arch_)/.test(name)) return;
+
+        const onSerialize = nodeType.prototype.onSerialize;
+        nodeType.prototype.onSerialize = function (o) {
+            const r = onSerialize?.apply(this, arguments);
+            try { o[RW_VALUES] = rwValuesByName(this); } catch (e) { console.error("[Runware] serialize error", e); }
+            return r;
+        };
+
+        const onConfigure = nodeType.prototype.onConfigure;
+        nodeType.prototype.onConfigure = function (info) {
+            const r = onConfigure?.apply(this, arguments);
+            try {
+                const values = info?.[RW_VALUES] || rwValuesFromPhantomSlots(this, info?.widgets_values);
+                if (values) {
+                    rwApplyValues(this, values);
+                    if (this._rwCats) rwSync(this);
+                }
+            } catch (e) {
+                console.error("[Runware] configure error", e);
+            }
+            return r;
+        };
+    },
+});
