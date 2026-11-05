@@ -22,6 +22,7 @@ import importlib.util
 import io
 import json
 import os
+import urllib.parse
 import urllib.request
 import uuid
 from typing import Any
@@ -149,13 +150,39 @@ def tensor_to_data_uris(image: Any) -> list[str]:
     return uris
 
 
+_DOWNLOAD_DOMAIN = "runware.ai"
+
+
+def _allowed_download(url: str) -> bool:
+    parts = urllib.parse.urlsplit(url)
+    host = (parts.hostname or "").lower()
+    return parts.scheme == "https" and (host == _DOWNLOAD_DOMAIN or host.endswith("." + _DOWNLOAD_DOMAIN))
+
+
+class _RunwareOnlyRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req: Any, fp: Any, code: int, msg: str, headers: Any, newurl: str) -> Any:
+        if not _allowed_download(newurl):
+            raise ValueError(f"Refusing to follow a redirect to {newurl}: results are only downloaded from runware.ai over HTTPS.")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_OPENER = urllib.request.build_opener(_RunwareOnlyRedirect)
+
+
+def _fetch(url: str) -> bytes:
+    if not _allowed_download(url):
+        raise ValueError(f"Refusing to download {url}: results are only downloaded from runware.ai over HTTPS.")
+    with _OPENER.open(url) as response:
+        return response.read()
+
+
 def urls_to_image(urls: list[str]) -> Any:
     torch, np, Image = _imaging()
     if not urls:
         return torch.zeros((1, 512, 512, 3))
     frames = []
     for url in urls:
-        data = urllib.request.urlopen(url).read()  # noqa: S310
+        data = _fetch(url)
         pil = Image.open(io.BytesIO(data)).convert("RGB")
         frames.append(np.asarray(pil).astype("float32") / 255.0)
     return torch.from_numpy(np.stack(frames))
@@ -186,9 +213,10 @@ def _output_dir() -> str:
 
 
 def _download(url: str, suffix: str) -> str:
+    data = _fetch(url)
     path = os.path.join(_output_dir(), f"runware_{uuid.uuid4().hex[:8]}{suffix}")
     with open(path, "wb") as fh:
-        fh.write(urllib.request.urlopen(url).read())  # noqa: S310
+        fh.write(data)
     return path
 
 
